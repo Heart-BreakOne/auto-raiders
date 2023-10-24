@@ -1,0 +1,28 @@
+{
+   "manifest_version": 3,
+   "name": "AutoRaiders",
+   "version": "1.0.0",
+   "description": "Stream raiders automator",
+   "action": {
+      "default_icon": {
+         "48": "icons/icon-128.png",
+         "128": "icons/icon-128.png"
+      }
+   },
+   "content_scripts": [
+      {
+         "js": [
+            "script.js",
+            "scrolls.js"
+         ],
+         "matches": [
+            "https://www.streamraiders.com/*"
+         ],
+         "world": "MAIN"
+      }
+   ],
+   "icons": {
+      "128": "icons/icon-128.png",
+      "48": "icons/icon-48.png"
+   }
+}
