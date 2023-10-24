@@ -1,6 +1,9 @@
 # AutoRaiders
 ## Click emulator for Stream Raiders - Google Chrome extension.
 
+##Special thanks to contributors:
+Heather1209
+
 This extension runs on the client side simulating user inputs so there's no risk of having you're account banned due to botting.
 
 To use it you need to download this repo as a zip file, open the Google Chrome extension manager, enable dev mode and load an unpacked extension, select the zip file.<br>
@@ -11,20 +14,16 @@ After installation, just open the game website and stay at the main menu.
 #### What it does:
 💰 Collects rewards.<br>
 ☠️ Savages defeat chests.<br>
-📜 When the scroll store becomes available it buys scrolls within the first five minutes, if you're past 5 minutes of the store refresh, buy manually. It will also refresh the store once for 100 coins. Check below to disable this feature<br>
+📜 When the scroll store becomes available it buys scrolls within the first five minutes, if you're past 1hour and 30 minutes of the store refresh, buy manually. It will also refresh the store once for 100 coins. Check below to disable this feature<br>
 📦 Collects quests, Quests tab only. Does not collect battle pass nor any freebies from the store. Check below to disable this feature<br><br>
 ⚔️ Opens battlefield.<br>
-✌️ Seeks a valid marker (vibe markers and maps without markers).<br>
+✌️ Seeks a valid marker: vibe markers, set markers and maps without markers.<br>
 🫡 Selects the first available unit from the ALL list ordered by readiness or level (manually select your personal preference).<br>
 ☝️ Places only one unit on dungeons as keys only increase with battle quantity and more units placed increase the death toll as the levels get high hitting a point where all units are dead while the dungeon is still running <br>
-🍀 If by random chance it selects a unit that matches the marker (e.g. Shinobi in a specific shinobi or a generic assassin marker) it will place the unit, otherwise it will cancel and seek another valid marker.<br>
 🚫 If the marker is invalid, outside the ally area or if there's another ally unit on the marker, it will seek another valid marker.<br>
 🛠️ Handles situations in which the loading screen or the game freeze, any warnings or errors pop-ups appear or the battle starts while trying to place a unit.<br>
-💎 It doesn't place legendary units as they don't grant anything. See instructions below on how to remove this limitation.<br>
+💎 It doesn't place legendary units on campaign as they don't grant anything. See instructions below on how to remove this limitation.<br>
 ⚗️ It doesn't use potions. See instructions below to remove this limitation.<br>
-
-Future improvements:
-Actively place units on set markers (e.g. Shinobi in a specific marker)
 
 ### To prevent purchases from the scroll store and quest collection, comment the following line with two slashes //buyScrolls()
 ``` buyScrolls() ```
