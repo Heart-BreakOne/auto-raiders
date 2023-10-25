@@ -1,5 +1,5 @@
 setInterval(start, 15000);
-setInterval(checkBattle, 30000);
+setInterval(checkBattle, 15000);
 let unitName = "";
 let currentMarkerKey = "";
 let currentMarker;
@@ -138,7 +138,7 @@ function openBattlefield() {
 
 //Looks and selects a valid marker for placement
 const getValidMarkers = async () => {
-  await delay(3000);
+  await delay(5000);
   let validMarker = false;
   arrayOfMarkers = document.querySelectorAll(".planIcon");
   do {
@@ -150,7 +150,7 @@ const getValidMarkers = async () => {
       const matchedProperty = Object.keys(currentMarker).find(prop => regex.test(prop));
       currentMarkerKey = currentMarker[matchedProperty].key;
     }
-   //await delay(2000);
+    await delay(2000);
     //If there are no markers, waits 45 seconds for captain to place markers, if any.
     if (arrayOfMarkers.length === 0) {
       const clockElement = document.querySelector('.battlePhaseTextClock .clock');
@@ -198,9 +198,10 @@ const moveScreenCenter = async () => {
   await moveScreen('center');
 }
 
+//Offset 96pixels top
 //Scroll into view the center of the currentMark
 const moveScreen = async (position) => {
-  currentMarker.scrollIntoView({ block: 'center', inline: position });
+  currentMarker.scrollIntoView({block: 'center', inline: position});
   await delay(1000);
   selectUnit();
   await delay(1000);
@@ -356,7 +357,7 @@ async function checkBattle() {
 
   let battleButton = document.querySelector('.placeUnitButtonItems');
   if (battleButton && (battleButton.innerText.includes('UNIT READY TO PLACE IN') || battleButton.innerText.includes('BATTLE STARTING SOON'))) {
-    await delay(30000);
+    await delay(15000);
     battleButton = document.querySelector('.placeUnitButtonItems');
     if (battleButton && (battleButton.innerText.includes('UNIT READY TO PLACE IN') || battleButton.innerText.includes('BATTLE STARTING SOON'))) {
       location.reload();
