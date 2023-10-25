@@ -150,7 +150,7 @@ const getValidMarkers = async () => {
       const matchedProperty = Object.keys(currentMarker).find(prop => regex.test(prop));
       currentMarkerKey = currentMarker[matchedProperty].key;
     }
-    await delay(2000);
+    //await delay(2000);
     //If there are no markers, waits 45 seconds for captain to place markers, if any.
     if (arrayOfMarkers.length === 0) {
       const clockElement = document.querySelector('.battlePhaseTextClock .clock');
