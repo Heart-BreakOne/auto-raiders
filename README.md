@@ -1,9 +1,9 @@
 # AutoRaiders
 ## Click emulator for Stream Raiders - Google Chrome extension.
 
-##Special thanks to contributors:
+### Special thanks to contributor:
 Heather1209
-
+###
 This extension runs on the client side simulating user inputs so there's no risk of having you're account banned due to botting.
 
 To use it you need to download this repo as a zip file, open the Google Chrome extension manager, enable dev mode and load an unpacked extension, select the zip file.<br>
