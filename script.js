@@ -150,7 +150,6 @@ const getValidMarkers = async () => {
       const matchedProperty = Object.keys(currentMarker).find(prop => regex.test(prop));
       currentMarkerKey = currentMarker[matchedProperty].key;
     }
-    //await delay(2000);
     //If there are no markers, waits 45 seconds for captain to place markers, if any.
     if (arrayOfMarkers.length === 0) {
       const clockElement = document.querySelector('.battlePhaseTextClock .clock');
@@ -160,7 +159,11 @@ const getValidMarkers = async () => {
       const timeText = clockElement.textContent.replace(':', '');
       const time = parseInt(timeText, 10);
       if (time > 2915) {
-        continue;
+        const backHome = document.querySelector(".selectorBack");
+        if (backHome) {
+          backHome.click();
+        }
+        return
       } else {
         const arrayOfAllyPlacement = document.querySelectorAll(".placementAlly");
         currentMarker = arrayOfAllyPlacement[Math.floor(Math.random() * arrayOfAllyPlacement.length)];
@@ -198,7 +201,6 @@ const moveScreenCenter = async () => {
   await moveScreen('center');
 }
 
-//Offset 96pixels top
 //Scroll into view the center of the currentMark
 const moveScreen = async (position) => {
 
@@ -384,7 +386,7 @@ async function checkBattle() {
 
   checkAndReload('.leaderboardCont', 75000)
   //If the battlefield is opened at the same time as the timer reaches 00:00 it will freeze there, a reload fixes it.
-  checkAndReload('.battleLoading', 15000);
+  checkAndReload('.battleLoading', 50000);
   //If the first loading screen frseezes
   checkAndReload('.loadingView', 10000);
   //If the second loading screen freezes
