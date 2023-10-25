@@ -211,7 +211,7 @@ const moveScreen = async (position) => {
 
   currentMarker.scrollIntoView({ block: 'center', inline: position });
 
-  await delay(1000);
+  await delay(2000);
   selectUnit();
   await delay(1000);
   tapUnit();
