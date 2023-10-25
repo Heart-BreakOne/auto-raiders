@@ -201,7 +201,14 @@ const moveScreenCenter = async () => {
 //Offset 96pixels top
 //Scroll into view the center of the currentMark
 const moveScreen = async (position) => {
-  currentMarker.scrollIntoView({block: 'center', inline: position});
+
+  //They say two bodies cannot occupy the same point in space and time so we turn the marker into 0 so our unit can fit on that space
+  currentMarker.style.width = '0';
+  currentMarker.style.height = '0';
+  currentMarker.style.backgroundSize = '0';
+
+  currentMarker.scrollIntoView({ block: 'center', inline: position });
+
   await delay(1000);
   selectUnit();
   await delay(1000);
