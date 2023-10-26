@@ -11,7 +11,8 @@ const arrayOfUnits = [
   { key: "Vibe", type: "Vibe", icon: "Vibe" },
   { key: "Archer", type: "Ranged", icon: "FBpkaZY" },
   { key: "Artillery", type: "Ranged", icon: "3GY1DLAQ" },
-  { key: "Balloon Buster", type: "Ranged", icon: "FoPPa6g" },
+  //{ key: "Balloon Buster", type: "Ranged", icon: "FoPPa6g" },
+  { key: "Balloonbuster", type: "Ranged", icon: "FoPPa6g" },
   { key: "Barbarian", type: "Melee", icon: "y2azrA3g" },
   { key: "Berserker", type: "Melee", icon: "BCIAAA" },
   { key: "Blob", type: "Armored", icon: "lXTAAA" },
@@ -19,8 +20,9 @@ const arrayOfUnits = [
   { key: "Buster", type: "Assassin", icon: "PccPYIHw" },
   { key: "Centurion", type: "Armored", icon: "DUwAAA" },
   { key: "Fairy", type: "Support", icon: "fNJqA" },
-  { key: "Flag Bearer", type: "Melee", icon: "kF7A" },
-  { key: "Flying Rogue", type: "Assassin", icon: "gsge2mI" },
+  { key: "Flagbearer", type: "Melee", icon: "kF7A" },
+  { key: "Flyingrogue", type: "Assassin", icon: "gsge2mI" },
+  //{ key: "Flying Rogue", type: "Assassin", icon: "gsge2mI" },
   { key: "Gladiator", type: "Melee", icon: "EMwa84U" },
   { key: "Healer", type: "Support", icon: "UY3n8" },
   { key: "Lancer", type: "Melee", icon: "PU+OGw" },
@@ -28,7 +30,8 @@ const arrayOfUnits = [
   { key: "Monk", type: "Support", icon: "d46Ekxw" },
   { key: "Musketeer", type: "Ranged", icon: "dl9SBC7g" },
   { key: "Necromancer", type: "Support", icon: "85VI" },
-  { key: "Orc Slayer", type: "Armored", icon: "VPaasGY8" },
+  { key: "Orcslayer", type: "Armored", icon: "VPaasGY8" },
+  //{ key: "Orc Slayer", type: "Armored", icon: "VPaasGY8" },
   { key: "Paladin", type: "Armored", icon: "iYUeo" },
   { key: "Rogue", type: "Assassin", icon: "gRjLD" },
   { key: "Saint", type: "Support", icon: "PBUHpCg" },
@@ -107,7 +110,7 @@ async function start() {
         captainSlot = captainSlot.nextElementSibling;
         next = true
       } else {
-        next = false
+        next = false  
       }
     }
   }
@@ -186,7 +189,7 @@ const getValidMarkers = async () => {
           continue;
         }
       } else {
-        markerKeySliced = currentMarkerKey.slice(0, -6);
+        markerKeySliced = currentMarkerKey.slice(0, currentMarkerKey.indexOf("-"));
         for (let i = 0; i < arrayOfUnits.length; i++) {
           loopIndex++
           if (loopIndex >= 4000) {
@@ -272,7 +275,8 @@ function selectUnit() {
     var isDungeon = false
     console.log("check1")
     //Get human readable unitName
-    const unit = arrayOfUnits.find(unit => unitName.includes(unit.icon));
+    const unit = arrayOfUnits.filter(unit => unitName.includes(unit.icon))[1];
+    console.log("checkpoint")
     if (unit) {
       unitName = unit.key;
       console.log("check2")
