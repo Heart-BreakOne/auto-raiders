@@ -81,44 +81,30 @@ async function start() {
     //collectBattlePass()
   }
 
-  //Place a single unit on dungeons as the amount of keys don't increase with more units. 
-  let captainSlot = document.querySelector(".capSlot")
-  if (captainSlot == null) {
-    return
-  }
-  let next = true
-  while (next) {
-    next = false
-    if (captainSlot == null) {
-      return
-    } else {
-      if (captainSlot.innerText.includes("Dungeons")
-        && (captainSlot.querySelector('.capSlotClose') == null
-          && (captainSlot.innerText.includes("WATCH IN PLAYER")
-            || captainSlot.innerText.includes("VIEW BATTLEFIELD")
-            || captainSlot.innerText.includes("PLACE UNIT")
-            || captainSlot.innerText.includes("COLLECT KEYS")))) {
-        captainSlot = captainSlot.nextElementSibling;
-        next = true
-      } else if (captainSlot.innerText.includes("WATCH IN PLAYER")
-        || captainSlot.innerText.includes("VIEW BATTLEFIELD")
-        || captainSlot.innerText.includes("COLLECT KEYS")
-        || !captainSlot.innerText.includes("PLACE UNIT")) {
-        captainSlot = captainSlot.nextElementSibling;
-      }
-      if (!captainSlot.innerText.includes("PLACE UNIT")) {
-        captainSlot = captainSlot.nextElementSibling;
-        next = true
+  const placeUnitButtons = document.querySelectorAll(".actionButton.actionButtonPrimary.capSlotButton.capSlotButtonAction");
+  let placeUnit = null;
+  if (placeUnitButtons.length != 0) {
+    for (var button of placeUnitButtons) {
+      if (button.innerText.includes("PLACE UNIT")) {
+        var captainSlot = button.closest('.capSlot');
+        if ((captainSlot.innerText.includes("Dungeons") || captainSlot.innerText.includes("Clash") ||
+          captainSlot.innerText.includes("Duels")) &&
+          captainSlot.querySelector('.capSlotClose') == null) {
+          continue
+        } else {
+          placeUnit = button
+        }
       } else {
-        next = false  
+        continue;
       }
     }
   }
-  let placeUnitFromMenu = captainSlot.querySelector(".actionButton.actionButtonPrimary.capSlotButton.capSlotButtonAction");
 
-  if (placeUnitFromMenu) {
-    placeUnitFromMenu.click();
+  if (placeUnit) {
+    placeUnit.click();
     openBattlefield();
+  } else {
+    return
   }
 
   // Change captains using a different device without the script freezing trying to select a captain.
