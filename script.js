@@ -75,6 +75,7 @@ async function start() {
     await rewardButton.click();
     //Comment this line to disable both scroll shop and quest collection
     buyScrolls()
+    //collectBattlePass()
   }
 
   //Place a single unit on dungeons as the amount of keys don't increase with more units. 
@@ -85,25 +86,29 @@ async function start() {
   let next = true
   while (next) {
     next = false
-    if (captainSlot.innerText.includes("Dungeons")
-      && (captainSlot.querySelector('.capSlotClose') == null
-        && (captainSlot.innerText.includes("WATCH IN PLAYER")
-          || captainSlot.innerText.includes("VIEW BATTLEFIELD")
-          || captainSlot.innerText.includes("PLACE UNIT")
-          || captainSlot.innerText.includes("COLLECT KEYS")))) {
-      captainSlot = captainSlot.nextElementSibling;
-      next = true
-    } else if (captainSlot.innerText.includes("WATCH IN PLAYER")
-      || captainSlot.innerText.includes("VIEW BATTLEFIELD")
-      || captainSlot.innerText.includes("COLLECT KEYS")
-      || !captainSlot.innerText.includes("PLACE UNIT")) {
-      captainSlot = captainSlot.nextElementSibling;
-    }
-    if (!captainSlot.innerText.includes("PLACE UNIT")) {
-      captainSlot = captainSlot.nextElementSibling;
-      next = true
+    if (captainSlot == null) {
+      return
     } else {
-      next = false
+      if (captainSlot.innerText.includes("Dungeons")
+        && (captainSlot.querySelector('.capSlotClose') == null
+          && (captainSlot.innerText.includes("WATCH IN PLAYER")
+            || captainSlot.innerText.includes("VIEW BATTLEFIELD")
+            || captainSlot.innerText.includes("PLACE UNIT")
+            || captainSlot.innerText.includes("COLLECT KEYS")))) {
+        captainSlot = captainSlot.nextElementSibling;
+        next = true
+      } else if (captainSlot.innerText.includes("WATCH IN PLAYER")
+        || captainSlot.innerText.includes("VIEW BATTLEFIELD")
+        || captainSlot.innerText.includes("COLLECT KEYS")
+        || !captainSlot.innerText.includes("PLACE UNIT")) {
+        captainSlot = captainSlot.nextElementSibling;
+      }
+      if (!captainSlot.innerText.includes("PLACE UNIT")) {
+        captainSlot = captainSlot.nextElementSibling;
+        next = true
+      } else {
+        next = false
+      }
     }
   }
   let placeUnitFromMenu = captainSlot.querySelector(".actionButton.actionButtonPrimary.capSlotButton.capSlotButtonAction");
@@ -138,11 +143,14 @@ function openBattlefield() {
 
 //Looks and selects a valid marker for placement
 const getValidMarkers = async () => {
+  let loopIndex = 0
   await delay(5000);
   let validMarker = false;
   arrayOfMarkers = document.querySelectorAll(".planIcon");
   do {
+    loopIndex++
     if (arrayOfMarkers.length != 0) {
+      currentMarkerKey = ""
       // The randomization of the index increased the chances of getting a valid placement.
       currentMarker = arrayOfMarkers[Math.floor(Math.random() * (arrayOfMarkers.length - 1))];
       // This bit gets the marker type for comparison later
@@ -150,20 +158,18 @@ const getValidMarkers = async () => {
       const matchedProperty = Object.keys(currentMarker).find(prop => regex.test(prop));
       currentMarkerKey = currentMarker[matchedProperty].key;
     }
+
     //If there are no markers, waits 45 seconds for captain to place markers, if any.
     if (arrayOfMarkers.length === 0) {
       const clockElement = document.querySelector('.battlePhaseTextClock .clock');
       if (clockElement == null) {
         return
       }
-      const timeText = clockElement.textContent.replace(':', '');
+      const timeText = clockElement.innerText.replace(':', '');
       const time = parseInt(timeText, 10);
       if (time > 2915) {
-        const backHome = document.querySelector(".selectorBack");
-        if (backHome) {
-          backHome.click();
-        }
-        return
+        goHome()
+        return;
       } else {
         const arrayOfAllyPlacement = document.querySelectorAll(".placementAlly");
         currentMarker = arrayOfAllyPlacement[Math.floor(Math.random() * arrayOfAllyPlacement.length)];
@@ -173,10 +179,20 @@ const getValidMarkers = async () => {
     } else {
       //If it's a block marker, get a new marker, if vibe or unit type place.
       if (currentMarkerKey.includes("NoPlacement")) {
-        continue;
+        if (loopIndex >= 4000) {
+          goHome()
+          return;
+        } else {
+          continue;
+        }
       } else {
         markerKeySliced = currentMarkerKey.slice(0, -6);
         for (let i = 0; i < arrayOfUnits.length; i++) {
+          loopIndex++
+          if (loopIndex >= 4000) {
+            goHome()
+            return;
+          }
           const element = arrayOfUnits[i];
           if (markerKeySliced === element.key || markerKeySliced === element.type) {
             validMarker = true;
@@ -185,6 +201,10 @@ const getValidMarkers = async () => {
           }
         }
       }
+    }
+    if (loopIndex >= 4000) {
+      goHome()
+      return;
     }
   } while (!validMarker);
 }
@@ -238,7 +258,9 @@ function selectUnit() {
   let index = 1;
   let placeableUnit;
   canUse = false;
+  unitName = ""
   do {
+    console.log("start")
     placeableUnit = null
     placeableUnit = document.querySelector(".unitSelectionItemCont:nth-child(" + index + ") .unitItem:nth-child(1)");
     let legendaryCheck = placeableUnit.querySelector('.unitRarityLegendary');
@@ -248,32 +270,35 @@ function selectUnit() {
     var unitName = placeableUnit.querySelector('.unitClass img').getAttribute('src').slice(-50);
     let unitDisabled = placeableUnit.querySelector('.unitItemDisabledOff');
     var isDungeon = false
-
+    console.log("check1")
     //Get human readable unitName
     const unit = arrayOfUnits.find(unit => unitName.includes(unit.icon));
     if (unit) {
       unitName = unit.key;
+      console.log("check2")
     }
     //Check if it's dungeon so the usage of legendary units can be allowed
     let dungeonCheck = document.querySelector('.battleInfoMapTitle');
     if (dungeonCheck.innerText === 'Level: ') {
       isDungeon = true
+      console.log("check3")
     }
     //If the unit can't be used, get the next
     if ((legendaryCheck && !isDungeon) || coolDownCheck || defeatedCheck || !unitDisabled) {
       index++;
+      console.log("check4")
     }
-    else if (markerKeySliced == "Vibe" || markerKeySliced == "") {
+    else if (markerKeySliced == "Vibe" || markerKeySliced == "" || markerKeySliced == unitType || markerKeySliced == unitName) {
       canUse = true;
       placeableUnit.click();
-    }
-    else if (markerKeySliced == unitType || markerKeySliced == unitName) {
-      canUse = true;
-      placeableUnit.click();
+      console.log("check5")
     } else {
       index++
+      console.log("check6")
     }
+    console.log("check7")
   } while (canUse == false);
+  console.log("exit")
 }
 
 //If the unit is in a valid marker that is in use, by taping the unit container it forces a button recheck on mouseup/touchend
@@ -287,7 +312,7 @@ function tapUnit() {
 function placeTheUnit() {
   //Gets timer and if it's 0, goes back to menu
   let clockText = "x";
-  clockText = document.querySelector('.battlePhaseTextClock .clock').textContent;
+  clockText = document.querySelector('.battlePhaseTextClock .clock').innerText;
 
   if (clockText === "00:00") {
     let placerButton = document.querySelector(".actionButton.actionButtonNegative.placerButton");
@@ -403,4 +428,41 @@ async function checkAndReload(selector, delayTimer) {
       location.reload();
     }
   }
+}
+
+function goHome() {
+  const backHome = document.querySelector(".selectorBack");
+  if (backHome) {
+    backHome.click();
+  }
+}
+
+function collectBattlePass() {
+  //Get header buttons and click on Reward button
+  const headerButtons = document.querySelectorAll(".actionButton.actionButtonGift");
+  headerButtons.forEach(rewardButton => {
+    if (rewardButton.innerText.includes("REWARDS")) {
+      rewardButton.click
+      //collect rewards if there are any
+      const collectButtons = document.querySelectorAll(".actionButton.actionButtonCollect.rewardActionButton");
+      for (button of collectButtons) {
+        button.click();
+
+        const confirmButtons = document.querySelectorAll(".actionButton.actionButtonPrimary");
+        confirmButtons.forEach(confirm => {
+          if (confirm.innerText.includes("CONFIRM AND COLLECT")) {
+            confirm.click();
+            confirm.submit();
+          }
+        });
+
+      }
+      const closeButton = document.querySelector(".far.fa-times");
+      if (closeButton) {
+        closeButton.click();
+        const event = new Event('mouseup', { bubbles: true, cancelable: true });
+        closeButton.dispatchEvent(event);
+      }
+    }
+  });
 }
