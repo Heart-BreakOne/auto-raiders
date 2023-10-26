@@ -93,6 +93,7 @@ async function start() {
           continue
         } else {
           placeUnit = button
+          break;
         }
       } else {
         continue;
