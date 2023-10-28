@@ -4,6 +4,7 @@
    "version": "2.0.0",
    "description": "SR automator",
    "action": {
+      "default_popup": "popup.html",
       "default_icon": {
          "48": "icons/icon-128.png",
          "128": "icons/icon-128.png"
@@ -19,15 +20,20 @@
             "collector.js",
             "dungeon_manager.js",
             "storage_manager.js",
-            "marker_selector.js",
-            "unit_selector.js",
-            "battle_handler.js"
+            "battle_handler.js",
+            "switch_handler.js"
          ],
          "matches": [
             "https://www.streamraiders.com/*"
          ]
       }
    ],
+  "externally_connectable": {
+   "matches": ["<all_urls>"]
+ },
+ "background": {
+   "service_worker": "background.js"
+},
    "icons": {
       "128": "icons/icon-128.png",
       "48": "icons/icon-48.png"

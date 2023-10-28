@@ -2,7 +2,15 @@
 //To disable both features comment   buyScrolls()     at the main script.js. See below how to disable them individually
 
 
+
 async function buyScrolls() {
+
+    chrome.runtime.sendMessage({ requestSwitchState: true, switchId: "scrollSwitch" }, function (response) {
+        if (response.switchState == false) {
+            return
+        }
+    });
+
     const collectDelay = ms => new Promise(res => setTimeout(res, ms));
     //Get navMenuItems
     let navItems = document.querySelectorAll('.mainNavItemText');
