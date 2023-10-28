@@ -6,6 +6,47 @@ let currentMarker;
 let arrayOfMarkers;
 let markerKeySliced = "";
 const delay = ms => new Promise(res => setTimeout(res, ms));
+
+const arrayOfBattleFieldMarkers = [
+    { key: "no", icon: "SVfCVffvkM+J2ics+hWvYAAAAASUVORK5CYII=" },
+    { key: "vibe", icon: "1ePfwIYQTqrB9OwOgAAAABJRU5ErkJggg" },
+    { key: "armored", icon: "AdcfHG0nPVXlAAAAAElFTkSuQmCC" },
+    { key: "assassin", icon: "aJRY4s+IiegAAAABJRU5ErkJggg==" },
+    { key: "melee", icon: "4HmcImnbn" },
+    { key: "ranged", icon: "" },
+    { key: "support", icon: "rWRlllPGN4n+DrB7+udvYfQAAAABJRU5ErkJggg" },
+    { key: "archer", type: "ranged", icon: "Ex5Gk5jX6QAAAABJRU5ErkJggg==" },
+    { key: "artillery", type: "ranged", icon: "U1jpaB82/+YAAAAASUVORK5CYII=" },
+    { key: "balloon", type: "ranged", icon: "rnP6GWgfwBAAAAAASUVORK5CYII=" },
+    { key: "barbarian", type: "melee", icon: "FatYxSr+E/wDKlh2h07gGiAAAAAASUVORK5CYII=" },
+    { key: "berserker", type: "melee", icon: "lP02Y0oxnNiIr/AnXBM2OH2VJaAAAAAElFTkSuQmCC" },
+    { key: "blob", type: "armored", icon: "9HYQzqGnn8FEo4736EwIbo1bllOJKAAAAAElFTkSuQmCC" },
+    { key: "bomber", type: "ranged", icon: "En4FFsjSc5V5VtwAAAAASUVORK5CYII=" },
+    { key: "buster", type: "assassin", icon: "QXwTF98vOwAAAABJRU5ErkJggg==" },
+    { key: "centurion", type: "armored", icon: "JoNSvopYo0wAAAABJRU5ErkJggg==" },
+    { key: "fairy", type: "support", icon: "Buf7V5fsf2AUwAAAABJRU5ErkJggg==" },
+    { key: "flag", type: "melee", icon: "2SgX8QvwDHGxEX3KAthAAAAABJRU5ErkJggg==" },
+    { key: "flying", type: "assassin", icon: "Sc0o8MLg/J0AAAAASUVORK5CYII=" },
+    { key: "gladiator", type: "melee", icon: "dd+SkzMjLHL0Wu+o7fOf4PXjB9mFKo1NwAAAAASUVORK5CYII=" },
+    { key: "healer", type: "support", icon: "APnHo7kH5ssigAAAAASUVORK5CYII=" },
+    { key: "lancer", type: "melee", icon: "6oT5/TrxJxQAAAABJRU5ErkJggg==" },
+    { key: "mage", type: "ranged", icon: "+zdZ7Cmo0cKY3QAAAABJRU5ErkJggg==" },
+    { key: "monk", type: "support", icon: "AJVBiHgq88WrAAAAAElFTkSuQmCC" },
+    { key: "musketeer", type: "ranged", icon: "wtnKKina8Xm9K25p3uMNHiP8BrTLJNU/YgnMAAAAASUVORK5CYII=" },
+    { key: "necromancer", type: "support", icon: "AFPyH+ByJBNJj45eqmAAAAAElFTkSuQmCC" },
+    { key: "orc", type: "armored", icon: "gGDims8uWTIOQAAAABJRU5ErkJggg==" },
+    { key: "paladin", type: "armored", icon: "/wf8A3hDj56jXWOEAAAAAElFTkSuQmCC" },
+    { key: "rogue", type: "assassin", icon: "AvwRy3tv3qvIAAAAAElFTkSuQmCC" },
+    { key: "saint", type: "support", icon: "Gf4Go32S6bUXVsAAAAAASUVORK5CYII=" },
+    { key: "shinobi", type: "assassin", icon: "mg5B+uiFewcI/ewAAAAABJRU5ErkJggg==" },
+    { key: "spy", type: "assassin", icon: "TQzAPQNzN6gAAAAASUVORK5CYII=" },
+    { key: "tank", type: "armored", icon: "ampqZdtc4D3FPwxeZVk5dLefAAAAAElFTkSuQmCC" },
+    { key: "templar", type: "support", icon: "yHf+H+B8TrvPZFQhdvgAAAABJRU5ErkJggg==" },
+    { key: "vampire", type: "armored", icon: "M9WGHTKw8vy7AlV0IJJZRQQh78C0IfEIi3WRZBAAAAAElFTkSuQmCC" },
+    { key: "warbeast", type: "melee", icon: "/AveH3CXL9Oh4wAAAABJRU5ErkJggg==" },
+    { key: "warrior", type: "melee", icon: "gXc5CPDJVy5YIAAAAASUVORK5CYII=" },
+  ];
+
 const arrayOfUnits = [
   { key: "", type: "", icon: "" },
   { key: "Vibe", type: "Vibe", icon: "Vibe" },
@@ -43,7 +84,6 @@ const arrayOfUnits = [
   { key: "Warbeast", type: "Melee", icon: "SRJSYo" },
   { key: "Warrior", type: "Melee", icon: "YtuUAHQ" },
 ];
-
 // This is the start, it selects a captain placement as well as collect any rewards to proceed
 async function start() {
 
@@ -250,6 +290,13 @@ function selectUnit() {
   canUse = false;
   unitName = ""
   do {
+
+    /*placeableUnit = document.querySelectorAll(".unitSelectionCont");
+    const firstElementChildrenCount = placeableUnit[0].children.length;
+    for (let i = 0; i < firstElementChildrenCount; i++) {
+       //Check if the unit is available and can be used, if not get a new unit
+    } */
+    
     console.log("start")
     placeableUnit = null
     placeableUnit = document.querySelector(".unitSelectionItemCont:nth-child(" + index + ") .unitItem:nth-child(1)");

@@ -1,8 +1,8 @@
 {
    "manifest_version": 3,
    "name": "AutoRaiders",
-   "version": "1.0.0",
-   "description": "Stream raiders automator",
+   "version": "2.0.0",
+   "description": "SR automator",
    "action": {
       "default_icon": {
          "48": "icons/icon-128.png",
@@ -12,13 +12,14 @@
    "content_scripts": [
       {
          "js": [
-            "script.js",
-            "scrolls.js"
+            "content_script.js",
+            "scrolls_quests.js",
+            "dungeon_manager.js",
+            "storage_manager.js"
          ],
          "matches": [
             "https://www.streamraiders.com/*"
-         ],
-         "world": "MAIN"
+         ]
       }
    ],
    "icons": {
