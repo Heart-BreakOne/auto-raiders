@@ -1,4 +1,5 @@
 setInterval(start, 15000);
+setInterval(changeBackgroundColor, 5000);
 
 let currentMarkerKey = "";
 let currentMarker;
@@ -119,8 +120,6 @@ async function start() {
     buyScrolls()
   }
 
-  await changeBackgroundColor()
-
   const placeUnitButtons = document.querySelectorAll(".actionButton.actionButtonPrimary.capSlotButton.capSlotButtonAction");
   let placeUnit = null;
   if (placeUnitButtons.length != 0) {
@@ -135,7 +134,9 @@ async function start() {
           (clashCaptainNameFromStorage != captainNameFromDOM) && captainSlot.innerText.includes("Clash") ||
           (duelsCaptainNameFromStorage != captainNameFromDOM) && captainSlot.innerText.includes("Duel")) {
           continue
-        } else if ((dungeonCaptainNameFromStorage == captainNameFromDOM) && !captainSlot.innerText.includes("Dungeons")) {
+        } else if ((dungeonCaptainNameFromStorage == captainNameFromDOM) && !captainSlot.innerText.includes("Dungeons") ||
+        (clashCaptainNameFromStorage == captainNameFromDOM) && !captainSlot.innerText.includes("Clash") ||
+        (duelsCaptainNameFromStorage == captainNameFromDOM) && !captainSlot.innerText.includes("Duel")) {
           captainSlot.style.backgroundColor = '#ff0000';
           continue
         }
@@ -323,13 +324,25 @@ async function selectUnit() {
     const unit = unitDrawer[0].querySelector(".unitSelectionItemCont:nth-child(" + i + ") .unitItem:nth-child(1)")
     console.log("")
     let legendaryCheck = unit.querySelector('.unitRarityLegendary');
+    let uncommonCheck = unit.querySelector('.unitRarityUncommon');
+    let rareCheck = unit.querySelector('.unitRarityRare');
     let coolDownCheck = unit.querySelector('.unitItemCooldown');
     let defeatedCheck = unit.querySelector('.defeatedVeil');
     let unitType = unit.querySelector('.unitClass img').getAttribute('alt');
     var unitName = unit.querySelector('.unitClass img').getAttribute('src').slice(-50);
     let unitDisabled = unit.querySelector('.unitItemDisabledOff');
+    let legendarySwitch
+    let rareSwitch
+    let uncommonSwitch
     var isDungeon = false
 
+    if(legendaryCheck) {
+      legendarySwitch = await getSwitchState("legendarySwitch");
+    } else if (rareCheck) {
+      rareSwitch = await getSwitchState("rareSwitch");
+    } else if (uncommonCheck) {
+      uncommonSwitch = await getSwitchState("uncommonSwitch");
+    }
 
     //Get human readable unitName
     const unit1 = arrayOfUnits.filter(unit1 => unitName.includes(unit1.icon))[1];
@@ -345,8 +358,9 @@ async function selectUnit() {
       isDungeon = true
       console.log("check3")
     }
+
     //If the unit can't be used, get the next
-    if ((legendaryCheck && !isDungeon) || coolDownCheck || defeatedCheck || !unitDisabled) {
+    if ((legendaryCheck && !isDungeon) || (legendaryCheck && !legendarySwitch && !isDungeon) || (rareCheck && !rareSwitch) || (uncommonCheck && !uncommonSwitch) || coolDownCheck || defeatedCheck || !unitDisabled) {
       continue;
     }
     else if (currentMarkerKey == "vibe" || currentMarkerKey == "" || currentMarkerKey == unitType || currentMarkerKey == unitName) {
@@ -438,7 +452,9 @@ function placeTheUnit() {
 async function changeBackgroundColor() {
 
   const captainSlots = document.querySelectorAll(".capSlots");
-
+  if(captainSlots.length != 1) {
+    return
+  }
   const firstCapSlot = captainSlots[0];
   const capSlotChildren = firstCapSlot.querySelectorAll('.capSlot');
   const dungeonCaptainNameFromStorage = await retrieveFromStorage('dungeonCaptain');
