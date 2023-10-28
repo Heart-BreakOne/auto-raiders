@@ -1,21 +1,28 @@
-setInterval(checkBattle, 15000);
+
 const battleDelay = ms => new Promise(res => setTimeout(res, ms));
 
+
+setInterval(checkActive, 15000);
 //A warning popups under certain conditions, by clicking back the issue can be resolved.
-setInterval(function () {
-    const modalTab = document.querySelector(".modalScrim.modalOn");
-    if (!modalTab) {
-      return;
-    }
-    const buttons = document.querySelectorAll('button.actionButton.actionButtonPrimary');
-    buttons.forEach(button => {
-      const buttonText = button.querySelector('div').textContent.trim();
-      if (buttonText === 'GO BACK') {
-        button.click();
+async function checkActive() {
+  const active = await getSwitchState("pauseSwitch");
+  if (!active) {
+    setInterval(function () {
+      const modalTab = document.querySelector(".modalScrim.modalOn");
+      if (!modalTab) {
+        return;
       }
-    });
-  }, 15000);
-  
+      const buttons = document.querySelectorAll('button.actionButton.actionButtonPrimary');
+      buttons.forEach(button => {
+        const buttonText = button.querySelector('div').textContent.trim();
+        if (buttonText === 'GO BACK') {
+          button.click();
+        }
+      });
+    }, 15000);
+  }
+}
+
   //Handles some conditions in which the battle has started.
   async function checkBattle() {
   

@@ -1,5 +1,25 @@
-setInterval(start, 15000);
-setInterval(changeBackgroundColor, 5000);
+
+
+setInterval(checkActiveExtension, 15000);
+
+async function checkActiveExtension() {
+  const active = await getSwitchState("pauseSwitch");
+  if (!active) {
+    start()
+    checkBattle()
+  }
+}
+
+setInterval(changeColor, 5000);
+
+async function changeColor() {
+  const active = await getSwitchState("pauseSwitch");
+  if (!active) {
+    changeBackgroundColor()
+  }
+}
+
+
 
 let currentMarkerKey = "";
 let currentMarker;
@@ -135,8 +155,8 @@ async function start() {
           (duelsCaptainNameFromStorage != captainNameFromDOM) && captainSlot.innerText.includes("Duel")) {
           continue
         } else if ((dungeonCaptainNameFromStorage == captainNameFromDOM) && !captainSlot.innerText.includes("Dungeons") ||
-        (clashCaptainNameFromStorage == captainNameFromDOM) && !captainSlot.innerText.includes("Clash") ||
-        (duelsCaptainNameFromStorage == captainNameFromDOM) && !captainSlot.innerText.includes("Duel")) {
+          (clashCaptainNameFromStorage == captainNameFromDOM) && !captainSlot.innerText.includes("Clash") ||
+          (duelsCaptainNameFromStorage == captainNameFromDOM) && !captainSlot.innerText.includes("Duel")) {
           captainSlot.style.backgroundColor = '#ff0000';
           continue
         }
@@ -336,7 +356,7 @@ async function selectUnit() {
     let uncommonSwitch
     var isDungeon = false
 
-    if(legendaryCheck) {
+    if (legendaryCheck) {
       legendarySwitch = await getSwitchState("legendarySwitch");
     } else if (rareCheck) {
       rareSwitch = await getSwitchState("rareSwitch");
@@ -346,35 +366,31 @@ async function selectUnit() {
 
     //Get human readable unitName
     const unit1 = arrayOfUnits.filter(unit1 => unitName.includes(unit1.icon))[1];
-    console.log("checkpoint")
     if (unit1) {
       unitName = unit1.key;
-      console.log("check2")
     }
 
     //Check if it's dungeon so the usage of legendary units can be allowed
     let dungeonCheck = document.querySelector('.battleInfoMapTitle');
-    if (dungeonCheck.innerText === 'Level: ') {
+    if (dungeonCheck.innerText.includes('Level: ')) {
       isDungeon = true
-      console.log("check3")
     }
 
     //If the unit can't be used, get the next
-    if ((legendaryCheck && !isDungeon) || (legendaryCheck && !legendarySwitch && !isDungeon) || (rareCheck && !rareSwitch) || (uncommonCheck && !uncommonSwitch) || coolDownCheck || defeatedCheck || !unitDisabled) {
+    if ((legendaryCheck && !legendarySwitch && !isDungeon) ||
+      (rareCheck && !rareSwitch && !isDungeon) ||
+      (uncommonCheck && !uncommonSwitch && !isDungeon) || coolDownCheck || defeatedCheck || !unitDisabled) {
       continue;
     }
     else if (currentMarkerKey == "vibe" || currentMarkerKey == "" || currentMarkerKey == unitType || currentMarkerKey == unitName) {
       unit.click();
       canUse = true;
-      console.log("check5")
       break;
     } else {
       continue;
-      console.log("check6")
     }
   }
   goHome()
-  console.log("exit")
 }
 
 //If the unit is in a valid marker that is in use, by taping the unit container it forces a button recheck on mouseup/touchend
@@ -452,7 +468,7 @@ function placeTheUnit() {
 async function changeBackgroundColor() {
 
   const captainSlots = document.querySelectorAll(".capSlots");
-  if(captainSlots.length != 1) {
+  if (captainSlots.length != 1) {
     return
   }
   const firstCapSlot = captainSlots[0];
