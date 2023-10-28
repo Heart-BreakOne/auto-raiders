@@ -9,13 +9,19 @@
          "128": "icons/icon-128.png"
       }
    },
+   "permissions": [
+      "storage"
+    ],
    "content_scripts": [
       {
          "js": [
             "content_script.js",
-            "scrolls_quests.js",
+            "collector.js",
             "dungeon_manager.js",
-            "storage_manager.js"
+            "storage_manager.js",
+            "marker_selector.js",
+            "unit_selector.js",
+            "battle_handler.js"
          ],
          "matches": [
             "https://www.streamraiders.com/*"

@@ -66,5 +66,3 @@ if (potions.includes("100")) {
 ### Use the find tools (usually CTRL+F) of your editor to help you locate these snippets within the main script.
 
 ## For feedback (hit me on discord) and contributors are welcome, specially to improve the quality of the code since javascript is not my forte.
-
-  
