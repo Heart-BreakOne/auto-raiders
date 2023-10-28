@@ -23,6 +23,45 @@ async function manageDungeon() {
         await saveToStorage('dungeonCaptain', captainName);
     }
 
-    console.log("log The dungeon captain is " + await retrieveFromStorage('dungeonCaptain'));
+    captainName = "";
+    counter = 0
+    if (captains) {
+        captains.forEach(captain => {
+            if (captain.innerText.includes("Clash")) {
+                counter++
+            }
+        })
+    }
 
+    if (counter == 1) {
+        captains.forEach(capSlotContent => {
+            if (capSlotContent.innerText.includes('Clash')) {
+                captainName = capSlotContent.querySelector('.capSlotName').innerText;
+            }
+        });
+        await saveToStorage('clashCaptain', captainName);
+    }
+
+    captainName = "";
+    counter = 0
+    if (captains) {
+        captains.forEach(captain => {
+            if (captain.innerText.includes("Duel")) {
+                counter++
+            }
+        })
+    }
+
+    if (counter == 1) {
+        captains.forEach(capSlotContent => {
+            if (capSlotContent.innerText.includes('Duel')) {
+                captainName = capSlotContent.querySelector('.capSlotName').innerText;
+            }
+        });
+        await saveToStorage('duelCaptain', captainName);
+    }
+
+    console.log("log The dungeon captain is " + await retrieveFromStorage('dungeonCaptain'));
+    console.log("log The clash captain is " + await retrieveFromStorage('clashCaptain'));
+    console.log("log The duel captain is " + await retrieveFromStorage('duelCaptain'));
 }

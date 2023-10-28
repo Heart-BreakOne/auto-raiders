@@ -1,4 +1,4 @@
-setInterval(start, 5000);
+setInterval(start, 15000);
 
 let currentMarkerKey = "";
 let currentMarker;
@@ -119,18 +119,28 @@ async function start() {
     buyScrolls()
   }
 
+  await changeBackgroundColor()
+
   const placeUnitButtons = document.querySelectorAll(".actionButton.actionButtonPrimary.capSlotButton.capSlotButtonAction");
   let placeUnit = null;
   if (placeUnitButtons.length != 0) {
     for (var button of placeUnitButtons) {
       if (button.innerText.includes("PLACE UNIT")) {
         var captainSlot = button.closest('.capSlot');
-        const captainNameFromStorage = await retrieveFromStorage('dungeonCaptain');
+        const dungeonCaptainNameFromStorage = await retrieveFromStorage('dungeonCaptain');
+        const clashCaptainNameFromStorage = await retrieveFromStorage('clashCaptain');
+        const duelsCaptainNameFromStorage = await retrieveFromStorage('duelsCaptain');
         const captainNameFromDOM = captainSlot.querySelector('.capSlotName').innerText;
-        if ((captainNameFromStorage != captainNameFromDOM) && captainSlot.innerText.includes("Dungeons")) {
+        if ((dungeonCaptainNameFromStorage != captainNameFromDOM) && captainSlot.innerText.includes("Dungeons") ||
+          (clashCaptainNameFromStorage != captainNameFromDOM) && captainSlot.innerText.includes("Clash") ||
+          (duelsCaptainNameFromStorage != captainNameFromDOM) && captainSlot.innerText.includes("Duel")) {
           continue
-        } else if ((captainSlot.innerText.includes("Dungeons") || captainSlot.innerText.includes("Clash") ||
-          captainSlot.innerText.includes("Duels")) &&
+        } else if ((dungeonCaptainNameFromStorage == captainNameFromDOM) && !captainSlot.innerText.includes("Dungeons")) {
+          captainSlot.style.backgroundColor = '#ff0000';
+          continue
+        }
+        else if ((captainSlot.innerText.includes("Dungeons") || captainSlot.innerText.includes("Clash") ||
+          captainSlot.innerText.includes("Duel")) &&
           captainSlot.querySelector('.capSlotClose') == null) {
           continue
         } else {
@@ -337,8 +347,7 @@ async function selectUnit() {
     }
     //If the unit can't be used, get the next
     if ((legendaryCheck && !isDungeon) || coolDownCheck || defeatedCheck || !unitDisabled) {
-      i++;
-      console.log("check4")
+      continue;
     }
     else if (currentMarkerKey == "vibe" || currentMarkerKey == "" || currentMarkerKey == unitType || currentMarkerKey == unitName) {
       unit.click();
@@ -346,7 +355,7 @@ async function selectUnit() {
       console.log("check5")
       break;
     } else {
-      i++
+      continue;
       console.log("check6")
     }
   }
@@ -422,4 +431,29 @@ function placeTheUnit() {
     }
     getValidMarkers();
   }, 5000);
+}
+
+
+
+async function changeBackgroundColor() {
+
+  const captainSlots = document.querySelectorAll(".capSlots");
+
+  const firstCapSlot = captainSlots[0];
+  const capSlotChildren = firstCapSlot.querySelectorAll('.capSlot');
+  const dungeonCaptainNameFromStorage = await retrieveFromStorage('dungeonCaptain');
+  const clashCaptainNameFromStorage = await retrieveFromStorage('clashCaptain');
+  const duelsCaptainNameFromStorage = await retrieveFromStorage('duelCaptain');
+
+  capSlotChildren.forEach(capSlot => {
+    // Do something with each .capSlot element
+    const captainNameFromDOM = capSlot.querySelector('.capSlotName').innerText;
+    if ((dungeonCaptainNameFromStorage != captainNameFromDOM) && capSlot.innerText.includes("Dungeons") ||
+      (clashCaptainNameFromStorage != captainNameFromDOM) && capSlot.innerText.includes("Clash") ||
+      (duelsCaptainNameFromStorage != captainNameFromDOM) && capSlot.innerText.includes("Duel")) {
+      capSlot.style.backgroundColor = '#ff0000';
+    } else {
+      capSlot.style.backgroundColor = '#2a6084';
+    }
+  });
 }
