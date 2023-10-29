@@ -114,6 +114,14 @@ async function start() {
   }
   await handleChest();
 
+  // Collects rewards if there are any
+  const rewardButton = document.querySelector(".actionButton.actionButtonPrimary.rewardsButton");
+  if (rewardButton) {
+    await rewardButton.click();
+    //Comment this line to disable both scroll shop and quest collection
+    collect()
+  }
+
   const placeUnitButtons = document.querySelectorAll(".actionButton.actionButtonPrimary.capSlotButton.capSlotButtonAction");
   let placeUnit = null;
   if (placeUnitButtons.length != 0) {
@@ -143,14 +151,7 @@ async function start() {
           break;
         }
       } else {
-        //There are not slots to place, do something else while idling
-        // Collects rewards if there are any
-        const rewardButton = document.querySelector(".actionButton.actionButtonPrimary.rewardsButton");
-        if (rewardButton) {
-          await rewardButton.click();
-          //Comment this line to disable both scroll shop and quest collection
-          collect()
-        }
+        continue;
       }
     }
   }

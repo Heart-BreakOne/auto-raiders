@@ -18,6 +18,8 @@ async function collect() {
         { start: 1201, end: 1330 },
         { start: 1801, end: 1930 }
     ];
+
+    
     let inRange = false;
     for (const range of timeRanges) {
         if (currentTime >= range.start && currentTime < range.end) {
@@ -61,10 +63,6 @@ async function collect() {
     } else {
         returnToMainScreen()
     }
-
-    //Uncomment the following line to disable quest collection
-    //return;
-
 
     //Constantly checks for quests are there can be a quest at any moment.
     //Click quests for collection
