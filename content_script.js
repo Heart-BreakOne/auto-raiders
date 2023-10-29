@@ -118,8 +118,6 @@ async function start() {
   const rewardButton = document.querySelector(".actionButton.actionButtonPrimary.rewardsButton");
   if (rewardButton) {
     await rewardButton.click();
-    //Comment this line to disable both scroll shop and quest collection
-    collect()
   }
 
   const placeUnitButtons = document.querySelectorAll(".actionButton.actionButtonPrimary.capSlotButton.capSlotButtonAction");
@@ -151,7 +149,9 @@ async function start() {
           break;
         }
       } else {
-        continue;
+        await collectQuests()
+        await buyScrolls()
+        continue
       }
     }
   }
