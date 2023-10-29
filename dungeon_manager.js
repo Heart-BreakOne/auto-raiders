@@ -27,4 +27,4 @@ async function manageDungeon() {
     await manageCaptain('dungeonCaptain', 'Dungeons');
     await manageCaptain('clashCaptain', 'Clash');
     await manageCaptain('duelCaptain', 'Duel');
-}
+}   

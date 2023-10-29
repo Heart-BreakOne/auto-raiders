@@ -114,14 +114,6 @@ async function start() {
   }
   await handleChest();
 
-  // Collects rewards if there are any
-  const rewardButton = document.querySelector(".actionButton.actionButtonPrimary.rewardsButton");
-  if (rewardButton) {
-    await rewardButton.click();
-    //Comment this line to disable both scroll shop and quest collection
-    collect()
-  }
-
   const placeUnitButtons = document.querySelectorAll(".actionButton.actionButtonPrimary.capSlotButton.capSlotButtonAction");
   let placeUnit = null;
   if (placeUnitButtons.length != 0) {
@@ -130,7 +122,7 @@ async function start() {
         var captainSlot = button.closest('.capSlot');
         const dungeonCaptainNameFromStorage = await retrieveFromStorage('dungeonCaptain');
         const clashCaptainNameFromStorage = await retrieveFromStorage('clashCaptain');
-        const duelsCaptainNameFromStorage = await retrieveFromStorage('duelsCaptain');
+        const duelsCaptainNameFromStorage = await retrieveFromStorage('duelCaptain');
         const captainNameFromDOM = captainSlot.querySelector('.capSlotName').innerText;
         if ((dungeonCaptainNameFromStorage != captainNameFromDOM) && captainSlot.innerText.includes("Dungeons") ||
           (clashCaptainNameFromStorage != captainNameFromDOM) && captainSlot.innerText.includes("Clash") ||
@@ -151,7 +143,14 @@ async function start() {
           break;
         }
       } else {
-        continue;
+        //There are not slots to place, do something else while idling
+        // Collects rewards if there are any
+        const rewardButton = document.querySelector(".actionButton.actionButtonPrimary.rewardsButton");
+        if (rewardButton) {
+          await rewardButton.click();
+          //Comment this line to disable both scroll shop and quest collection
+          collect()
+        }
       }
     }
   }
@@ -306,7 +305,7 @@ async function selectUnit() {
     let potions = document.querySelector("img[alt='Potion']").closest(".quantityItem");
     let potionQuantity = potions.querySelector(".quantityText").textContent;
     epicButton = document.querySelector(".actionButton.actionButtonPrimary.epicButton");
-    number = parseInt(potionQuantity.substring(0, 2));
+    number = parseInt(potionQuantity.substring(0, 3));
   }
 
   if (potionState == 1 && number >= 45) {
@@ -468,7 +467,10 @@ async function changeBackgroundColor() {
     const captainNameFromDOM = capSlot.querySelector('.capSlotName').innerText;
     if ((dungeonCaptainNameFromStorage != captainNameFromDOM) && capSlot.innerText.includes("Dungeons") ||
       (clashCaptainNameFromStorage != captainNameFromDOM) && capSlot.innerText.includes("Clash") ||
-      (duelsCaptainNameFromStorage != captainNameFromDOM) && capSlot.innerText.includes("Duel")) {
+      (duelsCaptainNameFromStorage != captainNameFromDOM) && capSlot.innerText.includes("Duel") ||
+      (dungeonCaptainNameFromStorage == captainNameFromDOM) && !capSlot.innerText.includes("Dungeons") ||
+      (clashCaptainNameFromStorage == captainNameFromDOM) && !capSlot.innerText.includes("Clash") ||
+      (duelsCaptainNameFromStorage == captainNameFromDOM) && !capSlot.innerText.includes("Duel")) {
       capSlot.style.backgroundColor = '#ff0000';
     } else {
       capSlot.style.backgroundColor = '#2a6084';

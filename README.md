@@ -1,5 +1,5 @@
 # AutoRaiders
-## Click emulator for Stream Raiders - Google Chrome extension.
+## Click emulator for SR - Google Chrome extension.
 
 ### Special thanks to contributor:
 Heather1209
@@ -12,6 +12,7 @@ As an alternative to mobile mode via the devtools, there are browser extensions 
 After installation, just open the game website and stay at the main menu.
 
 #### What it does:
+⚙️ Set your preferences on the extension's tab.
 💰 Collects rewards.<br>
 ☠️ Savages defeat chests.<br>
 📜 When the scroll store becomes available it buys scrolls within the first five minutes, if you're past 1hour and 30 minutes of the store refresh, buy manually. It will also refresh the store once for 100 coins. Check below to disable this feature<br>
@@ -22,47 +23,8 @@ After installation, just open the game website and stay at the main menu.
 ☝️ Places only one unit on dungeons as keys only increase with battle quantity and more units placed increase the death toll as the levels get high hitting a point where all units are dead while the dungeon is still running <br>
 🚫 If the marker is invalid, outside the ally area or if there's another ally unit on the marker, it will seek another valid marker.<br>
 🛠️ Handles situations in which the loading screen or the game freeze, any warnings or errors pop-ups appear or the battle starts while trying to place a unit.<br>
-💎 It doesn't place legendary units on campaign as they don't grant anything. See instructions below on how to remove this limitation.<br>
-⚗️ It doesn't use potions. See instructions below to remove this limitation.<br>
 
 ### To prevent purchases from the scroll store and quest collection, comment the following line with two slashes //buyScrolls()
 ``` buyScrolls() ```
-
-
-### To enable potions when it reaches a maximum of 100 uncomment this portion:
-```
-  /* Use a potion if there are 100 potions available, uncomment to enable it.
-      let potions = document.getElementsByClassName("quantityText")[3].innerText;
-      if (potions.includes("100 / 100")) {
-      let epicButton = document.querySelector(".actionButton.actionButtonPrimary.epicButton");
-      if (epicButton) {
-        epicButton.click();
-      }
-    }
-  */
-```
-If you would like to use a potion as soon as you have 45, use this snippet in the same place as the snippet above:
-```
-/* Use a potion if there are 45 potions available, uncomment to enable it.
-//
-let potions = document.getElementsByClassName("quantityText")[3].innerText;
-if (potions.includes("100")) {
-  let firstTwoDigits = parseInt(potions.slice(0, 2));
-  if (firstTwoDigits >= 45) {
-    let epicButton = document.querySelector(".actionButton.actionButtonPrimary.epicButton");
-    if (epicButton) {
-      epicButton.click();
-    }
-  }
-}
-*/
-//
-```
-### If you would like to use legendary units, remove the following line:
-```  let legendaryCheck = placeableUnit.querySelector('.unitRarityLegendary'); ```
-<br><br>and the following extract<br><br>
-``` legendaryCheck ||  ```
-
-### Use the find tools (usually CTRL+F) of your editor to help you locate these snippets within the main script.
 
 ## For feedback (hit me on discord) and contributors are welcome, specially to improve the quality of the code since javascript is not my forte.
