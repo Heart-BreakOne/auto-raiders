@@ -300,7 +300,6 @@ async function selectUnit() {
 
   const potionState = await getRadioButton();
 
-
   let number
   let epicButton
   if (potionState != 0) {
@@ -410,7 +409,11 @@ function placeTheUnit() {
       if (cancelButton) {
         cancelButton.click();
       }
-      getValidMarkers();
+      if (currentMarkerKey != null || currentMarkerKey != 0) {
+        getValidMarkers();
+      } else {
+        moveScreenRandomPosition
+      }
     } else {
       confirmPlacement.click();
       const cancelButton2 = document.querySelector(".actionButton.actionButtonNegative.placerButton");

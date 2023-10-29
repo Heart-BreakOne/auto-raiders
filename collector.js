@@ -1,7 +1,7 @@
 //Buy scrolls from the store and quest collection.
 //To disable both features comment   buyScrolls()     at the main script.js. See below how to disable them individually
 
-async function buyScrolls() {
+async function collect() {
     const collectDelay = ms => new Promise(res => setTimeout(res, ms));
     //Get navMenuItems
     let navItems = document.querySelectorAll('.mainNavItemText');
