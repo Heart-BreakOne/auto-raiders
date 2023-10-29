@@ -1,25 +1,6 @@
 
-
-setInterval(checkActiveExtension, 15000);
-
-async function checkActiveExtension() {
-  const active = await getSwitchState("pauseSwitch");
-  if (!active) {
-    start()
-    checkBattle()
-  }
-}
-
-setInterval(changeColor, 5000);
-
-async function changeColor() {
-  const active = await getSwitchState("pauseSwitch");
-  if (!active) {
-    changeBackgroundColor()
-  }
-}
-
-
+setInterval(start, 15000);
+setInterval(changeBackgroundColor, 5000);
 
 let currentMarkerKey = "";
 let currentMarker;
@@ -104,8 +85,9 @@ var res
 // This is the start, it selects a captain placement as well as collect any rewards to proceed
 async function start() {
 
-  const switchState = await getSwitchState("scrollSwitch");
+  const switchState = await getRadioButton();
   console.log("log ", switchState);
+
 
   //Remove the error toast message if it exists.
   let backError = document.querySelector(".modalScrim.modalOn");
@@ -137,7 +119,7 @@ async function start() {
   if (rewardButton) {
     await rewardButton.click();
     //Comment this line to disable both scroll shop and quest collection
-    buyScrolls()
+    collect()
   }
 
   const placeUnitButtons = document.querySelectorAll(".actionButton.actionButtonPrimary.capSlotButton.capSlotButtonAction");
@@ -316,24 +298,27 @@ async function selectUnit() {
   }
   //Use a potion if there are 100 potions available, uncomment to enable it.
 
-  const potionSwitch = await getSwitchState("potionSwitch");
-  if (potionSwitch) {
-    let headers = document.querySelectorAll(".quantityItemsCont");
-    let potions = null;
-    headers.forEach(header => {
-      const imgElement = header.querySelector('img[alt="Potion"]');
-      if (imgElement) {
-        potions = header;
-      }
-    });
-    if (potions.innerText.includes("100 / 100")) {
-      let epicButton = document.querySelector(".actionButton.actionButtonPrimary.epicButton");
-      if (epicButton) {
-        epicButton.click();
-      }
-    }
+  const potionState = await getRadioButton();
+
+
+  let number
+  let epicButton
+  if (potionState != 0) {
+    let potions = document.querySelector("img[alt='Potion']").closest(".quantityItem");
+    let potionQuantity = potions.querySelector(".quantityText").textContent;
+    epicButton = document.querySelector(".actionButton.actionButtonPrimary.epicButton");
+    number = parseInt(potionQuantity.substring(0, 2));
   }
 
+  if (potionState == 1 && number >= 45) {
+    if (epicButton) {
+      epicButton.click();
+    }
+  } else if (potionState && number == 100) {
+    if (epicButton) {
+      epicButton.click();
+    }
+  }
 
   let unitDrawer;
   canUse = false;
@@ -462,8 +447,6 @@ function placeTheUnit() {
     getValidMarkers();
   }, 5000);
 }
-
-
 
 async function changeBackgroundColor() {
 
