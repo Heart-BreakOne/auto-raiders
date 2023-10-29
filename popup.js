@@ -1,10 +1,11 @@
 document.addEventListener('DOMContentLoaded', function () {
     initializeSwitch('pauseSwitch');
     initializeSwitch('questSwitch');
-    initializeSwitch('legendarySwitch');
     initializeSwitch('scrollSwitch');
+    initializeSwitch('commonSwitch');
     initializeSwitch('uncommonSwitch');
     initializeSwitch('rareSwitch');
+    initializeSwitch('legendarySwitch');
 });
 
 function initializeSwitch(switchId) {

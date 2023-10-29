@@ -326,18 +326,19 @@ async function selectUnit() {
   const lenght = unitDrawer[0].children.length;
   for (let i = 1; i <= lenght; i++) {
     const unit = unitDrawer[0].querySelector(".unitSelectionItemCont:nth-child(" + i + ") .unitItem:nth-child(1)")
-    console.log("")
-    let legendaryCheck = unit.querySelector('.unitRarityLegendary');
+    let commonCheck = unit.querySelector('.unitRarityCommon');
     let uncommonCheck = unit.querySelector('.unitRarityUncommon');
     let rareCheck = unit.querySelector('.unitRarityRare');
+    let legendaryCheck = unit.querySelector('.unitRarityLegendary');
     let coolDownCheck = unit.querySelector('.unitItemCooldown');
     let defeatedCheck = unit.querySelector('.defeatedVeil');
     let unitType = unit.querySelector('.unitClass img').getAttribute('alt');
     var unitName = unit.querySelector('.unitClass img').getAttribute('src').slice(-50);
     let unitDisabled = unit.querySelector('.unitItemDisabledOff');
-    let legendarySwitch
-    let rareSwitch
+    let commonSwitch;
     let uncommonSwitch
+    let rareSwitch
+    let legendarySwitch
     var isDungeon = false
 
     if (legendaryCheck) {
@@ -346,6 +347,8 @@ async function selectUnit() {
       rareSwitch = await getSwitchState("rareSwitch");
     } else if (uncommonCheck) {
       uncommonSwitch = await getSwitchState("uncommonSwitch");
+    } else if (commonCheck) {
+      commonSwitch = await getSwitchState("commonSwitch");
     }
 
     //Get human readable unitName
@@ -361,9 +364,11 @@ async function selectUnit() {
     }
 
     //If the unit can't be used, get the next
-    if ((legendaryCheck && !legendarySwitch && !isDungeon) ||
+    if ((commonCheck && !commonSwitch && !isDungeon) ||
+      (legendaryCheck && !legendarySwitch && !isDungeon) ||
       (rareCheck && !rareSwitch && !isDungeon) ||
-      (uncommonCheck && !uncommonSwitch && !isDungeon) || coolDownCheck || defeatedCheck || !unitDisabled) {
+      (uncommonCheck && !uncommonSwitch && !isDungeon) ||
+      coolDownCheck || defeatedCheck || !unitDisabled) {
       continue;
     }
     else if (currentMarkerKey == "vibe" || currentMarkerKey == "" || currentMarkerKey == unitType || currentMarkerKey == unitName) {
