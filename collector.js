@@ -21,7 +21,6 @@ async function buyScrolls() {
     if ((minutes >= 0 && minutes < 7) || (minutes >= 15 && minutes < 22) || (minutes >= 30 && minutes < 32) || (minutes >= 45 && minutes < 52)) {
         inRange = true
     }
-
     if (inRange) {
         navItems.forEach(navItem => {
             if (navItem.innerText === "Store") {
@@ -31,10 +30,14 @@ async function buyScrolls() {
         //Click on scroll shop buttons if it hasnt been done already
         await collectDelay(4000)
         let buyScrollButtons = document.querySelectorAll(".actionButton.actionButtonGolden.actionButtonShiny.userStoreItemButton")
+        const freebieButton = document.querySelector('.actionButton.actionButtonBones.storeCardButton.storeCardButtonBuy')
         if (buyScrollButtons.length > 0) {
             buyScrollButtons.forEach(buyButton => {
                 buyButton.click();
             })
+            returnToMainScreen()
+        } else if(freebieButton && freebieButton.innerText.includes("CLAIM")) {
+            freebieButton.click()
             returnToMainScreen()
         }
         else if (extraState){
