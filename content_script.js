@@ -145,7 +145,7 @@ async function start() {
         }
 
         if (captainFlag) {
-          captainSlot.style.backgroundColor = '#FFFF00'
+          captainSlot.style.backgroundColor = '#FFFDD0'
           continue
         } else {
           captainSlot.style.backgroundColor = '#2a6084'
@@ -519,7 +519,7 @@ async function changeBackgroundColor() {
   const dungeonCaptainNameFromStorage = await retrieveFromStorage('dungeonCaptain');
   const clashCaptainNameFromStorage = await retrieveFromStorage('clashCaptain');
   const duelsCaptainNameFromStorage = await retrieveFromStorage('duelCaptain');
-  
+
   capSlotChildren.forEach(capSlot => {
     // Do something with each .capSlot element
     const captainNameFromDOM = capSlot.querySelector('.capSlotName').innerText;
@@ -530,6 +530,8 @@ async function changeBackgroundColor() {
       (clashCaptainNameFromStorage == captainNameFromDOM) && !capSlot.innerText.includes("Clash") ||
       (duelsCaptainNameFromStorage == captainNameFromDOM) && !capSlot.innerText.includes("Duel")) {
       capSlot.style.backgroundColor = '#ff0000';
+    } else if (capSlot.style.backgroundColor === 'rgb(255, 253, 208)') {
+
     } else {
       capSlot.style.backgroundColor = '#2a6084';
     }
