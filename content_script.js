@@ -207,9 +207,8 @@ function openBattlefield() {
 
 //Looks and selects a valid marker for placement
 const getValidMarkers = async () => {
-  const markersDelay = ms => new Promise(res => setTimeout(res, ms));
   let loopIndex = 0
-  await markersDelay(5000);
+  await delay(5000);
   let validMarker = false;
   if (arrayOfMarkers == null && fullLength == 0) {
     arrayOfMarkers = document.querySelectorAll(".planIcon");
@@ -223,9 +222,6 @@ const getValidMarkers = async () => {
       }
     });
     arrayOfMarkers = document.querySelectorAll(".planIcon");
-    await flagCaptain();
-    goHome()
-    return
   }
   do {
     loopIndex++
@@ -236,7 +232,6 @@ const getValidMarkers = async () => {
       // This bit gets the marker type for comparison later
       computedStyle = getComputedStyle(currentMarker);
       backgroundImageValue = computedStyle.getPropertyValue('background-image');
-
       arrayOfBattleFieldMarkers.some(marker => {
         if (backgroundImageValue.includes(marker.icon)) {
           currentMarkerKey = marker.key
@@ -245,9 +240,15 @@ const getValidMarkers = async () => {
     }
 
     //If there are no markers, waits 45 seconds for captain to place markers, if any.
+    if (arrayOfMarkers.length === 0 && fullLength != 0) {
+      await flagCaptain()
+      goHome()
+      return
+    }
     if (arrayOfMarkers.length === 0) {
       const clockElement = document.querySelector('.battlePhaseTextClock .clock');
       if (clockElement == null) {
+        goHome()
         return
       }
       const timeText = clockElement.innerText.replace(':', '');
@@ -265,6 +266,7 @@ const getValidMarkers = async () => {
       //If it's a block marker, get a new marker, if vibe or unit type place.
       if (currentMarkerKey.includes("no")) {
         if (loopIndex >= arrayOfMarkers.lenght) {
+          await flagCaptain()
           goHome()
           return;
         } else {
@@ -274,6 +276,7 @@ const getValidMarkers = async () => {
         for (let i = 0; i < arrayOfUnits.length; i++) {
           loopIndex++
           if (loopIndex >= arrayOfMarkers.lenght) {
+            await flagCaptain()
             goHome()
             return;
           }
@@ -287,6 +290,7 @@ const getValidMarkers = async () => {
       }
     }
     if (loopIndex >= arrayOfMarkers.lenght) {
+      await flagCaptain()
       goHome()
       return;
     }
@@ -407,7 +411,7 @@ async function selectUnit() {
         if (arrayOfMarkers.lenght == 0) {
           //flag captain here?
           i = 0
-          let updatedFlaggedCaptains = await flagCaptain();
+          flagCaptain();
           goHome()
           break;
         } else {
