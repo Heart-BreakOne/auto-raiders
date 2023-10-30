@@ -145,9 +145,12 @@ async function start() {
         }
 
         if (captainFlag) {
+          captainSlot.style.backgroundColor = '#FFFF00'
           continue
+        } else {
+          captainSlot.style.backgroundColor = '#2a6084'
         }
-        else if ((dungeonCaptainNameFromStorage != captainNameFromDOM) && captainSlot.innerText.includes("Dungeons") ||
+        if ((dungeonCaptainNameFromStorage != captainNameFromDOM) && captainSlot.innerText.includes("Dungeons") ||
           (clashCaptainNameFromStorage != captainNameFromDOM) && captainSlot.innerText.includes("Clash") ||
           (duelsCaptainNameFromStorage != captainNameFromDOM) && captainSlot.innerText.includes("Duel")) {
           continue
@@ -516,7 +519,7 @@ async function changeBackgroundColor() {
   const dungeonCaptainNameFromStorage = await retrieveFromStorage('dungeonCaptain');
   const clashCaptainNameFromStorage = await retrieveFromStorage('clashCaptain');
   const duelsCaptainNameFromStorage = await retrieveFromStorage('duelCaptain');
-
+  
   capSlotChildren.forEach(capSlot => {
     // Do something with each .capSlot element
     const captainNameFromDOM = capSlot.querySelector('.capSlotName').innerText;
