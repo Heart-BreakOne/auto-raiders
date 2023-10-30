@@ -92,10 +92,6 @@ var res
 // This is the start, it selects a captain placement as well as collect any rewards to proceed
 async function start() {
 
-  const switchState = await getRadioButton();
-  console.log("log ", switchState);
-
-
   //Remove the error toast message if it exists.
   let backError = document.querySelector(".modalScrim.modalOn");
   if (backError) {
@@ -136,6 +132,9 @@ async function start() {
         const dungeonCaptainNameFromStorage = await retrieveFromStorage('dungeonCaptain');
         const clashCaptainNameFromStorage = await retrieveFromStorage('clashCaptain');
         const duelsCaptainNameFromStorage = await retrieveFromStorage('duelCaptain');
+        const clashSwitch = await retrieveFromStorage('clashSwitch');
+        const dungeonSwitch = await retrieveFromStorage('dungeonSwitch');
+        const duelSwitch = await retrieveFromStorage('duelSwitch');
         const captainNameFromDOM = captainSlot.querySelector('.capSlotName').innerText;
         let captainFlag
         try {
@@ -146,10 +145,12 @@ async function start() {
 
         if (captainFlag) {
           captainSlot.style.backgroundColor = '#FFFDD0'
+          await performCollection()
           continue
         } else {
           captainSlot.style.backgroundColor = '#2a6084'
         }
+
         if ((dungeonCaptainNameFromStorage != captainNameFromDOM) && captainSlot.innerText.includes("Dungeons") ||
           (clashCaptainNameFromStorage != captainNameFromDOM) && captainSlot.innerText.includes("Clash") ||
           (duelsCaptainNameFromStorage != captainNameFromDOM) && captainSlot.innerText.includes("Duel")) {
@@ -160,8 +161,8 @@ async function start() {
           captainSlot.style.backgroundColor = '#ff0000';
           continue
         }
-        else if ((captainSlot.innerText.includes("Dungeons") || captainSlot.innerText.includes("Clash") ||
-          captainSlot.innerText.includes("Duel")) &&
+        else if (((captainSlot.innerText.includes("Dungeons") && !dungeonSwitch) || (captainSlot.innerText.includes("Clash") && !clashSwitch) ||
+          ((captainSlot.innerText.includes("Duel") && !duelSwitch))) &&
           captainSlot.querySelector('.capSlotClose') == null) {
           continue
         } else {
@@ -169,8 +170,7 @@ async function start() {
           break;
         }
       } else {
-        await collectQuests()
-        await buyScrolls()
+        await performCollection()
         continue
       }
     }
@@ -268,7 +268,7 @@ const getValidMarkers = async () => {
     } else {
       //If it's a block marker, get a new marker, if vibe or unit type place.
       if (currentMarkerKey.includes("no")) {
-        if (loopIndex >= arrayOfMarkers.lenght) {
+        if (loopIndex >= arrayOfMarkers.length) {
           await flagCaptain()
           goHome()
           return;
@@ -278,7 +278,7 @@ const getValidMarkers = async () => {
       } else {
         for (let i = 0; i < arrayOfUnits.length; i++) {
           loopIndex++
-          if (loopIndex >= arrayOfMarkers.lenght) {
+          if (loopIndex >= arrayOfMarkers.length) {
             await flagCaptain()
             goHome()
             return;
@@ -292,7 +292,7 @@ const getValidMarkers = async () => {
         }
       }
     }
-    if (loopIndex >= arrayOfMarkers.lenght) {
+    if (loopIndex >= arrayOfMarkers.length) {
       await flagCaptain()
       goHome()
       return;
@@ -363,8 +363,8 @@ async function selectUnit() {
   let unitDrawer;
   unitName = ""
   unitDrawer = document.querySelectorAll(".unitSelectionCont");
-  const lenght = unitDrawer[0].children.length;
-  for (let i = 1; i <= lenght; i++) {
+  const length = unitDrawer[0].children.length;
+  for (let i = 1; i <= length; i++) {
     const unit = unitDrawer[0].querySelector(".unitSelectionItemCont:nth-child(" + i + ") .unitItem:nth-child(1)")
     let commonCheck = unit.querySelector('.unitRarityCommon');
     let uncommonCheck = unit.querySelector('.unitRarityUncommon');
@@ -409,9 +409,9 @@ async function selectUnit() {
       (rareCheck && !rareSwitch && !isDungeon) ||
       (uncommonCheck && !uncommonSwitch && !isDungeon) ||
       coolDownCheck || defeatedCheck || !unitDisabled) {
-      if (i >= lenght) {
+      if (i >= length) {
         markerAttempt += 1
-        if (arrayOfMarkers.lenght == 0) {
+        if (arrayOfMarkers.length == 0) {
           //flag captain here?
           i = 0
           flagCaptain();
@@ -536,4 +536,9 @@ async function changeBackgroundColor() {
       capSlot.style.backgroundColor = '#2a6084';
     }
   });
+}
+
+async function performCollection() {
+  await collectQuests()
+  await buyScrolls()
 }

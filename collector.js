@@ -5,6 +5,7 @@ let inRange;
 
 async function buyScrolls() {
     let scrollState = await getSwitchState("scrollSwitch");
+    let extraState = await getSwitchState("extraSwitch")
     if (!scrollState) {
         return
     }
@@ -36,9 +37,8 @@ async function buyScrolls() {
             })
             returnToMainScreen()
         }
-        else {
+        else if (extraState){
             //Refresh store one time for 100 coins after the first purchases 
-            /*
             const buyMoreButton = document.querySelector(".actionButton.actionButtonGolden.storeScrollsButton");
             if (buyMoreButton) {
                 const buttonText = buyMoreButton.innerText;
@@ -46,7 +46,7 @@ async function buyScrolls() {
                     buyMoreButton.click();
                     buyMoreButton.submit();
                 }
-            } */
+            }
             returnToMainScreen()
         }
     } else {

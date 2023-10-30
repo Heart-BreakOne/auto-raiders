@@ -43,13 +43,14 @@ async function flagCaptain() {
 
             // Save the updated data back to local storage
             chrome.storage.local.set({ flaggedCaptains }, function () {
-                console.log('Data saved successfully');
-                resolve(flaggedCaptains); // Resolve the promise with the updated data
+                resolve(flaggedCaptains);
             });
         });
+        /*
         chrome.storage.local.get(['flaggedCaptains'], function (result) {
             const flaggedCaptains = result.flaggedCaptains || [];
         });
+        */
     });
 }
 

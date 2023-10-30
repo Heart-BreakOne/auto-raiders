@@ -1,11 +1,14 @@
 document.addEventListener('DOMContentLoaded', function () {
-    initializeSwitch('pauseSwitch');
     initializeSwitch('questSwitch');
     initializeSwitch('scrollSwitch');
+    initializeSwitch('extraSwitch');
     initializeSwitch('commonSwitch');
     initializeSwitch('uncommonSwitch');
     initializeSwitch('rareSwitch');
     initializeSwitch('legendarySwitch');
+    initializeSwitch('dungeonSwitch');
+    initializeSwitch('duelSwitch');
+    initializeSwitch('clashSwitch');
 });
 
 function initializeSwitch(switchId) {
@@ -19,7 +22,6 @@ function initializeSwitch(switchId) {
     switchElement.addEventListener('change', function () {
         const switchState = this.checked;
         chrome.storage.local.set({ [switchId]: switchState }, function () {
-            console.log('Switch state saved');
             sendMessageToContentScript(switchId, switchState)
 
         });
