@@ -21,7 +21,8 @@
             "dungeon_manager.js",
             "storage_manager.js",
             "battle_handler.js",
-            "switch_handler.js"
+            "switch_handler.js",
+            "captain_handler.js"
          ],
          "matches": [
             "https://www.streamraiders.com/*"

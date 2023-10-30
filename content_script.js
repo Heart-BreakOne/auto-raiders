@@ -5,7 +5,14 @@ setInterval(changeBackgroundColor, 5000);
 let currentMarkerKey = "";
 let currentMarker;
 let arrayOfMarkers;
+let markerAttempt
+let fullLength = 0
+let computedStyle
+let backgroundImageValue
 let delay = ms => new Promise(res => setTimeout(res, ms));
+
+
+
 
 const arrayOfBattleFieldMarkers = [
   { key: "no", icon: "SVfCVffvkM+J2ics+hWvYAAAAASUVORK5CYII=" },
@@ -130,7 +137,17 @@ async function start() {
         const clashCaptainNameFromStorage = await retrieveFromStorage('clashCaptain');
         const duelsCaptainNameFromStorage = await retrieveFromStorage('duelCaptain');
         const captainNameFromDOM = captainSlot.querySelector('.capSlotName').innerText;
-        if ((dungeonCaptainNameFromStorage != captainNameFromDOM) && captainSlot.innerText.includes("Dungeons") ||
+        let captainFlag
+        try {
+          captainFlag = await getCaptainFlag(captainNameFromDOM);
+        } catch (error) {
+          captainFlag = false
+        }
+
+        if (captainFlag) {
+          continue
+        }
+        else if ((dungeonCaptainNameFromStorage != captainNameFromDOM) && captainSlot.innerText.includes("Dungeons") ||
           (clashCaptainNameFromStorage != captainNameFromDOM) && captainSlot.innerText.includes("Clash") ||
           (duelsCaptainNameFromStorage != captainNameFromDOM) && captainSlot.innerText.includes("Duel")) {
           continue
@@ -155,7 +172,7 @@ async function start() {
       }
     }
   }
-
+  fullLength = 0
   if (placeUnit) {
     placeUnit.click();
     openBattlefield();
@@ -182,6 +199,8 @@ function openBattlefield() {
     for (let i = 0; i < 7; i++) {
       zoomButton.click();
     };
+    markerAttempt = 0
+    arrayOfMarkers = null
     getValidMarkers();
   }
 }
@@ -192,7 +211,22 @@ const getValidMarkers = async () => {
   let loopIndex = 0
   await markersDelay(5000);
   let validMarker = false;
-  arrayOfMarkers = document.querySelectorAll(".planIcon");
+  if (arrayOfMarkers == null && fullLength == 0) {
+    arrayOfMarkers = document.querySelectorAll(".planIcon");
+    fullLength = arrayOfMarkers.length
+  } else {
+    const matchingMarker = arrayOfBattleFieldMarkers.find(marker => marker.key === currentMarkerKey).icon;
+    arrayOfMarkers.forEach(planIcon => {
+      const backgroundImageValue = getComputedStyle(planIcon).getPropertyValue('background-image');
+      if (backgroundImageValue.includes(matchingMarker) || backgroundImageValue.includes("SVfCVffvkM+J2ics+hWvYAAAAASUVORK5CYII=")) {
+        planIcon.remove()
+      }
+    });
+    arrayOfMarkers = document.querySelectorAll(".planIcon");
+    await flagCaptain();
+    goHome()
+    return
+  }
   do {
     loopIndex++
     if (arrayOfMarkers.length != 0) {
@@ -200,8 +234,8 @@ const getValidMarkers = async () => {
       // The randomization of the index increased the chances of getting a valid placement.
       currentMarker = arrayOfMarkers[Math.floor(Math.random() * (arrayOfMarkers.length - 1))];
       // This bit gets the marker type for comparison later
-      const computedStyle = getComputedStyle(currentMarker);
-      const backgroundImageValue = computedStyle.getPropertyValue('background-image');
+      computedStyle = getComputedStyle(currentMarker);
+      backgroundImageValue = computedStyle.getPropertyValue('background-image');
 
       arrayOfBattleFieldMarkers.some(marker => {
         if (backgroundImageValue.includes(marker.icon)) {
@@ -230,7 +264,7 @@ const getValidMarkers = async () => {
     } else {
       //If it's a block marker, get a new marker, if vibe or unit type place.
       if (currentMarkerKey.includes("no")) {
-        if (loopIndex >= 4000) {
+        if (loopIndex >= arrayOfMarkers.lenght) {
           goHome()
           return;
         } else {
@@ -239,7 +273,7 @@ const getValidMarkers = async () => {
       } else {
         for (let i = 0; i < arrayOfUnits.length; i++) {
           loopIndex++
-          if (loopIndex >= 4000) {
+          if (loopIndex >= arrayOfMarkers.lenght) {
             goHome()
             return;
           }
@@ -252,7 +286,7 @@ const getValidMarkers = async () => {
         }
       }
     }
-    if (loopIndex >= 4000) {
+    if (loopIndex >= arrayOfMarkers.lenght) {
       goHome()
       return;
     }
@@ -320,7 +354,6 @@ async function selectUnit() {
   }
 
   let unitDrawer;
-  canUse = false;
   unitName = ""
   unitDrawer = document.querySelectorAll(".unitSelectionCont");
   const lenght = unitDrawer[0].children.length;
@@ -369,12 +402,24 @@ async function selectUnit() {
       (rareCheck && !rareSwitch && !isDungeon) ||
       (uncommonCheck && !uncommonSwitch && !isDungeon) ||
       coolDownCheck || defeatedCheck || !unitDisabled) {
+      if (i >= lenght) {
+        markerAttempt += 1
+        if (arrayOfMarkers.lenght == 0) {
+          //flag captain here?
+          i = 0
+          let updatedFlaggedCaptains = await flagCaptain();
+          goHome()
+          break;
+        } else {
+          getValidMarkers()
+          return
+        }
+      }
       continue;
     }
     else if (currentMarkerKey == "vibe" || currentMarkerKey == "" || currentMarkerKey == unitType || currentMarkerKey == unitName) {
       unit.click();
-      canUse = true;
-      break;
+      return
     } else {
       continue;
     }
