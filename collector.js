@@ -18,7 +18,7 @@ async function buyScrolls() {
     const minutes = now.getMinutes();
 
     inRange = false
-    if ((minutes >= 0 && minutes < 7) || (minutes >= 15 && minutes < 22) || (minutes >= 30 && minutes < 32) || (minutes >= 45 && minutes < 52)) {
+    if ((minutes >= 0 && minutes < 7) || (minutes >= 15 && minutes < 22) || (minutes >= 30 && minutes < 37) || (minutes >= 45 && minutes < 52)) {
         inRange = true
     }
     if (inRange) {
