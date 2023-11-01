@@ -382,9 +382,8 @@ async function moveScreen(position) {
   currentMarker.style.height = '0';
   currentMarker.style.backgroundSize = '0';
 
-  await currentMarker.scrollIntoView({block: 'center', inline: position, behavior: 'smooth' });
-
-  //await delay(3000);
+  currentMarker.scrollIntoView({block: 'center', inline: position });
+  await delay(3000);
   selectUnit();
   await delay(1000);
   placeTheUnit();
