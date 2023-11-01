@@ -1,15 +1,14 @@
-
-async function flagCaptain() {
+async function flagCaptain(flag) {
     return new Promise((resolve, reject) => {
         // Retrieve existing data from local storage
-        chrome.storage.local.get(['flaggedCaptains'], function (result) {
-            let flaggedCaptains = result.flaggedCaptains || [];
+        chrome.storage.local.get([flag], function (result) {
+            let flaggedData = result[flag] || [];
 
             const captainButtons = document.querySelectorAll('.captainButton');
 
             captainButtons.forEach((button, index) => {
                 let isActive;
-                try {
+                try {   
                     isActive = button.querySelector('.captainButtonImg').classList.contains('captainButtonActive');
                 } catch {
                     isActive = false;
@@ -21,45 +20,39 @@ async function flagCaptain() {
                     const currentTime = new Date();
 
                     // Check if an entry with the same captainId exists
-                    const indexToUpdate = flaggedCaptains.findIndex(entry => entry.captainId === captainId);
+                    const indexToUpdate = flaggedData.findIndex(entry => entry.captainId === captainId);
 
                     if (indexToUpdate !== -1) {
                         // Replace existing entry
-                        flaggedCaptains[indexToUpdate] = {
+                        flaggedData[indexToUpdate] = {
                             captainId: captainId,
                             captainName: captainName,
-                            currentTime: currentTime.toString()
+                            currentTime: currentTime.toISOString() // Modified this line
                         };
                     } else {
                         // Add new entry
-                        flaggedCaptains.push({
+                        flaggedData.push({
                             captainId: captainId,
                             captainName: captainName,
-                            currentTime: currentTime
+                            currentTime: currentTime.toISOString() // Modified this line
                         });
                     }
                 }
             });
 
             // Save the updated data back to local storage
-            chrome.storage.local.set({ flaggedCaptains }, function () {
-                resolve(flaggedCaptains);
+            chrome.storage.local.set({ [flag]: flaggedData }, function () {
+                resolve(flaggedData);
             });
         });
-        /*
-        chrome.storage.local.get(['flaggedCaptains'], function (result) {
-            const flaggedCaptains = result.flaggedCaptains || [];
-        });
-        */
     });
 }
 
-
-async function getCaptainFlag(captainName) {
+async function getCaptainFlag(captainName, flagKey) {
     return new Promise((resolve, reject) => {
-        chrome.storage.local.get(['flaggedCaptains'], function (result) {
-            const flaggedCaptains = result.flaggedCaptains || [];
-            const foundCaptain = flaggedCaptains.find(captain => captain.captainName === captainName);
+        chrome.storage.local.get([flagKey], function (result) {
+            const flagData = result[flagKey] || [];
+            const foundCaptain = flagData.find(captain => captain.captainName === captainName);
 
             if (foundCaptain) {
                 const currentTime = new Date();

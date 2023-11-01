@@ -9,6 +9,7 @@ document.addEventListener('DOMContentLoaded', function () {
     initializeSwitch('dungeonSwitch');
     initializeSwitch('duelSwitch');
     initializeSwitch('clashSwitch');
+    initializeSwitch('loyaltySwitch');
 });
 
 function initializeSwitch(switchId) {

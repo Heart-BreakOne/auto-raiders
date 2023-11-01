@@ -60,10 +60,3 @@ setInterval(function () {
       }
     }
   }
-  
-  function goHome() {
-    const backHome = document.querySelector(".selectorBack");
-    if (backHome) {
-      backHome.click();
-    }
-  }

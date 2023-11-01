@@ -1,5 +1,5 @@
 
-setInterval(start, 15000);
+setInterval(start, 25000);
 setInterval(changeBackgroundColor, 5000);
 
 let currentMarkerKey = "";
@@ -9,10 +9,15 @@ let markerAttempt
 let fullLength = 0
 let computedStyle
 let backgroundImageValue
+let isRunning = false;
+let goldLoyalty
+let arrayOfAllyPlacement
+const yellow = '#FFFDD0'
+const red = '#ff0000'
+const gameBlue = '#2a6084'
+const purple = '#CBC3E3'
+
 let delay = ms => new Promise(res => setTimeout(res, ms));
-
-
-
 
 const arrayOfBattleFieldMarkers = [
   { key: "no", icon: "SVfCVffvkM+J2ics+hWvYAAAAASUVORK5CYII=" },
@@ -65,7 +70,7 @@ const arrayOfUnits = [
   { key: "blob", type: "armored", icon: "lXTAAA" },
   { key: "bomber", type: "ranged", icon: "Qwp8wBk" },
   { key: "buster", type: "assassin", icon: "PccPYIHw" },
-  { key: "benturion", type: "armored", icon: "DUwAAA" },
+  { key: "centurion", type: "armored", icon: "DUwAAA" },
   { key: "fairy", type: "support", icon: "fNJqA" },
   { key: "flag", type: "melee", icon: "kF7A" },
   { key: "flying", type: "assassin", icon: "gsge2mI" },
@@ -88,9 +93,12 @@ const arrayOfUnits = [
   { key: "warbeast", type: "melee", icon: "SRJSYo" },
   { key: "warrior", type: "elee", icon: "YtuUAHQ" },
 ];
-var res
 // This is the start, it selects a captain placement as well as collect any rewards to proceed
 async function start() {
+  if (isRunning) {
+    return;
+  }
+  isRunning = true;
 
   //Remove the error toast message if it exists.
   let backError = document.querySelector(".modalScrim.modalOn");
@@ -137,20 +145,35 @@ async function start() {
         const duelSwitch = await retrieveFromStorage('duelSwitch');
         const captainNameFromDOM = captainSlot.querySelector('.capSlotName').innerText;
         let captainFlag
+        let captainLoyalty
         try {
-          captainFlag = await getCaptainFlag(captainNameFromDOM);
+          captainFlag = await getCaptainFlag(captainNameFromDOM, 'flaggedCaptains');
         } catch (error) {
           captainFlag = false
         }
-
         if (captainFlag) {
-          captainSlot.style.backgroundColor = '#FFFDD0'
+          captainSlot.style.backgroundColor = purple
           await performCollection()
           continue
         } else {
-          captainSlot.style.backgroundColor = '#2a6084'
+          captainSlot.style.backgroundColor = gameBlue
         }
-
+        if (await retrieveFromStorage('loyaltySwitch')) {
+          try {
+            captainLoyalty = await getCaptainFlag(captainNameFromDOM, 'captainLoyalty');
+          } catch (error) {
+            captainLoyalty = false
+          }
+        } else {
+          captainLoyalty = false
+        }
+        if (captainLoyalty) {
+          captainSlot.style.backgroundColor = yellow
+          await performCollection()
+          continue
+        } else {
+          captainSlot.style.backgroundColor = gameBlue
+        }
         if ((dungeonCaptainNameFromStorage != captainNameFromDOM) && captainSlot.innerText.includes("Dungeons") ||
           (clashCaptainNameFromStorage != captainNameFromDOM) && captainSlot.innerText.includes("Clash") ||
           (duelsCaptainNameFromStorage != captainNameFromDOM) && captainSlot.innerText.includes("Duel")) {
@@ -158,7 +181,7 @@ async function start() {
         } else if ((dungeonCaptainNameFromStorage == captainNameFromDOM) && !captainSlot.innerText.includes("Dungeons") ||
           (clashCaptainNameFromStorage == captainNameFromDOM) && !captainSlot.innerText.includes("Clash") ||
           (duelsCaptainNameFromStorage == captainNameFromDOM) && !captainSlot.innerText.includes("Duel")) {
-          captainSlot.style.backgroundColor = '#ff0000';
+          captainSlot.style.backgroundColor = red;
           continue
         }
         else if (((captainSlot.innerText.includes("Dungeons") && !dungeonSwitch) || (captainSlot.innerText.includes("Clash") && !clashSwitch) ||
@@ -166,6 +189,7 @@ async function start() {
           captainSlot.querySelector('.capSlotClose') == null) {
           continue
         } else {
+          goldLoyalty = captainSlot.outerHTML.includes('LoyaltyGold');
           placeUnit = button
           break;
         }
@@ -178,8 +202,10 @@ async function start() {
   fullLength = 0
   if (placeUnit) {
     placeUnit.click();
+    await delay(3000)
     openBattlefield();
   } else {
+    isRunning = false
     return
   }
 
@@ -193,10 +219,43 @@ async function start() {
       }
     }
   });
+  isRunning = false
+}
+
+async function performCollection() {
+  await collectQuests()
+  await buyScrolls()
 }
 
 // This function checks if the battlefield is present and zooms into it.
-function openBattlefield() {
+async function openBattlefield() {
+
+  //Check loyalty here
+  if (!goldLoyalty) {
+    const battleInfo = document.querySelector(".battleInfoMapTitle");
+    if (!battleInfo.innerText.includes("Level")) {
+      battleInfo.click()
+      const chest = document.querySelector(".mapInfoRewardsName").innerText;
+      if ((chest === "Loyalty Gold Chest" || chest === "Loyalty Skin Chest" || chest === "Loyalty Token Chest" || chest === "Loyalty Super Boss Chest" ||
+        chest === "Loyalty Boss Chest") && await retrieveFromStorage('loyaltySwitch')) {
+        await flagCaptain('captainLoyalty')
+        location.reload()
+      } else {
+        const closeButton = document.querySelector('.slideMenuCont.slideUp.slideUpOpen.slideMenuShortOpen.slideMenuShortOpenMore .slideMenuTop .far.fa-times');
+        if (closeButton) {
+          closeButton.click();
+          zoom()
+        }
+      }
+    } else {
+      zoom()
+    }
+  } else {
+    zoom()
+  }
+}
+
+function zoom() {
   const zoomButton = document.querySelector(".fas.fa-plus");
   if (zoomButton) {
     for (let i = 0; i < 7; i++) {
@@ -209,95 +268,98 @@ function openBattlefield() {
 }
 
 //Looks and selects a valid marker for placement
-const getValidMarkers = async () => {
-  let loopIndex = 0
+
+async function getValidMarkers() {
   await delay(5000);
-  let validMarker = false;
-  if (arrayOfMarkers == null && fullLength == 0) {
-    arrayOfMarkers = document.querySelectorAll(".planIcon");
-    fullLength = arrayOfMarkers.length
+  arrayOfMarkers = document.querySelectorAll(".planIcon");
+  //Captain is on open map only
+  if (arrayOfMarkers.length == 0) {
+    //Map without any markers.
+    const clockElement = document.querySelector('.battlePhaseTextClock .clock');
+    if (clockElement == null) {
+      goHome()
+      return
+    }
+    const timeText = clockElement.innerText.replace(':', '');
+    const time = parseInt(timeText, 10);
+    if (time > 2915) {
+      goHome()
+      return;
+    } else {
+      arrayOfAllyPlacement = document.querySelectorAll(".placementAlly");
+      currentMarker = arrayOfAllyPlacement[Math.floor(Math.random() * arrayOfAllyPlacement.length)];
+      moveScreenRandomPosition();
+    }
+    //There are markers of some kind in the map.
   } else {
-    const matchingMarker = arrayOfBattleFieldMarkers.find(marker => marker.key === currentMarkerKey).icon;
+    //Treat the markers to remove block markers
     arrayOfMarkers.forEach(planIcon => {
       const backgroundImageValue = getComputedStyle(planIcon).getPropertyValue('background-image');
-      if (backgroundImageValue.includes(matchingMarker) || backgroundImageValue.includes("SVfCVffvkM+J2ics+hWvYAAAAASUVORK5CYII=")) {
+      if (backgroundImageValue.includes("SVfCVffvkM+J2ics+hWvYAAAAASUVORK5CYII=")) {
+        planIcon.remove()
+      }
+    })
+    //Refresh array of markers with remaining markers
+    arrayOfMarkers = document.querySelectorAll(".planIcon");
+    if (arrayOfMarkers.length == 0) {
+      //Captain is using only block markers
+      // lay in bed and cry because I dunno what to do here.
+      getOpenArea()
+    } else {
+      //There are vibe or set markers that can be used.
+      getSetMarker()
+    }
+  }
+}
+
+//The captain is using a combination of block markers and open areas.
+async function getOpenArea() {
+  await flagCaptain('flaggedCaptains')
+}
+
+async function getSetMarker() {
+  let matchingMarker
+  //This indicates that an attempt to place at the current marker has been made
+  if (markerAttempt >= 1) {
+    try {
+    matchingMarker = arrayOfBattleFieldMarkers.find(marker => marker.key === currentMarkerKey).icon;
+    } catch (error) {
+      matchingMarker = "noMatchingMarker"
+    }
+    arrayOfMarkers.forEach(planIcon => {
+      const backgroundImageValue = getComputedStyle(planIcon).getPropertyValue('background-image');
+      if (backgroundImageValue.includes(matchingMarker)) {
         planIcon.remove()
       }
     });
     arrayOfMarkers = document.querySelectorAll(".planIcon");
   }
-  do {
-    loopIndex++
-    if (arrayOfMarkers.length != 0) {
-      currentMarkerKey = ""
-      // The randomization of the index increased the chances of getting a valid placement.
-      currentMarker = arrayOfMarkers[Math.floor(Math.random() * (arrayOfMarkers.length - 1))];
-      // This bit gets the marker type for comparison later
-      computedStyle = getComputedStyle(currentMarker);
-      backgroundImageValue = computedStyle.getPropertyValue('background-image');
-      arrayOfBattleFieldMarkers.some(marker => {
-        if (backgroundImageValue.includes(marker.icon)) {
-          currentMarkerKey = marker.key
-        }
-      });
-    }
-
-    //If there are no markers, waits 45 seconds for captain to place markers, if any.
-    if (arrayOfMarkers.length === 0 && fullLength != 0) {
-      await flagCaptain()
-      goHome()
-      return
-    }
-    if (arrayOfMarkers.length === 0) {
-      const clockElement = document.querySelector('.battlePhaseTextClock .clock');
-      if (clockElement == null) {
-        goHome()
-        return
-      }
-      const timeText = clockElement.innerText.replace(':', '');
-      const time = parseInt(timeText, 10);
-      if (time > 2915) {
-        goHome()
-        return;
-      } else {
-        const arrayOfAllyPlacement = document.querySelectorAll(".placementAlly");
-        currentMarker = arrayOfAllyPlacement[Math.floor(Math.random() * arrayOfAllyPlacement.length)];
-        validMarker = true;
-        moveScreenRandomPosition();
-      }
-    } else {
-      //If it's a block marker, get a new marker, if vibe or unit type place.
-      if (currentMarkerKey.includes("no")) {
-        if (loopIndex >= arrayOfMarkers.length) {
-          await flagCaptain()
-          goHome()
-          return;
-        } else {
-          continue;
-        }
-      } else {
-        for (let i = 0; i < arrayOfUnits.length; i++) {
-          loopIndex++
-          if (loopIndex >= arrayOfMarkers.length) {
-            await flagCaptain()
-            goHome()
-            return;
-          }
+  if (arrayOfMarkers.length == 0) {
+    //there are no units to match any of the available markers
+    await flagCaptain('flaggedCaptains')
+    goHome()
+    return
+  } else {
+    currentMarkerKey = ""
+    // The randomization of the index increased the chances of getting a valid placement.
+    currentMarker = arrayOfMarkers[Math.floor(Math.random() * (arrayOfMarkers.length - 1))];
+    // This bit gets the marker type for comparison later
+    computedStyle = getComputedStyle(currentMarker);
+    backgroundImageValue = computedStyle.getPropertyValue('background-image');
+    arrayOfBattleFieldMarkers.some(marker => {
+      if (backgroundImageValue.includes(marker.icon)) {
+        currentMarkerKey = marker.key
+        for (let i = 0; i <= arrayOfUnits.length; i++) {
           const element = arrayOfUnits[i];
           if (currentMarkerKey === element.key || currentMarkerKey === element.type) {
-            validMarker = true;
             moveScreenCenter();
-            break;
+            return
+            //break;
           }
         }
       }
-    }
-    if (loopIndex >= arrayOfMarkers.length) {
-      await flagCaptain()
-      goHome()
-      return;
-    }
-  } while (!validMarker);
+    });
+  }
 }
 
 //When there are no markers, it can be trick to scroll to a valid position into view, this randomizes the possible values.
@@ -308,24 +370,22 @@ const moveScreenRandomPosition = async () => {
 }
 
 //Vertical and horizontal center
-const moveScreenCenter = async () => {
+async function moveScreenCenter() {
   await moveScreen('center');
 }
 
 //Scroll into view the center of the currentMark
-const moveScreen = async (position) => {
+async function moveScreen(position) {
 
   //They say two bodies cannot occupy the same point in space and time so we turn the marker into 0 so our unit can fit on that space
   currentMarker.style.width = '0';
   currentMarker.style.height = '0';
   currentMarker.style.backgroundSize = '0';
 
-  currentMarker.scrollIntoView({ block: 'center', inline: position });
+  await currentMarker.scrollIntoView({block: 'center', inline: position, behavior: 'smooth' });
 
-  await delay(2000);
+  //await delay(3000);
   selectUnit();
-  await delay(1000);
-  tapUnit();
   await delay(1000);
   placeTheUnit();
 }
@@ -338,9 +398,7 @@ async function selectUnit() {
     placeUnitSelection.click();
   }
   //Use a potion if there are 100 potions available, uncomment to enable it.
-
   const potionState = await getRadioButton();
-
   let number
   let epicButton
   if (potionState != 0) {
@@ -349,7 +407,6 @@ async function selectUnit() {
     epicButton = document.querySelector(".actionButton.actionButtonPrimary.epicButton");
     number = parseInt(potionQuantity.substring(0, 3));
   }
-
   if (potionState == 1 && number >= 45) {
     if (epicButton) {
       epicButton.click();
@@ -363,8 +420,8 @@ async function selectUnit() {
   let unitDrawer;
   unitName = ""
   unitDrawer = document.querySelectorAll(".unitSelectionCont");
-  const length = unitDrawer[0].children.length;
-  for (let i = 1; i <= length; i++) {
+  const unitsQuantity = unitDrawer[0].children.length;
+  for (let i = 1; i <= unitsQuantity; i++) {
     const unit = unitDrawer[0].querySelector(".unitSelectionItemCont:nth-child(" + i + ") .unitItem:nth-child(1)")
     let commonCheck = unit.querySelector('.unitRarityCommon');
     let uncommonCheck = unit.querySelector('.unitRarityUncommon');
@@ -380,6 +437,12 @@ async function selectUnit() {
     let rareSwitch
     let legendarySwitch
     var isDungeon = false
+
+    //Check if it's dungeon so the usage of legendary units can be allowed
+    let dungeonCheck = document.querySelector('.battleInfoMapTitle');
+    if (dungeonCheck.innerText.includes('Level: ')) {
+      isDungeon = true
+    }
 
     if (legendaryCheck) {
       legendarySwitch = await getSwitchState("legendarySwitch");
@@ -397,35 +460,24 @@ async function selectUnit() {
       unitName = unit1.key;
     }
 
-    //Check if it's dungeon so the usage of legendary units can be allowed
-    let dungeonCheck = document.querySelector('.battleInfoMapTitle');
-    if (dungeonCheck.innerText.includes('Level: ')) {
-      isDungeon = true
-    }
-
     //If the unit can't be used, get the next
     if ((commonCheck && !commonSwitch && !isDungeon) ||
       (legendaryCheck && !legendarySwitch && !isDungeon) ||
       (rareCheck && !rareSwitch && !isDungeon) ||
       (uncommonCheck && !uncommonSwitch && !isDungeon) ||
       coolDownCheck || defeatedCheck || !unitDisabled) {
-      if (i >= length) {
-        markerAttempt += 1
-        if (arrayOfMarkers.length == 0) {
-          //flag captain here?
-          i = 0
-          flagCaptain();
-          goHome()
-          break;
-        } else {
-          getValidMarkers()
-          return
-        }
+      if (i >= unitsQuantity) {
+        markerAttempt++
+        getSetMarker()
+        return
+      } else {
+        continue
       }
-      continue;
     }
     else if (currentMarkerKey == "vibe" || currentMarkerKey == "" || currentMarkerKey == unitType || currentMarkerKey == unitName) {
       unit.click();
+      //await delay(1000);
+      tapUnit();
       return
     } else {
       continue;
@@ -444,8 +496,12 @@ function tapUnit() {
 //Places unit or asks for a new valid marker
 function placeTheUnit() {
   //Gets timer and if it's 0, goes back to menu
-  let clockText = "x";
+  let clockText
+  try {
   clockText = document.querySelector('.battlePhaseTextClock .clock').innerText;
+  } catch (error) {
+    clockText = "x"
+  }
 
   if (clockText === "00:00") {
     let placerButton = document.querySelector(".actionButton.actionButtonNegative.placerButton");
@@ -454,6 +510,7 @@ function placeTheUnit() {
     if (placerButton && selectorBack) {
       placerButton.click();
       selectorBack.click();
+      isRunning = false;
     }
   }
 
@@ -469,17 +526,15 @@ function placeTheUnit() {
       if (currentMarkerKey != null || currentMarkerKey != 0) {
         getValidMarkers();
       } else {
-        moveScreenRandomPosition
+        moveScreenRandomPosition()
+        return
       }
     } else {
       confirmPlacement.click();
       const cancelButton2 = document.querySelector(".actionButton.actionButtonNegative.placerButton");
       if (cancelButton2) {
         cancelButton2.click();
-        let selectorBack = document.querySelector(".selectorBack");
-        if (selectorBack) {
-          selectorBack.click()
-        }
+        goHome()
       }
     }
   }
@@ -489,10 +544,7 @@ function placeTheUnit() {
     // Unit was successfully placed, exit battlefield and restart cycle
     const placementSuccessful = document.querySelector(".actionButton.actionButtonDisabled.placeUnitButton");
     if (placementSuccessful) {
-      const backHome = document.querySelector(".selectorBack");
-      if (backHome) {
-        backHome.click();
-      }
+      goHome()
     }
   }, 3000);
   setTimeout(() => {
@@ -509,7 +561,6 @@ function placeTheUnit() {
 }
 
 async function changeBackgroundColor() {
-
   const captainSlots = document.querySelectorAll(".capSlots");
   if (captainSlots.length != 1) {
     return
@@ -519,26 +570,34 @@ async function changeBackgroundColor() {
   const dungeonCaptainNameFromStorage = await retrieveFromStorage('dungeonCaptain');
   const clashCaptainNameFromStorage = await retrieveFromStorage('clashCaptain');
   const duelsCaptainNameFromStorage = await retrieveFromStorage('duelCaptain');
-
+  let capNameDOM
   capSlotChildren.forEach(capSlot => {
     // Do something with each .capSlot element
-    const captainNameFromDOM = capSlot.querySelector('.capSlotName').innerText;
-    if ((dungeonCaptainNameFromStorage != captainNameFromDOM) && capSlot.innerText.includes("Dungeons") ||
-      (clashCaptainNameFromStorage != captainNameFromDOM) && capSlot.innerText.includes("Clash") ||
-      (duelsCaptainNameFromStorage != captainNameFromDOM) && capSlot.innerText.includes("Duel") ||
-      (dungeonCaptainNameFromStorage == captainNameFromDOM) && !capSlot.innerText.includes("Dungeons") ||
-      (clashCaptainNameFromStorage == captainNameFromDOM) && !capSlot.innerText.includes("Clash") ||
-      (duelsCaptainNameFromStorage == captainNameFromDOM) && !capSlot.innerText.includes("Duel")) {
-      capSlot.style.backgroundColor = '#ff0000';
-    } else if (capSlot.style.backgroundColor === 'rgb(255, 253, 208)') {
-
-    } else {
-      capSlot.style.backgroundColor = '#2a6084';
+    try {
+      capNameDOM = capSlot.querySelector('.capSlotName').innerText;
+    } catch (error) {
+      capNameDOM = ""
+    }
+    if ((dungeonCaptainNameFromStorage != capNameDOM) && capSlot.innerText.includes("Dungeons") ||
+      (clashCaptainNameFromStorage != capNameDOM) && capSlot.innerText.includes("Clash") ||
+      (duelsCaptainNameFromStorage != capNameDOM) && capSlot.innerText.includes("Duel") ||
+      (dungeonCaptainNameFromStorage == capNameDOM) && !capSlot.innerText.includes("Dungeons") ||
+      (clashCaptainNameFromStorage == capNameDOM) && !capSlot.innerText.includes("Clash") ||
+      (duelsCaptainNameFromStorage == capNameDOM) && !capSlot.innerText.includes("Duel")) {
+      capSlot.style.backgroundColor = red;
+    } else if (capSlot.style.backgroundColor === 'rgb(255, 253, 208)' || capSlot.style.backgroundColor === 'rgb(80, 76, 89)') {
+      //If color is yellow or purple do nothing
+    }
+    else {
+      capSlot.style.backgroundColor = gameBlue;
     }
   });
 }
 
-async function performCollection() {
-  await collectQuests()
-  await buyScrolls()
+function goHome() {
+  isRunning = false
+  const backHome = document.querySelector(".selectorBack");
+  if (backHome) {
+    backHome.click();
+  }
 }
