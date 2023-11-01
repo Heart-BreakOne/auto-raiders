@@ -223,6 +223,7 @@ async function start() {
 }
 
 async function performCollection() {
+  isRunning = false
   await collectQuests()
   await buyScrolls()
 }
@@ -527,7 +528,7 @@ function placeTheUnit() {
       if (currentMarkerKey != null || currentMarkerKey != 0) {
         getValidMarkers();
       } else {
-        moveScreenRandomPosition()
+        //moveScreenRandomPosition()
         return
       }
     } else {
