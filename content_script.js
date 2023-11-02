@@ -232,26 +232,26 @@ async function performCollection() {
 async function openBattlefield() {
 
   //Check loyalty here
-  if (!goldLoyalty) {
-    const battleInfo = document.querySelector(".battleInfoMapTitle");
-    //Duels and clash strings here.
-    if (!battleInfo.innerText.includes("Level") || !battleInfo.innerText.includes("vs") || !battleInfo.innerText.includes("VS") ||
-    !battleInfo.innerText.includes("Versus") || !battleInfo.innerText.includes("versus")) {
-      battleInfo.click()
-      const chest = document.querySelector(".mapInfoRewardsName").innerText;
-      if ((chest === "Loyalty Gold Chest" || chest === "Loyalty Skin Chest" || chest === "Loyalty Token Chest" || chest === "Loyalty Super Boss Chest" ||
-        chest === "Loyalty Boss Chest") && await retrieveFromStorage('loyaltySwitch')) {
-        await flagCaptain('captainLoyalty')
-        location.reload()
-      } else {
-        const closeButton = document.querySelector('.slideMenuCont.slideUp.slideUpOpen.slideMenuShortOpen.slideMenuShortOpenMore .slideMenuTop .far.fa-times');
-        if (closeButton) {
-          closeButton.click();
-          zoom()
-        }
-      }
+  const battleInfo = document.querySelector(".battleInfoMapTitle").innerText;
+  let mode = false
+  //Duels and clash strings here.
+  if (battleInfo.includes("Level") || battleInfo.includes("vs") || battleInfo.includes("VS") ||
+  battleInfo.includes("Versus") || battleInfo.includes("versus")) {
+    mode = true
+  }
+  if (!goldLoyalty && mode == false) {
+    battleInfo.click()
+    const chest = document.querySelector(".mapInfoRewardsName").innerText;
+    if ((chest === "Loyalty Gold Chest" || chest === "Loyalty Skin Chest" || chest === "Loyalty Token Chest" || chest === "Loyalty Super Boss Chest" ||
+      chest === "Loyalty Boss Chest") && await retrieveFromStorage('loyaltySwitch')) {
+      await flagCaptain('captainLoyalty')
+      location.reload()
     } else {
-      zoom()
+      const closeButton = document.querySelector('.slideMenuCont.slideUp.slideUpOpen.slideMenuShortOpen.slideMenuShortOpenMore .slideMenuTop .far.fa-times');
+      if (closeButton) {
+        closeButton.click();
+        zoom()
+      }
     }
   } else {
     zoom()
@@ -325,7 +325,7 @@ async function getSetMarker() {
   //This indicates that an attempt to place at the current marker has been made
   if (markerAttempt >= 1) {
     try {
-    matchingMarker = arrayOfBattleFieldMarkers.find(marker => marker.key === currentMarkerKey).icon;
+      matchingMarker = arrayOfBattleFieldMarkers.find(marker => marker.key === currentMarkerKey).icon;
     } catch (error) {
       matchingMarker = "noMatchingMarker"
     }
@@ -385,7 +385,7 @@ async function moveScreen(position) {
   currentMarker.style.height = '0';
   currentMarker.style.backgroundSize = '0';
 
-  currentMarker.scrollIntoView({block: 'center', inline: position });
+  currentMarker.scrollIntoView({ block: 'center', inline: position });
   await delay(3000);
   selectUnit();
   await delay(1000);
@@ -500,7 +500,7 @@ function placeTheUnit() {
   //Gets timer and if it's 0, goes back to menu
   let clockText
   try {
-  clockText = document.querySelector('.battlePhaseTextClock .clock').innerText;
+    clockText = document.querySelector('.battlePhaseTextClock .clock').innerText;
   } catch (error) {
     clockText = "x"
   }
