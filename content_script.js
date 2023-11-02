@@ -202,7 +202,7 @@ async function start() {
           (clashCaptainNameFromStorage == captainNameFromDOM) && !captainSlot.innerText.includes("Clash") ||
           (duelsCaptainNameFromStorage == captainNameFromDOM) && !captainSlot.innerText.includes("Duel")) {
           captainSlot.style.backgroundColor = red;
-          console.log("log 7"); console.log("log 7");
+          console.log("log 7");
           continue
         }
         else if (((captainSlot.innerText.includes("Dungeons") && !dungeonSwitch) || (captainSlot.innerText.includes("Clash") && !clashSwitch) ||
@@ -315,6 +315,7 @@ function zoom() {
 //Looks and selects a valid marker for placement
 
 async function getValidMarkers() {
+  reloadRoot();
   console.log("log 21");
   await delay(5000);
   arrayOfMarkers = document.querySelectorAll(".planIcon");
@@ -442,6 +443,7 @@ async function moveScreen(position) {
   selectUnit();
   await delay(1000);
   placeTheUnit();
+  reloadRoot();
   console.log("log 34");
 }
 
@@ -551,6 +553,7 @@ async function selectUnit() {
 
 //If the unit is in a valid marker that is in use, by taping the unit container it forces a button recheck on mouseup/touchend
 function tapUnit() {
+  reloadRoot()
   console.log("log 45");
   const placerUnitCont = document.querySelector('.placerUnitCont');
   const event = new Event('mouseup', { bubbles: true, cancelable: true });
@@ -666,6 +669,12 @@ async function changeBackgroundColor() {
   });
 }
 
+function reloadRoot() {
+  const rootElement = document.getElementById('root');
+  if (rootElement && rootElement.childElementCount === 0) {
+    location.reload()
+  }
+}
 function goHome() {
   isRunning = false
   const backHome = document.querySelector(".selectorBack");
