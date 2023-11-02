@@ -198,7 +198,9 @@ async function start() {
         continue
       }
     }
+    await performCollection()
   }
+  await performCollection()
   fullLength = 0
   if (placeUnit) {
     placeUnit.click();
@@ -236,7 +238,7 @@ async function openBattlefield() {
   let mode = false
   //Duels and clash strings here.
   if (battleInfo.includes("Level") || battleInfo.includes("vs") || battleInfo.includes("VS") ||
-  battleInfo.includes("Versus") || battleInfo.includes("versus")) {
+    battleInfo.includes("Versus") || battleInfo.includes("versus")) {
     mode = true
   }
   if (!goldLoyalty && mode == false) {

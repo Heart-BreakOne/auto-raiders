@@ -37,15 +37,17 @@ async function buyScrolls() {
             })
             returnToMainScreen()
         } else if(freebieButton && freebieButton.innerText.includes("CLAIM")) {
-            freebieButton.click()
-            returnToMainScreen()
+            freebieButton.click();
+            freebieButton.submit();
+            returnToMainScreen();
         }
         else if (extraState){
             //Refresh store one time for 100 coins after the first purchases 
-            const buyMoreButton = document.querySelector(".actionButton.actionButtonGolden.storeScrollsButton");
+            let buyMoreButton = document.querySelector(".actionButton.actionButtonGolden.storeScrollsButton");
             if (buyMoreButton) {
                 const buttonText = buyMoreButton.innerText;
                 if (buttonText.includes("REFRESH NOW") && buttonText.includes("100")) {
+                    buyMoreButton = document.querySelector(".actionButton.actionButtonGolden.storeScrollsButton");
                     buyMoreButton.click();
                     buyMoreButton.submit();
                 }
