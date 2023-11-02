@@ -132,11 +132,14 @@ async function start() {
     await rewardButton.click();
   }
 
-  await performCollection()
-
   const placeUnitButtons = document.querySelectorAll(".actionButton.actionButtonPrimary.capSlotButton.capSlotButtonAction");
   let placeUnit = null;
-  if (placeUnitButtons.length != 0) {
+  console.log("log 2.5")
+  if(placeUnitButtons.length  == 0) {
+    isRunning = 0
+    await performCollection()
+    return
+  } else if (placeUnitButtons.length != 0) {
     console.log("log 3");
     for (var button of placeUnitButtons) {
       if (button.innerText.includes("PLACE UNIT")) {
@@ -207,7 +210,6 @@ async function start() {
 
       } else {
         console.log("log 10");
-        await performCollection()
         continue
       }
     }
