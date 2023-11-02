@@ -669,13 +669,18 @@ async function changeBackgroundColor() {
   });
 }
 
-
-document.addEventListener('DOMContentLoaded', function () {
-  var rootElement = document.getElementById('root');
-  if (rootElement && rootElement.children.length === 0) {
-    location.reload()
-  }
+//Mutator observer for the empty root element
+const observer = new MutationObserver(function (mutations) {
+  mutations.forEach(function (mutation) {
+      const rootElement = document.getElementById('root');
+      if (rootElement && rootElement.children.length === 0) {
+          location.reload()
+      }
+  });
 });
+const targetNode = document.body;
+const config = { childList: true, subtree: true };
+observer.observe(targetNode, config);
 
 function reloadRoot() {
   const rootElement = document.getElementById('root');
