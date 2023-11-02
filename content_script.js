@@ -669,6 +669,14 @@ async function changeBackgroundColor() {
   });
 }
 
+
+document.addEventListener('DOMContentLoaded', function () {
+  var rootElement = document.getElementById('root');
+  if (rootElement && rootElement.children.length === 0) {
+    location.reload()
+  }
+});
+
 function reloadRoot() {
   const rootElement = document.getElementById('root');
   if (rootElement && rootElement.childElementCount === 0) {
