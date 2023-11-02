@@ -131,6 +131,8 @@ async function start() {
     await rewardButton.click();
   }
 
+  await performCollection()
+  
   const placeUnitButtons = document.querySelectorAll(".actionButton.actionButtonPrimary.capSlotButton.capSlotButtonAction");
   let placeUnit = null;
   if (placeUnitButtons.length != 0) {
@@ -198,9 +200,7 @@ async function start() {
         continue
       }
     }
-    await performCollection()
   }
-  await performCollection()
   fullLength = 0
   if (placeUnit) {
     placeUnit.click();
@@ -330,6 +330,8 @@ async function getSetMarker() {
     try {
       matchingMarker = arrayOfBattleFieldMarkers.find(marker => marker.key === currentMarkerKey).icon;
     } catch (error) {
+      isRunning = false
+      return
       matchingMarker = "noMatchingMarker"
     }
     arrayOfMarkers.forEach(planIcon => {
@@ -505,6 +507,8 @@ function placeTheUnit() {
   try {
     clockText = document.querySelector('.battlePhaseTextClock .clock').innerText;
   } catch (error) {
+    isRunning = false
+    return
     clockText = "x"
   }
 
@@ -581,6 +585,7 @@ async function changeBackgroundColor() {
     try {
       capNameDOM = capSlot.querySelector('.capSlotName').innerText;
     } catch (error) {
+      return
       capNameDOM = ""
     }
     if ((dungeonCaptainNameFromStorage != capNameDOM) && capSlot.innerText.includes("Dungeons") ||
