@@ -136,7 +136,7 @@ async function start() {
   let placeUnit = null;
   console.log("log 2.5")
   if(placeUnitButtons.length  == 0) {
-    isRunning = 0
+    isRunning = false
     await performCollection()
     return
   } else if (placeUnitButtons.length != 0) {
