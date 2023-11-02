@@ -19,10 +19,10 @@ setInterval(function () {
 
 //Handles some conditions in which the battle has started.
 async function checkBattle() {
-  const rootElement = document.getElementById('root');
+  /*const rootElement = document.getElementById('root');
   if (rootElement && rootElement.childElementCount === 0 && rootElement.textContent.trim() === '') {
     location.reload()
-  }
+  }*/
 
   let battleButton = document.querySelector('.placeUnitButtonItems');
   if (battleButton && (battleButton.innerText.includes('UNIT READY TO PLACE IN') || battleButton.innerText.includes('BATTLE STARTING SOON'))) {

@@ -95,11 +95,12 @@ const arrayOfUnits = [
 ];
 // This is the start, it selects a captain placement as well as collect any rewards to proceed
 async function start() {
+
   if (isRunning) {
     return;
   }
   isRunning = true;
-
+  console.log("log 1");
   //Remove the error toast message if it exists.
   let backError = document.querySelector(".modalScrim.modalOn");
   if (backError) {
@@ -124,7 +125,7 @@ async function start() {
     });
   }
   await handleChest();
-
+  console.log("log 2");
   // Collects rewards if there are any
   const rewardButton = document.querySelector(".actionButton.actionButtonPrimary.rewardsButton");
   if (rewardButton) {
@@ -132,10 +133,11 @@ async function start() {
   }
 
   await performCollection()
-  
+
   const placeUnitButtons = document.querySelectorAll(".actionButton.actionButtonPrimary.capSlotButton.capSlotButtonAction");
   let placeUnit = null;
   if (placeUnitButtons.length != 0) {
+    console.log("log 3");
     for (var button of placeUnitButtons) {
       if (button.innerText.includes("PLACE UNIT")) {
         var captainSlot = button.closest('.capSlot');
@@ -148,6 +150,7 @@ async function start() {
         const captainNameFromDOM = captainSlot.querySelector('.capSlotName').innerText;
         let captainFlag
         let captainLoyalty
+        console.log("log 3");
         try {
           captainFlag = await getCaptainFlag(captainNameFromDOM, 'flaggedCaptains');
         } catch (error) {
@@ -160,6 +163,7 @@ async function start() {
         } else {
           captainSlot.style.backgroundColor = gameBlue
         }
+        console.log("log 4");
         if (await retrieveFromStorage('loyaltySwitch')) {
           try {
             captainLoyalty = await getCaptainFlag(captainNameFromDOM, 'captainLoyalty');
@@ -169,6 +173,7 @@ async function start() {
         } else {
           captainLoyalty = false
         }
+        console.log("log 5");
         if (captainLoyalty) {
           captainSlot.style.backgroundColor = yellow
           await performCollection()
@@ -179,23 +184,29 @@ async function start() {
         if ((dungeonCaptainNameFromStorage != captainNameFromDOM) && captainSlot.innerText.includes("Dungeons") ||
           (clashCaptainNameFromStorage != captainNameFromDOM) && captainSlot.innerText.includes("Clash") ||
           (duelsCaptainNameFromStorage != captainNameFromDOM) && captainSlot.innerText.includes("Duel")) {
+          console.log("log 6");
           continue
         } else if ((dungeonCaptainNameFromStorage == captainNameFromDOM) && !captainSlot.innerText.includes("Dungeons") ||
           (clashCaptainNameFromStorage == captainNameFromDOM) && !captainSlot.innerText.includes("Clash") ||
           (duelsCaptainNameFromStorage == captainNameFromDOM) && !captainSlot.innerText.includes("Duel")) {
           captainSlot.style.backgroundColor = red;
+          console.log("log 7"); console.log("log 7");
           continue
         }
         else if (((captainSlot.innerText.includes("Dungeons") && !dungeonSwitch) || (captainSlot.innerText.includes("Clash") && !clashSwitch) ||
           ((captainSlot.innerText.includes("Duel") && !duelSwitch))) &&
           captainSlot.querySelector('.capSlotClose') == null) {
+            console.log("log 8");
           continue
         } else {
+          console.log("log 9");
           goldLoyalty = captainSlot.outerHTML.includes('LoyaltyGold');
           placeUnit = button
           break;
         }
+
       } else {
+        console.log("log 10");
         await performCollection()
         continue
       }
@@ -203,6 +214,7 @@ async function start() {
   }
   fullLength = 0
   if (placeUnit) {
+    console.log("log 11");
     placeUnit.click();
     await delay(3000)
     openBattlefield();
@@ -213,6 +225,7 @@ async function start() {
 
   // Change captains using a different device without the script freezing trying to select a captain.
   const slideMenuTops = document.querySelectorAll('.slideMenuTop');
+  console.log("log 12");
   slideMenuTops.forEach(element => {
     if (element.innerText.includes("Search Captain")) {
       const closeButton = element.querySelector(".far.fa-times");
@@ -225,6 +238,7 @@ async function start() {
 }
 
 async function performCollection() {
+  console.log("log 13");
   isRunning = false
   await collectQuests()
   await buyScrolls()
@@ -234,9 +248,17 @@ async function performCollection() {
 async function openBattlefield() {
 
   //Check loyalty here
-  let battleInfo = document.querySelector(".battleInfoMapTitle").innerText;
+  let battleInfo
+  try {
+    console.log("log 14");
+    battleInfo = document.querySelector(".battleInfoMapTitle").innerText;
+  } catch (error) {
+    isRunning = false
+    return
+  }
   let mode = false
   //Duels and clash strings here.
+  console.log("log 15");
   if (battleInfo.includes("Level") || battleInfo.includes("vs") || battleInfo.includes("VS") ||
     battleInfo.includes("Versus") || battleInfo.includes("versus")) {
     mode = true
@@ -244,19 +266,23 @@ async function openBattlefield() {
   if (!goldLoyalty && mode == false) {
     battleInfo = document.querySelector(".battleInfoMapTitle")
     battleInfo.click()
+    console.log("log 16");
     const chest = document.querySelector(".mapInfoRewardsName").innerText;
     if ((chest === "Loyalty Gold Chest" || chest === "Loyalty Skin Chest" || chest === "Loyalty Token Chest" || chest === "Loyalty Super Boss Chest" ||
       chest === "Loyalty Boss Chest") && await retrieveFromStorage('loyaltySwitch')) {
+        console.log("log 17");
       await flagCaptain('captainLoyalty')
       location.reload()
     } else {
       const closeButton = document.querySelector('.slideMenuCont.slideUp.slideUpOpen.slideMenuShortOpen.slideMenuShortOpenMore .slideMenuTop .far.fa-times');
       if (closeButton) {
+        console.log("log 18");
         closeButton.click();
         zoom()
       }
     }
   } else {
+    console.log("log 19");
     zoom()
   }
 }
@@ -265,8 +291,10 @@ function zoom() {
   const zoomButton = document.querySelector(".fas.fa-plus");
   if (zoomButton) {
     for (let i = 0; i < 7; i++) {
+      console.log("log 20");
       zoomButton.click();
     };
+    console.log("log 21");
     markerAttempt = 0
     arrayOfMarkers = null
     getValidMarkers();
@@ -276,6 +304,7 @@ function zoom() {
 //Looks and selects a valid marker for placement
 
 async function getValidMarkers() {
+  console.log("log 21");
   await delay(5000);
   arrayOfMarkers = document.querySelectorAll(".planIcon");
   //Captain is on open map only
@@ -283,18 +312,21 @@ async function getValidMarkers() {
     //Map without any markers.
     const clockElement = document.querySelector('.battlePhaseTextClock .clock');
     if (clockElement == null) {
+      console.log("log 22");
       goHome()
       return
     }
     const timeText = clockElement.innerText.replace(':', '');
     const time = parseInt(timeText, 10);
     if (time > 2915) {
+      console.log("log 23");
       goHome()
       return;
     } else {
       arrayOfAllyPlacement = document.querySelectorAll(".placementAlly");
       currentMarker = arrayOfAllyPlacement[Math.floor(Math.random() * arrayOfAllyPlacement.length)];
       moveScreenRandomPosition();
+      console.log("log 24");
     }
     //There are markers of some kind in the map.
   } else {
@@ -305,12 +337,13 @@ async function getValidMarkers() {
         planIcon.remove()
       }
     })
+    console.log("log 25");
     //Refresh array of markers with remaining markers
     arrayOfMarkers = document.querySelectorAll(".planIcon");
     if (arrayOfMarkers.length == 0) {
-      //Captain is using only block markers
-      // lay in bed and cry because I dunno what to do here.
-      getOpenArea()
+      //Captain is using a mix of block markers and open zones
+      await flagCaptain('flaggedCaptains')
+      goHome()
     } else {
       //There are vibe or set markers that can be used.
       getSetMarker()
@@ -318,22 +351,21 @@ async function getValidMarkers() {
   }
 }
 
-//The captain is using a combination of block markers and open areas.
-async function getOpenArea() {
-  await flagCaptain('flaggedCaptains')
-}
-
 async function getSetMarker() {
+  console.log("log 25");
   let matchingMarker
   //This indicates that an attempt to place at the current marker has been made
   if (markerAttempt >= 1) {
+    console.log("log 26");
     try {
       matchingMarker = arrayOfBattleFieldMarkers.find(marker => marker.key === currentMarkerKey).icon;
     } catch (error) {
+      
       isRunning = false
       return
       matchingMarker = "noMatchingMarker"
     }
+    console.log("log 27");
     arrayOfMarkers.forEach(planIcon => {
       const backgroundImageValue = getComputedStyle(planIcon).getPropertyValue('background-image');
       if (backgroundImageValue.includes(matchingMarker)) {
@@ -343,17 +375,20 @@ async function getSetMarker() {
     arrayOfMarkers = document.querySelectorAll(".planIcon");
   }
   if (arrayOfMarkers.length == 0) {
+    console.log("log 28");
     //there are no units to match any of the available markers
     await flagCaptain('flaggedCaptains')
     goHome()
     return
   } else {
     currentMarkerKey = ""
+    console.log("log 29");
     // The randomization of the index increased the chances of getting a valid placement.
     currentMarker = arrayOfMarkers[Math.floor(Math.random() * (arrayOfMarkers.length - 1))];
     // This bit gets the marker type for comparison later
     computedStyle = getComputedStyle(currentMarker);
     backgroundImageValue = computedStyle.getPropertyValue('background-image');
+    console.log("log 30");
     arrayOfBattleFieldMarkers.some(marker => {
       if (backgroundImageValue.includes(marker.icon)) {
         currentMarkerKey = marker.key
@@ -372,6 +407,7 @@ async function getSetMarker() {
 
 //When there are no markers, it can be trick to scroll to a valid position into view, this randomizes the possible values.
 const moveScreenRandomPosition = async () => {
+  console.log("log 31");
   const positions = ['start', 'center', 'end', 'nearest'];
   const randomPosition = positions[Math.floor(Math.random() * positions.length)];
   await moveScreen(randomPosition);
@@ -379,12 +415,13 @@ const moveScreenRandomPosition = async () => {
 
 //Vertical and horizontal center
 async function moveScreenCenter() {
+  console.log("log 32");
   await moveScreen('center');
 }
 
 //Scroll into view the center of the currentMark
 async function moveScreen(position) {
-
+  console.log("log 33");
   //They say two bodies cannot occupy the same point in space and time so we turn the marker into 0 so our unit can fit on that space
   currentMarker.style.width = '0';
   currentMarker.style.height = '0';
@@ -395,15 +432,18 @@ async function moveScreen(position) {
   selectUnit();
   await delay(1000);
   placeTheUnit();
+  console.log("log 34");
 }
 
 //Opens unit inventory tab, boosts unit and selects the first available unit that isn't on cooldown
 //or isn't legendary. It also grabs the unit name for future marker validation.
 async function selectUnit() {
+  console.log("log 35");
   let placeUnitSelection = document.querySelector(".actionButton.actionButtonPrimary.placeUnitButton");
   if (placeUnitSelection) {
     placeUnitSelection.click();
   }
+  console.log("log 36");
   //Use a potion if there are 100 potions available, uncomment to enable it.
   const potionState = await getRadioButton();
   let number
@@ -414,6 +454,7 @@ async function selectUnit() {
     epicButton = document.querySelector(".actionButton.actionButtonPrimary.epicButton");
     number = parseInt(potionQuantity.substring(0, 3));
   }
+  console.log("log 37");
   if (potionState == 1 && number >= 45) {
     if (epicButton) {
       epicButton.click();
@@ -423,12 +464,13 @@ async function selectUnit() {
       epicButton.click();
     }
   }
-
+  console.log("log 38");
   let unitDrawer;
   unitName = ""
   unitDrawer = document.querySelectorAll(".unitSelectionCont");
   const unitsQuantity = unitDrawer[0].children.length;
   for (let i = 1; i <= unitsQuantity; i++) {
+    console.log("log 39");
     const unit = unitDrawer[0].querySelector(".unitSelectionItemCont:nth-child(" + i + ") .unitItem:nth-child(1)")
     let commonCheck = unit.querySelector('.unitRarityCommon');
     let uncommonCheck = unit.querySelector('.unitRarityUncommon');
@@ -450,7 +492,7 @@ async function selectUnit() {
     if (dungeonCheck.innerText.includes('Level: ')) {
       isDungeon = true
     }
-
+    console.log("log 40");
     if (legendaryCheck) {
       legendarySwitch = await getSwitchState("legendarySwitch");
     } else if (rareCheck) {
@@ -466,7 +508,7 @@ async function selectUnit() {
     if (unit1) {
       unitName = unit1.key;
     }
-
+    console.log("log 41");
     //If the unit can't be used, get the next
     if ((commonCheck && !commonSwitch && !isDungeon) ||
       (legendaryCheck && !legendarySwitch && !isDungeon) ||
@@ -474,6 +516,7 @@ async function selectUnit() {
       (uncommonCheck && !uncommonSwitch && !isDungeon) ||
       coolDownCheck || defeatedCheck || !unitDisabled) {
       if (i >= unitsQuantity) {
+        console.log("log 42");
         markerAttempt++
         getSetMarker()
         return
@@ -482,19 +525,23 @@ async function selectUnit() {
       }
     }
     else if (currentMarkerKey == "vibe" || currentMarkerKey == "" || currentMarkerKey == unitType || currentMarkerKey == unitName) {
+      console.log("log 43");
       unit.click();
-      //await delay(1000);
+      await delay(1000);
       tapUnit();
       return
     } else {
+      console.log("log 51");
       continue;
     }
   }
+  console.log("log 44");
   goHome()
 }
 
 //If the unit is in a valid marker that is in use, by taping the unit container it forces a button recheck on mouseup/touchend
 function tapUnit() {
+  console.log("log 45");
   const placerUnitCont = document.querySelector('.placerUnitCont');
   const event = new Event('mouseup', { bubbles: true, cancelable: true });
   placerUnitCont.dispatchEvent(event);
@@ -502,6 +549,7 @@ function tapUnit() {
 
 //Places unit or asks for a new valid marker
 function placeTheUnit() {
+  console.log("log 46");
   //Gets timer and if it's 0, goes back to menu
   let clockText
   try {
@@ -513,10 +561,12 @@ function placeTheUnit() {
   }
 
   if (clockText === "00:00") {
+    console.log("log 46");
     let placerButton = document.querySelector(".actionButton.actionButtonNegative.placerButton");
     let selectorBack = document.querySelector(".selectorBack");
 
     if (placerButton && selectorBack) {
+      console.log("log 47");
       placerButton.click();
       selectorBack.click();
       isRunning = false;
@@ -525,11 +575,13 @@ function placeTheUnit() {
 
   //Attemps to place the unit and go back to menu, if the marker is valid, but in use, get a new marker.
   const confirmPlacement = document.querySelector(".actionButton.actionButtonPrimary.placerButton");
+  console.log("log 48");
   if (confirmPlacement) {
     const blockedMarker = document.querySelector(".placerRangeIsBlocked");
     if (blockedMarker) {
       const cancelButton = document.querySelector(".actionButton.actionButtonNegative.placerButton");
       if (cancelButton) {
+        console.log("log 48");
         cancelButton.click();
       }
       if (currentMarkerKey != null || currentMarkerKey != 0) {
@@ -540,8 +592,10 @@ function placeTheUnit() {
       }
     } else {
       confirmPlacement.click();
+      console.log("log 49");
       const cancelButton2 = document.querySelector(".actionButton.actionButtonNegative.placerButton");
       if (cancelButton2) {
+        console.log("log 50");
         cancelButton2.click();
         goHome()
       }
@@ -571,7 +625,7 @@ function placeTheUnit() {
 
 async function changeBackgroundColor() {
   const captainSlots = document.querySelectorAll(".capSlots");
-  if (captainSlots.length != 1) {
+  if (captainSlots.length == 0) {
     return
   }
   const firstCapSlot = captainSlots[0];
