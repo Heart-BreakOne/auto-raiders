@@ -24,7 +24,9 @@ After installation, just open the game website and stay at the main menu.
 🚫 If the marker is invalid, outside the ally area or if there's another ally unit on the marker, it will seek another valid marker.<br>
 🛠️ Handles situations in which the loading screen or the game freeze, any warnings or errors pop-ups appear or the battle starts while trying to place a unit.<br>
 
-### To prevent purchases from the scroll store and quest collection, comment the following line with two slashes //buyScrolls()
-``` buyScrolls() ```
+## Customize to your liking
+<p align="center">
+  <img src="https://i.imgur.com/zhOZDMF.png?1" alt="popup.html" height="85.93%" width="33.61%" hspace="30"/>
+</p>
 
-## For feedback (hit me on discord) and contributors are welcome, specially to improve the quality of the code since javascript is not my forte.
+## For feedback hit me on discord and contributors are welcome, specially to improve the quality of the code since javascript is not my forte.
