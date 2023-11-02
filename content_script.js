@@ -316,7 +316,7 @@ async function getValidMarkers() {
   } else {
     //Treat the markers to remove block markers
     arrayOfMarkers.forEach(planIcon => {
-      const backgroundImageValue = getComputedStyle(planIcon).getPropertyValue('background-image');
+      backgroundImageValue = getComputedStyle(planIcon).getPropertyValue('background-image').toUpperCase();
       if (backgroundImageValue.includes("SVFCVFFVKM+J2ICS+HWVYAAAAASUVORK5CYII=")) {
         planIcon.remove()
       }
@@ -346,7 +346,7 @@ async function getSetMarker() {
       return
     }
     arrayOfMarkers.forEach(planIcon => {
-      const backgroundImageValue = getComputedStyle(planIcon).getPropertyValue('background-image');
+      backgroundImageValue = getComputedStyle(planIcon).getPropertyValue('background-image').toUpperCase();
       if (backgroundImageValue.includes(matchingMarker)) {
         planIcon.remove()
       }
@@ -364,7 +364,7 @@ async function getSetMarker() {
     currentMarker = arrayOfMarkers[Math.floor(Math.random() * (arrayOfMarkers.length - 1))];
     // This bit gets the marker type for comparison later
     computedStyle = getComputedStyle(currentMarker);
-    let backgroundImageValue = computedStyle.getPropertyValue('background-image').toUpperCase();
+    backgroundImageValue = computedStyle.getPropertyValue('background-image').toUpperCase();
     arrayOfBattleFieldMarkers.some(marker => {
       if (backgroundImageValue.includes(marker.icon)) {
         currentMarkerKey = marker.key
