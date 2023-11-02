@@ -489,7 +489,7 @@ async function selectUnit() {
         continue
       }
     }
-    else if (currentMarkerKey.toUpperCase() == "Vibe" || currentMarkerKey.toUpperCase() == "" ||
+    else if (currentMarkerKey.toUpperCase() == "VIBE" || currentMarkerKey.toUpperCase() == "" ||
      currentMarkerKey.toUpperCase() == unitType.toUpperCase() || currentMarkerKey.toUpperCase() == unitName.toUpperCase()) {
       unit.click();
       await delay(1000);
