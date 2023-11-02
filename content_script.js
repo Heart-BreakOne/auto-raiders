@@ -21,78 +21,78 @@ const gameBlue = 'rgb(42, 96, 132)';
 let delay = ms => new Promise(res => setTimeout(res, ms));
 
 const arrayOfBattleFieldMarkers = [
-  { key: "NO", icon: "SVfCVffvkM+J2ics+hWvYAAAAASUVORK5CYII=" },
-  { key: "VIBE", icon: "1ePfwIYQTqrB9OwOgAAAABJRU5ErkJggg" },
-  { key: "ARMORED", icon: "AdcfHG0nPVXlAAAAAElFTkSuQmCC" },
-  { key: "ASSASSIN", icon: "aJRY4s+IiegAAAABJRU5ErkJggg==" },
-  { key: "MELEE", icon: "4HmcImnbn" },
-  { key: "RANGED", icon: "BsbdMaaZvZ+iAAAAAElFTkSuQmCC" },
-  { key: "SUPPORT", icon: "rWRlllPGN4n+DrB7+udvYfQAAAABJRU5ErkJggg" },
-  { key: "ARCHER", type: "RANGED", icon: "Ex5Gk5jX6QAAAABJRU5ErkJggg==" },
-  { key: "ARTILLERY", type: "RANGED", icon: "U1jpaB82/+YAAAAASUVORK5CYII=" },
-  { key: "BALLOON", type: "RANGED", icon: "rnP6GWgfwBAAAAAASUVORK5CYII=" },
-  { key: "BARBARIAN", type: "MELEE", icon: "FatYxSr+E/wDKlh2h07gGiAAAAAASUVORK5CYII=" },
-  { key: "BERSERKER", type: "MELEE", icon: "lP02Y0oxnNiIr/AnXBM2OH2VJaAAAAAElFTkSuQmCC" },
-  { key: "BLOB", type: "ARMORED", icon: "9HYQzqGnn8FEo4736EwIbo1bllOJKAAAAAElFTkSuQmCC" },
-  { key: "BOMBER", type: "RANGED", icon: "En4FFsjSc5V5VtwAAAAASUVORK5CYII=" },
-  { key: "BUSTER", type: "ASSASSIN", icon: "QXwTF98vOwAAAABJRU5ErkJggg==" },
-  { key: "CENTURION", type: "ARMORED", icon: "JoNSvopYo0wAAAABJRU5ErkJggg==" },
-  { key: "FAIRY", type: "SUPPORT", icon: "Buf7V5fsf2AUwAAAABJRU5ErkJggg==" },
-  { key: "FLAG", type: "MELEE", icon: "2SgX8QvwDHGxEX3KAthAAAAABJRU5ErkJggg==" },
-  { key: "FLYING", type: "ASSASSIN", icon: "Sc0o8MLg/J0AAAAASUVORK5CYII=" },
-  { key: "GLADIATOR", type: "MELEE", icon: "dd+SkzMjLHL0Wu+o7fOf4PXjB9mFKo1NwAAAAASUVORK5CYII=" },
-  { key: "HEALER", type: "SUPPORT", icon: "APnHo7kH5ssigAAAAASUVORK5CYII=" },
-  { key: "LANCER", type: "MELEE", icon: "6oT5/TrxJxQAAAABJRU5ErkJggg==" },
-  { key: "MAGE", type: "RANGED", icon: "+zdZ7Cmo0cKY3QAAAABJRU5ErkJggg==" },
-  { key: "MONK", type: "SUPPORT", icon: "AJVBiHgq88WrAAAAAElFTkSuQmCC" },
-  { key: "MUSKETEER", type: "RANGED", icon: "wtnKKina8Xm9K25p3uMNHiP8BrTLJNU/YgnMAAAAASUVORK5CYII=" },
-  { key: "NECROMANCER", type: "SUPPORT", icon: "AFPyH+ByJBNJj45eqmAAAAAElFTkSuQmCC" },
-  { key: "ORC", type: "ARMORED", icon: "gGDims8uWTIOQAAAABJRU5ErkJggg==" },
-  { key: "PALADIN", type: "ARMORED", icon: "/wf8A3hDj56jXWOEAAAAAElFTkSuQmCC" },
-  { key: "ROGUE", type: "ASSASSIN", icon: "AvwRy3tv3qvIAAAAAElFTkSuQmCC" },
-  { key: "SAINT", type: "SUPPORT", icon: "Gf4Go32S6bUXVsAAAAAASUVORK5CYII=" },
-  { key: "SHINOBI", type: "ASSASSIN", icon: "mg5B+uiFewcI/ewAAAAABJRU5ErkJggg==" },
-  { key: "SPY", type: "ASSASSIN", icon: "TQzAPQNzN6gAAAAASUVORK5CYII=" },
-  { key: "TANK", type: "ARMORED", icon: "ampqZdtc4D3FPwxeZVk5dLefAAAAAElFTkSuQmCC" },
-  { key: "TEMPLAR", type: "SUPPORT", icon: "yHf+H+B8TrvPZFQhdvgAAAABJRU5ErkJggg==" },
-  { key: "VAMPIRE", type: "ARMORED", icon: "M9WGHTKw8vy7AlV0IJJZRQQh78C0IfEIi3WRZBAAAAAElFTkSuQmCC" },
-  { key: "WARBEAST", type: "MELEE", icon: "/AveH3CXL9Oh4wAAAABJRU5ErkJggg==" },
-  { key: "WARRIOR", type: "MELEE", icon: "gXc5CPDJVy5YIAAAAASUVORK5CYII=" },
+  { key: "NO", icon: "SVFCVFFVKM+J2ICS+HWVYAAAAASUVORK5CYII=" },
+  { key: "VIBE", icon: "1EPFWIYQTQRB9OWOGAAAABJRU5ERKJGGG" },
+  { key: "ARMORED", icon: "ADCFHG0NPVXLAAAAAELFTKSUQMCC" },
+  { key: "ASSASSIN", icon: "AJRY4S+IIEGAAAABJRU5ERKJGGG==" },
+  { key: "MELEE", icon: "4HMCIMNBN" },
+  { key: "RANGED", icon: "BSBDMAAZVZ+IAAAAAELFTKSUQMCC" },
+  { key: "SUPPORT", icon: "RWRLLLPGN4N+DRB7+UDVYFQAAAABJRU5ERKJGGG" },
+  { key: "ARCHER", type: "RANGED", icon: "EX5GK5JX6QAAAABJRU5ERKJGGG==" },
+  { key: "ARTILLERY", type: "RANGED", icon: "U1JPAB82/+YAAAAASUVORK5CYII=" },
+  { key: "BALLOON", type: "RANGED", icon: "RNP6GWGFWBAAAAAASUVORK5CYII=" },
+  { key: "BARBARIAN", type: "MELEE", icon: "FATYXSR+E/WDKLH2H07GGIAAAAAASUVORK5CYII=" },
+  { key: "BERSERKER", type: "MELEE", icon: "LP02Y0OXNNIIR/ANXBM2OH2VJAAAAAAELFTKSUQMCC" },
+  { key: "BLOB", type: "ARMORED", icon: "9HYQZQGNN8FEO4736EWIBO1BLLOJKAAAAAELFTKSUQMCC" },
+  { key: "BOMBER", type: "RANGED", icon: "EN4FFSJSC5V5VTWAAAAASUVORK5CYII=" },
+  { key: "BUSTER", type: "ASSASSIN", icon: "QXWTF98VOWAAAABJRU5ERKJGGG==" },
+  { key: "CENTURION", type: "ARMORED", icon: "JONSVOPYO0WAAAABJRU5ERKJGGG==" },
+  { key: "FAIRY", type: "SUPPORT", icon: "BUF7V5FSF2AUWAAAABJRU5ERKJGGG==" },
+  { key: "FLAG", type: "MELEE", icon: "2SGX8QVWDHGXEX3KATHAAAAABJRU5ERKJGGG==" },
+  { key: "FLYING", type: "ASSASSIN", icon: "SC0O8MLG/J0AAAAASUVORK5CYII=" },
+  { key: "GLADIATOR", type: "MELEE", icon: "DD+SKZMJLHL0WU+O7FOF4PXJB9MFKO1NWAAAAASUVORK5CYII=" },
+  { key: "HEALER", type: "SUPPORT", icon: "APNHO7KH5SSIGAAAAASUVORK5CYII=" },
+  { key: "LANCER", type: "MELEE", icon: "6OT5/TRXJXQAAAABJRU5ERKJGGG==" },
+  { key: "MAGE", type: "RANGED", icon: "+ZDZ7CMO0CKY3QAAAABJRU5ERKJGGG==" },
+  { key: "MONK", type: "SUPPORT", icon: "AJVBIHGQ88WRAAAAAELFTKSUQMCC" },
+  { key: "MUSKETEER", type: "RANGED", icon: "WTNKKINA8XM9K25P3UMNHIP8BRTLJNU/YGNMAAAAASUVORK5CYII=" },
+  { key: "NECROMANCER", type: "SUPPORT", icon: "AFPYH+BYJBNJJ45EQMAAAAAELFTKSUQMCC" },
+  { key: "ORC", type: "ARMORED", icon: "GGDIMS8UWTIOQAAAABJRU5ERKJGGG==" },
+  { key: "PALADIN", type: "ARMORED", icon: "/WF8A3HDJ56JXWOEAAAAAELFTKSUQMCC" },
+  { key: "ROGUE", type: "ASSASSIN", icon: "AVWRY3TV3QVIAAAAAELFTKSUQMCC" },
+  { key: "SAINT", type: "SUPPORT", icon: "GF4GO32S6BUXVSAAAAAASUVORK5CYII=" },
+  { key: "SHINOBI", type: "ASSASSIN", icon: "MG5B+UIFEWCI/EWAAAAABJRU5ERKJGGG==" },
+  { key: "SPY", type: "ASSASSIN", icon: "TQZAPQNZN6GAAAAASUVORK5CYII=" },
+  { key: "TANK", type: "ARMORED", icon: "AMPQZDTC4D3FPWXEZVK5DLEFAAAAAELFTKSUQMCC" },
+  { key: "TEMPLAR", type: "SUPPORT", icon: "YHF+H+B8TRVPZFQHDVGAAAABJRU5ERKJGGG==" },
+  { key: "VAMPIRE", type: "ARMORED", icon: "M9WGHTKW8VY7ALV0IJJZRQQH78C0IFEII3WRZBAAAAAELFTKSUQMCC" },
+  { key: "WARBEAST", type: "MELEE", icon: "/AVEH3CXL9OH4WAAAABJRU5ERKJGGG==" },
+  { key: "WARRIOR", type: "MELEE", icon: "GXC5CPDJVY5YIAAAAASUVORK5CYII=" },
 ];
 
 const arrayOfUnits = [
   { key: "", type: "", icon: "" },
-  { key: "VIBE", type: "VIBE", icon: "Vibe" },
-  { key: "ARCHER", type: "RANGED", icon: "FBpkaZY" },
+  { key: "VIBE", type: "VIBE", icon: "VIBE" },
+  { key: "ARCHER", type: "RANGED", icon: "FBPKAZY" },
   { key: "ARTILLERY", type: "RANGED", icon: "3GY1DLAQ" },
-  { key: "BALLOON", type: "RANGED", icon: "FoPPa6g" },
-  { key: "BARBARIAN", type: "MELEE", icon: "y2azrA3g" },
+  { key: "BALLOON", type: "RANGED", icon: "FOPPA6G" },
+  { key: "BARBARIAN", type: "MELEE", icon: "Y2AZRA3G" },
   { key: "BERSERKER", type: "MELEE", icon: "BCIAAA" },
-  { key: "BLOB", type: "ARMORED", icon: "lXTAAA" },
-  { key: "BOMBER", type: "RANGED", icon: "Qwp8wBk" },
-  { key: "BUSTER", type: "ASSASSIN", icon: "PccPYIHw" },
-  { key: "CENTURION", type: "ARMORED", icon: "DUwAAA" },
-  { key: "FAIRY", type: "SUPPORT", icon: "fNJqA" },
-  { key: "FLAG", type: "MELEE", icon: "kF7A" },
-  { key: "FLYING", type: "ASSASSIN", icon: "gsge2mI" },
-  { key: "GLADIATOR", type: "MELEE", icon: "EMwa84U" },
-  { key: "HEALER", type: "SUPPORT", icon: "UY3n8" },
-  { key: "LANCER", type: "MELEE", icon: "PU+OGw" },
-  { key: "MAGE", type: "RANGED", icon: "4q+bQmL8" },
-  { key: "MONK", type: "SUPPORT", icon: "d46Ekxw" },
-  { key: "MUSKETEER", type: "RANGED", icon: "dl9SBC7g" },
+  { key: "BLOB", type: "ARMORED", icon: "LXTAAA" },
+  { key: "BOMBER", type: "RANGED", icon: "QWP8WBK" },
+  { key: "BUSTER", type: "ASSASSIN", icon: "PCCPYIHW" },
+  { key: "CENTURION", type: "ARMORED", icon: "DUWAAA" },
+  { key: "FAIRY", type: "SUPPORT", icon: "FNJQA" },
+  { key: "FLAG", type: "MELEE", icon: "KF7A" },
+  { key: "FLYING", type: "ASSASSIN", icon: "GSGE2MI" },
+  { key: "GLADIATOR", type: "MELEE", icon: "EMWA84U" },
+  { key: "HEALER", type: "SUPPORT", icon: "UY3N8" },
+  { key: "LANCER", type: "MELEE", icon: "PU+OGW" },
+  { key: "MAGE", type: "RANGED", icon: "4Q+BQML8" },
+  { key: "MONK", type: "SUPPORT", icon: "D46EKXW" },
+  { key: "MUSKETEER", type: "RANGED", icon: "DL9SBC7G" },
   { key: "NECROMANCER", type: "SUPPORT", icon: "85VI" },
-  { key: "ORC", type: "ARMORED", icon: "VPaasGY8" },
-  { key: "PALADIN", type: "ARMORED", icon: "iYUeo" },
-  { key: "ROGUE", type: "ASSASSIN", icon: "gRjLD" },
-  { key: "SAINT", type: "SUPPORT", icon: "PBUHpCg" },
-  { key: "SHINOBI", type: "ASSASSIN", icon: "Xsczq" },
-  { key: "SPY", type: "ASSASSIN", icon: "FJbDFfQ" },
-  { key: "TANK", type: "ARMORED", icon: "Xek7Hqu" },
-  { key: "TEMPLAR", type: "SUPPORT", icon: "CynUl" },
-  { key: "VAMPIRE", type: "ARMORED", icon: "Bl5378" },
-  { key: "WARBEAST", type: "MELEE", icon: "SRJSYo" },
-  { key: "WARRIOR", type: "MELEE", icon: "YtuUAHQ" },
+  { key: "ORC", type: "ARMORED", icon: "VPAASGY8" },
+  { key: "PALADIN", type: "ARMORED", icon: "IYUEO" },
+  { key: "ROGUE", type: "ASSASSIN", icon: "GRJLD" },
+  { key: "SAINT", type: "SUPPORT", icon: "PBUHPCG" },
+  { key: "SHINOBI", type: "ASSASSIN", icon: "XSCZQ" },
+  { key: "SPY", type: "ASSASSIN", icon: "FJBDFFQ" },
+  { key: "TANK", type: "ARMORED", icon: "XEK7HQU" },
+  { key: "TEMPLAR", type: "SUPPORT", icon: "CYNUL" },
+  { key: "VAMPIRE", type: "ARMORED", icon: "BL5378" },
+  { key: "WARBEAST", type: "MELEE", icon: "SRJSYO" },
+  { key: "WARRIOR", type: "MELEE", icon: "YTUUAHQ" },
 ];
 // This is the start, it selects a captain placement as well as collect any rewards to proceed
 async function start() {
@@ -317,7 +317,7 @@ async function getValidMarkers() {
     //Treat the markers to remove block markers
     arrayOfMarkers.forEach(planIcon => {
       const backgroundImageValue = getComputedStyle(planIcon).getPropertyValue('background-image');
-      if (backgroundImageValue.includes("SVfCVffvkM+J2ics+hWvYAAAAASUVORK5CYII=")) {
+      if (backgroundImageValue.includes("SVFCVFFVKM+J2ICS+HWVYAAAAASUVORK5CYII=")) {
         planIcon.remove()
       }
     })
@@ -364,7 +364,7 @@ async function getSetMarker() {
     currentMarker = arrayOfMarkers[Math.floor(Math.random() * (arrayOfMarkers.length - 1))];
     // This bit gets the marker type for comparison later
     computedStyle = getComputedStyle(currentMarker);
-    backgroundImageValue = computedStyle.getPropertyValue('background-image');
+    let backgroundImageValue = computedStyle.getPropertyValue('background-image').toUpperCase();
     arrayOfBattleFieldMarkers.some(marker => {
       if (backgroundImageValue.includes(marker.icon)) {
         currentMarkerKey = marker.key
@@ -446,14 +446,14 @@ async function selectUnit() {
     let legendaryCheck = unit.querySelector('.unitRarityLegendary');
     let coolDownCheck = unit.querySelector('.unitItemCooldown');
     let defeatedCheck = unit.querySelector('.defeatedVeil');
-    let unitType = unit.querySelector('.unitClass img').getAttribute('alt');
-    var unitName = unit.querySelector('.unitClass img').getAttribute('src').slice(-50);
+    let unitType = unit.querySelector('.unitClass img').getAttribute('alt').toUpperCase();
+    let unitName = unit.querySelector('.unitClass img').getAttribute('src').slice(-50).toUpperCase();
     let unitDisabled = unit.querySelector('.unitItemDisabledOff');
     let commonSwitch;
     let uncommonSwitch
     let rareSwitch
     let legendarySwitch
-    var isDungeon = false
+    let isDungeon = false
 
     //Check if it's dungeon so the usage of legendary units can be allowed
     let dungeonCheck = document.querySelector('.battleInfoMapTitle');
@@ -489,8 +489,8 @@ async function selectUnit() {
         continue
       }
     }
-    else if (currentMarkerKey.toUpperCase() == "VIBE" || currentMarkerKey.toUpperCase() == "" ||
-     currentMarkerKey.toUpperCase() == unitType.toUpperCase() || currentMarkerKey.toUpperCase() == unitName.toUpperCase()) {
+    else if (currentMarkerKey == "VIBE" || currentMarkerKey == "" ||
+     currentMarkerKey == unitType || currentMarkerKey == unitName) {
       unit.click();
       await delay(1000);
       tapUnit();
