@@ -232,7 +232,7 @@ async function performCollection() {
 async function openBattlefield() {
 
   //Check loyalty here
-  const battleInfo = document.querySelector(".battleInfoMapTitle").innerText;
+  let battleInfo = document.querySelector(".battleInfoMapTitle").innerText;
   let mode = false
   //Duels and clash strings here.
   if (battleInfo.includes("Level") || battleInfo.includes("vs") || battleInfo.includes("VS") ||
@@ -240,6 +240,7 @@ async function openBattlefield() {
     mode = true
   }
   if (!goldLoyalty && mode == false) {
+    battleInfo = document.querySelector(".battleInfoMapTitle")
     battleInfo.click()
     const chest = document.querySelector(".mapInfoRewardsName").innerText;
     if ((chest === "Loyalty Gold Chest" || chest === "Loyalty Skin Chest" || chest === "Loyalty Token Chest" || chest === "Loyalty Super Boss Chest" ||
