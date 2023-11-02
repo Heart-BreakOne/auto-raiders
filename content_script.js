@@ -13,8 +13,8 @@ let isRunning = false;
 let goldLoyalty
 let arrayOfAllyPlacement
 const yellow = '#FFFDD0'
-const red = '#ff0000'
-const gameBlue = '#2a6084'
+const red = '#FFCCCB'
+const gameBlue = '#2A6084'
 const purple = '#CBC3E3'
 
 let delay = ms => new Promise(res => setTimeout(res, ms));
@@ -161,7 +161,7 @@ async function start() {
         }
         if (captainFlag) {
           captainSlot.style.backgroundColor = purple
-          await performCollection()
+          //await performCollection()
           continue
         } else {
           captainSlot.style.backgroundColor = gameBlue
@@ -179,7 +179,7 @@ async function start() {
         console.log("log 5");
         if (captainLoyalty) {
           captainSlot.style.backgroundColor = yellow
-          await performCollection()
+          //await performCollection()
           continue
         } else {
           captainSlot.style.backgroundColor = gameBlue
@@ -362,10 +362,9 @@ async function getSetMarker() {
     try {
       matchingMarker = arrayOfBattleFieldMarkers.find(marker => marker.key === currentMarkerKey).icon;
     } catch (error) {
-      
-      isRunning = false
+      await flagCaptain('flaggedCaptains')
+      goHome()
       return
-      matchingMarker = "noMatchingMarker"
     }
     console.log("log 27");
     arrayOfMarkers.forEach(planIcon => {
@@ -559,7 +558,6 @@ function placeTheUnit() {
   } catch (error) {
     isRunning = false
     return
-    clockText = "x"
   }
 
   if (clockText === "00:00") {
@@ -642,7 +640,6 @@ async function changeBackgroundColor() {
       capNameDOM = capSlot.querySelector('.capSlotName').innerText;
     } catch (error) {
       return
-      capNameDOM = ""
     }
     if ((dungeonCaptainNameFromStorage != capNameDOM) && capSlot.innerText.includes("Dungeons") ||
       (clashCaptainNameFromStorage != capNameDOM) && capSlot.innerText.includes("Clash") ||
@@ -651,7 +648,7 @@ async function changeBackgroundColor() {
       (clashCaptainNameFromStorage == capNameDOM) && !capSlot.innerText.includes("Clash") ||
       (duelsCaptainNameFromStorage == capNameDOM) && !capSlot.innerText.includes("Duel")) {
       capSlot.style.backgroundColor = red;
-    } else if (capSlot.style.backgroundColor === 'rgb(255, 253, 208)' || capSlot.style.backgroundColor === 'rgb(80, 76, 89)') {
+    } else if (capSlot.style.backgroundColor === 'rgb(255, 253, 208)' || capSlot.style.backgroundColor === 'rgb(203, 195, 227)') {
       //If color is yellow or purple do nothing
     }
     else {
