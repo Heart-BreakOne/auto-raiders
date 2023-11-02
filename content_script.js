@@ -1,5 +1,5 @@
 
-setInterval(start, 25000);
+setInterval(start, 30000);
 setInterval(changeBackgroundColor, 5000);
 
 let currentMarkerKey = "";
@@ -12,10 +12,11 @@ let backgroundImageValue
 let isRunning = false;
 let goldLoyalty
 let arrayOfAllyPlacement
-const yellow = '#FFFDD0'
-const red = '#FFCCCB'
-const gameBlue = '#2A6084'
-const purple = '#CBC3E3'
+let startLoop
+const yellow = 'rgb(255, 253, 208)';
+const red = 'rgb(255, 204, 203)';
+const purple = 'rgb(203, 195, 227)';
+const gameBlue = 'rgb(42, 96, 132)';
 
 let delay = ms => new Promise(res => setTimeout(res, ms));
 
@@ -96,10 +97,18 @@ const arrayOfUnits = [
 // This is the start, it selects a captain placement as well as collect any rewards to proceed
 async function start() {
 
+  //If it's stuck for 60 seconds set isRunning to false
+  startLoop++
+  if (startLoop >= 2) {
+    isRunning = false
+  }
+  //If isRunning is true, return
   if (isRunning) {
     return;
   }
+  startLoop = 0
   isRunning = true;
+
   console.log("log 1");
   //Remove the error toast message if it exists.
   let backError = document.querySelector(".modalScrim.modalOn");
@@ -135,7 +144,7 @@ async function start() {
   const placeUnitButtons = document.querySelectorAll(".actionButton.actionButtonPrimary.capSlotButton.capSlotButtonAction");
   let placeUnit = null;
   console.log("log 2.5")
-  if(placeUnitButtons.length  == 0) {
+  if (placeUnitButtons.length == 0) {
     isRunning = false
     await performCollection()
     return
@@ -153,7 +162,7 @@ async function start() {
         const captainNameFromDOM = captainSlot.querySelector('.capSlotName').innerText;
         let captainFlag
         let captainLoyalty
-        console.log("log 3");
+        console.log("log 3.5");
         try {
           captainFlag = await getCaptainFlag(captainNameFromDOM, 'flaggedCaptains');
         } catch (error) {
@@ -199,7 +208,7 @@ async function start() {
         else if (((captainSlot.innerText.includes("Dungeons") && !dungeonSwitch) || (captainSlot.innerText.includes("Clash") && !clashSwitch) ||
           ((captainSlot.innerText.includes("Duel") && !duelSwitch))) &&
           captainSlot.querySelector('.capSlotClose') == null) {
-            console.log("log 8");
+          console.log("log 8");
           continue
         } else {
           console.log("log 9");
@@ -272,7 +281,7 @@ async function openBattlefield() {
     const chest = document.querySelector(".mapInfoRewardsName").innerText;
     if ((chest === "Loyalty Gold Chest" || chest === "Loyalty Skin Chest" || chest === "Loyalty Token Chest" || chest === "Loyalty Super Boss Chest" ||
       chest === "Loyalty Boss Chest") && await retrieveFromStorage('loyaltySwitch')) {
-        console.log("log 17");
+      console.log("log 17");
       await flagCaptain('captainLoyalty')
       location.reload()
     } else {
@@ -648,7 +657,7 @@ async function changeBackgroundColor() {
       (clashCaptainNameFromStorage == capNameDOM) && !capSlot.innerText.includes("Clash") ||
       (duelsCaptainNameFromStorage == capNameDOM) && !capSlot.innerText.includes("Duel")) {
       capSlot.style.backgroundColor = red;
-    } else if (capSlot.style.backgroundColor === 'rgb(255, 253, 208)' || capSlot.style.backgroundColor === 'rgb(203, 195, 227)') {
+    } else if (capSlot.style.backgroundColor === yellow || capSlot.style.backgroundColor === purple) {
       //If color is yellow or purple do nothing
     }
     else {
