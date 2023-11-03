@@ -141,7 +141,7 @@ async function start() {
 
   const placeUnitButtons = document.querySelectorAll(".actionButton.actionButtonPrimary.capSlotButton.capSlotButtonAction");
   let placeUnit = null;
-  if (placeUnitButtons.length == 0) {
+  if (placeUnitButtons.length == 1) {
     isRunning = false
     await performCollection()
     return
