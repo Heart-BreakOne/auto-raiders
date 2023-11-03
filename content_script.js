@@ -614,12 +614,17 @@ async function changeBackgroundColor() {
 //Mutator observer for the empty root element
 const observer = new MutationObserver(function (mutations) {
   mutations.forEach(function (mutation) {
+    const rewardsScrim = document.querySelector(".rewardsScrim");
+    if (rewardsScrim) {
+      rewardsScrim.remove();
+    }
     const rootElement = document.getElementById('root');
     if (rootElement && rootElement.children.length === 0) {
       location.reload()
     }
   });
 });
+
 const targetNode = document.body;
 const config = { childList: true, subtree: true };
 observer.observe(targetNode, config);
