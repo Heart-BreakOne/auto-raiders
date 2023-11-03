@@ -4,15 +4,6 @@ setInterval(checkBattle, 15000);
 
 //A warning popups under certain conditions, by clicking back the issue can be resolved.
 setInterval(function () {
-  try {
-    const rewardModal = document.querySelectorAll(".rewardsScrim");
-    rewardModal.remove()
-  } catch (error){}
-
-  const modalTab = document.querySelector(".modalScrim.modalOn");
-  if (!modalTab) {
-    return;
-  }
   const buttons = document.querySelectorAll('button.actionButton.actionButtonPrimary');
   buttons.forEach(button => {
     const buttonText = button.querySelector('div').textContent.trim();

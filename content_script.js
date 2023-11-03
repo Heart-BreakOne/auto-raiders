@@ -109,12 +109,6 @@ async function start() {
   startLoop = 0
   isRunning = true;
 
-  //Remove the error toast message if it exists.
-  let backError = document.querySelector(".modalScrim.modalOn");
-  if (backError) {
-    backError.remove();
-  }
-
   navItems = document.querySelectorAll('.mainNavItemText');
   navItems.forEach(navItem => {
     if (navItem.innerText === "Battle") {
@@ -237,6 +231,7 @@ async function performCollection() {
   isRunning = false
   await collectQuests()
   await buyScrolls()
+  await collectBattlePass()
 }
 
 // This function checks if the battlefield is present and zooms into it.
@@ -611,7 +606,7 @@ async function changeBackgroundColor() {
   });
 }
 
-//Mutator observer for the empty root element
+//Mutator observer to remove stuck modals
 const observer = new MutationObserver(function (mutations) {
   mutations.forEach(function (mutation) {
     const rewardsScrim = document.querySelector(".rewardsScrim");
@@ -621,6 +616,10 @@ const observer = new MutationObserver(function (mutations) {
     const rootElement = document.getElementById('root');
     if (rootElement && rootElement.children.length === 0) {
       location.reload()
+    }
+    const questModal = document.querySelector(".modalScrim.modalOn")
+    if (questModal) {
+      questModal.remove();
     }
   });
 });

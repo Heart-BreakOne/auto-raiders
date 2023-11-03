@@ -36,12 +36,12 @@ async function buyScrolls() {
                 buyButton.click();
             })
             returnToMainScreen()
-        } else if(freebieButton && freebieButton.innerText.includes("CLAIM")) {
+        } else if (freebieButton && freebieButton.innerText.includes("CLAIM")) {
             freebieButton.click();
             freebieButton.submit();
             returnToMainScreen();
         }
-        else if (extraState){
+        else if (extraState) {
             //Refresh store one time for 100 coins after the first purchases 
             let buyMoreButton = document.querySelector(".actionButton.actionButtonGolden.storeScrollsButton");
             if (buyMoreButton) {
@@ -85,12 +85,19 @@ async function collectQuests() {
         }
     });
     returnToMainScreen()
+}
 
+//Collect battlepass
+async function collectBattlePass() {
+    let questState = await getSwitchState("battlepassSwitch")
+    if (!questState) {
+        return
+    }
     //Get header buttons and click on Reward button
     const headerButtons = document.querySelectorAll(".actionButton.actionButtonGift");
     headerButtons.forEach(rewardButton => {
         if (rewardButton.innerText.includes("REWARDS")) {
-            rewardButton.click
+            rewardButton.click();
             //collect rewards if there are any
             const collectButtons = document.querySelectorAll(".actionButton.actionButtonCollect.rewardActionButton");
             for (button of collectButtons) {
@@ -103,46 +110,19 @@ async function collectQuests() {
                         confirm.submit();
                     }
                 });
-
             }
-            const closeButton = document.querySelector(".far.fa-times");
-            if (closeButton) {
-                closeButton.click();
-                const event = new Event('mouseup', { bubbles: true, cancelable: true });
-                closeButton.dispatchEvent(event);
-            }
+            close()
         }
     });
 }
 
-//This has not been implemented.
-function collectBattlePass() {
-    //Get header buttons and click on Reward button
-    const headerButtons = document.querySelectorAll(".actionButton.actionButtonGift");
-    headerButtons.forEach(rewardButton => {
-        if (rewardButton.innerText.includes("REWARDS")) {
-            rewardButton.click
-            //collect rewards if there are any
-            const collectButtons = document.querySelectorAll(".actionButton.actionButtonCollect.rewardActionButton");
-            for (button of collectButtons) {
-                button.click();
-
-                const confirmButtons = document.querySelectorAll(".actionButton.actionButtonPrimary");
-                confirmButtons.forEach(confirm => {
-                    if (confirm.innerText.includes("CONFIRM AND COLLECT")) {
-                        confirm.click();
-                        confirm.submit();
-                    }
-                });
-            }
-            const closeButton = document.querySelector(".far.fa-times");
-            if (closeButton) {
-                closeButton.click();
-                const event = new Event('mouseup', { bubbles: true, cancelable: true });
-                closeButton.dispatchEvent(event);
-            }
-        }
-    });
+function close() {
+    const closeButton = document.querySelectorAll(".far.fa-times");
+    if (closeButton.length > 0) {
+        closeButton.forEach(button => {
+            button.click();
+        })
+    }
 }
 
 //Sales and quests done, return to main screen
