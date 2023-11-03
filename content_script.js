@@ -245,15 +245,14 @@ async function openBattlefield() {
   //Check loyalty here
   let battleInfo
   try {
-    battleInfo = document.querySelector(".battleInfoMapTitle").innerText;
+    battleInfo = document.querySelector(".battleInfo").innerText;
   } catch (error) {
     isRunning = false
     return
   }
   let mode = false
   //Duels and clash strings here.
-  if (battleInfo.includes("Level") || battleInfo.includes("vs") || battleInfo.includes("VS") ||
-    battleInfo.includes("Versus") || battleInfo.includes("versus")) {
+  if (battleInfo.includes("Level") || battleInfo.includes("Versus")) {
     mode = true
   }
   if (!goldLoyalty && mode == false) {
@@ -490,7 +489,7 @@ async function selectUnit() {
       }
     }
     else if (currentMarkerKey == "VIBE" || currentMarkerKey == "" ||
-     currentMarkerKey == unitType || currentMarkerKey == unitName) {
+      currentMarkerKey == unitType || currentMarkerKey == unitName) {
       unit.click();
       await delay(1000);
       tapUnit();
@@ -615,10 +614,10 @@ async function changeBackgroundColor() {
 //Mutator observer for the empty root element
 const observer = new MutationObserver(function (mutations) {
   mutations.forEach(function (mutation) {
-      const rootElement = document.getElementById('root');
-      if (rootElement && rootElement.children.length === 0) {
-          location.reload()
-      }
+    const rootElement = document.getElementById('root');
+    if (rootElement && rootElement.children.length === 0) {
+      location.reload()
+    }
   });
 });
 const targetNode = document.body;
