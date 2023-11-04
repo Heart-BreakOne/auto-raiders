@@ -638,7 +638,7 @@ const observer = new MutationObserver(function (mutations) {
       location.reload()
     }
     const questModal = document.querySelector(".modalScrim.modalOn")
-    if (questModal) {
+    if (questModal && !questModal.innerText.includes("Leave battle?")) {
       questModal.remove();
     }
 
