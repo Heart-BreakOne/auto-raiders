@@ -4,37 +4,45 @@
 <head>
     <title>Autoraiders</title>
     <script src="popup.js"></script>
+    <link rel="stylesheet" href="styles.css">
     <style>
         body {
-            width: 250px
+            width: 300px
         }
     </style>
 </head>
 
 <body>
     <b><br>
-        <div  style="text-align: justify;">DISCLAIMER: For the switches to work the SR tab must be active in view otherwise a
-        connection between this popup and the main script can not be stablished<br></div>
-        <input type="checkbox" id="scrollSwitch">Buy scrolls</label><br>
-        <input type="checkbox" id="extraSwitch">Buy extra $100 scrolls</label><br>
-        <input type="checkbox" id="questSwitch">Collect quests</label><br>
-        <input type="checkbox" id="battlepassSwitch">Collect battlepass</label><br>
-        <input type="checkbox" id="loyaltySwitch">Preserve gold loyalty</label><br>
-        <input type="checkbox" id="commonSwitch">Use common units</label><br>
-        <input type="checkbox" id="uncommonSwitch">Use uncommon units</label><br>
-        <input type="checkbox" id="rareSwitch">Use rare units</label><br>
-        <input type="checkbox" id="legendarySwitch">Use legendary units</label><br>
-        <input type="checkbox" id="duelSwitch">Unlimited duels</label><br>
-        <input type="checkbox" id="clashSwitch">Unlimited clashes</label><br>
-        <input type="checkbox" id="dungeonSwitch">Unlimited dungeons</label><br>
+        <div style="text-align: justify;">DISCLAIMER: For the switches to work the SR tab must be active in view
+            otherwise a connection between this popup and the main script cannot be established<br></div>
+        <label for="scrollSwitch"><input type="checkbox" id="scrollSwitch"> Buy scrolls</label><br>
+        <label for="extraSwitch"><input type="checkbox" id="extraSwitch"> Buy extra $100 scrolls</label><br>
+        <label for="questSwitch"><input type="checkbox" id="questSwitch"> Collect quests</label><br>
+        <label for="battlepassSwitch"><input type="checkbox" id="battlepassSwitch"> Collect battlepass</label><br>
+        <label for="loyaltySwitch"><input type="checkbox" id="loyaltySwitch"> Preserve gold loyalty <div
+                class="tooltip">?<span class="tooltiptext">There's a cap on loyalty chests, when enabled those chests
+                    will be skipped if loyalty isn't gold</span></div></label><br>
+        <label for="commonSwitch"><input type="checkbox" id="commonSwitch"> Use common units</label><br>
+        <label for="uncommonSwitch"><input type="checkbox" id="uncommonSwitch"> Use uncommon units</label><br>
+        <label for="rareSwitch"><input type="checkbox" id="rareSwitch"> Use rare units</label><br>
+        <label for="legendarySwitch"><input type="checkbox" id="legendarySwitch"> Use legendary units</label><br>
+        <label for="duelSwitch"><input type="checkbox" id="duelSwitch"> Unlimited duels <div class="tooltip">?<span
+                    class="tooltiptext">When enabled more than one unit will be placed on duels</span></div></label><br>
+        <label for="clashSwitch"><input type="checkbox" id="clashSwitch"> Unlimited clashes <div class="tooltip">?<span
+                    class="tooltiptext">When enabled more than one unit will be placed on clashes</span></div>
+        </label><br>
+        <label for="dungeonSwitch"><input type="checkbox" id="dungeonSwitch"> Unlimited dungeons <div class="tooltip">
+                ?<span class="tooltiptext">When enabled more than one unit will be placed on dungeons</span></div>
+        </label><br>
         <label>POTIONS</label><br>
         <label><input type="radio" name="potion" value="0"> No potions</label><br>
-        <label> <input type="radio" name="potion" value="1"> Potions at 45 </label><br>
+        <label><input type="radio" name="potion" value="1"> Potions at 45 </label><br>
         <label><input type="radio" name="potion" value="2"> Potions at 100</label><br><br>
         Color code:<br>
-        &#128997 Captain switched to Campaign mode<br>
-        &#129002 There aren't any units that match any of the markers<br>
-        &#129000 Captain loyalty isn't gold<br>
+        &#128997; Captain switched to Campaign mode<br>
+        &#129002; There aren't any units that match any of the markers<br>
+        &#129000; Captain loyalty isn't gold<br>
     </b>
 </body>
 

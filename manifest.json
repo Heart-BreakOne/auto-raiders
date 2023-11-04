@@ -22,7 +22,8 @@
             "storage_manager.js",
             "battle_handler.js",
             "switch_handler.js",
-            "captain_handler.js"
+            "captain_handler.js",
+            "pause_handler.js"
          ],
          "matches": [
             "https://www.streamraiders.com/*"

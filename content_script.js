@@ -143,15 +143,19 @@ async function start() {
     for (var button of placeUnitButtons) {
       if (button.innerText.includes("PLACE UNIT")) {
         var captainSlot = button.closest('.capSlot');
+        const captainNameFromDOM = captainSlot.querySelector('.capSlotName').innerText;
+        const slotState = await retrieveStateFromStorage(captainNameFromDOM);
         const dungeonCaptainNameFromStorage = await retrieveFromStorage('dungeonCaptain');
         const clashCaptainNameFromStorage = await retrieveFromStorage('clashCaptain');
         const duelsCaptainNameFromStorage = await retrieveFromStorage('duelCaptain');
         const clashSwitch = await retrieveFromStorage('clashSwitch');
         const dungeonSwitch = await retrieveFromStorage('dungeonSwitch');
         const duelSwitch = await retrieveFromStorage('duelSwitch');
-        const captainNameFromDOM = captainSlot.querySelector('.capSlotName').innerText;
         let captainFlag
         let captainLoyalty
+        if(slotState) {
+          continue
+        }
         try {
           captainFlag = await getCaptainFlag(captainNameFromDOM, 'flaggedCaptains');
         } catch (error) {
@@ -621,6 +625,10 @@ const observer = new MutationObserver(function (mutations) {
     if (questModal) {
       questModal.remove();
     }
+
+    const menuView = document.querySelector(".battleView")
+    if(menuView)
+      injectIntoDOM()
   });
 });
 
