@@ -153,7 +153,7 @@ async function start() {
         const duelSwitch = await retrieveFromStorage('duelSwitch');
         let captainFlag
         let captainLoyalty
-        if(slotState) {
+        if (slotState) {
           continue
         }
         try {
@@ -576,24 +576,36 @@ function placeTheUnit() {
   }, 5000);
 }
 
+
 async function changeBackgroundColor() {
   const captainSlots = document.querySelectorAll(".capSlots");
   if (captainSlots.length == 0) {
-    return
+    return;
   }
   const firstCapSlot = captainSlots[0];
   const capSlotChildren = firstCapSlot.querySelectorAll('.capSlot');
   const dungeonCaptainNameFromStorage = await retrieveFromStorage('dungeonCaptain');
   const clashCaptainNameFromStorage = await retrieveFromStorage('clashCaptain');
   const duelsCaptainNameFromStorage = await retrieveFromStorage('duelCaptain');
-  let capNameDOM
-  capSlotChildren.forEach(capSlot => {
-    // Do something with each .capSlot element
+  let capNameDOM;
+
+  for (const capSlot of capSlotChildren) {
     try {
       capNameDOM = capSlot.querySelector('.capSlotName').innerText;
     } catch (error) {
-      return
+      continue;
     }
+
+    const play = String.fromCharCode(9654)
+    const pause = String.fromCharCode(9208)
+    const state = await retrieveStateFromStorage(capNameDOM);
+    const pauseButton = capSlot.querySelector('.pauseButton');
+    if (state && capSlot.innerText.includes(play)) {
+      pauseButton.innerText = pause
+    } else if (!state && capSlot.innerText.includes(pause)) {
+      pauseButton.innerText = play
+    }
+
     if ((dungeonCaptainNameFromStorage != capNameDOM) && capSlot.innerText.includes("Dungeons") ||
       (clashCaptainNameFromStorage != capNameDOM) && capSlot.innerText.includes("Clash") ||
       (duelsCaptainNameFromStorage != capNameDOM) && capSlot.innerText.includes("Duel") ||
@@ -602,13 +614,13 @@ async function changeBackgroundColor() {
       (duelsCaptainNameFromStorage == capNameDOM) && !capSlot.innerText.includes("Duel")) {
       capSlot.style.backgroundColor = red;
     } else if (capSlot.style.backgroundColor === yellow || capSlot.style.backgroundColor === purple) {
-      //If color is yellow or purple do nothing
     }
     else {
       capSlot.style.backgroundColor = gameBlue;
     }
-  });
+  }
 }
+
 
 //Mutator observer to remove stuck modals
 const observer = new MutationObserver(function (mutations) {
@@ -627,7 +639,7 @@ const observer = new MutationObserver(function (mutations) {
     }
 
     const menuView = document.querySelector(".battleView")
-    if(menuView)
+    if (menuView)
       injectIntoDOM()
   });
 });
