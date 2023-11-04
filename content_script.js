@@ -413,6 +413,10 @@ async function selectUnit() {
   if (placeUnitSelection) {
     placeUnitSelection.click();
   }
+  let allUnitsButton = document.querySelector('.unitFilterButton');
+  if (allUnitsButton) {
+    allUnitsButton.click();
+  }
   //Use a potion if there are 100 potions available, uncomment to enable it.
   const potionState = await getRadioButton();
   let number

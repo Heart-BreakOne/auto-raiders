@@ -69,9 +69,9 @@ function saveStateToStorage(name, booleanValue) {
     if (dataArray.length <= 10) {
         chrome.storage.local.set({ 'dataArray': dataArray }, function () {
             if (chrome.runtime.lastError) {
-                console.error(chrome.runtime.lastError);
+                loadBanner("Failed to update settings", "red")
             } else {
-                console.log('log sucess');
+                loadBanner("Settings updated sucessfully", "green")
             }
         });
     }
