@@ -636,7 +636,7 @@ async function changeBackgroundColor() {
 
 //Mutator observer to remove stuck modals
 const observer = new MutationObserver(function (mutations) {
-  mutations.forEach(function (mutation) {
+  mutations.forEach(async function (mutation) {
     const rewardsScrim = document.querySelector(".rewardsScrim");
     if (rewardsScrim) {
       rewardsScrim.remove();
@@ -645,7 +645,9 @@ const observer = new MutationObserver(function (mutations) {
     if (rootElement && rootElement.children.length === 0) {
       location.reload()
     }
-    const questModal = document.querySelector(".modalScrim.modalOn")
+    let questModal = document.querySelector(".modalScrim.modalOn");
+    await delay(6000);
+    questModal = document.querySelector(".modalScrim.modalOn");
     if (questModal && !questModal.innerText.includes("Leave battle?")) {
       questModal.remove();
     }

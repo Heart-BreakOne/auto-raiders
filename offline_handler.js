@@ -16,10 +16,11 @@ async function checkOfflineCaptains() {
 
         // Flag captain for check
         if (statusArray.includes(battleStatus)) {
+            await setBattleStatus(captainName)
             const isIdle = await getBattleStatus(captainName)
             //Captain is idle, switch and select a new one
             if (isIdle) {
-                const close = slot.querySelector(".fal.fa-times-square");
+                let close = slot.querySelector(".fas.fa-square");
                 close.click();
                 const modal = document.querySelector(".modalScrim.modalOn");
                 if (modal) {
@@ -32,8 +33,6 @@ async function checkOfflineCaptains() {
                 selectButton.click();
                 switchOfflineCaptain()
                 return;
-            } else {
-                setBattleStatus(captainName)
             }
         }
     }
@@ -50,7 +49,7 @@ async function setBattleStatus(captainName) {
         if (existingCaptainIndex !== -1) {
             // Check if the time difference is more than 1:30 hours (5400000 milliseconds)
             const lastUpdateTime = idleData[existingCaptainIndex].currentTime;
-            if (currentTime - new Date(lastUpdateTime).getTime() > 1200000) {
+            if (currentTime - new Date(lastUpdateTime).getTime() > 1800000) {
                 // Update the currentTime
                 idleData[existingCaptainIndex].currentTime = new Date(currentTime).toISOString();
                 // Save updated data back to local storage
@@ -107,7 +106,10 @@ async function switchOfflineCaptain() {
     //Remove all non-campaign and non-loyalty captains.
     allCaptainsList.forEach(captain => {
         const modeLabel = captain.querySelector(".versusLabelContainer");
-        const alreadyJoined = captain.querySelector("searchResultJoinLabel");
+        let alreadyJoined = captain.querySelector("searchResultJoinLabel");
+        if (alreadyJoined == null) {
+            alreadyJoined = ""
+        }
         if (modeLabel.innerText !== 'Campaign' || alreadyJoined.innerText === "Already joined captain") {
             captainsToRemove.push(captain);
         }
@@ -120,14 +122,14 @@ async function switchOfflineCaptain() {
     if (allCaptainsList.length - captainsToRemove.length > 0) {
         captainsToRemove.forEach(captain => captain.remove());
     }
-    
+
     captainsToRemove = [];
 
     // Remove bronze and silver captains.
     allCaptainsList = document.querySelectorAll(".searchResult");
     allCaptainsList.forEach(captain => {
         const loyaltyImage = captain.querySelector('.searchResultLoyalty img');
-        if(loyaltyImage.src !== "https://d2k2g0zg1te1mr.cloudfront.net/env/prod1/mobile-lite/static/media/iconLoyaltyGold.4bd4f730.png") {
+        if (loyaltyImage.src !== "https://d2k2g0zg1te1mr.cloudfront.net/env/prod1/mobile-lite/static/media/iconLoyaltyGold.4bd4f730.png") {
             captainsToRemove.push(captain);
         }
     });
