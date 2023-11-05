@@ -129,8 +129,10 @@ async function switchOfflineCaptain() {
     allCaptainsList = document.querySelectorAll(".searchResult");
     allCaptainsList.forEach(captain => {
         const loyaltyImage = captain.querySelector('.searchResultLoyalty img');
-        if (loyaltyImage.src !== "https://d2k2g0zg1te1mr.cloudfront.net/env/prod1/mobile-lite/static/media/iconLoyaltyGold.4bd4f730.png") {
-            captainsToRemove.push(captain);
+        if (loyaltyImage) {
+            if (loyaltyImage.src !== "https://d2k2g0zg1te1mr.cloudfront.net/env/prod1/mobile-lite/static/media/iconLoyaltyGold.4bd4f730.png") {
+                captainsToRemove.push(captain);
+            }
         }
     });
 
