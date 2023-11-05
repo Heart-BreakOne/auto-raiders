@@ -47,9 +47,9 @@ async function setBattleStatus(captainName) {
         // Find the captain with the same name
         const existingCaptainIndex = idleData.findIndex(item => item.captainName === captainName);
         if (existingCaptainIndex !== -1) {
-            // Check if the time difference is more than 1 hour (3600000 milliseconds)
+            // Check if the time difference is more than 1:30 hours (5400000 milliseconds)
             const lastUpdateTime = idleData[existingCaptainIndex].currentTime;
-            if (currentTime - new Date(lastUpdateTime).getTime() > 3600000) {
+            if (currentTime - new Date(lastUpdateTime).getTime() > 5400000) {
                 // Update the currentTime
                 idleData[existingCaptainIndex].currentTime = new Date(currentTime).toISOString();
                 // Save updated data back to local storage
