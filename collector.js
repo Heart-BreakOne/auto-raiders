@@ -5,44 +5,45 @@ let inRange;
 
 async function buyScrolls() {
     let scrollState = await getSwitchState("scrollSwitch");
-    let extraState = await getSwitchState("extraSwitch")
+    let extraState = await getSwitchState("extraSwitch");
     if (!scrollState) {
-        return
+        return;
     }
-    collectDelay = ms => new Promise(res => setTimeout(res, ms));
+    collectDelay = (ms) => new Promise((res) => setTimeout(res, ms));
     //Get navMenuItems
-    navItems = document.querySelectorAll('.mainNavItemText');
+    navItems = document.querySelectorAll(".mainNavItemText");
 
     //Gets the current UTC time as the scroll store is only available at the following times: 00:00, 06:00, 12:00 and 18:00
     const now = new Date();
     const minutes = now.getMinutes();
+    inRange = false;
 
-    inRange = false
     if ((minutes >= 0 && minutes < 7) || (minutes >= 15 && minutes < 22) || (minutes >= 30 && minutes < 37) || (minutes >= 45 && minutes < 52)) {
-        inRange = true
+        inRange = true;
     }
     if (inRange) {
-        navItems.forEach(navItem => {
+        navItems.forEach((navItem) => {
             if (navItem.innerText === "Store") {
                 navItem.click();
             }
-        })
+        });
+
         //Click on scroll shop buttons if it hasnt been done already
-        await collectDelay(4000)
-        let buyScrollButtons = document.querySelectorAll(".actionButton.actionButtonGolden.actionButtonShiny.userStoreItemButton")
-        const freebieButton = document.querySelector('.actionButton.actionButtonBones.storeCardButton.storeCardButtonBuy')
+        await collectDelay(4000);
+        let buyScrollButtons = document.querySelectorAll(".actionButton.actionButtonGolden.actionButtonShiny.userStoreItemButton");
+        const freebieButton = document.querySelector(".actionButton.actionButtonBones.storeCardButton.storeCardButtonBuy");
         if (buyScrollButtons.length > 0) {
-            buyScrollButtons.forEach(buyButton => {
+            buyScrollButtons.forEach((buyButton) => {
                 buyButton.click();
-            })
-            returnToMainScreen()
+            });
+            returnToMainScreen();
         } else if (freebieButton && freebieButton.innerText.includes("CLAIM")) {
             freebieButton.click();
             freebieButton.submit();
             returnToMainScreen();
         }
         else if (extraState) {
-            //Refresh store one time for 100 coins after the first purchases 
+            //Refresh store one time for 100 coins after the first purchases
             let buyMoreButton = document.querySelector(".actionButton.actionButtonGolden.storeScrollsButton");
             if (buyMoreButton) {
                 const buttonText = buyMoreButton.innerText;
@@ -52,50 +53,50 @@ async function buyScrolls() {
                     buyMoreButton.submit();
                 }
             }
-            returnToMainScreen()
+            returnToMainScreen();
         }
     } else {
-        returnToMainScreen()
+        returnToMainScreen();
     }
 
 }
 
 async function collectQuests() {
-    let questState = await getSwitchState("questSwitch")
+    let questState = await getSwitchState("questSwitch");
     if (!questState) {
-        return
+        return;
     }
-    collectDelay = ms => new Promise(res => setTimeout(res, ms));
-    navItems = document.querySelectorAll('.mainNavItemText');
+    collectDelay = (ms) => new Promise((res) => setTimeout(res, ms));
+    navItems = document.querySelectorAll(".mainNavItemText");
 
-    navItems.forEach(navItem => {
+    navItems.forEach((navItem) => {
         if (navItem.innerText === "Quests") {
             navItem.click();
         }
-    })
-    await collectDelay(4000)
-    const questItems = document.querySelectorAll('.questItemCont');
+    });
+    await collectDelay(4000);
+    const questItems = document.querySelectorAll(".questItemCont");
 
-    questItems.forEach(questItem => {
-        const collectQuestButton = questItem.querySelector('.actionButton.actionButtonPrimary.questItemCollect');
-        const isDisabled = questItem.querySelector('.questItemDisabled');
+    questItems.forEach((questItem) => {
+        const collectQuestButton = questItem.querySelector(".actionButton.actionButtonPrimary.questItemCollect");
+        const isDisabled = questItem.querySelector(".questItemDisabled");
         if (collectQuestButton && !isDisabled) {
             collectQuestButton.click();
             collectQuestButton.submit();
         }
     });
-    returnToMainScreen()
+    returnToMainScreen();
 }
 
 //Collect battlepass
 async function collectBattlePass() {
-    let questState = await getSwitchState("battlepassSwitch")
+    let questState = await getSwitchState("battlepassSwitch");
     if (!questState) {
-        return
+        return;
     }
     //Get header buttons and click on Reward button
     const headerButtons = document.querySelectorAll(".actionButton.actionButtonGift");
-    headerButtons.forEach(rewardButton => {
+    headerButtons.forEach((rewardButton) => {
         if (rewardButton.innerText.includes("REWARDS")) {
             rewardButton.click();
             //collect rewards if there are any
@@ -104,14 +105,14 @@ async function collectBattlePass() {
                 button.click();
 
                 const confirmButtons = document.querySelectorAll(".actionButton.actionButtonPrimary");
-                confirmButtons.forEach(confirm => {
+                confirmButtons.forEach((confirm) => {
                     if (confirm.innerText.includes("CONFIRM AND COLLECT")) {
                         confirm.click();
                         confirm.submit();
                     }
                 });
             }
-            close()
+            close();
         }
     });
 }
@@ -127,7 +128,7 @@ function close() {
 
 //Sales and quests done, return to main screen
 function returnToMainScreen() {
-    navItems = document.querySelectorAll('.mainNavItemText');
+    navItems = document.querySelectorAll(".mainNavItemText");
     navItems.forEach(navItem => {
         if (navItem.innerText === "Battle") {
             navItem.click();

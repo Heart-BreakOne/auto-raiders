@@ -4,17 +4,17 @@ async function manageCaptain(captainType, keyword) {
     let counter = 0;
 
     if (captains) {
-        captains.forEach(captain => {
+        captains.forEach((captain) => {
             if (captain.innerText.includes(keyword)) {
-                counter++;
+                counter += 1;
             }
         });
     }
 
     if (counter === 1) {
-        captains.forEach(capSlotContent => {
+        captains.forEach((capSlotContent) => {
             if (capSlotContent.innerText.includes(keyword)) {
-                captainName = capSlotContent.querySelector('.capSlotName').innerText;
+                captainName = capSlotContent.querySelector(".capSlotName").innerText;
             }
         });
         await saveToStorage(captainType, captainName);
@@ -24,7 +24,7 @@ async function manageCaptain(captainType, keyword) {
 setInterval(manageDungeon, 5000);
 
 async function manageDungeon() {
-    await manageCaptain('dungeonCaptain', 'Dungeons');
-    await manageCaptain('clashCaptain', 'Clash');
-    await manageCaptain('duelCaptain', 'Duel');
-}   
+    await manageCaptain("dungeonCaptain", "Dungeons");
+    await manageCaptain("clashCaptain", "Clash");
+    await manageCaptain("duelCaptain", "Duel");
+}

@@ -4,37 +4,37 @@ async function flagCaptain(flag) {
         chrome.storage.local.get([flag], function (result) {
             let flaggedData = result[flag] || [];
 
-            const captainButtons = document.querySelectorAll('.captainButton');
+            const captainButtons = document.querySelectorAll(".captainButton");
 
             captainButtons.forEach((button, index) => {
                 let isActive;
-                try {   
-                    isActive = button.querySelector('.captainButtonImg').classList.contains('captainButtonActive');
+                try {
+                    isActive = button.querySelector(".captainButtonImg").classList.contains("captainButtonActive");
                 } catch {
                     isActive = false;
                 }
 
                 if (isActive) {
                     const captainId = index + 1;
-                    const captainName = button.querySelector('.captainButtonImg').getAttribute('alt');
+                    const captainName = button.querySelector(".captainButtonImg").getAttribute("alt");
                     const currentTime = new Date();
 
                     // Check if an entry with the same captainId exists
-                    const indexToUpdate = flaggedData.findIndex(entry => entry.captainId === captainId);
+                    const indexToUpdate = flaggedData.findIndex((entry) => entry.captainId === captainId);
 
                     if (indexToUpdate !== -1) {
                         // Replace existing entry
                         flaggedData[indexToUpdate] = {
                             captainId: captainId,
                             captainName: captainName,
-                            currentTime: currentTime.toISOString() // Modified this line
+                            currentTime: currentTime.toISOString()
                         };
                     } else {
                         // Add new entry
                         flaggedData.push({
                             captainId: captainId,
                             captainName: captainName,
-                            currentTime: currentTime.toISOString() // Modified this line
+                            currentTime: currentTime.toISOString()
                         });
                     }
                 }
@@ -62,7 +62,7 @@ async function getCaptainFlag(captainName, flagKey) {
                 if (elapsedTimeInMinutes >= 5) {
                     resolve(false);
                 } else {
-                    resolve(true); 
+                    resolve(true);
                 }
             } else {
                 resolve(false);
