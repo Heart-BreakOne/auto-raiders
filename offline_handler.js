@@ -136,5 +136,5 @@ async function switchOfflineCaptain() {
 
     const captainButton = document.querySelector(".actionButton.actionButtonPrimary.searchResultButton");
     captainButton.click();
-
+    return;
 }
