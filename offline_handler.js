@@ -1,5 +1,5 @@
 
-const statusArray = ["Waiting for Captain to find battle!", , "Waiting for captain to start battle!", "Waiting for Captain to collect reward!"];
+const statusArray = ["Waiting for Captain to find battle!", , "Waiting for Captain to start battle!", "Waiting for Captain to collect reward!"];
 let offlineDelay = ms => new Promise(res => setTimeout(res, ms));
 
 async function checkOfflineCaptains() {
