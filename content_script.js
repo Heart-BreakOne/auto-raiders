@@ -97,6 +97,9 @@ const arrayOfUnits = [
 // This is the start, it selects a captain placement as well as collect any rewards to proceed
 async function start() {
 
+  const logIsOpen = document.querySelector(".log_iframe");
+  if (logIsOpen) return;
+
   //If it's stuck for 60 seconds set isRunning to false
   startLoop++
   if (startLoop >= 2) {
@@ -115,6 +118,11 @@ async function start() {
       navItem.click();
     }
   })
+
+  const offline = await retrieveFromStorage("offlineSwitch")
+  if (offline) {
+    checkOfflineCaptains()
+  }
 
   // Collects defeat and savage chest
   const defeatButton = document.querySelectorAll(".actionButton.capSlotButton.capSlotButtonAction");
@@ -642,7 +650,7 @@ const observer = new MutationObserver(function (mutations) {
       questModal.remove();
     }
 
-    const menuView = document.querySelector(".battleView")
+    const menuView = document.querySelector(".mainNavCont.mainNavContPortrait")
     if (menuView)
       injectIntoDOM()
   });

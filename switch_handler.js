@@ -1,7 +1,7 @@
 const successMessage = "Settings updated sucessfully";
 const failureMessage = "Failed to update settings";
 const redColor = "red";
-const greenColor = "green";
+const greenColor = "#5fa695";
 
 chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
     if (request.type === "FROM_BACKGROUND") {

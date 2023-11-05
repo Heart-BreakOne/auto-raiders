@@ -12,7 +12,7 @@
    },
    "permissions": [
       "storage"
-    ],
+   ],
    "content_scripts": [
       {
          "js": [
@@ -23,19 +23,22 @@
             "battle_handler.js",
             "switch_handler.js",
             "captain_handler.js",
-            "pause_handler.js"
+            "inject_handler.js",
+            "offline_handler.js"
          ],
          "matches": [
             "https://www.streamraiders.com/*"
          ]
       }
    ],
-  "externally_connectable": {
-   "matches": ["<all_urls>"]
- },
- "background": {
-   "service_worker": "background.js"
-},
+   "externally_connectable": {
+      "matches": [
+         "<all_urls>"
+      ]
+   },
+   "background": {
+      "service_worker": "background.js"
+   },
    "icons": {
       "128": "icons/icon-128.png",
       "48": "icons/icon-48.png"
