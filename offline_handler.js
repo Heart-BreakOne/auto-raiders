@@ -168,11 +168,9 @@ async function switchOfflineCaptain() {
                 alreadyJoined = "";
             }
             if (modeLabel === "Campaign" || alreadyJoined.innerText !== "Already joined captain") {
-                if (await retrieveFromStorage("skipSwitch")) {
-                    //Add logic for loyalty
-                    //Check loyalty setting, if there's no loyalty, cancel and don't join.
+                const skipSwitch = await retrieveFromStorage("skipSwitch")
+                if (skipSwitch) {
                     var menus = document.querySelectorAll('.slideMenuTop');
-
                     menus.forEach(function (menu) {
                         var menuText = menu.querySelector('div:nth-child(1)');
                         if (menuText.innerText === 'Search Captain') {
