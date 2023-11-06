@@ -129,13 +129,11 @@ async function getBattleStatus(captainName) {
 //Scroll to the bottom and load all captains
 async function scroll() {
     let scroll = document.querySelector('.capSearchResults');
-    let prevScrollHeight;
 
-    do {
-        prevScrollHeight = scroll.scrollHeight;
-        scroll.scrollTop = prevScrollHeight;
-        await offlineDelay(500);
-    } while (scroll.scrollHeight > prevScrollHeight);
+    for (let i = 0; i < 15; i++) {
+        scroll.scrollTop = scroll.scrollHeight;
+        await offlineDelay(300);
+    }
 }
 
 async function switchOfflineCaptain() {
