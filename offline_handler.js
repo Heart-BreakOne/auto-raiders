@@ -78,9 +78,9 @@ async function setBattleStatus(captainName) {
         // Find the captain with the same name
         const existingCaptainIndex = idleData.findIndex(item => item.captainName === captainName);
         if (existingCaptainIndex !== -1) {
-            // 1200000 = 20 minutes
+            // 1200000 = 20 minutes  - 3600000 = 60 minutes
             const lastUpdateTime = idleData[existingCaptainIndex].currentTime;
-            if (currentTime - new Date(lastUpdateTime).getTime() > 1200000) {
+            if (currentTime - new Date(lastUpdateTime).getTime() > 3600000) {
                 // Update the currentTime
                 idleData[existingCaptainIndex].currentTime = new Date(currentTime).toISOString();
                 // Save updated data back to local storage

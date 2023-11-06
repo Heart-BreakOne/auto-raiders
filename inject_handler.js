@@ -97,7 +97,7 @@ document.addEventListener("click", function (event) {
     }
 
     if (event.target.classList.contains("wipeButton")) {
-        chrome.storage.local.remove(["dungeonCaptain", "clashCaptain", "duelCaptain", 'flaggedCaptains', 'captainLoyalty'], function () {
+        chrome.storage.local.remove(["dungeonCaptain", "clashCaptain", "duelCaptain", 'flaggedCaptains', 'captainLoyalty', 'idleData'], function () {
             loadBanner("Settings updated sucessfully", "#5fa695");
         });
     }
