@@ -1,7 +1,7 @@
 {
    "manifest_version": 3,
    "name": "AutoRaiders",
-   "version": "3.0.4",
+   "version": "3.0.5",
    "description": "SR automator",
    "action": {
       "default_popup": "popup.html",

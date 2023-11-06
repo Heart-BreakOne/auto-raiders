@@ -5,6 +5,7 @@ let captainButton;
 const goldLoyaltyString = "https://d2k2g0zg1te1mr.cloudfront.net/env/prod1/mobile-lite/static/media/iconLoyaltyGold.4bd4f730.png";
 const silverLoyaltyString = "https://d2k2g0zg1te1mr.cloudfront.net/env/prod1/mobile-lite/static/media/iconLoyaltyBlue.d4328aba.png";
 const bronzeLoyaltyString = "https://d2k2g0zg1te1mr.cloudfront.net/env/prod1/mobile-lite/static/media/iconLoyaltyWood.ad7f4cb5.png";
+const favoriteString = "Adhafybh9zXMAAAAAElFTkSuQmCC";
 
 async function checkOfflineCaptains() {
 
@@ -132,7 +133,7 @@ async function scroll() {
 
     for (let i = 0; i < 15; i++) {
         scroll.scrollTop = scroll.scrollHeight;
-        await offlineDelay(300);
+        await offlineDelay(450);
     }
 }
 
@@ -146,6 +147,15 @@ async function switchOfflineCaptain() {
     let goldLoyaltyList = createLoyaltyList(fullCaptainList, goldLoyaltyString);
     let silverLoyaltyList = createLoyaltyList(fullCaptainList, silverLoyaltyString);
     let bronzeLoyaltyList = createLoyaltyList(fullCaptainList, bronzeLoyaltyString);
+    let favoriteList = Array.from(fullCaptainList).filter(captain => {
+        const imgElement = captain.querySelector('.favoriteButton img');
+        const versusLabelElement = captain.querySelector('.versusLabelContainer');
+        const joinLabelElement = captain.querySelector('.searchResultJoinLabel');
+
+        return imgElement && imgElement.src.includes(favoriteString) &&
+            versusLabelElement && versusLabelElement.textContent.trim() === 'Campaign' &&
+            (!joinLabelElement || joinLabelElement.textContent.trim() !== 'Already joined Captain');
+    });
 
     if (goldLoyaltyList.length != 0) {
         captainButton = goldLoyaltyList[0].querySelector(".actionButton.actionButtonPrimary.searchResultButton");
@@ -156,7 +166,11 @@ async function switchOfflineCaptain() {
     } else if (bronzeLoyaltyList.length != 0) {
         captainButton = bronzeLoyaltyList[0].querySelector(".actionButton.actionButtonPrimary.searchResultButton");
         captainButton.click();
-    } else {
+    } else if (favoriteList.length != 0) {
+        captainButton = favoriteList[0].querySelector(".actionButton.actionButtonPrimary.searchResultButton");
+        captainButton.click()
+    }
+    else {
         //use whatever is available
         for (let i = 0; i < fullCaptainList.length; i++) {
             const captain = fullCaptainList[i];
