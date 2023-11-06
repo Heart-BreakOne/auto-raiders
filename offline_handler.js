@@ -22,6 +22,7 @@ async function checkOfflineCaptains() {
 
         if (selectButton && selectButton.innerText == "SELECT") {
             selectButton.click();
+            await scroll();
             switchOfflineCaptain()
             return;
         } else if (statusArray.includes(battleStatus)) {
@@ -41,6 +42,7 @@ async function checkOfflineCaptains() {
                 await offlineDelay(2000);
                 const selectButton = slot.querySelector(".actionButton.actionButtonPrimary.capSlotButton.capSlotButtonAction");
                 selectButton.click();
+                scroll();
                 switchOfflineCaptain()
                 return;
             }
@@ -124,6 +126,17 @@ async function getBattleStatus(captainName) {
     });
 }
 
+//Scroll to the bottom and load all captains
+async function scroll() {
+    let scroll = document.querySelector('.capSearchResults');
+    let prevScrollHeight;
+
+    do {
+        prevScrollHeight = scroll.scrollHeight;
+        scroll.scrollTop = prevScrollHeight;
+        await offlineDelay(500);
+    } while (scroll.scrollHeight > prevScrollHeight);
+}
 
 async function switchOfflineCaptain() {
     //Switch captains
@@ -132,8 +145,6 @@ async function switchOfflineCaptain() {
     allCaptainsTab.click();
     await offlineDelay(3000);
     let fullCaptainList = document.querySelectorAll(".searchResult");
-
-
     let goldLoyaltyList = createLoyaltyList(fullCaptainList, goldLoyaltyString);
     let silverLoyaltyList = createLoyaltyList(fullCaptainList, silverLoyaltyString);
     let bronzeLoyaltyList = createLoyaltyList(fullCaptainList, bronzeLoyaltyString);
@@ -157,9 +168,27 @@ async function switchOfflineCaptain() {
                 alreadyJoined = "";
             }
             if (modeLabel === "Campaign" || alreadyJoined.innerText !== "Already joined captain") {
-                captainButton = captain.querySelector(".actionButton.actionButtonPrimary.searchResultButton");
-                captainButton.click();
-                break;
+                if (await retrieveFromStorage("skipSwitch")) {
+                    //Add logic for loyalty
+                    //Check loyalty setting, if there's no loyalty, cancel and don't join.
+                    var menus = document.querySelectorAll('.slideMenuTop');
+
+                    menus.forEach(function (menu) {
+                        var menuText = menu.querySelector('div:nth-child(1)');
+                        if (menuText.innerText === 'Search Captain') {
+                            var closeButton = menu.querySelector('.far.fa-times');
+                            if (closeButton) {
+                                closeButton.click();
+                            }
+                        }
+                    });
+                    break;
+                } else {
+                    captainButton = captain.querySelector(".actionButton.actionButtonPrimary.searchResultButton");
+                    captainButton.click();
+                    break;
+                }
+
             }
         }
     }
