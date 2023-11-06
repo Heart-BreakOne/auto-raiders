@@ -121,7 +121,7 @@ async function start() {
 
   const offline = await retrieveFromStorage("offlineSwitch")
   if (offline) {
-    checkOfflineCaptains()
+    await checkOfflineCaptains()
   }
 
   // Collects defeat and savage chest
@@ -646,9 +646,12 @@ const observer = new MutationObserver(function (mutations) {
       location.reload()
     }
     let questModal = document.querySelector(".modalScrim.modalOn");
-    await delay(6000);
-    questModal = document.querySelector(".modalScrim.modalOn");
-    if (questModal && !questModal.innerText.includes("Leave battle?")) {
+    /*Two types of modal warning titles:
+    "Leave battle?"
+    "Leave battle early and collect savage chest"
+    */
+
+    if (questModal && !questModal.innerText.includes("Leave battle")) {
       questModal.remove();
     }
 

@@ -1,6 +1,10 @@
 
 const statusArray = ["Waiting for Captain to find battle!", , "Waiting for Captain to start battle!", "Waiting for Captain to collect reward!"];
-let offlineDelay = ms => new Promise(res => setTimeout(res, ms));
+const offlineDelay = ms => new Promise(res => setTimeout(res, ms));
+let captainButton;
+const goldLoyaltyString = "https://d2k2g0zg1te1mr.cloudfront.net/env/prod1/mobile-lite/static/media/iconLoyaltyGold.4bd4f730.png";
+const silverLoyaltyString = "https://d2k2g0zg1te1mr.cloudfront.net/env/prod1/mobile-lite/static/media/iconLoyaltyBlue.d4328aba.png";
+const bronzeLoyaltyString = "https://d2k2g0zg1te1mr.cloudfront.net/env/prod1/mobile-lite/static/media/iconLoyaltyWood.ad7f4cb5.png";
 
 async function checkOfflineCaptains() {
 
@@ -12,10 +16,14 @@ async function checkOfflineCaptains() {
     for (let index = 0; index < capSlots.length; index++) {
         const slot = capSlots[index];
         const battleStatus = slot.querySelector(".capSlotStatus").innerText;
-        const captainName = slot.querySelector(".capSlotName").innerText;
+        const selectButton = slot.querySelector(".actionButton.actionButtonPrimary.capSlotButton.capSlotButtonAction");
 
-        // Flag captain for check
-        if (statusArray.includes(battleStatus)) {
+        if (selectButton && selectButton.innerText == "SELECT") {
+            selectButton.click();
+            switchOfflineCaptain()
+            return;
+        } else if (statusArray.includes(battleStatus)) {
+            const captainName = slot.querySelector(".capSlotName").innerText;
             await setBattleStatus(captainName)
             const isIdle = await getBattleStatus(captainName)
             //Captain is idle, switch and select a new one
@@ -47,9 +55,9 @@ async function setBattleStatus(captainName) {
         // Find the captain with the same name
         const existingCaptainIndex = idleData.findIndex(item => item.captainName === captainName);
         if (existingCaptainIndex !== -1) {
-            // Check if the time difference is more than 1:30 hours (5400000 milliseconds)
+            // 1200000 = 20 minutes
             const lastUpdateTime = idleData[existingCaptainIndex].currentTime;
-            if (currentTime - new Date(lastUpdateTime).getTime() > 1800000) {
+            if (currentTime - new Date(lastUpdateTime).getTime() > 1200000) {
                 // Update the currentTime
                 idleData[existingCaptainIndex].currentTime = new Date(currentTime).toISOString();
                 // Save updated data back to local storage
@@ -81,7 +89,7 @@ async function getBattleStatus(captainName) {
                 const lastUpdateTime = new Date(existingCaptain.currentTime).getTime();
                 const elapsedTime = currentTime - lastUpdateTime;
 
-                if (elapsedTime >= 900000) { // 15 minutes in milliseconds = 900000
+                if (elapsedTime >= 660000) { // 660000 = 11 minutes
                     resolve(true);
                 } else {
                     resolve(false);
@@ -100,48 +108,48 @@ async function switchOfflineCaptain() {
     const allCaptainsTab = document.querySelector(".subNavItemText");
     allCaptainsTab.click();
     await offlineDelay(3000);
-    let allCaptainsList = document.querySelectorAll(".searchResult");
-    let captainsToRemove = [];
+    let fullCaptainList = document.querySelectorAll(".searchResult");
 
-    //Remove all non-campaign and non-loyalty captains.
-    allCaptainsList.forEach(captain => {
-        const modeLabel = captain.querySelector(".versusLabelContainer");
-        let alreadyJoined = captain.querySelector("searchResultJoinLabel");
-        if (alreadyJoined == null) {
-            alreadyJoined = ""
-        }
-        if (modeLabel.innerText !== 'Campaign' || alreadyJoined.innerText === "Already joined captain") {
-            captainsToRemove.push(captain);
-        }
+    
+    let goldLoyaltyList = createLoyaltyList(fullCaptainList, goldLoyaltyString);
+    let silverLoyaltyList = createLoyaltyList(fullCaptainList, silverLoyaltyString);
+    let bronzeLoyaltyList = createLoyaltyList(fullCaptainList, bronzeLoyaltyString);
 
-        const loyaltyImage = captain.querySelector('.searchResultLoyalty img');
-        if (!loyaltyImage || loyaltyImage == null) {
-            captainsToRemove.push(captain);
-        }
-    });
-    if (allCaptainsList.length - captainsToRemove.length > 0) {
-        captainsToRemove.forEach(captain => captain.remove());
-    }
-
-    captainsToRemove = [];
-
-    // Remove bronze and silver captains.
-    allCaptainsList = document.querySelectorAll(".searchResult");
-    allCaptainsList.forEach(captain => {
-        const loyaltyImage = captain.querySelector('.searchResultLoyalty img');
-        if (loyaltyImage) {
-            if (loyaltyImage.src !== "https://d2k2g0zg1te1mr.cloudfront.net/env/prod1/mobile-lite/static/media/iconLoyaltyGold.4bd4f730.png") {
-                captainsToRemove.push(captain);
+    if (goldLoyaltyList.length != 0) {
+        captainButton = goldLoyaltyList[0].querySelector(".actionButton.actionButtonPrimary.searchResultButton");
+        captainButton.click();
+    } else if (silverLoyaltyList.length != 0) {
+        captainButton = silverLoyaltyList[0].querySelector(".actionButton.actionButtonPrimary.searchResultButton");
+        captainButton.click();
+    } else if (bronzeLoyaltyList.length != 0) {
+        captainButton = bronzeLoyaltyList[0].querySelector(".actionButton.actionButtonPrimary.searchResultButton");
+        captainButton.click();
+    } else {
+        //use whatever is available
+        for (let i = 0; i < fullCaptainList.length; i++) {
+            const captain = fullCaptainList[i];
+            const modeLabel = captain.querySelector(".versusLabelContainer").innerText;
+            let alreadyJoined = captain.querySelector(".searchResultJoinLabel");
+            if (alreadyJoined == null) {
+                alreadyJoined = "";
+            }
+            if (modeLabel === "Campaign" || alreadyJoined.innerText !== "Already joined captain") {
+                captainButton = captain.querySelector(".actionButton.actionButtonPrimary.searchResultButton");
+                captainButton.click();
+                break;
             }
         }
-    });
-
-    if (allCaptainsList.length - captainsToRemove.length > 0) {
-        captainsToRemove.forEach(captain => captain.remove());
     }
+}
 
+function createLoyaltyList(fullCaptainList, loyaltyString) {
+    return Array.from(fullCaptainList).filter(captain => {
+        const imgElement = captain.querySelector('.searchResultLoyalty img');
+        const versusLabelElement = captain.querySelector('.versusLabelContainer');
+        const joinLabelElement = captain.querySelector('.searchResultJoinLabel');
 
-    const captainButton = document.querySelector(".actionButton.actionButtonPrimary.searchResultButton");
-    captainButton.click();
-    return;
+        return imgElement && imgElement.src === loyaltyString &&
+            versusLabelElement && versusLabelElement.textContent.trim() === 'Campaign' &&
+            (!joinLabelElement || joinLabelElement.textContent.trim() !== 'Already joined Captain');
+    });
 }
