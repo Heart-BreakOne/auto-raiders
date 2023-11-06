@@ -11,6 +11,8 @@ async function checkOfflineCaptains() {
     const battleView = document.querySelector(".battleView");
     if (!battleView) return;
 
+    await updateRunningCaptains();
+
     const capSlots = document.querySelectorAll('.capSlot');
 
     for (let index = 0; index < capSlots.length; index++) {
@@ -45,6 +47,27 @@ async function checkOfflineCaptains() {
         }
     }
 
+}
+
+async function updateRunningCaptains() {
+    const capSlots = document.querySelectorAll('.capSlot');
+    for (let index = 0; index < capSlots.length; index++) {
+        const slot = capSlots[index];
+        const status = slot.querySelector(".capSlotStatus");
+        const capName = slot.querySelector(".capSlotName");
+        if (status.innerText.includes("Unit ready") && capName) {
+            const name = capName.innerText;
+            chrome.storage.local.get(['idleData'], function (result) {
+                let idleData = result.idleData || [];
+                // Find the captain with the same name
+                const existingCaptainIndex = idleData.findIndex(item => item.captainName === name);
+                if (existingCaptainIndex !== -1) {
+                    idleData.splice(existingCaptainIndex, 1);
+                    chrome.storage.local.set({ idleData: idleData });
+                }
+            });
+        }
+    }
 }
 
 async function setBattleStatus(captainName) {
@@ -89,7 +112,7 @@ async function getBattleStatus(captainName) {
                 const lastUpdateTime = new Date(existingCaptain.currentTime).getTime();
                 const elapsedTime = currentTime - lastUpdateTime;
 
-                if (elapsedTime >= 660000) { // 660000 = 11 minutes
+                if (elapsedTime >= 900000) { // 900000 = 15 minutes
                     resolve(true);
                 } else {
                     resolve(false);
@@ -110,7 +133,7 @@ async function switchOfflineCaptain() {
     await offlineDelay(3000);
     let fullCaptainList = document.querySelectorAll(".searchResult");
 
-    
+
     let goldLoyaltyList = createLoyaltyList(fullCaptainList, goldLoyaltyString);
     let silverLoyaltyList = createLoyaltyList(fullCaptainList, silverLoyaltyString);
     let bronzeLoyaltyList = createLoyaltyList(fullCaptainList, bronzeLoyaltyString);
