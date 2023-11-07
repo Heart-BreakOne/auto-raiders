@@ -156,8 +156,21 @@ async function switchOfflineCaptain() {
             versusLabelElement && versusLabelElement.textContent.trim() === 'Campaign' &&
             (!joinLabelElement || joinLabelElement.textContent.trim() !== 'Already joined Captain');
     });
+    let diamondLoyaltyList = Array.from(fullCaptainList).filter(captain => {
+        const imgElement = captain.querySelector('.searchResultLoyalty img');
+        const versusLabelElement = captain.querySelector('.versusLabelContainer');
+        const joinLabelElement = captain.querySelector('.searchResultJoinLabel');
 
-    if (goldLoyaltyList.length != 0) {
+        return imgElement && imgElement.src != goldLoyaltyString && imgElement.src != silverLoyaltyString && 
+        imgElement.src != bronzeLoyaltyString && versusLabelElement && versusLabelElement.textContent.trim() === 'Campaign' &&
+            (!joinLabelElement || joinLabelElement.textContent.trim() !== 'Already joined Captain');
+    });
+
+    if (diamondLoyaltyList.length != 0) {
+        captainButton = diamondLoyaltyList[0].querySelector(".actionButton.actionButtonPrimary.searchResultButton");
+        captainButton.click();
+    }
+    else if (goldLoyaltyList.length != 0) {
         captainButton = goldLoyaltyList[0].querySelector(".actionButton.actionButtonPrimary.searchResultButton");
         captainButton.click();
     } else if (silverLoyaltyList.length != 0) {

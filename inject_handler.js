@@ -29,8 +29,31 @@ text-align: center;
 `
 
 function injectIntoDOM() {
-    let capSlotNameContList = document.querySelectorAll(".capSlotNameCont");
 
+    const offlineSlots = document.querySelectorAll(".capSlot");
+    // Initialize a counter for generating unique IDs
+    let buttonCounter = 1;
+    offlineSlots.forEach(function (slot) {
+        existingElement = slot.querySelector(".offlineButton");
+        const slotStatus = slot.querySelector(".capSlotStatus");
+
+        if (!existingElement) {
+            newButton = document.createElement("button");
+            newButton.classList.add("offlineButton");
+            // Generate a unique ID for the button
+            newButton.setAttribute("id", `offlineButton_${buttonCounter}`);
+            newButton.textContent = "ENABLED";
+            newButton.style.fontSize = "30px";
+            newButton.style.marginLeft = "15px";
+            newButton.style.backgroundColor = "#5fa695";
+            newButton.style.color = "white";
+            slotStatus.appendChild(newButton);
+            // Increment the counter for the next button
+            buttonCounter++;
+        }
+    });
+
+    let capSlotNameContList = document.querySelectorAll(".capSlotNameCont");
     // Iterate through the list of elements
     capSlotNameContList.forEach(function (capSlotNameCont) {
         // Check if the element already exists inside the current capSlotNameCont
@@ -95,6 +118,28 @@ document.addEventListener("click", function (event) {
             saveStateToStorage(captainName, true);
         }
     }
+
+
+    if (event.target.classList.contains("offlineButton")) {
+        let button = event.target;
+        let id;
+        if (button.innerText === "ENABLED") {
+            //Disable button
+            button.innerText = "DISABLED";
+            id = button.id;
+            button.style.backgroundColor = "red";
+            //Pass button id and false to storage.
+        } else {
+            //Enable button
+            button.innerText = "ENABLED";
+            button.style.backgroundColor = "#5fa695";
+            id = button.id;
+            //Pass button id and true to storage.
+        }
+    }
+
+
+
 
     if (event.target.classList.contains("wipeButton")) {
         chrome.storage.local.remove(["dungeonCaptain", "clashCaptain", "duelCaptain", 'flaggedCaptains', 'captainLoyalty', 'idleData', 'dataArray'], function () {
