@@ -97,8 +97,13 @@ document.addEventListener("click", function (event) {
     }
 
     if (event.target.classList.contains("wipeButton")) {
-        chrome.storage.local.remove(["dungeonCaptain", "clashCaptain", "duelCaptain", 'flaggedCaptains', 'captainLoyalty', 'idleData'], function () {
+        chrome.storage.local.remove(["dungeonCaptain", "clashCaptain", "duelCaptain", 'flaggedCaptains', 'captainLoyalty', 'idleData', 'dataArray'], function () {
+            dataArray = [];
             loadBanner("Settings updated sucessfully", "#5fa695");
+            let captainPauseSlots = document.querySelectorAll(".capSlotNameCont");
+            captainPauseSlots.forEach(function (slot) {
+                slot.querySelector(".pauseButton").innerText = play;
+            });
         });
     }
 
@@ -152,14 +157,14 @@ function saveStateToStorage(name, booleanValue) {
         dataArray.push({ name, booleanValue });
 
         // Check if the array length exceeds 10
-        if (dataArray.length > 10) {
+        if (dataArray.length > 4) {
             // Remove the oldest item (first item in the array)
             dataArray.shift();
         }
     }
 
-    // Save updated array to local storage, but only if it has 10 or fewer items
-    if (dataArray.length <= 10) {
+    // Save updated array to local storage, but only if it has 3 or fewer items
+    if (dataArray.length <= 4) {
         chrome.storage.local.set({ "dataArray": dataArray }, function () {
             if (chrome.runtime.lastError) {
                 loadBanner("Failed to update settings", "red");
@@ -179,7 +184,7 @@ function retrieveStateFromStorage(captainName) {
                 reject(chrome.runtime.lastError);
             } else {
                 if (result.dataArray) {
-                    dataArray = result.dataArray.slice(-10);
+                    dataArray = result.dataArray;
                     const matchingItem = dataArray.find((item) => item.name === captainName);
                     if (matchingItem) {
                         resolve(matchingItem.booleanValue);
