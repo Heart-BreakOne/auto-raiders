@@ -172,7 +172,6 @@ async function start() {
         }
         if (captainFlag) {
           captainSlot.style.backgroundColor = purple
-          //await performCollection()
           continue
         } else {
           captainSlot.style.backgroundColor = gameBlue
@@ -188,7 +187,6 @@ async function start() {
         }
         if (captainLoyalty) {
           captainSlot.style.backgroundColor = yellow
-          //await performCollection()
           continue
         } else {
           captainSlot.style.backgroundColor = gameBlue
@@ -212,15 +210,15 @@ async function start() {
           let loyal = null;
           try {
             loyal = captainSlot.querySelector(".capSlotLoyalty").innerHTML;
-          } catch (error){
+          } catch (error) {
           }
-          
-          goldLoyalty = true;  
+
+          goldLoyalty = true;
           for (const loyalty of arrayOfLoyalty) {
             if (loyal == null || loyal.includes(loyalty)) {
               goldLoyalty = false;
               break;
-            } 
+            }
           }
           placeUnit = button
           break;
@@ -280,8 +278,11 @@ async function openBattlefield() {
     battleInfo = document.querySelector(".battleInfoMapTitle")
     battleInfo.click()
     const chest = document.querySelector(".mapInfoRewardsName").innerText;
-    if ((chest === "Diamond Chest" || chest === "Loyalty Diamond Chest" || chest === "Loyalty Gold Chest" || chest === "Loyalty Skin Chest" || chest === "Loyalty Token Chest" || chest === "Loyalty Super Boss Chest" ||
-      chest === "Loyalty Boss Chest" || chest === "Loyalty Boss") && await retrieveFromStorage('loyaltySwitch')) {
+    if ((chest === "Diamond Chest" || chest === "Loyalty Diamond Chest" ||
+      chest === "Loyalty Gold Chest" || chest === "Loyalty Scroll Chest" ||
+      chest === "Loyalty Skin Chest" || chest === "Loyalty Token Chest" ||
+      chest === "Loyalty Super Boss Chest" || chest === "Loyalty Boss Chest" ||
+      chest === "Loyalty Boss") && await retrieveFromStorage('loyaltySwitch')) {
       await flagCaptain('captainLoyalty')
       location.reload();
     } else {
