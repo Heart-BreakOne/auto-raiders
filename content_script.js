@@ -10,7 +10,7 @@ let fullLength = 0
 let computedStyle
 let backgroundImageValue
 let isRunning = false;
-let goldLoyalty
+let goldLoyalty;
 let arrayOfAllyPlacement
 let startLoop
 const yellow = 'rgb(255, 253, 208)';
@@ -207,7 +207,7 @@ async function start() {
           captainSlot.querySelector('.capSlotClose') == null) {
           continue
         } else {
-          goldLoyalty = captainSlot.outerHTML.includes('LoyaltyGold');
+          goldLoyalty = captainSlot.outerHTML.includes('LoyaltyDiamond');
           placeUnit = button
           break;
         }
@@ -266,19 +266,19 @@ async function openBattlefield() {
     battleInfo = document.querySelector(".battleInfoMapTitle")
     battleInfo.click()
     const chest = document.querySelector(".mapInfoRewardsName").innerText;
-    if ((chest === "Loyalty Gold Chest" || chest === "Loyalty Skin Chest" || chest === "Loyalty Token Chest" || chest === "Loyalty Super Boss Chest" ||
+    if ((chest === "Diamond Chest" || chest === "Loyalty Diamond Chest" || chest === "Loyalty Gold Chest" || chest === "Loyalty Skin Chest" || chest === "Loyalty Token Chest" || chest === "Loyalty Super Boss Chest" ||
       chest === "Loyalty Boss Chest") && await retrieveFromStorage('loyaltySwitch')) {
       await flagCaptain('captainLoyalty')
-      location.reload()
+      location.reload();
     } else {
       const closeButton = document.querySelector('.slideMenuCont.slideUp.slideUpOpen.slideMenuShortOpen.slideMenuShortOpenMore .slideMenuTop .far.fa-times');
       if (closeButton) {
         closeButton.click();
-        zoom()
+        zoom();
       }
     }
   } else {
-    zoom()
+    zoom();
   }
 }
 
