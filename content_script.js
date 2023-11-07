@@ -17,6 +17,7 @@ const yellow = 'rgb(255, 253, 208)';
 const red = 'rgb(255, 204, 203)';
 const purple = 'rgb(203, 195, 227)';
 const gameBlue = 'rgb(42, 96, 132)';
+let arrayOfLoyalty = ["LoyaltyGold", "LoyaltyBlue", "LoyaltyWood"];
 
 let delay = ms => new Promise(res => setTimeout(res, ms));
 
@@ -207,7 +208,20 @@ async function start() {
           captainSlot.querySelector('.capSlotClose') == null) {
           continue
         } else {
-          goldLoyalty = captainSlot.outerHTML.includes('LoyaltyDiamond');
+          //goldLoyalty = captainSlot.outerHTML.includes('LoyaltyDiamond');
+          let loyal = null;
+          try {
+            loyal = captainSlot.querySelector(".capSlotLoyalty").innerHTML;
+          } catch (error){
+          }
+          
+          goldLoyalty = true;  
+          for (const loyalty of arrayOfLoyalty) {
+            if (loyal == null || loyal.includes(loyalty)) {
+              goldLoyalty = false;
+              break;
+            } 
+          }
           placeUnit = button
           break;
         }
@@ -267,7 +281,7 @@ async function openBattlefield() {
     battleInfo.click()
     const chest = document.querySelector(".mapInfoRewardsName").innerText;
     if ((chest === "Diamond Chest" || chest === "Loyalty Diamond Chest" || chest === "Loyalty Gold Chest" || chest === "Loyalty Skin Chest" || chest === "Loyalty Token Chest" || chest === "Loyalty Super Boss Chest" ||
-      chest === "Loyalty Boss Chest") && await retrieveFromStorage('loyaltySwitch')) {
+      chest === "Loyalty Boss Chest" || chest === "Loyalty Boss") && await retrieveFromStorage('loyaltySwitch')) {
       await flagCaptain('captainLoyalty')
       location.reload();
     } else {
