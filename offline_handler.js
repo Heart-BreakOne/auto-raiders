@@ -1,5 +1,5 @@
 
-const statusArray = ["Waiting for Captain to find battle!", , "Waiting for Captain to start battle!", "Waiting for Captain to collect reward!"];
+const statusArray = ["Waiting for Captain to find battle!ENABLED", , "Waiting for Captain to start battle!ENABLED", "Waiting for Captain to collect reward!ENABLED"];
 const offlineDelay = ms => new Promise(res => setTimeout(res, ms));
 let captainButton;
 const goldLoyaltyString = "https://d2k2g0zg1te1mr.cloudfront.net/env/prod1/mobile-lite/static/media/iconLoyaltyGold.4bd4f730.png";
