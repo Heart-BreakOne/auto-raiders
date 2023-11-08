@@ -42,11 +42,11 @@ function injectIntoDOM() {
             newButton.classList.add("offlineButton");
             // Generate a unique ID for the button
             newButton.setAttribute("id", `offlineButton_${buttonCounter}`);
-            newButton.textContent = "ENABLED";
             newButton.style.fontSize = "30px";
             newButton.style.marginLeft = "15px";
-            newButton.style.backgroundColor = "#5fa695";
             newButton.style.color = "white";
+            newButton.textContent = "--------------";
+            newButton.style.backgroundColor = "#5fa695";
             slotStatus.appendChild(newButton);
             // Increment the counter for the next button
             buttonCounter++;
@@ -128,13 +128,13 @@ document.addEventListener("click", function (event) {
             button.innerText = "DISABLED";
             id = button.id;
             button.style.backgroundColor = "red";
-            //Pass button id and false to storage.
+            setOfflineState(id, false);
         } else {
             //Enable button
             button.innerText = "ENABLED";
             button.style.backgroundColor = "#5fa695";
             id = button.id;
-            //Pass button id and true to storage.
+            setOfflineState(id, true);
         }
     }
 
@@ -142,7 +142,7 @@ document.addEventListener("click", function (event) {
 
 
     if (event.target.classList.contains("wipeButton")) {
-        chrome.storage.local.remove(["dungeonCaptain", "clashCaptain", "duelCaptain", 'flaggedCaptains', 'captainLoyalty', 'idleData', 'dataArray'], function () {
+        chrome.storage.local.remove(["dungeonCaptain", "clashCaptain", "duelCaptain", 'flaggedCaptains', 'captainLoyalty', 'idleData', 'dataArray', 'offlinePermission'], function () {
             dataArray = [];
             loadBanner("Settings updated sucessfully", "#5fa695");
             let captainPauseSlots = document.querySelectorAll(".capSlotNameCont");
@@ -242,4 +242,42 @@ function retrieveStateFromStorage(captainName) {
             }
         });
     });
+}
+
+
+function setOfflineState(id, booleanValue) {
+    chrome.storage.local.get(['offlinePermission'], function (result) {
+        let ids = result.offlinePermission || {};
+
+        if (ids.hasOwnProperty(id)) {
+            // ID already exists, update boolean value
+            ids[id] = booleanValue;
+        } else if (Object.keys(ids).length < 4) {
+            // ID doesn't exist and we have less than 4 IDs, add it
+            ids[id] = booleanValue;
+        } else {
+            console.log('Maximum limit of 4 IDs reached.');
+            return;
+        }
+
+        chrome.storage.local.set({ offlinePermission: ids }, function () {
+            if (chrome.runtime.lastError) {
+                loadBanner("Failed to update settings", "red");
+            } else {
+                loadBanner("Settings updated successfully", "#5fa695");
+            }
+        });
+    });
+}
+
+
+
+function getOfflineState(id) {
+    return new Promise((resolve, reject) => {
+        chrome.storage.local.get(['offlinePermission'], function(result) {
+          let ids = result.offlinePermission || {};
+          let booleanValue = ids[id];
+          resolve(booleanValue !== undefined ? booleanValue : true);
+        });
+      });
 }

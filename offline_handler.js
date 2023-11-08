@@ -20,7 +20,12 @@ async function checkOfflineCaptains() {
         const slot = capSlots[index];
         const battleStatus = slot.querySelector(".capSlotStatus").innerText;
         const selectButton = slot.querySelector(".actionButton.actionButtonPrimary.capSlotButton.capSlotButtonAction");
-
+        const btn = slot.querySelector(".capSlotStatus .offlineButton");
+        const buttonId = btn.getAttribute('id');
+        const currentOfflineState = await getOfflineState(buttonId);
+        if(!currentOfflineState) {
+            continue;
+        }
         if (selectButton && selectButton.innerText == "SELECT") {
             selectButton.click();
             await scroll();

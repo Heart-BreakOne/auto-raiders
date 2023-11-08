@@ -31,15 +31,11 @@ async function buyScrolls() {
         //Click on scroll shop buttons if it hasnt been done already
         await collectDelay(4000);
         let buyScrollButtons = document.querySelectorAll(".actionButton.actionButtonGolden.actionButtonShiny.userStoreItemButton");
-        const freebieButton = document.querySelector(".actionButton.actionButtonBones.storeCardButton.storeCardButtonBuy");
+
         if (buyScrollButtons.length > 0) {
             buyScrollButtons.forEach((buyButton) => {
                 buyButton.click();
             });
-            returnToMainScreen();
-        } else if (freebieButton && freebieButton.innerText.includes("CLAIM")) {
-            freebieButton.click();
-            freebieButton.submit();
             returnToMainScreen();
         }
         else if (extraState) {
@@ -59,6 +55,25 @@ async function buyScrolls() {
         returnToMainScreen();
     }
 
+}
+
+async function collectFreeDaily() {
+    let dailySwitch = await getSwitchState("dailySwitch");
+    if (!dailySwitch) {
+        return;
+    }
+    navItems = document.querySelectorAll(".mainNavItemText");
+    navItems.forEach((navItem) => {
+        if (navItem.innerText === "Store") {
+            navItem.click();
+        }
+    });
+    const freebieButton = document.querySelector(".actionButton.actionButtonBones.storeCardButton.storeCardButtonBuy");
+    if (freebieButton && freebieButton.innerText.includes("CLAIM")) {
+        freebieButton.click();
+        freebieButton.submit();
+        returnToMainScreen();
+    }
 }
 
 async function collectQuests() {

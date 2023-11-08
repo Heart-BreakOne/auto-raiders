@@ -13,6 +13,7 @@ document.addEventListener("DOMContentLoaded", function () {
     initializeSwitch("battlepassSwitch");
     initializeSwitch("offlineSwitch");
     initializeSwitch("skipSwitch");
+    initializeSwitch("dailySwitch");
 });
 
 function initializeSwitch(switchId) {

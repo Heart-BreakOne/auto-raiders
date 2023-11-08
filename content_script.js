@@ -255,6 +255,7 @@ async function performCollection() {
   isRunning = false
   await collectQuests()
   await buyScrolls()
+  await collectFreeDaily()
   await collectBattlePass()
 }
 
@@ -278,6 +279,7 @@ async function openBattlefield() {
     battleInfo = document.querySelector(".battleInfoMapTitle")
     battleInfo.click()
     const chest = document.querySelector(".mapInfoRewardsName").innerText;
+    //chest === "Gold Chest" || 
     if ((chest === "Diamond Chest" || chest === "Loyalty Diamond Chest" ||
       chest === "Loyalty Gold Chest" || chest === "Loyalty Scroll Chest" ||
       chest === "Loyalty Skin Chest" || chest === "Loyalty Token Chest" ||
@@ -623,6 +625,7 @@ async function changeBackgroundColor() {
       continue;
     }
 
+    //Set pause button states after load
     const play = String.fromCharCode(9654)
     const pause = String.fromCharCode(9208)
     const state = await retrieveStateFromStorage(capNameDOM);
@@ -646,8 +649,23 @@ async function changeBackgroundColor() {
       capSlot.style.backgroundColor = gameBlue;
     }
   }
-}
 
+  //Set offline button states after load.
+  const allCapSlots = document.querySelectorAll(".capSlot");
+  for (const slot of allCapSlots) {
+    const btnOff = slot.querySelector(".capSlotStatus .offlineButton");
+    const btnId = btnOff.getAttribute('id');
+    const offstate = await getOfflineState(btnId);
+
+    if (offstate) {
+      btnOff.textContent = "ENABLED";
+      btnOff.style.backgroundColor = "#5fa695";
+    } else {
+      btnOff.textContent = "DISABLED";
+      btnOff.style.backgroundColor = "red";
+    }
+  }
+}
 
 //Mutator observer to remove stuck modals
 const observer = new MutationObserver(function (mutations) {
@@ -661,11 +679,6 @@ const observer = new MutationObserver(function (mutations) {
       location.reload()
     }
     let questModal = document.querySelector(".modalScrim.modalOn");
-    /*Two types of modal warning titles:
-    "Leave battle?"
-    "Leave battle early and collect savage chest"
-    */
-
     if (questModal && !questModal.innerText.includes("Leave battle")) {
       questModal.remove();
     }
