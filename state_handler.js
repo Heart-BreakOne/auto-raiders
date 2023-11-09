@@ -1,6 +1,9 @@
+//This file keeps track of situation in which the game froze or crashes as well as handling of the back buttons.
 
+//Initializing variables
 const battleDelay = (ms) => new Promise((res) => setTimeout(res, ms));
 let domChanged = false;
+//Runs checkBattle() every 15 seconds
 setInterval(checkBattle, 15000);
 
 //Handles some conditions in which the battle has started.
@@ -15,7 +18,8 @@ async function checkBattle() {
   checkAndReload(".splashCont", 10000);
 }
 
-//Receives a selector, check if it exists, checks again in 10 seconds and reloads page since it means the game froze
+//Receives a selector and a time in milisecondseconds. Check if the element with the selector exists, then checks again after the elapsed time has passed.
+//If the element still exists and the dom has not been changed it reloads the frozen page.
 async function checkAndReload(selector, battleDelayTimer) {
   domChanged = false;
   let element = document.querySelector(selector);
@@ -28,14 +32,20 @@ async function checkAndReload(selector, battleDelayTimer) {
   }
 }
 
+//Mutator observer to set domChanged variable to true whenever a change happens.
 const obsv = new MutationObserver((mutations) => {
-  // This function will be called whenever mutations occur
   domChanged = true;
 });
 
 const conf = { childList: true, subtree: true };
 obsv.observe(document, conf);
 
-function checkIfDomChanged() {
-  return domChanged;
+//When invoked, this function clicks on all close buttons to close any popup that may exist
+function closeAll() {
+  const closeButton = document.querySelectorAll(".far.fa-times");
+  if (closeButton.length > 0) {
+      closeButton.forEach(button => {
+          button.click();
+      })
+  }
 }

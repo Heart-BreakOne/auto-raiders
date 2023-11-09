@@ -1,4 +1,6 @@
-
+/* This file is the heart of the extension, it performs the auto playing, invokes functions to set and get values as well as
+invoke other functions such as buying scrolls.
+*/
 setInterval(start, 30000);
 setInterval(changeBackgroundColor, 5000);
 
@@ -121,7 +123,7 @@ async function start() {
 
   const offline = await retrieveFromStorage("offlineSwitch")
   if (offline) {
-    await checkOfflineCaptains()
+    await checkIdleCaptains()
   }
 
   // Collects defeat and savage chest
@@ -220,21 +222,13 @@ async function start() {
     await delay(3000)
     openBattlefield();
   } else {
-    isRunning = false
-    return
+    isRunning = false;
+    return;
   }
 
   // Change captains using a different device without the script freezing trying to select a captain.
-  const slideMenuTops = document.querySelectorAll('.slideMenuTop');
-  slideMenuTops.forEach(element => {
-    if (element.innerText.includes("Search Captain")) {
-      const closeButton = element.querySelector(".far.fa-times");
-      if (closeButton) {
-        closeButton.click();
-      }
-    }
-  });
-  isRunning = false
+  closeAll();
+  isRunning = false;
 }
 
 async function performCollection() {
@@ -272,10 +266,7 @@ async function openBattlefield() {
       chest === "Loyalty Super Boss Chest" || chest === "Loyalty Boss Chest" ||
       chest === "Loyalty Boss") && await retrieveFromStorage('loyaltySwitch')) {
       await flagCaptain('captainLoyalty');
-      const allBackButtons = document.querySelectorAll(".far.fa-times");
-      allBackButtons.forEach((button) => {
-        button.click();
-      });
+      closeAll();
       goHome();
       return;
     } else {
@@ -650,7 +641,7 @@ async function changeBackgroundColor() {
   for (const slot of allCapSlots) {
     const btnOff = slot.querySelector(".capSlotStatus .offlineButton");
     const btnId = btnOff.getAttribute('id');
-    const offstate = await getOfflineState(btnId);
+    const offstate = await getIdleState(btnId);
 
     if (offstate) {
       btnOff.textContent = "ENABLED";

@@ -1,3 +1,8 @@
+/*This file is the communication bridge between the popup script and the content scripts
+as per manifest V3 standards they run on different contexts and environments.
+*/
+
+//Listens for messages from the popup script containing the toggle switch states and send them to the content script.
 chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
     if (request.type === "FROM_POPUP") {
         const tabId = request.tabId;
@@ -9,7 +14,7 @@ chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
     }
 });
 
-
+//Listens for messages from the popup script containing the radio button states and send them to the content script.
 chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
     if (request.type === "RADIO_FROM_POPUP") {
         const tabId = request.tabId;

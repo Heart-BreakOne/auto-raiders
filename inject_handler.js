@@ -1,9 +1,11 @@
+/* This file injects buttons into the page so they can be used for user interaction.
+This file also handles the state of these injected buttons. */
 
 let pause = String.fromCharCode(9208);
 let play = String.fromCharCode(9654);
 let pauseArray = [];
-let existingElement
-let newButton
+let existingElement;
+let newButton;
 const wipeStyles = `
 background-color: #5fa695;
 height: auto;
@@ -26,7 +28,7 @@ align-items: center;
 font-size: 60px;
 color: white;
 text-align: center;
-`
+`;
 
 function injectIntoDOM() {
 
@@ -272,12 +274,12 @@ function setOfflineState(id, booleanValue) {
 
 
 
-function getOfflineState(id) {
+function getIdleState(id) {
     return new Promise((resolve, reject) => {
-        chrome.storage.local.get(['offlinePermission'], function(result) {
-          let ids = result.offlinePermission || {};
-          let booleanValue = ids[id];
-          resolve(booleanValue !== undefined ? booleanValue : true);
+        chrome.storage.local.get(['offlinePermission'], function (result) {
+            let ids = result.offlinePermission || {};
+            let booleanValue = ids[id];
+            resolve(booleanValue !== undefined ? booleanValue : true);
         });
-      });
+    });
 }

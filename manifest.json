@@ -1,7 +1,7 @@
 {
    "manifest_version": 3,
    "name": "AutoRaiders",
-   "version": "3.0.15",
+   "version": "3.0.16",
    "description": "SR helper",
    "action": {
       "default_popup": "popup.html",
@@ -18,13 +18,13 @@
          "js": [
             "content_script.js",
             "collector.js",
-            "dungeon_manager.js",
+            "game_mode_manager.js",
             "storage_manager.js",
-            "battle_handler.js",
+            "state_handler.js",
             "switch_handler.js",
             "captain_handler.js",
             "inject_handler.js",
-            "offline_handler.js"
+            "idle_handler.js"
          ],
          "matches": [
             "https://www.streamraiders.com/*"

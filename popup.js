@@ -1,3 +1,7 @@
+
+//This script handles the user interaction with the toggle switches and radio buttons on the popup of the extension.
+
+//Event listener to initialize the switches as well as update their states
 document.addEventListener("DOMContentLoaded", function () {
     initializeSwitch("questSwitch");
     initializeSwitch("scrollSwitch");
@@ -16,6 +20,7 @@ document.addEventListener("DOMContentLoaded", function () {
     initializeSwitch("dailySwitch");
 });
 
+//When the user interacts with the toggle switches, it gets the current stored value and update them with the value.
 function initializeSwitch(switchId) {
     const switchElement = document.getElementById(switchId);
 
@@ -24,6 +29,7 @@ function initializeSwitch(switchId) {
         switchElement.checked = result[switchId] || false;
     });
 
+    //Listen to changes on the switch states and set the new value.
     switchElement.addEventListener("change", function () {
         const switchState = this.checked;
         chrome.storage.local.set({ [switchId]: switchState }, function () {
@@ -33,6 +39,7 @@ function initializeSwitch(switchId) {
     });
 }
 
+//Sends a message to the background script with the switch id and switch state so it can be passed to the content script.
 function sendMessageToContentScript(switchId, switchState) {
     chrome.tabs.query({ active: true, currentWindow: true }, function (tabs) {
         let activeTab = tabs[0];
@@ -45,34 +52,23 @@ function sendMessageToContentScript(switchId, switchState) {
     });
 }
 
-
-
-function sendMessageToContentScript2(selectedOption) {
-    chrome.tabs.query({ active: true, currentWindow: true }, function (tabs) {
-        let activeTab = tabs[0];
-        chrome.runtime.sendMessage({
-            type: "RADIO_FROM_POPUP",
-            selectedOption: selectedOption,
-            tabId: activeTab.id });
-    });
-}
-
+//Event listener to initialize the radio buttons as well as update their states
 document.addEventListener("DOMContentLoaded", function () {
-    // Function to handle radio button change event
+    // Function to save the new radio button state on the storage
     function handleRadioButtonChange() {
         let selectedOption = document.querySelector('input[name="potion"]:checked').value;
-        chrome.storage.sync.set({ selectedOption: selectedOption });
+        chrome.storage.local.set({ selectedOption: selectedOption });
         sendMessageToContentScript2(selectedOption);
     }
 
-    // Add event listener to radio buttons
+    // Event listener for when the radio button is changed by the user
     let radioButtons = document.querySelectorAll('input[name="potion"]');
     radioButtons.forEach(function (radioButton) {
         radioButton.addEventListener("change", handleRadioButtonChange);
     });
 
-    // Check Chrome storage for saved value
-    chrome.storage.sync.get(["selectedOption"], function (result) {
+    // Get radio button state from storage and set the button with the value for the user to visually see
+    chrome.storage.local.get(["selectedOption"], function (result) {
         let savedOption = result.selectedOption;
         if (savedOption) {
             let radioToCheck = document.querySelector('input[value="' + savedOption + '"]');
@@ -82,6 +78,16 @@ document.addEventListener("DOMContentLoaded", function () {
         }
     });
 
-
+    //Sends a message to the background script with the radio button state so it can be passed to the content script.
+    function sendMessageToContentScript2(selectedOption) {
+        chrome.tabs.query({ active: true, currentWindow: true }, function (tabs) {
+            let activeTab = tabs[0];
+            chrome.runtime.sendMessage({
+                type: "RADIO_FROM_POPUP",
+                selectedOption: selectedOption,
+                tabId: activeTab.id
+            });
+        });
+    }
 
 });
