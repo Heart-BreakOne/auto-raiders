@@ -232,42 +232,44 @@ async function switchIdleCaptain() {
         captainButton = favoriteList[0].querySelector(".actionButton.actionButtonPrimary.searchResultButton");
         captainButton.click()
     }
+    //No special captains (no loyalty, not favorite) exist
     else {
-        //No special captains exist, so any captain is selected
-        for (let i = 0; i < fullCaptainList.length; i++) {
-            //Iterates through the list of captains
-            const captain = fullCaptainList[i];
-            //Gets mode they are running
-            const modeLabel = captain.querySelector(".versusLabelContainer").innerText;
-            //Gets whether or not they have been joined already
-            let alreadyJoined = captain.querySelector(".searchResultJoinLabel");
-            //If the captain has not been joined the ".searchResultJoinLabel" does not exist so alreadyJoined is null.
-            if (alreadyJoined == null) {
-                alreadyJoined = "";
-            }
-            //If the captain is running campaign and has not been joined yet
-            if (modeLabel === "Campaign" || alreadyJoined.innerText !== "Already joined captain") {
-                //Checks if the user wants to switch to non special captains (no loyalty, not favorite)
-                const skipSwitch = await retrieveFromStorage("skipSwitch")
-                //If user wants to skip the list needs to closed.
-                if (skipSwitch) {
-                    //Closes the list
-                    closeAll();
-                    break;
-                } else {
+        //Checks if the user wants to switch to non special captains, if not the list is closed
+        const skipSwitch = await retrieveFromStorage("skipSwitch")
+        if (skipSwitch) {
+            //Closes the list
+            closeAll();
+
+        }
+        //Any captain is selected
+        else {
+            for (let i = 0; i < fullCaptainList.length; i++) {
+                //Iterates through the list of captains
+                const captain = fullCaptainList[i];
+                //Gets mode the current captain is running
+                const modeLabel = captain.querySelector(".versusLabelContainer").innerText;
+                //Gets the already joined from the current captain
+                let alreadyJoined = captain.querySelector(".searchResultJoinLabel");
+                //If the captain has not been joined the ".searchResultJoinLabel" does not exist, so alreadyJoined is null.
+                if (alreadyJoined == null) {
+                    alreadyJoined = "";
+                }
+                //If the captain is running campaign and has not been joined yet
+                if (modeLabel === "Campaign" || alreadyJoined.innerText !== "Already joined captain") {
                     //If user wants to select any captain, the first captain from the list is clicked
                     captainButton = captain.querySelector(".actionButton.actionButtonPrimary.searchResultButton");
                     captainButton.click();
                     break;
                 }
-
             }
         }
     }
 }
 
-/* This function receives the full captain list as well as a loyalty string and returns an sub array with only captains that match the loyalty string and
+/* This function receives the full captain list as well as a loyalty string
+and returns an sub array with only captains that match the loyalty string and
 captains that are running campaign and captains that have not been joined yet */
+
 function createLoyaltyList(fullCaptainList, loyaltyString) {
     return Array.from(fullCaptainList).filter(captain => {
         //Gets loyalty icon for comparison
