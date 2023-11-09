@@ -273,6 +273,7 @@ async function openBattlefield() {
       chest === "Loyalty Boss") && await retrieveFromStorage('loyaltySwitch')) {
       await flagCaptain('captainLoyalty');
       goHome();
+      return;
     } else {
       const closeButton = document.querySelector('.slideMenuCont.slideUp.slideUpOpen.slideMenuShortOpen.slideMenuShortOpenMore .slideMenuTop .far.fa-times');
       if (closeButton) {
@@ -308,13 +309,13 @@ async function getValidMarkers() {
     //Map without any markers.
     const clockElement = document.querySelector('.battlePhaseTextClock .clock');
     if (clockElement == null) {
-      goHome()
-      return
+      goHome();
+      return;
     }
     const timeText = clockElement.innerText.replace(':', '');
     const time = parseInt(timeText, 10);
     if (time > 2915) {
-      goHome()
+      goHome();
       return;
     } else {
       arrayOfAllyPlacement = document.querySelectorAll(".placementAlly");
@@ -335,7 +336,8 @@ async function getValidMarkers() {
     if (arrayOfMarkers.length == 0) {
       //Captain is using a mix of block markers and open zones
       await flagCaptain('flaggedCaptains')
-      goHome()
+      goHome();
+      return;
     } else {
       //There are vibe or set markers that can be used.
       getSetMarker()
@@ -351,8 +353,8 @@ async function getSetMarker() {
       matchingMarker = arrayOfBattleFieldMarkers.find(marker => marker.key === currentMarkerKey).icon;
     } catch (error) {
       await flagCaptain('flaggedCaptains')
-      goHome()
-      return
+      goHome();
+      return;
     }
     arrayOfMarkers.forEach(planIcon => {
       backgroundImageValue = getComputedStyle(planIcon).getPropertyValue('background-image').toUpperCase();
@@ -365,8 +367,8 @@ async function getSetMarker() {
   if (arrayOfMarkers.length == 0) {
     //there are no units to match any of the available markers
     await flagCaptain('flaggedCaptains')
-    goHome()
-    return
+    goHome();
+    return;
   } else {
     currentMarkerKey = ""
     // The randomization of the index increased the chances of getting a valid placement.
@@ -512,7 +514,8 @@ async function selectUnit() {
       continue;
     }
   }
-  goHome()
+  goHome();
+  return;
 }
 
 //If the unit is in a valid marker that is in use, by taping the unit container it forces a button recheck on mouseup/touchend
@@ -565,7 +568,8 @@ function placeTheUnit() {
       const cancelButton2 = document.querySelector(".actionButton.actionButtonNegative.placerButton");
       if (cancelButton2) {
         cancelButton2.click();
-        goHome()
+        goHome();
+        return;
       }
     }
   }
@@ -576,6 +580,7 @@ function placeTheUnit() {
     const placementSuccessful = document.querySelector(".actionButton.actionButtonDisabled.placeUnitButton");
     if (placementSuccessful) {
       goHome()
+      return;
     }
   }, 3000);
   setTimeout(() => {
@@ -679,6 +684,7 @@ const observer = new MutationObserver(function (mutations) {
         const color = computedStyle.getPropertyValue("color");
         if (color === "rgb(49, 255, 49)") {
           goHome();
+          return;
           //location.reload();
         }
       }
@@ -690,6 +696,7 @@ const observer = new MutationObserver(function (mutations) {
       battleButton = document.querySelector(".placeUnitButtonItems");
       if (battleButton && (battleButton.innerText.includes("UNIT READY TO PLACE IN") || battleButton.innerText.includes("BATTLE STARTING SOON"))) {
         goHome();
+        return;
         //location.reload();
       }
     }
