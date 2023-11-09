@@ -271,8 +271,8 @@ async function openBattlefield() {
       chest === "Loyalty Skin Chest" || chest === "Loyalty Token Chest" ||
       chest === "Loyalty Super Boss Chest" || chest === "Loyalty Boss Chest" ||
       chest === "Loyalty Boss") && await retrieveFromStorage('loyaltySwitch')) {
-      await flagCaptain('captainLoyalty')
-      location.reload();
+      await flagCaptain('captainLoyalty');
+      goHome();
     } else {
       const closeButton = document.querySelector('.slideMenuCont.slideUp.slideUpOpen.slideMenuShortOpen.slideMenuShortOpenMore .slideMenuTop .far.fa-times');
       if (closeButton) {
@@ -660,10 +660,9 @@ const observer = new MutationObserver(function (mutations) {
     if (rewardsScrim) {
       rewardsScrim.remove();
     }
-    const rootElement = document.getElementById('root');
-    if (rootElement && rootElement.children.length === 0) {
-      location.reload()
-    }
+
+    reloadRoot();
+
     let questModal = document.querySelector(".modalScrim.modalOn");
     if (questModal && !questModal.innerText.includes("Leave battle")) {
       questModal.remove();
@@ -702,7 +701,6 @@ const observer = new MutationObserver(function (mutations) {
         button.click();
       }
     });
-
   });
 });
 
@@ -713,12 +711,12 @@ observer.observe(targetNode, config);
 function reloadRoot() {
   const rootElement = document.getElementById('root');
   if (rootElement && rootElement.childElementCount === 0) {
-    location.reload()
+    location.reload();
   }
 }
 
 function goHome() {
-  isRunning = false
+  isRunning = false;
   const backHome = document.querySelector(".selectorBack");
   if (backHome) {
     backHome.click();
