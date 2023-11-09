@@ -129,6 +129,8 @@ async function start() {
   startLoop = 0
   isRunning = true;
 
+
+  console.log("log " + new Date().toString());
   //Initialized nav items and clicks on the Battle to open the main menu
   navItems = document.querySelectorAll('.mainNavItemText');
   navItems.forEach(navItem => {
@@ -284,7 +286,7 @@ async function performCollection() {
 // This function checks if the battlefield is present, the current chest type, then zooms into it.
 async function openBattlefield() {
 
-  //Check if battlefield is open
+  // Attempts to check if battlefield is open
   let battleInfo
   try {
     battleInfo = document.querySelector(".battleInfo").innerText;
@@ -396,6 +398,7 @@ async function getSetMarker() {
   let matchingMarker;
   //This indicates that an attempt to place at the current marker has been made
   if (markerAttempt >= 1) {
+    //Attemps to get a matching marker
     try {
       matchingMarker = arrayOfBattleFieldMarkers.find(marker => marker.key === currentMarkerKey).icon;
     } catch (error) {
@@ -497,6 +500,7 @@ async function selectUnit() {
   if (potionState != 0 && !mode) {
     //Get potion strings so the string can be trimmed and converted to int for validation
     let potions;
+    //Attempts to get potion quantity
     try {
       potions = document.querySelector("img[alt='Potion']").closest(".quantityItem");
     } catch (error) {
@@ -524,6 +528,7 @@ async function selectUnit() {
   unitDrawer = document.querySelectorAll(".unitSelectionCont");
   //Initializes a node list with all units
   let unitsQuantity;
+  //Attempts to get ammount of units in the units drawers
   try {
     unitsQuantity = unitDrawer[0].children.length;
   } catch (error) {
@@ -614,16 +619,22 @@ async function selectUnit() {
 function tapUnit() {
   //Check for frozen state
   reloadRoot()
-  //Taps unit
+  //Attemps to tap the selected unit to force a valid placement check
+  try {
   const placerUnitCont = document.querySelector('.placerUnitCont');
   const event = new Event('mouseup', { bubbles: true, cancelable: true });
   placerUnitCont.dispatchEvent(event);
+  } catch (error) {
+    goHome();
+    return;
+  }
 }
 
 //Places unit or asks for a new valid marker
 function placeTheUnit() {
   //Gets timer, if it doesn't exist return to main menu.
   let clockText
+  //Attempts to get the clock text
   try {
     clockText = document.querySelector('.battlePhaseTextClock .clock').innerText;
   } catch (error) {
@@ -712,6 +723,7 @@ async function changeBackgroundColor() {
 
   //Gets captain name from the dom
   for (const capSlot of capSlotChildren) {
+    //Attemps to get the captain name from the current slot
     try {
       capNameDOM = capSlot.querySelector('.capSlotName').innerText;
     } catch (error) {
