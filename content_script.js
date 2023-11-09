@@ -146,7 +146,7 @@ async function start() {
 
   // Collects chests and savages rewards
   const defeatButton = document.querySelectorAll(".actionButton.capSlotButton.capSlotButtonAction");
-  defeatButton.forEach(async (button) => {
+  defeatButton.forEach((button) => {
     const buttonText = button.innerText;
     if (buttonText === "SEE RESULTS" || buttonText === "OPEN CHEST" || buttonText === "COLLECT KEYS" || buttonText === "COLLECT BONES") {
       button.click();
@@ -164,8 +164,8 @@ async function start() {
   let placeUnit = null;
   //If there are no place unit buttons, invoke the collection function then return.
   if (placeUnitButtons.length == 0 || (placeUnitButtons.length == 1 && placeUnitButtons[0].innerText === "SUBMIT")) {
-    await performCollection()
-    return
+    await performCollection();
+    return;
   }
   //If placement buttons exist, validate them
   else if (placeUnitButtons.length != 0) {
@@ -262,7 +262,7 @@ async function start() {
   //If place unit exists, clicks it and loads the invokes the openBattlefield function
   if (placeUnit) {
     placeUnit.click();
-    await delay(3000)
+    await delay(3000);
     openBattlefield();
   } else {
     isRunning = false;
@@ -275,11 +275,11 @@ async function start() {
 }
 
 async function performCollection() {
-  isRunning = false
-  await collectQuests()
-  await buyScrolls()
-  await collectFreeDaily()
-  await collectBattlePass()
+  isRunning = false;
+  await collectQuests();
+  await buyScrolls();
+  await collectFreeDaily();
+  await collectBattlePass();
 }
 
 // This function checks if the battlefield is present, the current chest type, then zooms into it.
@@ -416,7 +416,7 @@ async function getSetMarker() {
   }
   if (arrayOfMarkers.length == 0) {
     //there are no units to match any of the available markers
-    await flagCaptain('flaggedCaptains')
+    await flagCaptain('flaggedCaptains');
     goHome();
     return;
   } else {
