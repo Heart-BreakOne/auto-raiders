@@ -6,9 +6,9 @@ setInterval(checkBattle, 15000);
 //Handles some conditions in which the battle has started.
 async function checkBattle() {
   //Attemps to check if it's stuck on battlefield
-  checkAndReload(".leaderboardCont", 75000);
+  checkAndReload(".leaderboardCont", 60000);
   //If the battlefield is opened at the same time as the timer reaches 00:00 it will freeze there, a reload fixes it.
-  checkAndReload(".battleLoading", 50000);
+  checkAndReload(".battleLoading", 20000);
   //If the first loading screen frseezes
   checkAndReload(".loadingView", 10000);
   //If the second loading screen freezes
