@@ -32,13 +32,21 @@ async function checkAndReload(selector, battleDelayTimer) {
   }
 }
 
-//Mutator observer to set domChanged variable to true whenever a change happens.
-const obsv = new MutationObserver((mutations) => {
-  domChanged = true;
-});
+//Game froze on a dark blue blank screen, reload.
+function reloadRoot() {
+  const rootElement = document.getElementById('root');
+  if (rootElement && rootElement.childElementCount === 0) {
+    location.reload();
+  }
+}
 
-const conf = { childList: true, subtree: true };
-obsv.observe(document, conf);
+function goHome() {
+  isRunning = false;
+  const backHome = document.querySelector(".selectorBack");
+  if (backHome) {
+    backHome.click();
+  }
+}
 
 //When invoked, this function clicks on all close buttons to close any popup that may exist
 function closeAll() {
@@ -49,3 +57,60 @@ function closeAll() {
       })
   }
 }
+
+//Mutator observer to remove stuck modals, frozen states and update recently loaded elements.
+const observer = new MutationObserver(function (mutations) {
+  
+  domChanged = true;
+  reloadRoot();
+
+  mutations.forEach(async function (mutation) {
+    const rewardsScrim = document.querySelector(".rewardsScrim");
+    if (rewardsScrim) {
+      rewardsScrim.remove();
+    }
+
+    let questModal = document.querySelector(".modalScrim.modalOn");
+    if (questModal && !questModal.innerText.includes("Leave battle")) {
+      questModal.remove();
+    }
+
+    const menuView = document.querySelector(".mainNavCont.mainNavContPortrait")
+    if (menuView)
+      injectIntoDOM()
+
+    const battleLabel = document.querySelector(".battlePhaseTextCurrent");
+    if (battleLabel) {
+      if (battleLabel.innerText === "Battle Ready") {
+        const computedStyle = window.getComputedStyle(battleLabel);
+        const color = computedStyle.getPropertyValue("color");
+        if (color === "rgb(49, 255, 49)") {
+          goHome();
+          return;
+        }
+      }
+    }
+
+    let battleButton = document.querySelector(".placeUnitButtonItems");
+    if (battleButton && (battleButton.innerText.includes("UNIT READY TO PLACE IN") || battleButton.innerText.includes("BATTLE STARTING SOON"))) {
+      await battleDelay(15000);
+      battleButton = document.querySelector(".placeUnitButtonItems");
+      if (battleButton && (battleButton.innerText.includes("UNIT READY TO PLACE IN") || battleButton.innerText.includes("BATTLE STARTING SOON"))) {
+        goHome();
+        return;
+      }
+    }
+
+    const buttons = document.querySelectorAll(".button.actionButton.actionButtonPrimary");
+    buttons.forEach((button) => {
+      const buttonText = button.querySelector("div").textContent.trim();
+      if (buttonText === "GO BACK") {
+        button.click();
+      }
+    });
+  });
+});
+
+const targetNode = document.body;
+const config = { childList: true, subtree: true };
+observer.observe(targetNode, config);

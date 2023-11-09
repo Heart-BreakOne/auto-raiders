@@ -1,25 +1,28 @@
 /* This file is the heart of the extension, it performs the auto playing, invokes functions to set and get values as well as
-invoke other functions such as buying scrolls.
+functions to perform tasks such as replacing idle captains or buying scrolls
 */
+
+//Triggers the start function every 30 seconds
 setInterval(start, 30000);
+//Update background colors every 5 seconds
 setInterval(changeBackgroundColor, 5000);
 
+//Declares/initializes variables
 let currentMarkerKey = "";
 let currentMarker;
 let arrayOfMarkers;
-let markerAttempt
-let fullLength = 0
-let computedStyle
-let backgroundImageValue
+let markerAttempt;
+let computedStyle;
+let backgroundImageValue;
 let isRunning = false;
 let diamondLoyalty;
-let arrayOfAllyPlacement
-let startLoop
+let arrayOfAllyPlacement;
+let startLoop;
 const yellow = 'rgb(255, 253, 208)';
 const red = 'rgb(255, 204, 203)';
 const purple = 'rgb(203, 195, 227)';
 const gameBlue = 'rgb(42, 96, 132)';
-
+const cancelButtonSelector = ".actionButton.actionButtonNegative.placerButton";
 let delay = ms => new Promise(res => setTimeout(res, ms));
 
 const arrayOfBattleFieldMarkers = [
@@ -96,11 +99,10 @@ const arrayOfUnits = [
   { key: "WARBEAST", type: "MELEE", icon: "SRJSYO" },
   { key: "WARRIOR", type: "MELEE", icon: "YTUUAHQ" },
 ];
+
+
 // This is the start, it selects a captain placement as well as collect any rewards to proceed
 async function start() {
-
-  const logIsOpen = document.querySelector(".log_iframe");
-  if (logIsOpen) return;
 
   //If it's stuck for 60 seconds set isRunning to false
   startLoop++
@@ -114,6 +116,7 @@ async function start() {
   startLoop = 0
   isRunning = true;
 
+  //Initialized nav items and clicks on the Battle to open the main menu
   navItems = document.querySelectorAll('.mainNavItemText');
   navItems.forEach(navItem => {
     if (navItem.innerText === "Battle") {
@@ -121,62 +124,75 @@ async function start() {
     }
   })
 
+  //Checks if the user wants to replace idle captains and invoke the function to check and replace them.
   const offline = await retrieveFromStorage("offlineSwitch")
   if (offline) {
     await checkIdleCaptains()
   }
 
-  // Collects defeat and savage chest
+  // Collects chests and savages rewards
   const defeatButton = document.querySelectorAll(".actionButton.capSlotButton.capSlotButtonAction");
-  async function handleChest() {
-    defeatButton.forEach(async (button) => {
-      const buttonText = button.innerText;
-      if (buttonText === "SEE RESULTS" || buttonText === "OPEN CHEST" || buttonText === "COLLECT KEYS" || buttonText === "COLLECT BONES") {
-        button.click();
-      }
-    });
-  }
-  await handleChest();
+  defeatButton.forEach(async (button) => {
+    const buttonText = button.innerText;
+    if (buttonText === "SEE RESULTS" || buttonText === "OPEN CHEST" || buttonText === "COLLECT KEYS" || buttonText === "COLLECT BONES") {
+      await button.click();
+    }
+  });
+
   // Collects rewards if there are any
   const rewardButton = document.querySelector(".actionButton.actionButtonPrimary.rewardsButton");
   if (rewardButton) {
     await rewardButton.click();
   }
 
+  //Initialized a node list with placeable buttons
   const placeUnitButtons = document.querySelectorAll(".actionButton.actionButtonPrimary.capSlotButton.capSlotButtonAction");
   let placeUnit = null;
+  //If there are no place unit buttons, invoke the collection function then return.
   if (placeUnitButtons.length == 0 || (placeUnitButtons.length == 1 && placeUnitButtons[0].innerText === "SUBMIT")) {
-    isRunning = false
     await performCollection()
     return
-  } else if (placeUnitButtons.length != 0) {
+  }
+  //If placement buttons exist, validate them
+  else if (placeUnitButtons.length != 0) {
+    //Iterate through every button
     for (var button of placeUnitButtons) {
+      //If the button has the inner text PLACE UNIT it's a valid button
       if (button.innerText.includes("PLACE UNIT")) {
+        //Get captain name from the slot
         var captainSlot = button.closest('.capSlot');
         const captainNameFromDOM = captainSlot.querySelector('.capSlotName').innerText;
+        //Retrieve the slot state (mode, loyalty and no units) from storage using the captain name
         const slotState = await retrieveStateFromStorage(captainNameFromDOM);
+        //If slot state is true, move to the next slot
+        if (slotState) {
+          continue
+        }
+        //Check if the captain is the one running a game mode
         const dungeonCaptainNameFromStorage = await retrieveFromStorage('dungeonCaptain');
         const clashCaptainNameFromStorage = await retrieveFromStorage('clashCaptain');
         const duelsCaptainNameFromStorage = await retrieveFromStorage('duelCaptain');
+        //Check if the user wants multiple units to be placed on special modes
         const clashSwitch = await retrieveFromStorage('clashSwitch');
         const dungeonSwitch = await retrieveFromStorage('dungeonSwitch');
         const duelSwitch = await retrieveFromStorage('duelSwitch');
         let captainFlag
         let captainLoyalty
-        if (slotState) {
-          continue
-        }
+
+        //Pass captain name and check if the captain is flagged
         try {
           captainFlag = await getCaptainFlag(captainNameFromDOM, 'flaggedCaptains');
         } catch (error) {
           captainFlag = false
         }
+        //If captain is flagged change color and move to the next slot
         if (captainFlag) {
           captainSlot.style.backgroundColor = purple
           continue
         } else {
           captainSlot.style.backgroundColor = gameBlue
         }
+        //Pass captain name and check if the captain has a loyalty flag.
         if (await retrieveFromStorage('loyaltySwitch')) {
           try {
             captainLoyalty = await getCaptainFlag(captainNameFromDOM, 'captainLoyalty');
@@ -186,27 +202,39 @@ async function start() {
         } else {
           captainLoyalty = false
         }
+        //If captain has a loyalty flag, change color and move to the next slot
         if (captainLoyalty) {
           captainSlot.style.backgroundColor = yellow
           continue
         } else {
           captainSlot.style.backgroundColor = gameBlue
         }
+        /* Check if the captain is running a special game mode and if the same captain is the one in storage.
+        So if the dungeon captain on storage is Mike and there is another captain name John also running a dungeon
+        the captain John will be skipped, this is done so only one captain runs a special mode at any given time and keys don't get reset.  */
         if ((dungeonCaptainNameFromStorage != captainNameFromDOM) && captainSlot.innerText.includes("Dungeons") ||
           (clashCaptainNameFromStorage != captainNameFromDOM) && captainSlot.innerText.includes("Clash") ||
           (duelsCaptainNameFromStorage != captainNameFromDOM) && captainSlot.innerText.includes("Duel")) {
           continue
-        } else if ((dungeonCaptainNameFromStorage == captainNameFromDOM) && !captainSlot.innerText.includes("Dungeons") ||
+        }
+        /* Checks if the captain saved on storage running a special mode is still running the same mode, if they change they might lock
+        the slot for 30 minutes so if a captain switches to campaign they are skipped and colored red */
+        else if ((dungeonCaptainNameFromStorage == captainNameFromDOM) && !captainSlot.innerText.includes("Dungeons") ||
           (clashCaptainNameFromStorage == captainNameFromDOM) && !captainSlot.innerText.includes("Clash") ||
           (duelsCaptainNameFromStorage == captainNameFromDOM) && !captainSlot.innerText.includes("Duel")) {
           captainSlot.style.backgroundColor = red;
           continue
         }
+        /* Checks if the slot is a special game mode and if a unit has already been placed it check if the user wants to place
+        multiple units on special modes */
         else if (((captainSlot.innerText.includes("Dungeons") && !dungeonSwitch) || (captainSlot.innerText.includes("Clash") && !clashSwitch) ||
           ((captainSlot.innerText.includes("Duel") && !duelSwitch))) &&
           captainSlot.querySelector('.capSlotClose') == null) {
           continue
-        } else {
+        }
+        //If all is clear, it checks if the captain is diamond loyalty for future comparison.
+        //Assigns the placeUnit button and breaks.
+        else {
           diamondLoyalty = captainSlot.outerHTML.includes('LoyaltyDiamond');
           placeUnit = button
           break;
@@ -216,7 +244,8 @@ async function start() {
       }
     }
   }
-  fullLength = 0
+
+  //If place unit exists, clicks it and loads the invokes the openBattlefield function
   if (placeUnit) {
     placeUnit.click();
     await delay(3000)
@@ -239,10 +268,10 @@ async function performCollection() {
   await collectBattlePass()
 }
 
-// This function checks if the battlefield is present and zooms into it.
+// This function checks if the battlefield is present, the current chest type, then zooms into it.
 async function openBattlefield() {
 
-  //Check loyalty here
+  //Check if battlefield is open
   let battleInfo
   try {
     battleInfo = document.querySelector(".battleInfo").innerText;
@@ -251,57 +280,63 @@ async function openBattlefield() {
     return
   }
   let mode = false
-  //Duels and clash strings here.
-  if (battleInfo.includes("Level") || battleInfo.includes("Versus")) {
-    mode = true
-  }
-  if (!diamondLoyalty && mode == false) {
+  //Check if user wants to preserve diamond loyalty
+  const preserveDiamond = await retrieveFromStorage('loyaltySwitch');
+
+  //User wants to preserve diamond loyalty and current captain is not diamond and current mode is campaign
+  if (preserveDiamond && !diamondLoyalty && mode == false) {
+    //Opens battle info and checks chest type.
     battleInfo = document.querySelector(".battleInfoMapTitle")
     battleInfo.click()
     const chest = document.querySelector(".mapInfoRewardsName").innerText;
-    //chest === "Gold Chest" || 
     if ((chest === "Diamond Chest" || chest === "Loyalty Diamond Chest" ||
       chest === "Loyalty Gold Chest" || chest === "Loyalty Scroll Chest" ||
       chest === "Loyalty Skin Chest" || chest === "Loyalty Token Chest" ||
       chest === "Loyalty Super Boss Chest" || chest === "Loyalty Boss Chest" ||
-      chest === "Loyalty Boss") && await retrieveFromStorage('loyaltySwitch')) {
+      chest === "Loyalty Boss")) {
+      //Flag the captain loyalty since the current map is to be skipped
       await flagCaptain('captainLoyalty');
+      //Close the chest info popup and return to main menu
       closeAll();
       goHome();
       return;
     } else {
-      const closeButton = document.querySelector('.slideMenuCont.slideUp.slideUpOpen.slideMenuShortOpen.slideMenuShortOpenMore .slideMenuTop .far.fa-times');
-      if (closeButton) {
-        closeButton.click();
-        zoom();
-      }
+      //Current chest is not special, close cheset info and zoom
+      closeAll();
+      zoom();
     }
   } else {
+    //User doesn't want to preserve diamond loyalty
     zoom();
   }
 }
 
+//Zooms into the battlefield
 function zoom() {
   const zoomButton = document.querySelector(".fas.fa-plus");
   if (zoomButton) {
     for (let i = 0; i < 7; i++) {
       zoomButton.click();
     };
+    //Resets tracking variables
     markerAttempt = 0
     arrayOfMarkers = null
+    //Invoke getValidMarkers function
     getValidMarkers();
   }
 }
 
 //Looks and selects a valid marker for placement
-
 async function getValidMarkers() {
+  //Function to check for a frozen state
   reloadRoot();
   await delay(5000);
+  //Initializes a node list with placement markers
   arrayOfMarkers = document.querySelectorAll(".planIcon");
   //Captain is on open map only
   if (arrayOfMarkers.length == 0) {
     //Map without any markers.
+    //Initializes a variable with battle clock
     const clockElement = document.querySelector('.battlePhaseTextClock .clock');
     if (clockElement == null) {
       goHome();
@@ -309,12 +344,16 @@ async function getValidMarkers() {
     }
     const timeText = clockElement.innerText.replace(':', '');
     const time = parseInt(timeText, 10);
+    //If the timer is at 29:15 or above, go back to the main menu as the captain may place still be placing markers.
     if (time > 2915) {
       goHome();
       return;
     } else {
+      //If captain haven't placed any markers, initialize a node list with ally placements
       arrayOfAllyPlacement = document.querySelectorAll(".placementAlly");
+      //Get one position within the ally placements
       currentMarker = arrayOfAllyPlacement[Math.floor(Math.random() * arrayOfAllyPlacement.length)];
+      //Scroll into the currentMarker position
       moveScreenRandomPosition();
     }
     //There are markers of some kind in the map.
@@ -330,18 +369,18 @@ async function getValidMarkers() {
     arrayOfMarkers = document.querySelectorAll(".planIcon");
     if (arrayOfMarkers.length == 0) {
       //Captain is using a mix of block markers and open zones
-      await flagCaptain('flaggedCaptains')
+      await flagCaptain('flaggedCaptains');
       goHome();
       return;
     } else {
       //There are vibe or set markers that can be used.
-      getSetMarker()
+      getSetMarker();
     }
   }
 }
 
 async function getSetMarker() {
-  let matchingMarker
+  let matchingMarker;
   //This indicates that an attempt to place at the current marker has been made
   if (markerAttempt >= 1) {
     try {
@@ -351,12 +390,14 @@ async function getSetMarker() {
       goHome();
       return;
     }
+    //Removes current marker from the page as they can't be used
     arrayOfMarkers.forEach(planIcon => {
       backgroundImageValue = getComputedStyle(planIcon).getPropertyValue('background-image').toUpperCase();
       if (backgroundImageValue.includes(matchingMarker)) {
         planIcon.remove()
       }
     });
+    //Updates marker node list without the removed markers
     arrayOfMarkers = document.querySelectorAll(".planIcon");
   }
   if (arrayOfMarkers.length == 0) {
@@ -371,12 +412,15 @@ async function getSetMarker() {
     // This bit gets the marker type for comparison later
     computedStyle = getComputedStyle(currentMarker);
     backgroundImageValue = computedStyle.getPropertyValue('background-image').toUpperCase();
+    //Checks if the marker is a valid placement marker and also get its type
     arrayOfBattleFieldMarkers.some(marker => {
+      //If the current marker matches the items on the array of markers, it's a valid marker
       if (backgroundImageValue.includes(marker.icon)) {
         currentMarkerKey = marker.key
         for (let i = 0; i <= arrayOfUnits.length; i++) {
           const element = arrayOfUnits[i];
           if (currentMarkerKey === element.key || currentMarkerKey === element.type) {
+            //If the marker is valid, moves to the center
             moveScreenCenter();
             return
             //break;
@@ -401,75 +445,94 @@ async function moveScreenCenter() {
 
 //Scroll into view the center of the currentMark
 async function moveScreen(position) {
-  //They say two bodies cannot occupy the same point in space and time so we turn the marker into 0 so our unit can fit on that space
+  //Set marker dimensions to zero so the unit can fit in its place
   currentMarker.style.width = '0';
   currentMarker.style.height = '0';
   currentMarker.style.backgroundSize = '0';
 
+  //Move screen with the current marker centered
   currentMarker.scrollIntoView({ block: 'center', inline: position });
   await delay(3000);
+  //Invokes unit selection
   selectUnit();
   await delay(1000);
+  //Invokes selected unit placement.
   placeTheUnit();
+  //Checks for frozen state
   reloadRoot();
 }
 
-//Opens unit inventory tab, boosts unit and selects the first available unit that isn't on cooldown
-//or isn't legendary. It also grabs the unit name for future marker validation.
+/* This function opens the unit inventory tab, boosts unit and selects the first available unit that is allowed for usage,
+isn't on cooldown, dead or exhausted. It also gets the unit name for future marker validation. */
 async function selectUnit() {
+  //Opens the unit drawer
   let placeUnitSelection = document.querySelector(".actionButton.actionButtonPrimary.placeUnitButton");
   if (placeUnitSelection) {
     placeUnitSelection.click();
   }
+
+  //Set the unit drawer to the ALL units tab.
   let allUnitsButton = document.querySelector('.unitFilterButton');
   if (allUnitsButton) {
     allUnitsButton.click();
   }
-  //Use a potion if there are 100 potions available, uncomment to enable it.
+  //Checks if user wants to use potions.
   const potionState = await getRadioButton();
   let number
   let epicButton
+  //User wants to use potions
   if (potionState != 0) {
+    //Get potion strings so the string can be trimmed and converted to int for validation
     let potions = document.querySelector("img[alt='Potion']").closest(".quantityItem");
     let potionQuantity = potions.querySelector(".quantityText").textContent;
     epicButton = document.querySelector(".actionButton.actionButtonPrimary.epicButton");
     number = parseInt(potionQuantity.substring(0, 3));
   }
+  //User wants to use potions as soon as there are at least 45 potions.
   if (potionState == 1 && number >= 45) {
     if (epicButton) {
       epicButton.click();
     }
+    //User wants to use potions as soon as there are 100 potions.
   } else if (potionState && number == 100) {
     if (epicButton) {
       epicButton.click();
     }
   }
+  //Handles unit drawer.
   let unitDrawer;
   unitName = ""
   unitDrawer = document.querySelectorAll(".unitSelectionCont");
+  //Initializes a node list with all units
   const unitsQuantity = unitDrawer[0].children.length;
   for (let i = 1; i <= unitsQuantity; i++) {
+    //Iterates through every unit
+    //Get unit
     const unit = unitDrawer[0].querySelector(".unitSelectionItemCont:nth-child(" + i + ") .unitItem:nth-child(1)")
+    //Get unit rarity
     let commonCheck = unit.querySelector('.unitRarityCommon');
     let uncommonCheck = unit.querySelector('.unitRarityUncommon');
     let rareCheck = unit.querySelector('.unitRarityRare');
     let legendaryCheck = unit.querySelector('.unitRarityLegendary');
+    //Get unit status: cooldown, defeated and exhausted
     let coolDownCheck = unit.querySelector('.unitItemCooldown');
     let defeatedCheck = unit.querySelector('.defeatedVeil');
+    let unitDisabled = unit.querySelector('.unitItemDisabledOff');
+    //Get unit type and unit name so it can be compared with the marker and determine if the placement is valid.
     let unitType = unit.querySelector('.unitClass img').getAttribute('alt').toUpperCase();
     let unitName = unit.querySelector('.unitClass img').getAttribute('src').slice(-50).toUpperCase();
-    let unitDisabled = unit.querySelector('.unitItemDisabledOff');
     let commonSwitch;
     let uncommonSwitch
     let rareSwitch
     let legendarySwitch
     let isDungeon = false
 
-    //Check if it's dungeon so the usage of legendary units can be allowed
+    //Check if it's dungeon so the usage of all units can be allowed regardless of user setting
     let dungeonCheck = document.querySelector('.battleInfoMapTitle');
     if (dungeonCheck.innerText.includes('Level: ')) {
       isDungeon = true
     }
+    //Checks what units the user wants to place
     if (legendaryCheck) {
       legendarySwitch = await getSwitchState("legendarySwitch");
     } else if (rareCheck) {
@@ -485,27 +548,35 @@ async function selectUnit() {
     if (unit1) {
       unitName = unit1.key;
     }
-    //If the unit can't be used, get the next
+    //Check if the unit can be used.
     if ((commonCheck && !commonSwitch && !isDungeon) ||
       (legendaryCheck && !legendarySwitch && !isDungeon) ||
       (rareCheck && !rareSwitch && !isDungeon) ||
       (uncommonCheck && !uncommonSwitch && !isDungeon) ||
       coolDownCheck || defeatedCheck || !unitDisabled) {
       if (i >= unitsQuantity) {
-        markerAttempt++
-        getSetMarker()
-        return
+        //If there are no units that can be placed, get a new marker until there are no markers available to match any of the available units
+        markerAttempt++;
+        getSetMarker();
+        return;
       } else {
-        continue
+        //Current unit can't be used, get the next
+        continue;
       }
     }
+    /* Select the unit if the current marker is a vibe or if there are no markers
+      or if the unit name or type match the current marker */
     else if (currentMarkerKey == "VIBE" || currentMarkerKey == "" ||
       currentMarkerKey == unitType || currentMarkerKey == unitName) {
+      //Select the unit
       unit.click();
       await delay(1000);
+      /* If the unit is placed on an invalid marker or area or if the unit is on top of another ally unit,
+      tapping it forces the game to check if the placement can be performed */
       tapUnit();
-      return
+      return;
     } else {
+      //Else get the next unit
       continue;
     }
   }
@@ -515,7 +586,9 @@ async function selectUnit() {
 
 //If the unit is in a valid marker that is in use, by taping the unit container it forces a button recheck on mouseup/touchend
 function tapUnit() {
+  //Check for frozen state
   reloadRoot()
+  //Taps unit
   const placerUnitCont = document.querySelector('.placerUnitCont');
   const event = new Event('mouseup', { bubbles: true, cancelable: true });
   placerUnitCont.dispatchEvent(event);
@@ -523,44 +596,47 @@ function tapUnit() {
 
 //Places unit or asks for a new valid marker
 function placeTheUnit() {
-  //Gets timer and if it's 0, goes back to menu
+  //Gets timer, if it doesn't exist return to main menu.
   let clockText
   try {
     clockText = document.querySelector('.battlePhaseTextClock .clock').innerText;
   } catch (error) {
-    isRunning = false
-    return
+    goHome();
+    return;
   }
 
+  //If timer has reached 00:00 it means the battle has already started, return to main menu.
   if (clockText === "00:00") {
-    let placerButton = document.querySelector(".actionButton.actionButtonNegative.placerButton");
+    let placerButton = document.querySelector(cancelButtonSelector);
     let selectorBack = document.querySelector(".selectorBack");
 
     if (placerButton && selectorBack) {
       placerButton.click();
       selectorBack.click();
       isRunning = false;
+      return;
     }
   }
 
-  //Attemps to place the unit and go back to menu, if the marker is valid, but in use, get a new marker.
+  //Attemps to place the selected unit and go back to menu, if the marker is valid, but in use, get a new marker.
   const confirmPlacement = document.querySelector(".actionButton.actionButtonPrimary.placerButton");
   if (confirmPlacement) {
+    //Placement is blocked by invalid unit location.
     const blockedMarker = document.querySelector(".placerRangeIsBlocked");
     if (blockedMarker) {
-      const cancelButton = document.querySelector(".actionButton.actionButtonNegative.placerButton");
+      const cancelButton = document.querySelector(cancelButtonSelector);
       if (cancelButton) {
         cancelButton.click();
       }
       if (currentMarkerKey != null || currentMarkerKey != 0) {
         getValidMarkers();
       } else {
-        //moveScreenRandomPosition()
-        return
+        goHome();
+        return;
       }
     } else {
       confirmPlacement.click()
-      const cancelButton2 = document.querySelector(".actionButton.actionButtonNegative.placerButton");
+      const cancelButton2 = document.querySelector(cancelButtonSelector);
       if (cancelButton2) {
         cancelButton2.click();
         goHome();
@@ -571,16 +647,17 @@ function placeTheUnit() {
 
   //Unit was placed successfully, returns to main menu and the process restarts.
   setTimeout(() => {
-    // Unit was successfully placed, exit battlefield and restart cycle
+    // Unit was successfully placed, exit battlefield and so the cycle can be restarted.
     const placementSuccessful = document.querySelector(".actionButton.actionButtonDisabled.placeUnitButton");
     if (placementSuccessful) {
-      goHome()
+      goHome();
       return;
     }
   }, 3000);
+
   setTimeout(() => {
     const disabledButton = document.querySelector(".actionButton.actionButtonDisabled.placerButton");
-    const negativeButton = document.querySelector(".actionButton.actionButtonNegative.placerButton");
+    const negativeButton = document.querySelector(cancelButtonSelector);
     if (disabledButton) {
       disabledButton.click();
     }
@@ -591,12 +668,15 @@ function placeTheUnit() {
   }, 5000);
 }
 
-
+//Change attributes of some elements as they get loaded.
 async function changeBackgroundColor() {
+
+  //Get captain slots or returns if they don't exist
   const captainSlots = document.querySelectorAll(".capSlots");
   if (captainSlots.length == 0) {
     return;
   }
+  //Using the game mode key retrieves captainName from storage
   const firstCapSlot = captainSlots[0];
   const capSlotChildren = firstCapSlot.querySelectorAll('.capSlot');
   const dungeonCaptainNameFromStorage = await retrieveFromStorage('dungeonCaptain');
@@ -604,6 +684,7 @@ async function changeBackgroundColor() {
   const duelsCaptainNameFromStorage = await retrieveFromStorage('duelCaptain');
   let capNameDOM;
 
+  //Gets captain name from the dom
   for (const capSlot of capSlotChildren) {
     try {
       capNameDOM = capSlot.querySelector('.capSlotName').innerText;
@@ -614,14 +695,19 @@ async function changeBackgroundColor() {
     //Set pause button states after load
     const play = String.fromCharCode(9654)
     const pause = String.fromCharCode(9208)
+    //Get pause button state for the current captain 
     const state = await retrieveStateFromStorage(capNameDOM);
     const pauseButton = capSlot.querySelector('.pauseButton');
+    //Set button innerText based on retrieved state
     if (state && capSlot.innerText.includes(play)) {
       pauseButton.innerText = pause
     } else if (!state && capSlot.innerText.includes(pause)) {
       pauseButton.innerText = play
     }
 
+    /*If the current captain is running a special mode and is not the one with the current flag OR
+    if the currently flagged captain is not running their assigned special mode they get colored red
+    for visual identification */
     if ((dungeonCaptainNameFromStorage != capNameDOM) && capSlot.innerText.includes("Dungeons") ||
       (clashCaptainNameFromStorage != capNameDOM) && capSlot.innerText.includes("Clash") ||
       (duelsCaptainNameFromStorage != capNameDOM) && capSlot.innerText.includes("Duel") ||
@@ -639,10 +725,13 @@ async function changeBackgroundColor() {
   //Set offline button states after load.
   const allCapSlots = document.querySelectorAll(".capSlot");
   for (const slot of allCapSlots) {
+    //Iterate through every button
     const btnOff = slot.querySelector(".capSlotStatus .offlineButton");
     const btnId = btnOff.getAttribute('id');
+    //Retrieve button state from storage
     const offstate = await getIdleState(btnId);
 
+    //Obtained inner text and color for the user to visually identify
     if (offstate) {
       btnOff.textContent = "ENABLED";
       btnOff.style.backgroundColor = "#5fa695";
@@ -653,68 +742,7 @@ async function changeBackgroundColor() {
   }
 }
 
-//Mutator observer to remove stuck modals
-const observer = new MutationObserver(function (mutations) {
-  mutations.forEach(async function (mutation) {
-    const rewardsScrim = document.querySelector(".rewardsScrim");
-    if (rewardsScrim) {
-      rewardsScrim.remove();
-    }
-
-    reloadRoot();
-
-    let questModal = document.querySelector(".modalScrim.modalOn");
-    if (questModal && !questModal.innerText.includes("Leave battle")) {
-      questModal.remove();
-    }
-
-    const menuView = document.querySelector(".mainNavCont.mainNavContPortrait")
-    if (menuView)
-      injectIntoDOM()
-
-    const battleLabel = document.querySelector(".battlePhaseTextCurrent");
-    if (battleLabel) {
-      if (battleLabel.innerText === "Battle Ready") {
-        const computedStyle = window.getComputedStyle(battleLabel);
-        const color = computedStyle.getPropertyValue("color");
-        if (color === "rgb(49, 255, 49)") {
-          goHome();
-          return;
-        }
-      }
-    }
-
-    let battleButton = document.querySelector(".placeUnitButtonItems");
-    if (battleButton && (battleButton.innerText.includes("UNIT READY TO PLACE IN") || battleButton.innerText.includes("BATTLE STARTING SOON"))) {
-      await battleDelay(15000);
-      battleButton = document.querySelector(".placeUnitButtonItems");
-      if (battleButton && (battleButton.innerText.includes("UNIT READY TO PLACE IN") || battleButton.innerText.includes("BATTLE STARTING SOON"))) {
-        goHome();
-        return;
-      }
-    }
-
-    const buttons = document.querySelectorAll(".button.actionButton.actionButtonPrimary");
-    buttons.forEach((button) => {
-      const buttonText = button.querySelector("div").textContent.trim();
-      if (buttonText === "GO BACK") {
-        button.click();
-      }
-    });
-  });
-});
-
-const targetNode = document.body;
-const config = { childList: true, subtree: true };
-observer.observe(targetNode, config);
-
-function reloadRoot() {
-  const rootElement = document.getElementById('root');
-  if (rootElement && rootElement.childElementCount === 0) {
-    location.reload();
-  }
-}
-
+//This function resets the running state and closes the battlefield back to home.
 function goHome() {
   isRunning = false;
   const backHome = document.querySelector(".selectorBack");
