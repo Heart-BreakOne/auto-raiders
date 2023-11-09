@@ -292,6 +292,10 @@ async function openBattlefield() {
     return
   }
   let mode = false
+  //Duels and clash strings here.
+  if (battleInfo.includes("Level") || battleInfo.includes("Versus")) {
+    mode = true;
+  }
   //Check if user wants to preserve diamond loyalty
   const preserveDiamond = await retrieveFromStorage('loyaltySwitch');
 
