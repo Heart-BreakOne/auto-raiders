@@ -151,10 +151,10 @@ async function start() {
     const buttonText = button.innerText;
     if (buttonText === "SEE RESULTS" || buttonText === "OPEN CHEST" || buttonText === "COLLECT KEYS" || buttonText === "COLLECT BONES") {
       button.click();
+      await delay(3000);
       break;
     }
   }
-  await delay(3000);
 
   // Collects rewards if there are any
   const rewardButton = document.querySelector(".actionButton.actionButtonPrimary.rewardsButton");
