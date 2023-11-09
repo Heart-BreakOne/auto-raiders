@@ -25,6 +25,18 @@ const gameBlue = 'rgb(42, 96, 132)';
 const cancelButtonSelector = ".actionButton.actionButtonNegative.placerButton";
 let delay = ms => new Promise(res => setTimeout(res, ms));
 
+const loyaltyChests = [
+  "Diamond Chest",
+  "Loyalty Diamond Chest",
+  "Loyalty Gold Chest",
+  "Loyalty Scroll Chest",
+  "Loyalty Skin Chest",
+  "Loyalty Token Chest",
+  "Loyalty Super Boss Chest",
+  "Loyalty Boss Chest",
+  "Loyalty Boss"
+];
+
 const arrayOfBattleFieldMarkers = [
   { key: "NO", icon: "SVFCVFFVKM+J2ICS+HWVYAAAAASUVORK5CYII=" },
   { key: "VIBE", icon: "1EPFWIYQTQRB9OWOGAAAABJRU5ERKJGGG" },
@@ -289,11 +301,7 @@ async function openBattlefield() {
     battleInfo = document.querySelector(".battleInfoMapTitle")
     battleInfo.click()
     const chest = document.querySelector(".mapInfoRewardsName").innerText;
-    if ((chest === "Diamond Chest" || chest === "Loyalty Diamond Chest" ||
-      chest === "Loyalty Gold Chest" || chest === "Loyalty Scroll Chest" ||
-      chest === "Loyalty Skin Chest" || chest === "Loyalty Token Chest" ||
-      chest === "Loyalty Super Boss Chest" || chest === "Loyalty Boss Chest" ||
-      chest === "Loyalty Boss")) {
+    if (loyaltyChests.includes(chest)) {
       //Flag the captain loyalty since the current map is to be skipped
       await flagCaptain('captainLoyalty');
       //Close the chest info popup and return to main menu
