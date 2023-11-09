@@ -145,13 +145,16 @@ async function start() {
   }
 
   // Collects chests and savages rewards
-  const defeatButton = document.querySelectorAll(".actionButton.capSlotButton.capSlotButtonAction");
-  defeatButton.forEach((button) => {
+  const defeatButtons = document.querySelectorAll(".actionButton.capSlotButton.capSlotButtonAction");
+  for (let i = 0; i < defeatButtons.length; i++) {
+    const button = defeatButtons[i];
     const buttonText = button.innerText;
     if (buttonText === "SEE RESULTS" || buttonText === "OPEN CHEST" || buttonText === "COLLECT KEYS" || buttonText === "COLLECT BONES") {
       button.click();
+      break;
     }
-  });
+  }
+  await delay(3000);
 
   // Collects rewards if there are any
   const rewardButton = document.querySelector(".actionButton.actionButtonPrimary.rewardsButton");
