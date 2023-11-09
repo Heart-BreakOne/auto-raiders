@@ -22,7 +22,7 @@ async function checkAndReload(selector, battleDelayTimer) {
   if (element) {
     await battleDelay(battleDelayTimer);
     element = document.querySelector(selector);
-    if (element) {
+    if (element && !domChanged) {
       location.reload();
     }
   }

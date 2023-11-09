@@ -689,7 +689,6 @@ const observer = new MutationObserver(function (mutations) {
         if (color === "rgb(49, 255, 49)") {
           goHome();
           return;
-          //location.reload();
         }
       }
     }
@@ -701,7 +700,6 @@ const observer = new MutationObserver(function (mutations) {
       if (battleButton && (battleButton.innerText.includes("UNIT READY TO PLACE IN") || battleButton.innerText.includes("BATTLE STARTING SOON"))) {
         goHome();
         return;
-        //location.reload();
       }
     }
 
