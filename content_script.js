@@ -672,6 +672,37 @@ const observer = new MutationObserver(function (mutations) {
     const menuView = document.querySelector(".mainNavCont.mainNavContPortrait")
     if (menuView)
       injectIntoDOM()
+
+    const battleLabel = document.querySelector(".battlePhaseTextCurrent");
+    if (battleLabel) {
+      if (battleLabel.innerText === "Battle Ready") {
+        const computedStyle = window.getComputedStyle(battleLabel);
+        const color = computedStyle.getPropertyValue("color");
+        if (color === "rgb(49, 255, 49)") {
+          goHome();
+          //location.reload();
+        }
+      }
+    }
+
+    let battleButton = document.querySelector(".placeUnitButtonItems");
+    if (battleButton && (battleButton.innerText.includes("UNIT READY TO PLACE IN") || battleButton.innerText.includes("BATTLE STARTING SOON"))) {
+      await battleDelay(15000);
+      battleButton = document.querySelector(".placeUnitButtonItems");
+      if (battleButton && (battleButton.innerText.includes("UNIT READY TO PLACE IN") || battleButton.innerText.includes("BATTLE STARTING SOON"))) {
+        goHome();
+        //location.reload();
+      }
+    }
+
+    const buttons = document.querySelectorAll(".button.actionButton.actionButtonPrimary");
+    buttons.forEach((button) => {
+      const buttonText = button.querySelector("div").textContent.trim();
+      if (buttonText === "GO BACK") {
+        button.click();
+      }
+    });
+
   });
 });
 
@@ -685,6 +716,7 @@ function reloadRoot() {
     location.reload()
   }
 }
+
 function goHome() {
   isRunning = false
   const backHome = document.querySelector(".selectorBack");
