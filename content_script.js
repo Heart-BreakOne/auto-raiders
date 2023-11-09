@@ -129,7 +129,6 @@ async function start() {
   startLoop = 0
   isRunning = true;
 
-
   console.log("log " + new Date().toString());
   //Initialized nav items and clicks on the Battle to open the main menu
   navItems = document.querySelectorAll('.mainNavItemText');
@@ -382,7 +381,7 @@ async function getValidMarkers() {
     })
     //Refresh array of markers with remaining markers
     arrayOfMarkers = document.querySelectorAll(".planIcon");
-    if (arrayOfMarkers.length == 0) {
+    if (arrayOfMarkers.length == 0 && (arrayOfAllyPlacement.length == 0 || arrayOfAllyPlacement == undefined)) {
       //Captain is using a mix of block markers and open zones
       await flagCaptain('flaggedCaptains');
       goHome();
@@ -402,7 +401,6 @@ async function getSetMarker() {
     try {
       matchingMarker = arrayOfBattleFieldMarkers.find(marker => marker.key === currentMarkerKey).icon;
     } catch (error) {
-      await flagCaptain('flaggedCaptains')
       goHome();
       return;
     }
@@ -535,7 +533,7 @@ async function selectUnit() {
     goHome();
     return;
   }
-   
+
   for (let i = 1; i <= unitsQuantity; i++) {
     //Iterates through every unit
     //Get unit
@@ -621,9 +619,9 @@ function tapUnit() {
   reloadRoot()
   //Attemps to tap the selected unit to force a valid placement check
   try {
-  const placerUnitCont = document.querySelector('.placerUnitCont');
-  const event = new Event('mouseup', { bubbles: true, cancelable: true });
-  placerUnitCont.dispatchEvent(event);
+    const placerUnitCont = document.querySelector('.placerUnitCont');
+    const event = new Event('mouseup', { bubbles: true, cancelable: true });
+    placerUnitCont.dispatchEvent(event);
   } catch (error) {
     goHome();
     return;
@@ -700,8 +698,8 @@ function placeTheUnit() {
     }
     if (negativeButton) {
       negativeButton.click();
+      getValidMarkers();
     }
-    getValidMarkers();
   }, 5000);
 }
 
