@@ -10,14 +10,13 @@ let fullLength = 0
 let computedStyle
 let backgroundImageValue
 let isRunning = false;
-let goldLoyalty;
+let diamondLoyalty;
 let arrayOfAllyPlacement
 let startLoop
 const yellow = 'rgb(255, 253, 208)';
 const red = 'rgb(255, 204, 203)';
 const purple = 'rgb(203, 195, 227)';
 const gameBlue = 'rgb(42, 96, 132)';
-let arrayOfLoyalty = ["LoyaltyGold", "LoyaltyBlue", "LoyaltyWood"];
 
 let delay = ms => new Promise(res => setTimeout(res, ms));
 
@@ -206,20 +205,7 @@ async function start() {
           captainSlot.querySelector('.capSlotClose') == null) {
           continue
         } else {
-          //goldLoyalty = captainSlot.outerHTML.includes('LoyaltyDiamond');
-          let loyal = null;
-          try {
-            loyal = captainSlot.querySelector(".capSlotLoyalty").innerHTML;
-          } catch (error) {
-          }
-
-          goldLoyalty = true;
-          for (const loyalty of arrayOfLoyalty) {
-            if (loyal == null || loyal.includes(loyalty)) {
-              goldLoyalty = false;
-              break;
-            }
-          }
+          diamondLoyalty = captainSlot.outerHTML.includes('LoyaltyDiamond');
           placeUnit = button
           break;
         }
@@ -275,7 +261,7 @@ async function openBattlefield() {
   if (battleInfo.includes("Level") || battleInfo.includes("Versus")) {
     mode = true
   }
-  if (!goldLoyalty && mode == false) {
+  if (!diamondLoyalty && mode == false) {
     battleInfo = document.querySelector(".battleInfoMapTitle")
     battleInfo.click()
     const chest = document.querySelector(".mapInfoRewardsName").innerText;
