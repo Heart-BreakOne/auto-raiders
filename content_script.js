@@ -15,6 +15,7 @@ let markerAttempt;
 let computedStyle;
 let backgroundImageValue;
 let isRunning = false;
+let mode;
 let diamondLoyalty;
 let arrayOfAllyPlacement;
 let startLoop;
@@ -147,14 +148,14 @@ async function start() {
   defeatButton.forEach(async (button) => {
     const buttonText = button.innerText;
     if (buttonText === "SEE RESULTS" || buttonText === "OPEN CHEST" || buttonText === "COLLECT KEYS" || buttonText === "COLLECT BONES") {
-      await button.click();
+      button.click();
     }
   });
 
   // Collects rewards if there are any
   const rewardButton = document.querySelector(".actionButton.actionButtonPrimary.rewardsButton");
   if (rewardButton) {
-    await rewardButton.click();
+    rewardButton.click();
   }
 
   //Initialized a node list with placeable buttons
@@ -291,7 +292,7 @@ async function openBattlefield() {
     isRunning = false
     return
   }
-  let mode = false
+  mode = false
   //Duels and clash strings here.
   if (battleInfo.includes("Level") || battleInfo.includes("Versus")) {
     mode = true;
@@ -493,9 +494,15 @@ async function selectUnit() {
   let number
   let epicButton
   //User wants to use potions
-  if (potionState != 0) {
+  if (potionState != 0 && !mode) {
     //Get potion strings so the string can be trimmed and converted to int for validation
-    let potions = document.querySelector("img[alt='Potion']").closest(".quantityItem");
+    let potions;
+    try {
+      potions = document.querySelector("img[alt='Potion']").closest(".quantityItem");
+    } catch (error) {
+      goHome();
+      return;
+    }
     let potionQuantity = potions.querySelector(".quantityText").textContent;
     epicButton = document.querySelector(".actionButton.actionButtonPrimary.epicButton");
     number = parseInt(potionQuantity.substring(0, 3));
@@ -516,7 +523,14 @@ async function selectUnit() {
   unitName = ""
   unitDrawer = document.querySelectorAll(".unitSelectionCont");
   //Initializes a node list with all units
-  const unitsQuantity = unitDrawer[0].children.length;
+  let unitsQuantity;
+  try {
+    unitsQuantity = unitDrawer[0].children.length;
+  } catch (error) {
+    goHome();
+    return;
+  }
+   
   for (let i = 1; i <= unitsQuantity; i++) {
     //Iterates through every unit
     //Get unit
@@ -742,6 +756,7 @@ async function changeBackgroundColor() {
     const btnId = btnOff.getAttribute('id');
     //Retrieve button state from storage
     const offstate = await getIdleState(btnId);
+    btnOff.style.fontWeight = "bold";
 
     //Obtained inner text and color for the user to visually identify
     if (offstate) {
