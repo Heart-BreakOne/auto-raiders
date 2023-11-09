@@ -145,16 +145,7 @@ async function start() {
   }
 
   // Collects chests and savages rewards
-  const defeatButtons = document.querySelectorAll(".actionButton.capSlotButton.capSlotButtonAction");
-  for (let i = 0; i < defeatButtons.length; i++) {
-    const button = defeatButtons[i];
-    const buttonText = button.innerText;
-    if (buttonText === "SEE RESULTS" || buttonText === "OPEN CHEST" || buttonText === "COLLECT KEYS" || buttonText === "COLLECT BONES") {
-      button.click();
-      await delay(3000);
-      break;
-    }
-  }
+  await collectChests();
 
   // Collects rewards if there are any
   const rewardButton = document.querySelector(".actionButton.actionButtonPrimary.rewardsButton");
@@ -376,12 +367,17 @@ async function getValidMarkers() {
     //There are markers of some kind in the map.
   } else {
     //Treat the markers to remove block markers
-    arrayOfMarkers.forEach(planIcon => {
-      backgroundImageValue = getComputedStyle(planIcon).getPropertyValue('background-image').toUpperCase();
+    for (let i = 0; i < arrayOfMarkers.length; i++) {
+      let planIcon = arrayOfMarkers[i];
+      let backgroundImageValue = getComputedStyle(planIcon).getPropertyValue('background-image').toUpperCase();
       if (backgroundImageValue.includes("SVFCVFFVKM+J2ICS+HWVYAAAAASUVORK5CYII=")) {
-        planIcon.remove()
+        try {
+          planIcon.remove();
+        } catch (error) {
+          continue;
+        }
       }
-    })
+    }
     //Refresh array of markers with remaining markers
     arrayOfMarkers = document.querySelectorAll(".planIcon");
     if (arrayOfMarkers.length == 0 && (arrayOfAllyPlacement.length == 0 || arrayOfAllyPlacement == undefined)) {
@@ -408,12 +404,17 @@ async function getSetMarker() {
       return;
     }
     //Removes current marker from the page as they can't be used
-    arrayOfMarkers.forEach(planIcon => {
-      backgroundImageValue = getComputedStyle(planIcon).getPropertyValue('background-image').toUpperCase();
+    for (let i = 0; i < arrayOfMarkers.length; i++) {
+      let planIcon = arrayOfMarkers[i];
+      let backgroundImageValue = getComputedStyle(planIcon).getPropertyValue('background-image').toUpperCase();
       if (backgroundImageValue.includes(matchingMarker)) {
-        planIcon.remove()
+        try {
+        planIcon.remove();
+        } catch (error) {
+          continue;
+        }
       }
-    });
+    }
     //Updates marker node list without the removed markers
     arrayOfMarkers = document.querySelectorAll(".planIcon");
   }
@@ -778,6 +779,18 @@ async function changeBackgroundColor() {
     } else {
       btnOff.textContent = "DISABLED";
       btnOff.style.backgroundColor = "red";
+    }
+  }
+}
+
+async function collectChests() {
+  const defeatButtons = document.querySelectorAll(".actionButton.capSlotButton.capSlotButtonAction");
+  for (let i = 0; i < defeatButtons.length; i++) {
+    const button = defeatButtons[i];
+    const buttonText = button.innerText;
+    if (buttonText === "SEE RESULTS" || buttonText === "OPEN CHEST" || buttonText === "COLLECT KEYS" || buttonText === "COLLECT BONES") {
+      button.click();
+      break;
     }
   }
 }
