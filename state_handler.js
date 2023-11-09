@@ -52,27 +52,33 @@ function goHome() {
 function closeAll() {
   const closeButton = document.querySelectorAll(".far.fa-times");
   if (closeButton.length > 0) {
-      closeButton.forEach(button => {
-          button.click();
-      })
+    closeButton.forEach(button => {
+      button.click();
+    })
   }
 }
 
 //Mutator observer to remove stuck modals, frozen states and update recently loaded elements.
 const observer = new MutationObserver(function (mutations) {
-  
+
   domChanged = true;
   reloadRoot();
 
   mutations.forEach(async function (mutation) {
+    //Hides reward modal that fails to be clicked.
+
     const rewardsScrim = document.querySelector(".rewardsScrim");
     if (rewardsScrim) {
-      rewardsScrim.remove();
+      rewardsScrim.style.width = '0';
+      rewardsScrim.style.height = '0';
     }
 
     let questModal = document.querySelector(".modalScrim.modalOn");
     if (questModal && !questModal.innerText.includes("Leave battle")) {
-      questModal.remove();
+      try {
+        questModal.remove();
+      } catch (error) { }
+
     }
 
     const menuView = document.querySelector(".mainNavCont.mainNavContPortrait")

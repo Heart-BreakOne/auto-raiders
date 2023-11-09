@@ -145,7 +145,7 @@ async function start() {
   }
 
   // Collects chests and savages rewards
-  await collectChests();
+  collectChests();
 
   // Collects rewards if there are any
   const rewardButton = document.querySelector(".actionButton.actionButtonPrimary.rewardsButton");
@@ -380,7 +380,7 @@ async function getValidMarkers() {
     }
     //Refresh array of markers with remaining markers
     arrayOfMarkers = document.querySelectorAll(".planIcon");
-    if (arrayOfMarkers.length == 0 && (arrayOfAllyPlacement.length == 0 || arrayOfAllyPlacement == undefined)) {
+    if (arrayOfMarkers.length == 0 && (arrayOfAllyPlacement == undefined || arrayOfAllyPlacement.length == 0)) {
       //Captain is using a mix of block markers and open zones
       await flagCaptain('flaggedCaptains');
       goHome();
@@ -409,7 +409,7 @@ async function getSetMarker() {
       let backgroundImageValue = getComputedStyle(planIcon).getPropertyValue('background-image').toUpperCase();
       if (backgroundImageValue.includes(matchingMarker)) {
         try {
-        planIcon.remove();
+          planIcon.remove();
         } catch (error) {
           continue;
         }
@@ -464,12 +464,17 @@ async function moveScreenCenter() {
 //Scroll into view the center of the currentMark
 async function moveScreen(position) {
   //Set marker dimensions to zero so the unit can fit in its place
-  currentMarker.style.width = '0';
-  currentMarker.style.height = '0';
-  currentMarker.style.backgroundSize = '0';
-
-  //Move screen with the current marker centered
-  currentMarker.scrollIntoView({ block: 'center', inline: position });
+  try {
+    currentMarker.style.width = '0';
+    currentMarker.style.height = '0';
+    currentMarker.style.backgroundSize = '0';
+    //Move screen with the current marker centered
+    await delay(4000);
+    currentMarker.scrollIntoView({ block: 'center', inline: position });
+  } catch (error) {
+    goHome();
+    return;
+  }
   await delay(3000);
   //Invokes unit selection
   selectUnit();
@@ -555,10 +560,10 @@ async function selectUnit() {
     let unitType = unit.querySelector('.unitClass img').getAttribute('alt').toUpperCase();
     let unitName = unit.querySelector('.unitClass img').getAttribute('src').slice(-50).toUpperCase();
     let commonSwitch;
-    let uncommonSwitch
-    let rareSwitch
-    let legendarySwitch
-    let isDungeon = false
+    let uncommonSwitch;
+    let rareSwitch;
+    let legendarySwitch;
+    let isDungeon = false;
 
     //Check if it's dungeon so the usage of all units can be allowed regardless of user setting
     let dungeonCheck = document.querySelector('.battleInfoMapTitle');
@@ -674,12 +679,8 @@ function placeTheUnit() {
         return;
       }
     } else {
-      confirmPlacement.click()
-      const cancelButton2 = document.querySelector(cancelButtonSelector);
-      if (cancelButton2) {
-        cancelButton2.click();
-        goHome();
-        return;
+      if (confirmPlacement) {
+        confirmPlacement.click();
       }
     }
   }
@@ -783,12 +784,15 @@ async function changeBackgroundColor() {
   }
 }
 
-async function collectChests() {
-  const defeatButtons = document.querySelectorAll(".actionButton.capSlotButton.capSlotButtonAction");
-  for (let i = 0; i < defeatButtons.length; i++) {
-    const button = defeatButtons[i];
+//Collect rewards and savages chests
+function collectChests() {
+  let collecRewardButtons = document.querySelectorAll(".actionButton.capSlotButton.capSlotButtonAction");
+  const buttonLabels = ["SEE RESULTS", "OPEN CHEST", "COLLECT KEYS", "COLLECT BONES"];
+
+  for (let i = 0; i < collecRewardButtons.length; i++) {
+    const button = collecRewardButtons[i];
     const buttonText = button.innerText;
-    if (buttonText === "SEE RESULTS" || buttonText === "OPEN CHEST" || buttonText === "COLLECT KEYS" || buttonText === "COLLECT BONES") {
+    if (buttonLabels.includes(buttonText)) {
       button.click();
       break;
     }
