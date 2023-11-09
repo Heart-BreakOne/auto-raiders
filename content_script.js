@@ -272,6 +272,10 @@ async function openBattlefield() {
       chest === "Loyalty Super Boss Chest" || chest === "Loyalty Boss Chest" ||
       chest === "Loyalty Boss") && await retrieveFromStorage('loyaltySwitch')) {
       await flagCaptain('captainLoyalty');
+      const allBackButtons = document.querySelectorAll(".far.fa-times");
+      allBackButtons.forEach((button) => {
+        button.click();
+      });
       goHome();
       return;
     } else {
