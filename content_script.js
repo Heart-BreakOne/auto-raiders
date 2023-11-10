@@ -123,7 +123,6 @@ async function start() {
 
   //Initialized nav items and clicks on the Battle to open the main menu
   navItems = document.querySelectorAll('.mainNavItemText');
-  let time = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' });
   if (navItems.length == 0 || navItems === undefined) {
     isRunning = true;
     return;
