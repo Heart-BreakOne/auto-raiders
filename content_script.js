@@ -17,6 +17,7 @@ let backgroundImageValue;
 let isRunning = false;
 let mode;
 let diamondLoyalty;
+let firstReload;
 let arrayOfAllyPlacement;
 const blue = 'rgb(185, 242, 255)';
 const red = 'rgb(255, 204, 203)';
@@ -116,10 +117,11 @@ const arrayOfUnits = [
 // This is the start, it selects a captain placement as well as collect any rewards to proceed
 async function start() {
 
-  //If isRunning is true, return
-  if (isRunning) {
-    return;
+  if (firstReload === undefined) {
+    firstReload = new Date();
   }
+  const elapsedMinutes = Math.floor((new Date() - firstReload.getTime()) / (1000 * 60));
+  console.log("log " + elapsedMinutes + " minutes since the last page refresh.");
 
   //Initialized nav items and clicks on the Battle to open the main menu
   navItems = document.querySelectorAll('.mainNavItemText');
@@ -129,6 +131,12 @@ async function start() {
   } else {
     isRunning = false;
   }
+
+  //If isRunning is true, return
+  if (isRunning) {
+    return;
+  }
+
   navItems.forEach(navItem => {
     if (navItem.innerText === "Battle") {
       navItem.click();
