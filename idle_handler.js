@@ -207,29 +207,29 @@ async function switchIdleCaptain() {
             versusLabelElement && versusLabelElement.textContent.trim() === 'Campaign' &&
             (!joinLabelElement || joinLabelElement.textContent.trim() !== 'Already joined Captain');
     });
-    //If diamond loyalty captains exist, click on the first one
+    //If diamond loyalty captains exist, click on a random one
     if (diamondLoyaltyList.length != 0) {
-        captainButton = diamondLoyaltyList[0].querySelector(".actionButton.actionButtonPrimary.searchResultButton");
+        captainButton = diamondLoyaltyList[getRandomIndex(diamondLoyaltyList.length)].querySelector(".actionButton.actionButtonPrimary.searchResultButton");
         captainButton.click();
     }
-    //If diamond loyalty captains exist, click on the first one
+    //If diamond loyalty captains exist, click on a random one
     else if (goldLoyaltyList.length != 0) {
-        captainButton = goldLoyaltyList[0].querySelector(".actionButton.actionButtonPrimary.searchResultButton");
+        captainButton = goldLoyaltyList[getRandomIndex(goldLoyaltyList.length)].querySelector(".actionButton.actionButtonPrimary.searchResultButton");
         captainButton.click();
     }
-    //If silver loyalty captains exist, click on the first one
+    //If silver loyalty captains exist, click on a random one
     else if (silverLoyaltyList.length != 0) {
-        captainButton = silverLoyaltyList[0].querySelector(".actionButton.actionButtonPrimary.searchResultButton");
+        captainButton = silverLoyaltyList[getRandomIndex(silverLoyaltyList.length)].querySelector(".actionButton.actionButtonPrimary.searchResultButton");
         captainButton.click();
     }
-    //If bronze loyalty captains exist, click on the first one
+    //If bronze loyalty captains exist, click on a random one
     else if (bronzeLoyaltyList.length != 0) {
-        captainButton = bronzeLoyaltyList[0].querySelector(".actionButton.actionButtonPrimary.searchResultButton");
+        captainButton = bronzeLoyaltyList[getRandomIndex(bronzeLoyaltyList.length)].querySelector(".actionButton.actionButtonPrimary.searchResultButton");
         captainButton.click();
     }
-    //If favorited captains exist, click on the first one
+    //If favorited captains exist, click on a random one
     else if (favoriteList.length != 0) {
-        captainButton = favoriteList[0].querySelector(".actionButton.actionButtonPrimary.searchResultButton");
+        captainButton = favoriteList[getRandomIndex(favoriteList.length)].querySelector(".actionButton.actionButtonPrimary.searchResultButton");
         captainButton.click()
     }
     //No special captains (no loyalty, not favorite) exist
@@ -264,6 +264,11 @@ async function switchIdleCaptain() {
             }
         }
     }
+}
+
+//Returns a random index number for the captains special list
+function getRandomIndex(max) {
+    return Math.floor(Math.random() * max);
 }
 
 /* This function receives the full captain list as well as a loyalty string
