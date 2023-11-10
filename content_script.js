@@ -14,7 +14,6 @@ let arrayOfMarkers;
 let markerAttempt;
 let computedStyle;
 let backgroundImageValue;
-let isRunning = false;
 let mode;
 let diamondLoyalty;
 let firstReload;
@@ -126,14 +125,6 @@ async function start() {
   //Initialized nav items and clicks on the Battle to open the main menu
   navItems = document.querySelectorAll('.mainNavItemText');
   if (navItems.length == 0 || navItems === undefined) {
-    isRunning = true;
-    return;
-  } else {
-    isRunning = false;
-  }
-
-  //If isRunning is true, return
-  if (isRunning) {
     return;
   }
 
@@ -264,17 +255,14 @@ async function start() {
     await delay(1000);
     openBattlefield();
   } else {
-    isRunning = false;
     return;
   }
 
   // Change captains using a different device without the script freezing trying to select a captain.
   closeAll();
-  isRunning = false;
 }
 
 async function performCollection() {
-  isRunning = false;
   await collectQuests();
   await buyScrolls();
   await collectFreeDaily();
@@ -289,7 +277,6 @@ async function openBattlefield() {
   try {
     battleInfo = document.querySelector(".battleInfo").innerText;
   } catch (error) {
-    isRunning = false;
     return;
   }
   mode = false;
@@ -676,7 +663,6 @@ function placeTheUnit() {
     if (placerButton && selectorBack) {
       placerButton.click();
       selectorBack.click();
-      isRunning = false;
       return;
     }
   }
@@ -820,7 +806,6 @@ function collectChests() {
 
 //This function resets the running state and closes the battlefield back to home.
 function goHome() {
-  isRunning = false;
   const backHome = document.querySelector(".selectorBack");
   if (backHome) {
     backHome.click();
