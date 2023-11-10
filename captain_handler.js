@@ -14,7 +14,7 @@ async function flagCaptain(flag) {
             // Get all captain buttons from the captain footer bar
             const captainButtons = document.querySelectorAll(".captainButton");
 
-            // Checks if the existing captains are active
+            // Iterate over active captain buttons
             captainButtons.forEach((button, index) => {
                 let isActive;
                 try {
@@ -23,36 +23,32 @@ async function flagCaptain(flag) {
                     isActive = false;
                 }
 
-                // Runs if the captain is active
+                // If the captain is active
                 if (isActive) {
-                    // Declares a unique id for the slot, the name, and the current time for precise flagging.
                     const captainId = index + 1;
                     const captainName = button.querySelector(".captainButtonImg").getAttribute("alt");
                     const currentTime = new Date();
 
-                    // Check if an entry with the same captainName exists
+                    // Check if an entry with the same captainId and captainName exists
                     const existingCaptainIndex = flaggedData.findIndex(
-                        (entry) => entry.captainName === captainName && entry.captainId !== captainId
+                        (entry) => entry.captainId === captainId && entry.captainName === captainName
                     );
 
                     if (existingCaptainIndex !== -1) {
-                        // If captain with a different id exists, remove it
-                        flaggedData.splice(existingCaptainIndex, 1);
-                    }
-
-                    // Check if an entry with the same captainId exists
-                    const indexToUpdate = flaggedData.findIndex((entry) => entry.captainId === captainId);
-
-                    // If indexToUpdate is not equal to -1 it means that the captain already exists on storage and needs to be updated
-                    if (indexToUpdate !== -1) {
-                        // Replace existing entry in the flaggedData object
-                        flaggedData[indexToUpdate] = {
-                            captainId: captainId,
-                            captainName: captainName,
-                            currentTime: currentTime.toISOString(),
-                        };
+                        // If the captain with the same id and name exists, update the currentTime
+                        flaggedData[existingCaptainIndex].currentTime = currentTime.toISOString();
                     } else {
-                        // If the captain doesn't exist, they are added to the flaggedData object
+                        // Check if an entry with the same captainName but different captainId exists
+                        const existingNameIndex = flaggedData.findIndex(
+                            (entry) => entry.captainName === captainName && entry.captainId !== captainId
+                        );
+
+                        if (existingNameIndex !== -1) {
+                            // If captain with a different id exists, remove it
+                            flaggedData.splice(existingNameIndex, 1);
+                        }
+
+                        // Add a new entry to the flaggedData object
                         flaggedData.push({
                             captainId: captainId,
                             captainName: captainName,
@@ -62,14 +58,13 @@ async function flagCaptain(flag) {
                 }
             });
 
-            // The flaggedData object is updated in the storage or saved if it does not exist.
+            // Update the flaggedData object in storage
             chrome.storage.local.set({ [flag]: flaggedData }, function () {
                 resolve(flaggedData);
             });
         });
     });
 }
-
 
 //When invoked this function receives the captain name and the flag key and returns true or false if they are still under flag.
 async function getCaptainFlag(captainName, flagKey) {

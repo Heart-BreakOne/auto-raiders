@@ -2,8 +2,8 @@
 functions to perform tasks such as replacing idle captains or buying scrolls
 */
 
-//Triggers the start function every 30 seconds
-setInterval(start, 30000);
+//Triggers the start function every 20 seconds
+setInterval(start, 20000);
 //Update background colors every 5 seconds
 setInterval(changeBackgroundColor, 5000);
 
@@ -116,23 +116,25 @@ const arrayOfUnits = [
 // This is the start, it selects a captain placement as well as collect any rewards to proceed
 async function start() {
 
+  //Reload tracker
   if (firstReload === undefined) {
     firstReload = new Date();
   }
   const elapsedMinutes = Math.floor((new Date() - firstReload.getTime()) / (1000 * 60));
   console.log("log " + elapsedMinutes + " minutes since the last page refresh.");
 
-  //Initialized nav items and clicks on the Battle to open the main menu
+  //Initialized nav items, if they don't exist it means the extension is already executing.
   navItems = document.querySelectorAll('.mainNavItemText');
   if (navItems.length == 0 || navItems === undefined) {
     return;
+  } else {
+    //If navItem exists, open main menu
+    navItems.forEach(navItem => {
+      if (navItem.innerText === "Battle") {
+        navItem.click();
+      }
+    })
   }
-
-  navItems.forEach(navItem => {
-    if (navItem.innerText === "Battle") {
-      navItem.click();
-    }
-  })
 
   //Checks if the user wants to replace idle captains and invoke the function to check and replace them.
   const offline = await retrieveFromStorage("offlineSwitch")
@@ -292,7 +294,14 @@ async function openBattlefield() {
     //Opens battle info and checks chest type.
     battleInfo = document.querySelector(".battleInfoMapTitle")
     battleInfo.click();
-    const chest = document.querySelector(".mapInfoRewardsName").innerText;
+    await delay(500);
+    let chest;
+    try {
+      chest = document.querySelector(".mapInfoRewardsName").innerText;
+    } catch (error) {
+      goHome();
+      return;
+    }
     if (loyaltyChests.includes(chest)) {
       //Flag the captain loyalty since the current map is to be skipped
       await flagCaptain('captainLoyalty');
