@@ -16,7 +16,6 @@ let computedStyle;
 let backgroundImageValue;
 let mode;
 let diamondLoyalty;
-let firstReload;
 let arrayOfAllyPlacement;
 const blue = 'rgb(185, 242, 255)';
 const red = 'rgb(255, 204, 203)';
@@ -112,16 +111,8 @@ const arrayOfUnits = [
   { key: "WARRIOR", type: "MELEE", icon: "YTUUAHQ" },
 ];
 
-
 // This is the start, it selects a captain placement as well as collect any rewards to proceed
 async function start() {
-
-  //Reload tracker
-  if (firstReload === undefined) {
-    firstReload = new Date();
-  }
-  const elapsedMinutes = Math.floor((new Date() - firstReload.getTime()) / (1000 * 60));
-  console.log("log " + elapsedMinutes + " minutes since the last page refresh.");
 
   //Initialized nav items, if they don't exist it means the extension is already executing.
   navItems = document.querySelectorAll('.mainNavItemText');
@@ -294,7 +285,6 @@ async function openBattlefield() {
     //Opens battle info and checks chest type.
     battleInfo = document.querySelector(".battleInfoMapTitle")
     battleInfo.click();
-    await delay(500);
     let chest;
     try {
       chest = document.querySelector(".mapInfoRewardsName").innerText;
@@ -342,7 +332,8 @@ async function getValidMarkers() {
   reloadRoot();
   await delay(1000);
   //Initializes a node list with placement markers
-  arrayOfMarkers = document.querySelectorAll(".planIcon");
+  const nodeListOfMarkers = document.querySelectorAll(".planIcon");
+  arrayOfMarkers = Array.from(nodeListOfMarkers);
   //Captain is on open map only
   if (arrayOfMarkers.length == 0) {
     //Map without any markers.
@@ -369,19 +360,15 @@ async function getValidMarkers() {
     //There are markers of some kind in the map.
   } else {
     //Treat the markers to remove block markers
-    for (let i = 0; i < arrayOfMarkers.length; i++) {
+    for (let i = arrayOfMarkers.length - 1; i >= 0; i--) {
       let planIcon = arrayOfMarkers[i];
       let backgroundImageValue = getComputedStyle(planIcon).getPropertyValue('background-image').toUpperCase();
       if (backgroundImageValue.includes("SVFCVFFVKM+J2ICS+HWVYAAAAASUVORK5CYII=")) {
-        try {
-          planIcon.remove();
-        } catch (error) {
-          continue;
-        }
+        arrayOfMarkers.splice(i, 1);
       }
     }
-    //Refresh array of markers with remaining markers
-    arrayOfMarkers = document.querySelectorAll(".planIcon");
+
+    //Check what inside new array.
     if (arrayOfMarkers.length == 0 && (arrayOfAllyPlacement == undefined || arrayOfAllyPlacement.length == 0)) {
       //Captain is using a mix of block markers and open zones
       await flagCaptain('flaggedCaptains');
@@ -406,19 +393,20 @@ async function getSetMarker() {
       return;
     }
     //Removes current marker from the page as they can't be used
-    for (let i = 0; i < arrayOfMarkers.length; i++) {
+    for (let i = arrayOfMarkers.length - 1; i >= 0; i--) {
       let planIcon = arrayOfMarkers[i];
       let backgroundImageValue = getComputedStyle(planIcon).getPropertyValue('background-image').toUpperCase();
+
+      // Define the condition to match elements you want to remove
       if (backgroundImageValue.includes(matchingMarker)) {
         try {
-          planIcon.remove();
+          // Remove the element from the array using splice
+          arrayOfMarkers.splice(i, 1);
         } catch (error) {
           continue;
         }
       }
     }
-    //Updates marker node list without the removed markers
-    arrayOfMarkers = document.querySelectorAll(".planIcon");
   }
   if (arrayOfMarkers.length == 0) {
     //there are no units to match any of the available markers
@@ -785,7 +773,6 @@ async function changeBackgroundColor() {
     const btnId = btnOff.getAttribute('id');
     //Retrieve button state from storage
     const offstate = await getIdleState(btnId);
-    btnOff.style.fontWeight = "bold";
 
     //Obtained inner text and color for the user to visually identify
     if (offstate) {
