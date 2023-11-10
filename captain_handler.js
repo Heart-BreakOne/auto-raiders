@@ -11,10 +11,10 @@ async function flagCaptain(flag) {
         chrome.storage.local.get([flag], function (result) {
             let flaggedData = result[flag] || [];
 
-            //Get all captain buttons from the captain footer bar
+            // Get all captain buttons from the captain footer bar
             const captainButtons = document.querySelectorAll(".captainButton");
 
-            //Checks if the existing captains are active
+            // Checks if the existing captains are active
             captainButtons.forEach((button, index) => {
                 let isActive;
                 try {
@@ -23,31 +23,40 @@ async function flagCaptain(flag) {
                     isActive = false;
                 }
 
-                //Runs if the captain is active
+                // Runs if the captain is active
                 if (isActive) {
-                    //Declares a unique id for the slot, the name and the current time for precise flagging.
-
+                    // Declares a unique id for the slot, the name, and the current time for precise flagging.
                     const captainId = index + 1;
                     const captainName = button.querySelector(".captainButtonImg").getAttribute("alt");
                     const currentTime = new Date();
 
+                    // Check if an entry with the same captainName exists
+                    const existingCaptainIndex = flaggedData.findIndex(
+                        (entry) => entry.captainName === captainName && entry.captainId !== captainId
+                    );
+
+                    if (existingCaptainIndex !== -1) {
+                        // If captain with a different id exists, remove it
+                        flaggedData.splice(existingCaptainIndex, 1);
+                    }
+
                     // Check if an entry with the same captainId exists
                     const indexToUpdate = flaggedData.findIndex((entry) => entry.captainId === captainId);
 
-                    //If indexToUpdate is not equal to -1 it means that the captain already exists on storage and needs to be updated
+                    // If indexToUpdate is not equal to -1 it means that the captain already exists on storage and needs to be updated
                     if (indexToUpdate !== -1) {
-                        // Replace existing entry into a flaggedData object
+                        // Replace existing entry in the flaggedData object
                         flaggedData[indexToUpdate] = {
                             captainId: captainId,
                             captainName: captainName,
-                            currentTime: currentTime.toISOString()
+                            currentTime: currentTime.toISOString(),
                         };
                     } else {
-                        // If the captain doesn't exist, they are added into the flaggedData object
+                        // If the captain doesn't exist, they are added to the flaggedData object
                         flaggedData.push({
                             captainId: captainId,
                             captainName: captainName,
-                            currentTime: currentTime.toISOString()
+                            currentTime: currentTime.toISOString(),
                         });
                     }
                 }
@@ -60,6 +69,7 @@ async function flagCaptain(flag) {
         });
     });
 }
+
 
 //When invoked this function receives the captain name and the flag key and returns true or false if they are still under flag.
 async function getCaptainFlag(captainName, flagKey) {

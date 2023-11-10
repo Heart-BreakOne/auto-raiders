@@ -18,7 +18,7 @@ let isRunning = false;
 let mode;
 let diamondLoyalty;
 let arrayOfAllyPlacement;
-const yellow = 'rgb(255, 253, 208)';
+const blue = 'rgb(185, 242, 255)';
 const red = 'rgb(255, 204, 203)';
 const purple = 'rgb(203, 195, 227)';
 const gameBlue = 'rgb(42, 96, 132)';
@@ -192,27 +192,27 @@ async function start() {
         }
         //If captain is flagged change color and move to the next slot
         if (captainFlag) {
-          captainSlot.style.backgroundColor = purple
+          captainSlot.style.backgroundColor = purple;
           continue
         } else {
-          captainSlot.style.backgroundColor = gameBlue
+          captainSlot.style.backgroundColor = gameBlue;
         }
         //Pass captain name and check if the captain has a loyalty flag.
         if (await retrieveFromStorage('loyaltySwitch')) {
           try {
             captainLoyalty = await getCaptainFlag(captainNameFromDOM, 'captainLoyalty');
           } catch (error) {
-            captainLoyalty = false
+            captainLoyalty = false;
           }
         } else {
-          captainLoyalty = false
+          captainLoyalty = false;
         }
         //If captain has a loyalty flag, change color and move to the next slot
         if (captainLoyalty) {
-          captainSlot.style.backgroundColor = yellow
-          continue
+          captainSlot.style.backgroundColor = blue;
+          continue;
         } else {
-          captainSlot.style.backgroundColor = gameBlue
+          captainSlot.style.backgroundColor = gameBlue;
         }
         /* Check if the captain is running a special game mode and if the same captain is the one in storage.
         So if the dungeon captain on storage is Mike and there is another captain name John also running a dungeon
@@ -754,7 +754,7 @@ async function changeBackgroundColor() {
     if (state && capSlot.innerText.includes(play)) {
       pauseButton.innerText = pause;
     } else if (!state && capSlot.innerText.includes(pause)) {
-      pauseButton.innerText = play
+      pauseButton.innerText = play;
     }
 
     /*If the current captain is running a special mode and is not the one with the current flag OR
@@ -767,7 +767,7 @@ async function changeBackgroundColor() {
       (clashCaptainNameFromStorage == capNameDOM) && !capSlot.innerText.includes("Clash") ||
       (duelsCaptainNameFromStorage == capNameDOM) && !capSlot.innerText.includes("Duel")) {
       capSlot.style.backgroundColor = red;
-    } else if (capSlot.style.backgroundColor === yellow || capSlot.style.backgroundColor === purple) {
+    } else if (capSlot.style.backgroundColor === blue || capSlot.style.backgroundColor === purple) {
     }
     else {
       capSlot.style.backgroundColor = gameBlue;
