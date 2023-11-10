@@ -111,8 +111,16 @@ const arrayOfUnits = [
   { key: "WARRIOR", type: "MELEE", icon: "YTUUAHQ" },
 ];
 
+let firstReload;
 // This is the start, it selects a captain placement as well as collect any rewards to proceed
 async function start() {
+
+  //Reload tracker
+  if (firstReload === undefined) {
+    firstReload = new Date();
+  }
+  const elapsedMinutes = Math.floor((new Date() - firstReload.getTime()) / (1000 * 60));
+  console.log("log " + elapsedMinutes + " minutes since the last page refresh.");
 
   //Initialized nav items, if they don't exist it means the extension is already executing.
   navItems = document.querySelectorAll('.mainNavItemText');
@@ -237,7 +245,7 @@ async function start() {
           break;
         }
       } else {
-        continue
+        continue;
       }
     }
   }
@@ -248,6 +256,7 @@ async function start() {
     await delay(1000);
     openBattlefield();
   } else {
+    await performCollection();
     return;
   }
 
@@ -332,8 +341,9 @@ async function getValidMarkers() {
   reloadRoot();
   await delay(1000);
   //Initializes a node list with placement markers
-  const nodeListOfMarkers = document.querySelectorAll(".planIcon");
+  let nodeListOfMarkers = document.querySelectorAll(".planIcon");
   arrayOfMarkers = Array.from(nodeListOfMarkers);
+  nodeListOfMarkers = null;
   //Captain is on open map only
   if (arrayOfMarkers.length == 0) {
     //Map without any markers.
