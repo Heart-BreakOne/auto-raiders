@@ -9,13 +9,33 @@ setInterval(checkBattle, 15000);
 //Handles some conditions in which the battle has started.
 async function checkBattle() {
   //Attemps to check if it's stuck on battlefield
-  checkAndReload(".leaderboardCont", 60000);
+  checkBattlefield(".leaderboardCont", 50000);
   //If the battlefield is opened at the same time as the timer reaches 00:00 it will freeze there, a reload fixes it.
   checkAndReload(".battleLoading", 20000);
   //If the first loading screen frseezes
   checkAndReload(".loadingView", 10000);
   //If the second loading screen freezes
   checkAndReload(".splashCont", 10000);
+}
+
+//Check if battlefield is frozen or stuck, goes back to main menu if stuck, reloads page if frozen.
+async function checkBattlefield(selector, battleDelayTimer) {
+  domChanged = false;
+  let battlefieldIdentifier = document.querySelector(selector);
+  if(battlefieldIdentifier) {
+    await battleDelay(battleDelayTimer);
+    battlefieldIdentifier = document.querySelector(selector);
+    if (battlefieldIdentifier && !domChanged) {
+      goHome();
+      await battleDelay(3000);
+      const menuView = document.querySelector(".battleView");
+      if(menuView) {
+        return;
+      } else {
+        location.reload();
+      }
+    }
+  }
 }
 
 //Receives a selector and a time in milisecondseconds. Check if the element with the selector exists, then checks again after the elapsed time has passed.
@@ -37,14 +57,6 @@ function reloadRoot() {
   const rootElement = document.getElementById('root');
   if (rootElement && rootElement.childElementCount === 0) {
     location.reload();
-  }
-}
-
-function goHome() {
-  isRunning = false;
-  const backHome = document.querySelector(".selectorBack");
-  if (backHome) {
-    backHome.click();
   }
 }
 
