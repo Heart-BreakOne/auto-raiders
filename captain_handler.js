@@ -81,7 +81,7 @@ async function getCaptainFlag(captainName, flagKey) {
                 const pastTime = new Date(foundCaptain.currentTime);
                 const elapsedTimeInMinutes = (currentTime - pastTime) / (1000 * 60);
 
-                if (elapsedTimeInMinutes >= 5) {
+                if (elapsedTimeInMinutes >= 3) {
                     resolve(false);
                 } else {
                     resolve(true);

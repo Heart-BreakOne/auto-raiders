@@ -3,6 +3,7 @@
 //Initializing variables
 const battleDelay = (ms) => new Promise((res) => setTimeout(res, ms));
 let domChanged = false;
+let checkingBattle = false;
 //Runs checkBattle() every 15 seconds
 setInterval(checkBattle, 15000);
 
@@ -20,23 +21,46 @@ async function checkBattle() {
 
 //Check if battlefield is frozen or stuck, goes back to main menu if stuck, reloads page if frozen.
 async function checkBattlefield(selector, battleDelayTimer) {
-  domChanged = false;
-  let battlefieldIdentifier = document.querySelector(selector);
-  if(battlefieldIdentifier) {
+
+  if (checkingBattle) {
+    return;
+  }
+  checkingBattle = true;
+
+  async function waitForBattlefield() {
     await battleDelay(battleDelayTimer);
-    battlefieldIdentifier = document.querySelector(selector);
-    if (battlefieldIdentifier && !domChanged) {
-      goHome();
-      await battleDelay(3000);
-      const menuView = document.querySelector(".battleView");
-      if(menuView) {
-        return;
-      } else {
-        location.reload();
-      }
+    return document.querySelector(selector);
+  }
+
+  async function handleBattlefield() {
+    await battleDelay(3000);
+    const menuView = document.querySelector(".battleView");
+    if (!menuView) {
+      location.reload();
     }
   }
+
+  try {
+    const battlefieldIdentifier = await waitForBattlefield();
+
+    if (battlefieldIdentifier && !domChanged) {
+      goHome();
+      await handleBattlefield();
+    } else {
+      await battleDelay(20000);
+      const updatedBattlefield = await waitForBattlefield();
+
+      if (updatedBattlefield) {
+        goHome();
+        await handleBattlefield();
+      }
+    }
+  } catch (error) { }
+  finally {
+    checkingBattle = false;
+  }
 }
+
 
 //Receives a selector and a time in milisecondseconds. Check if the element with the selector exists, then checks again after the elapsed time has passed.
 //If the element still exists and the dom has not been changed it reloads the frozen page.

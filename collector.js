@@ -127,6 +127,7 @@ async function collectBattlePass() {
     if (!questState) {
         return;
     }
+    returnToMainScreen();
     //Get the header buttons to click on the rewards
     const headerButtons = document.querySelectorAll(".actionButton.actionButtonGift");
     headerButtons.forEach((rewardButton) => {
