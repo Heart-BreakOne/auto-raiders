@@ -253,7 +253,7 @@ async function start() {
   //If place unit exists, clicks it and loads the invokes the openBattlefield function
   if (placeUnit) {
     placeUnit.click();
-    await delay(3000);
+    await delay(1000);
     openBattlefield();
   } else {
     isRunning = false;
@@ -281,10 +281,10 @@ async function openBattlefield() {
   try {
     battleInfo = document.querySelector(".battleInfo").innerText;
   } catch (error) {
-    isRunning = false
-    return
+    isRunning = false;
+    return;
   }
-  mode = false
+  mode = false;
   //Duels and clash strings here.
   if (battleInfo.includes("Level") || battleInfo.includes("Versus")) {
     mode = true;
@@ -324,8 +324,9 @@ function zoom() {
       zoomButton.click();
     };
     //Resets tracking variables
-    markerAttempt = 0
-    arrayOfMarkers = null
+    markerAttempt = 0;
+    arrayOfMarkers = null;
+    currentMarker = null;
     //Invoke getValidMarkers function
     getValidMarkers();
   }
@@ -335,7 +336,7 @@ function zoom() {
 async function getValidMarkers() {
   //Function to check for a frozen state
   reloadRoot();
-  await delay(5000);
+  await delay(1000);
   //Initializes a node list with placement markers
   arrayOfMarkers = document.querySelectorAll(".planIcon");
   //Captain is on open map only
@@ -469,20 +470,19 @@ async function moveScreen(position) {
     currentMarker.style.backgroundSize = '0';
 
     //Move screen so the current marker gets centered
-    await delay(4000);
-    if (currentMarker && currentMarker !== undefined) {
+    await delay(1000);
+    if (currentMarker && currentMarker !== undefined && currentMarker !== null) {
       currentMarker.scrollIntoView({ block: 'center', inline: position });
     } else {
       goHome();
       return;
     }
-    await delay(3000);
-
+    await delay(1000);
   } catch (error) {
     goHome();
     return;
   }
-  await delay(3000);
+  await delay(1000);
   //Invokes unit selection
   selectUnit();
   await delay(1000);
