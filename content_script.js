@@ -123,7 +123,8 @@ async function start() {
 
   //Initialized nav items and clicks on the Battle to open the main menu
   navItems = document.querySelectorAll('.mainNavItemText');
-  if(navItems.length == 0 || navItems === undefined) {
+  let time = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+  if (navItems.length == 0 || navItems === undefined) {
     isRunning = true;
     return;
   } else {
@@ -448,40 +449,31 @@ async function getSetMarker() {
 
 //When there are no markers, it can be trick to scroll to a valid position into view, this randomizes the possible values.
 const moveScreenRandomPosition = async () => {
-  console.log("log");
+
   const positions = ['start', 'center', 'end', 'nearest'];
-  console.log("log");
   const randomPosition = positions[Math.floor(Math.random() * positions.length)];
-  console.log("log");
   await moveScreen(randomPosition);
 }
 
 //Vertical and horizontal center
 async function moveScreenCenter() {
-  console.log("log");
   await moveScreen('center');
 }
 
 //Scroll into view the center of the currentMark
 async function moveScreen(position) {
-  console.log("log");
+
   //Set marker dimensions to zero so the unit can fit in its place
   try {
-    console.log("log");
     currentMarker.style.width = '0';
     currentMarker.style.height = '0';
-    console.log("log");
     currentMarker.style.backgroundSize = '0';
-    //Move screen with the current marker centered
-    console.log("log");
+
+    //Move screen so the current marker gets centered
     await delay(4000);
-    console.log("log");
     if (currentMarker && currentMarker !== undefined) {
-      console.log("log");
       currentMarker.scrollIntoView({ block: 'center', inline: position });
-      console.log("log");
     } else {
-      console.log("log");
       goHome();
       return;
     }
