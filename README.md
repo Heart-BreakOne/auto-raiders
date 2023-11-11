@@ -38,4 +38,10 @@ To be added: Battle log system so you know who to sell your honor to.<br>
   <img src="https://i.imgur.com/zhOZDMF.png?1" alt="popup.html" height="85.93%" width="33.61%" hspace="30"/>
 </p>
 
+### General patch notes:
+1.0.0 - Unit placement, scroll dealing, quest collection<br>
+2.0.0 - Basic system to get a marker and place a reworked.<br>
+3.0.0 - Storage access obtained, improved and more precise marker and unit placement system, captain flagging for no available units, idling slot and loyalty. Idle captain switcher, individual slot handling, customized user handling of potions, quests, scroll shop, game modes, unit type selection.<br>
+4.0.0 - Added agent spoofing for a seamless experience on desktop browsers.<br>
+
 ## For feedback hit me on discord and contributors are welcome, specially to improve the quality of the code since javascript is not my forte.
