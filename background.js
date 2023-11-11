@@ -27,6 +27,7 @@ chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
   }
 });
 
+
 // Store the tab IDs that have already been processed
 const processedTabs = new Set();
 
@@ -43,33 +44,35 @@ async function updateUserAgent(tab) {
   processedTabs.add(tab.id);
 
   const rules = await chrome.declarativeNetRequest.getSessionRules();
-  if (rules.some(r => r.id === tab.id)) {
-    await chrome.declarativeNetRequest.updateSessionRules({
-      removeRuleIds: [tab.id]
-    });
-  } else {
-    await chrome.declarativeNetRequest.updateSessionRules({
-      removeRuleIds: [tab.id],
-      addRules: [{
-        'id': tab.id,
-        'action': {
-          'type': 'modifyHeaders',
-          'requestHeaders': [{
-            'header': 'user-agent',
-            'operation': 'set',
-            'value': staticUserAgent
-          }]
-        },
-        'condition': {
-          'tabIds': [tab.id],
-          'resourceTypes': [
-            'main_frame', 'sub_frame', 'stylesheet', 'script', 'image', 'font', 'object', 'xmlhttprequest', 'ping',
-            'csp_report', 'media', 'websocket', 'webtransport', 'webbundle', 'other'
-          ]
-        }
-      }]
-    });
-  }
+
+  // Remove any existing rules for the tab
+  await chrome.declarativeNetRequest.updateSessionRules({
+    removeRuleIds: [tab.id]
+  });
+
+  // Add a new rule for the static user agent
+  await chrome.declarativeNetRequest.updateSessionRules({
+    addRules: [{
+      'id': tab.id,
+      'action': {
+        'type': 'modifyHeaders',
+        'requestHeaders': [{
+          'header': 'user-agent',
+          'operation': 'set',
+          'value': staticUserAgent
+        }]
+      },
+      'condition': {
+        'tabIds': [tab.id],
+        'resourceTypes': [
+          'main_frame', 'sub_frame', 'stylesheet', 'script', 'image', 'font', 'object', 'xmlhttprequest', 'ping',
+          'csp_report', 'media', 'websocket', 'webtransport', 'webbundle', 'other'
+        ]
+      }
+    }]
+  });
+
+  // Reload the tab
   chrome.tabs.reload(tab.id, {
     bypassCache: false // You can set this to true or false based on your requirements
   });
