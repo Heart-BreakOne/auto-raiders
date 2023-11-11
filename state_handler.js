@@ -112,11 +112,17 @@ const observer = new MutationObserver(function (mutations) {
 
     mutation.addedNodes.forEach(async function (node) {
 
+      //Hide some elements from user view so they don't affect user interaction.
       const rewardsScrim = document.querySelector(".rewardsScrim");
-      if (rewardsScrim) {
-        rewardsScrim.style.width = '0';
-        rewardsScrim.style.height = '0';
+      const toast = document.querySelector(".toastsCont.toastsContMore");
+      function hideElementsFromView (element) {
+        if (element) {
+          element.style.width = '0';
+          element.style.height = '0';
+        }
       }
+      hideElementsFromView(rewardsScrim);
+      hideElementsFromView(toast);
 
       let questModal = document.querySelector(".modalScrim.modalOn");
       if (questModal && !questModal.innerText.includes("Leave battle")) {
