@@ -1,7 +1,7 @@
 {
    "manifest_version": 3,
    "name": "AutoRaiders",
-   "version": "3.2.3",
+   "version": "4.0.0",
    "description": "SR helper",
    "action": {
       "default_popup": "popup.html",
@@ -11,7 +11,8 @@
       }
    },
    "permissions": [
-      "storage"
+      "storage",
+      "declarativeNetRequestWithHostAccess"
    ],
    "content_scripts": [
       {
@@ -24,13 +25,17 @@
             "switch_handler.js",
             "captain_handler.js",
             "inject_handler.js",
-            "idle_handler.js"
+            "idle_handler.js",
+            "rotation_handler.js"
          ],
          "matches": [
             "https://www.streamraiders.com/*"
          ]
       }
    ],
+   "host_permissions": [
+      "https://www.streamraiders.com/*"
+    ],
    "background": {
       "service_worker": "background.js"
    },

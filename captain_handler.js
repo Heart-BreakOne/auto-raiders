@@ -14,6 +14,9 @@ async function flagCaptain(flag) {
             // Get all captain buttons from the captain footer bar
             const captainButtons = document.querySelectorAll(".captainButton");
 
+            // Current time
+            const currentTime = new Date();
+
             // Iterate over active captain buttons
             captainButtons.forEach((button, index) => {
                 let isActive;
@@ -27,7 +30,6 @@ async function flagCaptain(flag) {
                 if (isActive) {
                     const captainId = index + 1;
                     const captainName = button.querySelector(".captainButtonImg").getAttribute("alt");
-                    const currentTime = new Date();
 
                     // Check if an entry with the same captainId and captainName exists
                     const existingCaptainIndex = flaggedData.findIndex(
@@ -38,16 +40,6 @@ async function flagCaptain(flag) {
                         // If the captain with the same id and name exists, update the currentTime
                         flaggedData[existingCaptainIndex].currentTime = currentTime.toISOString();
                     } else {
-                        // Check if an entry with the same captainName but different captainId exists
-                        const existingNameIndex = flaggedData.findIndex(
-                            (entry) => entry.captainName === captainName && entry.captainId !== captainId
-                        );
-
-                        if (existingNameIndex !== -1) {
-                            // If captain with a different id exists, remove it
-                            flaggedData.splice(existingNameIndex, 1);
-                        }
-
                         // Add a new entry to the flaggedData object
                         flaggedData.push({
                             captainId: captainId,
@@ -58,6 +50,14 @@ async function flagCaptain(flag) {
                 }
             });
 
+            // Remove captains with a time older than 30 minutes
+            flaggedData = flaggedData.filter(entry => {
+                const entryTime = new Date(entry.currentTime);
+                const thirtyMinutesAgo = new Date();
+                thirtyMinutesAgo.setMinutes(thirtyMinutesAgo.getMinutes() - 30);
+                return entryTime > thirtyMinutesAgo;
+            });
+
             // Update the flaggedData object in storage
             chrome.storage.local.set({ [flag]: flaggedData }, function () {
                 resolve(flaggedData);
@@ -65,6 +65,7 @@ async function flagCaptain(flag) {
         });
     });
 }
+
 
 //When invoked this function receives the captain name and the flag key and returns true or false if they are still under flag.
 async function getCaptainFlag(captainName, flagKey) {

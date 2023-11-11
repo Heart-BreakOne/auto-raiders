@@ -100,56 +100,79 @@ const observer = new MutationObserver(function (mutations) {
   domChanged = true;
   reloadRoot();
 
+  let mainContainer;
+  try {
+    mainContainer = document.querySelector(".rotateMessageCont");
+  } catch (error) {
+    return;
+  };
+
   mutations.forEach(async function (mutation) {
     //Hides reward modal that fails to be clicked.
 
-    const rewardsScrim = document.querySelector(".rewardsScrim");
-    if (rewardsScrim) {
-      rewardsScrim.style.width = '0';
-      rewardsScrim.style.height = '0';
-    }
+    mutation.addedNodes.forEach(async function (node) {
 
-    let questModal = document.querySelector(".modalScrim.modalOn");
-    if (questModal && !questModal.innerText.includes("Leave battle")) {
-      try {
-        questModal.remove();
-      } catch (error) { }
+      const rewardsScrim = document.querySelector(".rewardsScrim");
+      if (rewardsScrim) {
+        rewardsScrim.style.width = '0';
+        rewardsScrim.style.height = '0';
+      }
 
-    }
+      let questModal = document.querySelector(".modalScrim.modalOn");
+      if (questModal && !questModal.innerText.includes("Leave battle")) {
+        try {
+          questModal.remove();
+        } catch (error) { }
 
-    const menuView = document.querySelector(".mainNavCont.mainNavContPortrait")
-    if (menuView)
-      injectIntoDOM()
+      }
 
-    const battleLabel = document.querySelector(".battlePhaseTextCurrent");
-    if (battleLabel) {
-      if (battleLabel.innerText === "Battle Ready") {
-        const computedStyle = window.getComputedStyle(battleLabel);
-        const color = computedStyle.getPropertyValue("color");
-        if (color === "rgb(49, 255, 49)") {
+      let menuView = document.querySelector(".mainNavCont.mainNavContPortrait");
+      if (!menuView) {
+        menuView = document.querySelector(".mainNavCont.mainNavContLandscape");
+      }
+      if (menuView) {
+        await battleDelay(5);
+        injectIntoDOM();
+      }
+
+      const battleLabel = document.querySelector(".battlePhaseTextCurrent");
+      if (battleLabel) {
+        if (battleLabel.innerText === "Battle Ready") {
+          const computedStyle = window.getComputedStyle(battleLabel);
+          const color = computedStyle.getPropertyValue("color");
+          if (color === "rgb(49, 255, 49)") {
+            goHome();
+            return;
+          }
+        }
+      }
+
+      let battleButton = document.querySelector(".placeUnitButtonItems");
+      if (battleButton && (battleButton.innerText.includes("UNIT READY TO PLACE IN") || battleButton.innerText.includes("BATTLE STARTING SOON"))) {
+        await battleDelay(15000);
+        battleButton = document.querySelector(".placeUnitButtonItems");
+        if (battleButton && (battleButton.innerText.includes("UNIT READY TO PLACE IN") || battleButton.innerText.includes("BATTLE STARTING SOON"))) {
           goHome();
           return;
         }
       }
-    }
 
-    let battleButton = document.querySelector(".placeUnitButtonItems");
-    if (battleButton && (battleButton.innerText.includes("UNIT READY TO PLACE IN") || battleButton.innerText.includes("BATTLE STARTING SOON"))) {
-      await battleDelay(15000);
-      battleButton = document.querySelector(".placeUnitButtonItems");
-      if (battleButton && (battleButton.innerText.includes("UNIT READY TO PLACE IN") || battleButton.innerText.includes("BATTLE STARTING SOON"))) {
-        goHome();
-        return;
-      }
-    }
+      const buttons = document.querySelectorAll(".button.actionButton.actionButtonPrimary");
+      buttons.forEach((button) => {
+        const buttonText = button.querySelector("div").textContent.trim();
+        if (buttonText === "GO BACK") {
+          button.click();
+        }
+      });
 
-    const buttons = document.querySelectorAll(".button.actionButton.actionButtonPrimary");
-    buttons.forEach((button) => {
-      const buttonText = button.querySelector("div").textContent.trim();
-      if (buttonText === "GO BACK") {
-        button.click();
+      if (node.nodeType === Node.ELEMENT_NODE && node.classList.contains("rotateMessageCont")) {
+        if (mainContainer) {
+          hideContainer(mainContainer);
+        }
       }
     });
+    setScroll();
+    setUnitContainer();
   });
 });
 

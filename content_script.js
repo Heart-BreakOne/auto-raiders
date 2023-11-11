@@ -4,8 +4,6 @@ functions to perform tasks such as replacing idle captains or buying scrolls
 
 //Triggers the start function every 20 seconds
 setInterval(start, 20000);
-//Update background colors every 5 seconds
-setInterval(changeBackgroundColor, 5000);
 
 //Declares/initializes variables
 let currentMarkerKey = "";
@@ -119,8 +117,12 @@ async function start() {
   if (firstReload === undefined) {
     firstReload = new Date();
   }
+  //Keep track of time and reload after 1hr15min to avoid the browser crashing due to low memory.
   const elapsedMinutes = Math.floor((new Date() - firstReload.getTime()) / (1000 * 60));
   console.log("log " + elapsedMinutes + " minutes since the last page refresh.");
+  if (elapsedMinutes >= 75) {
+    location.reload();
+  }
 
   //Initialized nav items, if they don't exist it means the extension is already executing.
   navItems = document.querySelectorAll('.mainNavItemText');
@@ -190,13 +192,6 @@ async function start() {
         } catch (error) {
           captainFlag = false
         }
-        //If captain is flagged change color and move to the next slot
-        if (captainFlag) {
-          captainSlot.style.backgroundColor = purple;
-          continue
-        } else {
-          captainSlot.style.backgroundColor = gameBlue;
-        }
         //Pass captain name and check if the captain has a loyalty flag.
         if (await retrieveFromStorage('loyaltySwitch')) {
           try {
@@ -207,13 +202,13 @@ async function start() {
         } else {
           captainLoyalty = false;
         }
-        //If captain has a loyalty flag, change color and move to the next slot
-        if (captainLoyalty) {
-          captainSlot.style.backgroundColor = blue;
+        //If captain has any flags, change color and move to the next slot
+        if (captainLoyalty || captainFlag) {
           continue;
         } else {
           captainSlot.style.backgroundColor = gameBlue;
         }
+
         /* Check if the captain is running a special game mode and if the same captain is the one in storage.
         So if the dungeon captain on storage is Mike and there is another captain name John also running a dungeon
         the captain John will be skipped, this is done so only one captain runs a special mode at any given time and keys don't get reset.  */
@@ -720,80 +715,98 @@ function placeTheUnit() {
   }, 5000);
 }
 
-//Change attributes of some elements as they get loaded.
-async function changeBackgroundColor() {
+const obsv = new MutationObserver(function (mutations) {
 
-  //Get captain slots or returns if they don't exist
-  const captainSlots = document.querySelectorAll(".capSlots");
-  if (captainSlots.length == 0) {
-    return;
-  }
-  //Using the game mode key retrieves captainName from storage
-  const firstCapSlot = captainSlots[0];
-  const capSlotChildren = firstCapSlot.querySelectorAll('.capSlot');
-  const dungeonCaptainNameFromStorage = await retrieveFromStorage('dungeonCaptain');
-  const clashCaptainNameFromStorage = await retrieveFromStorage('clashCaptain');
-  const duelsCaptainNameFromStorage = await retrieveFromStorage('duelCaptain');
-  let capNameDOM;
+  mutations.forEach(async function (mutation) {
 
-  //Gets captain name from the dom
-  for (const capSlot of capSlotChildren) {
-    //Attemps to get the captain name from the current slot
-    try {
-      capNameDOM = capSlot.querySelector('.capSlotName').innerText;
-    } catch (error) {
-      continue;
+    //Get captain slots or returns if they don't exist
+    const captainSlots = document.querySelectorAll(".capSlots");
+    if (captainSlots.length == 0) {
+      return;
+    }
+    //Using the game mode key retrieves captainName from storage
+    const firstCapSlot = captainSlots[0];
+    const capSlotChildren = firstCapSlot.querySelectorAll('.capSlot');
+    const dungeonCaptainNameFromStorage = await retrieveFromStorage('dungeonCaptain');
+    const clashCaptainNameFromStorage = await retrieveFromStorage('clashCaptain');
+    const duelsCaptainNameFromStorage = await retrieveFromStorage('duelCaptain');
+    let capNameDOM;
+
+    //Gets captain name from the dom
+    for (const capSlot of capSlotChildren) {
+      //Attemps to get the captain name from the current slot
+      try {
+        capNameDOM = capSlot.querySelector('.capSlotName').innerText;
+      } catch (error) {
+        continue;
+      }
+
+      //Set pause button states after load
+      const play = String.fromCharCode(9654)
+      const pause = String.fromCharCode(9208)
+      //Get pause button state for the current captain 
+      const state = await retrieveStateFromStorage(capNameDOM);
+      const pauseButton = capSlot.querySelector('.pauseButton');
+      //Set button innerText based on retrieved state
+      if (state && capSlot.innerText.includes(play)) {
+        pauseButton.innerText = pause;
+      } else if (!state && capSlot.innerText.includes(pause)) {
+        pauseButton.innerText = play;
+      }
+
+      //Get flag states
+      const purpleFlag = await getCaptainFlag(capNameDOM, 'flaggedCaptains');
+      const blueFlag = await getCaptainFlag(capNameDOM, 'captainLoyalty');
+
+      /*If the current captain is running a special mode and is not the one with the current flag OR
+      if the currently flagged captain is not running their assigned special mode they get colored red
+      for visual identification */
+      if (blueFlag) {
+        capSlot.style.backgroundColor = blue;
+      }
+      else if (purpleFlag) {
+        capSlot.style.backgroundColor = purple
+      }
+      else if ((dungeonCaptainNameFromStorage != capNameDOM) && capSlot.innerText.includes("Dungeons") ||
+        (clashCaptainNameFromStorage != capNameDOM) && capSlot.innerText.includes("Clash") ||
+        (duelsCaptainNameFromStorage != capNameDOM) && capSlot.innerText.includes("Duel") ||
+        (dungeonCaptainNameFromStorage == capNameDOM) && !capSlot.innerText.includes("Dungeons") ||
+        (clashCaptainNameFromStorage == capNameDOM) && !capSlot.innerText.includes("Clash") ||
+        (duelsCaptainNameFromStorage == capNameDOM) && !capSlot.innerText.includes("Duel")) {
+        capSlot.style.backgroundColor = red;
+      }
+      else {
+        capSlot.style.backgroundColor = gameBlue;
+      }
     }
 
-    //Set pause button states after load
-    const play = String.fromCharCode(9654)
-    const pause = String.fromCharCode(9208)
-    //Get pause button state for the current captain 
-    const state = await retrieveStateFromStorage(capNameDOM);
-    const pauseButton = capSlot.querySelector('.pauseButton');
-    //Set button innerText based on retrieved state
-    if (state && capSlot.innerText.includes(play)) {
-      pauseButton.innerText = pause;
-    } else if (!state && capSlot.innerText.includes(pause)) {
-      pauseButton.innerText = play;
+    //Set offline button states after load.
+    const allCapSlots = document.querySelectorAll(".capSlot");
+    for (const slot of allCapSlots) {
+      //Iterate through every button
+      try {
+        const btnOff = slot.querySelector(".capSlotStatus .offlineButton");
+        const btnId = btnOff.getAttribute('id');
+        //Retrieve button state from storage
+        let offstate = await getIdleState(btnId);
+        //Obtained inner text and color for the user to visually identify
+        if (offstate) {
+          btnOff.textContent = "ENABLED";
+          btnOff.style.backgroundColor = "#5fa695";
+        } else {
+          btnOff.textContent = "DISABLED";
+          btnOff.style.backgroundColor = "red";
+        }
+      } catch (error) {
+        return;
+      }
     }
+  });
+});
 
-    /*If the current captain is running a special mode and is not the one with the current flag OR
-    if the currently flagged captain is not running their assigned special mode they get colored red
-    for visual identification */
-    if ((dungeonCaptainNameFromStorage != capNameDOM) && capSlot.innerText.includes("Dungeons") ||
-      (clashCaptainNameFromStorage != capNameDOM) && capSlot.innerText.includes("Clash") ||
-      (duelsCaptainNameFromStorage != capNameDOM) && capSlot.innerText.includes("Duel") ||
-      (dungeonCaptainNameFromStorage == capNameDOM) && !capSlot.innerText.includes("Dungeons") ||
-      (clashCaptainNameFromStorage == capNameDOM) && !capSlot.innerText.includes("Clash") ||
-      (duelsCaptainNameFromStorage == capNameDOM) && !capSlot.innerText.includes("Duel")) {
-      capSlot.style.backgroundColor = red;
-    } else if (capSlot.style.backgroundColor === blue || capSlot.style.backgroundColor === purple) {
-    }
-    else {
-      capSlot.style.backgroundColor = gameBlue;
-    }
-  }
-
-  //Set offline button states after load.
-  const allCapSlots = document.querySelectorAll(".capSlot");
-  for (const slot of allCapSlots) {
-    //Iterate through every button
-    const btnOff = slot.querySelector(".capSlotStatus .offlineButton");
-    const btnId = btnOff.getAttribute('id');
-    //Retrieve button state from storage
-    const offstate = await getIdleState(btnId);
-
-    //Obtained inner text and color for the user to visually identify
-    if (offstate) {
-      btnOff.textContent = "ENABLED";
-      btnOff.style.backgroundColor = "#5fa695";
-    } else {
-      btnOff.textContent = "DISABLED";
-      btnOff.style.backgroundColor = "red";
-    }
-  }
-}
+const tgtNode = document.body;
+const conf = { childList: true, subtree: true };
+obsv.observe(tgtNode, conf);
 
 //Collect rewards and savages chests
 function collectChests() {

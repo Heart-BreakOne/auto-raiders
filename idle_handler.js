@@ -32,14 +32,19 @@ async function checkIdleCaptains() {
         //Select button signals that the slot is empty.
         const selectButton = slot.querySelector(".actionButton.actionButtonPrimary.capSlotButton.capSlotButtonAction");
 
+
         //Gets button id form the current slot
+        try {
         const btn = slot.querySelector(".capSlotStatus .offlineButton");
         const buttonId = btn.getAttribute('id');
         //Checks if the user wants to switch idle captains by passing the button id
         const currentIdleState = await getIdleState(buttonId);
         if (!currentIdleState) {
             continue;
+        } } catch (error) {
+            return;
         }
+
         //If the select button exists with the innerText exists it means that the slot is empty
         if (selectButton && selectButton.innerText == "SELECT") {
             //Clicks select button to open the captains list
