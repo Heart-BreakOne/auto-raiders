@@ -26,6 +26,11 @@ font-size: 60px;
 color: white;
 text-align: center;
 `;
+let elapsedTimeStyles = `
+font-size: 30px;
+font-weight: bold;
+`;
+
 
 //When invoked this function injects buttons into the page
 function injectIntoDOM() {
@@ -90,6 +95,17 @@ function injectIntoDOM() {
         quantityItemsCont.insertBefore(newButton, quantityItemsCont.firstChild);
     }
 
+    // Checks if wipe button already exists
+    let elapsedTimeContainer = document.querySelector(".elapsedTimeContainer");
+    //If button doesn't exist one is created and injected.
+    if (!elapsedTimeContainer) {
+        elapsedTimeContainer = document.createElement("div");
+        elapsedTimeContainer.className = "elapsedTimeContainer";
+        elapsedTimeContainer.style.cssText = elapsedTimeStyles;
+        let quantityItemsCont = document.querySelector(".quantityItemsCont");
+        quantityItemsCont.appendChild(elapsedTimeContainer);
+    }
+
 }
 
 
@@ -148,7 +164,7 @@ document.addEventListener("click", function (event) {
             captainPauseSlots.forEach(function (slot) {
                 try {
                     slot.querySelector(".pauseButton").innerText = play;
-                } catch (error) {};
+                } catch (error) { };
                 slot.querySelector(".offlineButton").innerText = "ENABLED";
                 slot.querySelector(".offlineButton").style.backgroundColor = "#5fa695";
             });

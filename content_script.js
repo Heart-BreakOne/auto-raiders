@@ -15,6 +15,7 @@ let backgroundImageValue;
 let mode;
 let diamondLoyalty;
 let arrayOfAllyPlacement;
+let firstReload;
 const blue = 'rgb(185, 242, 255)';
 const red = 'rgb(255, 204, 203)';
 const purple = 'rgb(203, 195, 227)';
@@ -109,7 +110,6 @@ const arrayOfUnits = [
   { key: "WARRIOR", type: "MELEE", icon: "YTUUAHQ" },
 ];
 
-let firstReload;
 // This is the start, it selects a captain placement as well as collect any rewards to proceed
 async function start() {
 
@@ -119,7 +119,10 @@ async function start() {
   }
   //Keep track of time and reload after 1hr15min to avoid the browser crashing due to low memory.
   const elapsedMinutes = Math.floor((new Date() - firstReload.getTime()) / (1000 * 60));
-  console.log("log " + elapsedMinutes + " minutes since the last page refresh.");
+  const timeContainer = document.querySelector(".elapsedTimeContainer");
+  if (timeContainer && (elapsedMinutes !== null || elapsedMinutes !== undefined)) {
+    timeContainer.innerHTML = `Last refresh: ${elapsedMinutes} minutes ago.`;
+  }
   if (elapsedMinutes >= 75) {
     location.reload();
   }

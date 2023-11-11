@@ -76,9 +76,8 @@ function loadBanner(message, color) {
         position: fixed;
         font-size: 60px;
         text-align: center;
-        height: 8%;
-        padding: 20px;
-        margin-top: 80%;
+        padding: 10px;
+        margin-top: 20%;
         margin-left: 30%;
         margin-right: 30%;
         border-radius: 25px;
