@@ -12,7 +12,8 @@
    },
    "permissions": [
       "storage",
-      "declarativeNetRequestWithHostAccess"
+      "declarativeNetRequestWithHostAccess",
+      "contextMenus"
    ],
    "content_scripts": [
       {
@@ -35,7 +36,7 @@
    ],
    "host_permissions": [
       "https://www.streamraiders.com/*"
-    ],
+   ],
    "background": {
       "service_worker": "background.js"
    },
