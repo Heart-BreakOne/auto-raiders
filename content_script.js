@@ -825,7 +825,13 @@ async function collectChests() {
 
       //Get battle result and chest type to add to storage log
       const battleResult = offSetSlot.querySelector(".capSlotStatus").innerText;
-      const chestString = button.querySelector('img').alt;
+      let chestString;
+      if (battleResult.includes("Defeat")) {
+        chestString = "chestsalvage";
+      } else {
+        chestString = button.querySelector('img').alt;
+      }
+      
       button.click();
       await delay(1000);
       await setLogResults(battleResult, captainName, chestString);

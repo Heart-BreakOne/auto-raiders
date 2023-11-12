@@ -2,15 +2,16 @@
 //Declaring/Initializing variables
 let chestName;
 let url;
+const tbd = "TDB"
 const colorCodeMap = {
     "rgb(185, 242, 255)": "Blue",
     "rgb(255, 204, 203)": "Red",
     "rgb(203, 195, 227)": "Purple",
 };
 const battleChests = [
-    { key: "tbd", name: "tbd", url: "https://d2k2g0zg1te1mr.cloudfront.net/mobilelite/chests/iconChestSalvage.7f5d2511b08f.png" },
-    { key: "unknown", name: "abandoned", url: "https://d2k2g0zg1te1mr.cloudfront.net/mobilelite/chests/iconChestSalvage.7f5d2511b08f.png" },
-    { key: "abandoned", name: "abandoned", url: "https://d2k2g0zg1te1mr.cloudfront.net/mobilelite/chests/iconChestSalvage.7f5d2511b08f.png" },
+    { key: "undefined", name: "tbd", url: "/icons/tbd.png" },
+    { key: "Unknown", name: "Unknown", url: "/icons/unknown.png" },
+    { key: "abandoned", name: "abandoned", url: "/icons/block.png" },
     { key: "chestsalvage", name: "Defeat", url: "https://d2k2g0zg1te1mr.cloudfront.net/mobilelite/chests/iconChestSalvage.7f5d2511b08f.png" },
     { key: "chestbronze", name: "Bronze", url: "https://d2k2g0zg1te1mr.cloudfront.net/mobilelite/chests/iconChestBronze.7f5d2511b08f.png" },
     { key: "chestsilver", name: "Silver", url: "https://d2k2g0zg1te1mr.cloudfront.net/mobilelite/chests/iconChestSilver.7f5d2511b08f.png" },
@@ -51,6 +52,9 @@ document.addEventListener('DOMContentLoaded', function () {
         sortedData.forEach(entry => {
             let chestName;
             let url;
+            let elapsed;
+            let res;
+
             // Convert the string to a Date object
             const startTime = new Date(entry.currentTime);
             const startHour = startTime.getHours();
@@ -62,19 +66,22 @@ document.addEventListener('DOMContentLoaded', function () {
             //Getting human readable colors
             const color = colorCodeMap[entry.colorCode] || "Normal";
 
-            /*
-            if ((!color.includes("Normal") && !color.includes("Purple")) && entry.elapsedTime === "-1") {
-                entry.elapsedTime = "No time available";
-                entry.result = "Didn't/Won't join."
+            if (entry.elapsedTime === undefined) {
+                elapsed = tbd
             } else {
-                if (parseInt(entry.elapsedTime) >= 80 || entry.currentTime === entry.elapsedTime) {
-                    entry.elapsedTime = "Time unknown."
-                }
-                else {
-                    entry.elapsedTime = `${entry.elapsedTime} minutes.`;
-                }
+                elapsed = entry.elapsedTime;
             }
-            */
+            if (entry.result === undefined) {
+                res = tbd
+            } else {
+                res = entry.result;
+            }
+            if (entry.currentTime === entry.elapsedTime) {
+                elapsed = "Unknown";
+            }
+            if (color !== "Normal" && color !== "Purple") {
+                res = "Possible color status."
+            }
 
             //Getting human readable chest name and picture
             for (const battleChest of battleChests) {
@@ -91,8 +98,8 @@ document.addEventListener('DOMContentLoaded', function () {
             <td>${entry.logCapName}</td>
             <td>${entry.logMode}</td>
             <td style="border: 1px solid #ddd; padding: 8px; color: ${color};">${color}</td>
-            <td>${startingTime}</td><td>${entry.elapsedTime}</td>
-            <td>${entry.result}</td>
+            <td>${startingTime}</td><td>${elapsed}</td>
+            <td>${res}</td>
             <td style="text-align: center; vertical-align: middle;">
                 <div style="display: flex; flex-direction: column; align-items: center;">
                      ${chestName}

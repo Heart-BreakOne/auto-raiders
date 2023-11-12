@@ -42,7 +42,7 @@ const logObserver = new MutationObserver(async function (mutations) {
             }
         } catch (error) {
             console.log("log" + error);
-         }
+        }
 
         //Invoke setLogCaptain with the variables obtained above.
         await setLogCaptain(logId, logCapName, logMode, currentTime, colorCode)
@@ -87,8 +87,9 @@ async function setLogCaptain(logId, logCapName, logMode, currentTime, colorCode)
                 //If no battle data exists, check if the color needs to be updated on existing slots.
                 if (updateColor && loggedData[existingEntryIndex].colorCode !== colorCode
                     && loggedData[existingEntryIndex].elapsedTime === undefined
-                    && loggedData[existingEntryIndex].chest === undefined) {
+                    && loggedData[existingEntryIndex].chest === undefined && loggedData[existingEntryIndex].result === undefined) {
                     loggedData[existingEntryIndex].colorCode = colorCode;
+                    loggedData[existingEntryIndex].result = "Possibly won't join";
                 }
             }
 
@@ -143,7 +144,7 @@ async function setLogResults(conclusion, logCapName, chest) {
             loggedData = loggedData.map((entry) => {
                 const elapsedTime = Math.floor((now - new Date(entry.currentTime)) / (1000 * 60));
                 if (elapsedTime > 60 && entry.elapsedTime === undefined
-                    && entry.result === undefined && entry.chest === undefined) {
+                    && entry.chest === undefined) {
                     entry.elapsedTime = entry.currentTime.toString();
                     entry.result = unknown;
                     entry.chest = unknown;
