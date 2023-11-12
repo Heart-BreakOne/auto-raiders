@@ -822,9 +822,13 @@ async function collectChests() {
     if (buttonLabels.includes(buttonText)) {
       const offSetSlot = button.offsetParent;
       const captainName = offSetSlot.querySelector(".capSlotName").innerText;
+
+      //Get battle result and chest type to add to storage log
       const battleResult = offSetSlot.querySelector(".capSlotStatus").innerText;
-      await setLogResults(battleResult, captainName);
+      const chestString = button.querySelector('img').alt;
       button.click();
+      await delay(1000);
+      await setLogResults(battleResult, captainName, chestString);
       break;
     }
   }

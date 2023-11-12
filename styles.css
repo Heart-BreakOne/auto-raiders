@@ -1,0 +1,24 @@
+.center-container {
+    text-align: center;
+}
+
+h1,h2, button {
+    margin-bottom: 20px;
+}
+
+table {
+    border-collapse: collapse;
+    width: 90%;
+    padding-left: 10px;
+    padding-right: 10px;
+    margin: 0 auto;
+}
+
+th, td {
+    border: 1px solid #ddd;
+    padding: 8px;
+}
+
+th {
+    text-align: center;
+}

@@ -1,18 +1,26 @@
 <!-- options.html -->
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Extension Options</title>
-</head>
-<body>
-    <h1>Extension Options Page</h1>
-
-    <button id="wipeButton">Wipe logData</button>
-    
-    <div id="dataContainer"></div>
-
+    <title>Battle Log</title>
     <script src="options.js"></script>
+    <link rel="stylesheet" type="text/css" href="styles.css">
+</head>
+
+<body>
+    <div class="center-container">
+        <h1>This is your battle log</h1>
+        <h2>Unknown time and result means the extension couldn't get a battle closure, this generally means that
+            the<br>
+            battle was manually abandoned or the reward chest manually collected.</h2>
+        <button id="wipeButton">Delete log</button><br><br>
+    </div>
+    <div id="dataContainer"></div><br><br>
+    <div class="center-container"><button id="wipeButton">Delete log</button></div>
+
 </body>
+
 </html>

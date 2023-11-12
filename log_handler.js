@@ -1,18 +1,25 @@
-const unknown = "Unknown";
+//Observer for changes on the dom
 const logObserver = new MutationObserver(async function (mutations) {
 
+    //Check if the captain slots exist
     const logSlots = document.querySelectorAll(".capSlots");
     if (logSlots.length == 0) {
         return;
     }
+    //Get the captain slot from the nodelist
     const logSlotsChildren = logSlots[0].querySelectorAll('.capSlot');
     for (let i = 0; i < logSlotsChildren.length; i++) {
-        const logSlot = logSlotsChildren[i];
 
-        const logId = i;
+        //Extract data from the captain slot
+        const logSlot = logSlotsChildren[i];
+        const logId = i + 1;
         let logCapName;
         let logMode;
         let currentTime;
+        let colorCode = window.getComputedStyle(logSlot).backgroundColor;
+
+
+        // Trying to get captain name, mode an timer. If timer doesn't exist it means the captain is not in active placement
         try {
             logCapName = logSlot.querySelector('.capSlotName').innerText;
         } catch (error) {
@@ -33,9 +40,12 @@ const logObserver = new MutationObserver(async function (mutations) {
             } else {
                 continue;
             }
-        } catch (error) { }
+        } catch (error) {
+            console.log("log" + error);
+         }
 
-        await setLogCaptain(logId, logCapName, logMode, currentTime)
+        //Invoke setLogCaptain with the variables obtained above.
+        await setLogCaptain(logId, logCapName, logMode, currentTime, colorCode)
     }
 });
 
@@ -43,36 +53,47 @@ const documentNode = document.body;
 const logConf = { childList: true, subtree: true };
 logObserver.observe(documentNode, logConf);
 
-async function setLogCaptain(logId, logCapName, logMode, currentTime) {
+
+//Saves initial battle information to the local storage
+async function setLogCaptain(logId, logCapName, logMode, currentTime, colorCode) {
+
+    // default rgb(42, 96, 132) 
+    //Check if color needs to be updated on storage.
+    let updateColor = false;
+    if (colorCode === "rgb(185, 242, 255)" || colorCode === "rgb(255, 204, 203" || colorCode === "rgb(203, 195, 227)") {
+        updateColor = true;
+    }
     return new Promise((resolve, reject) => {
         // Retrieve existing data from local storage
         chrome.storage.local.get(["logData"], function (result) {
             let loggedData = result["logData"] || [];
-            let presentTime = new Date().toString();
-            //Check if captainName and currentTime exists
+            //Check if an entry for the current captain battle exists
             const existingEntryIndex = loggedData.findIndex(entry => entry.logCapName === logCapName
-                && (entry.currentTime != null || entry.currentTime != undefined) && entry.elapsedTime === "-1");
+                && (entry.currentTime != null || entry.currentTime != undefined) && entry.elapsedTime === undefined && entry.chest === undefined);
 
+            //Pushes battle data into the storage
             if (existingEntryIndex === -1) {
                 loggedData.push({
                     logId: logId,
                     logMode: logMode,
                     logCapName: logCapName,
                     currentTime: currentTime.toString(),
-                    elapsedTime: "-1",
-                    result: unknown,
+                    elapsedTime: undefined,
+                    result: undefined,
+                    colorCode: colorCode,
+                    chest: undefined
                 });
             } else {
-                // Check the time difference between currentTime in the array and presentTime
-                const timeDifference = Math.abs(new Date(presentTime) - new Date(loggedData[existingEntryIndex].currentTime));
-
-                // If the time difference is greater than 1 hour, set elapsedTime to 0
-                if (timeDifference > 3600000) {
-                    loggedData[existingEntryIndex].elapsedTime = "0";
+                //If no battle data exists, check if the color needs to be updated on existing slots.
+                if (updateColor && loggedData[existingEntryIndex].colorCode !== colorCode
+                    && loggedData[existingEntryIndex].elapsedTime === undefined
+                    && loggedData[existingEntryIndex].chest === undefined) {
+                    loggedData[existingEntryIndex].colorCode = colorCode;
                 }
             }
 
-            if (loggedData.length > 100) {
+            //If there's more than 400 entries, delete oldest.
+            if (loggedData.length > 400) {
                 loggedData.shift();
             }
 
@@ -84,43 +105,48 @@ async function setLogCaptain(logId, logCapName, logMode, currentTime) {
     });
 }
 
+//Saves final battle information on storage
+async function setLogResults(conclusion, logCapName, chest) {
 
+    const unknown = "Unknown";
+    let now = new Date();
 
-async function setLogResults(conclusion, logCapName) {
+    // Determines battle resolution
     let resolution;
     if (conclusion.includes("Defeat")) {
         resolution = "Defeat";
-    } else if (conclusion.includes("Victory")){
+    } else if (conclusion.includes("Victory")) {
         resolution = "Victory";
-    } else if (conclusion.includes("Abandoned")){
+    } else if (conclusion.includes("Abandoned")) {
         resolution = "Abandoned";
     } else {
         resolution = unknown;
     }
-    let now = new Date();
+
     return new Promise((resolve, reject) => {
         // Retrieve existing data from local storage
-        chrome.storage.local.get(["logData"], function (result) {
+        chrome.storage.local.get(["logData"], async function (result) {
             let loggedData = result["logData"] || [];
 
+            // Add final battle time, result, and chest type
             loggedData.forEach((entry) => {
-                if (
-                    entry.logCapName === logCapName &&
+                if (entry.logCapName === logCapName &&
                     (entry.currentTime !== null && entry.currentTime !== undefined) &&
-                    entry.elapsedTime === "-1"
-                ) {
-                    // Your original operation
+                    entry.elapsedTime === undefined && entry.chest === undefined) {
                     entry.elapsedTime = Math.floor((now - new Date(entry.currentTime)) / (1000 * 60)).toString();
                     entry.result = resolution;
+                    entry.chest = chest;
                 }
             });
 
-            // Update anything in the array that has a time older than 1 hour
+            // If the entry on the array is older than 1 hour, update it for battle result closure
             loggedData = loggedData.map((entry) => {
                 const elapsedTime = Math.floor((now - new Date(entry.currentTime)) / (1000 * 60));
-                if (elapsedTime > 60) {
-                    entry.elapsedTime = elapsedTime.toString();
+                if (elapsedTime > 60 && entry.elapsedTime === undefined
+                    && entry.result === undefined && entry.chest === undefined) {
+                    entry.elapsedTime = entry.currentTime.toString();
                     entry.result = unknown;
+                    entry.chest = unknown;
                 }
                 return entry;
             });

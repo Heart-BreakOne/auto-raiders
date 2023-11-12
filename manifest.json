@@ -12,7 +12,8 @@
    },
    "permissions": [
       "storage",
-      "declarativeNetRequestWithHostAccess"
+      "declarativeNetRequestWithHostAccess",
+      "tabs"
    ],
    "options_ui": {
       "page": "log.html",

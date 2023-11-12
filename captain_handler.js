@@ -13,7 +13,6 @@ async function flagCaptain(flag) {
 
             // Get all captain buttons from the captain footer bar
             const captainButtons = document.querySelectorAll(".captainButton");
-
             // Current time
             const currentTime = new Date();
 
@@ -50,12 +49,12 @@ async function flagCaptain(flag) {
                 }
             });
 
-            // Remove captains with a time older than 30 minutes
+            // Remove captains with a time older than 20 minutes
             flaggedData = flaggedData.filter(entry => {
                 const entryTime = new Date(entry.currentTime);
-                const thirtyMinutesAgo = new Date();
-                thirtyMinutesAgo.setMinutes(thirtyMinutesAgo.getMinutes() - 30);
-                return entryTime > thirtyMinutesAgo;
+                const twentyMinutesAgo = new Date();
+                twentyMinutesAgo.setMinutes(twentyMinutesAgo.getMinutes() - 20);
+                return entryTime > twentyMinutesAgo;
             });
 
             // Update the flaggedData object in storage

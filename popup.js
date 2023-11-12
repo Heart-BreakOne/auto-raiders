@@ -89,5 +89,15 @@ document.addEventListener("DOMContentLoaded", function () {
             });
         });
     }
+    //Event listener for a button to open the options page of the extension (log.html)
+    const options = document.getElementById("#options-link")
+    if(!options) {
+        return;
+    }
+    document.getElementById(options).addEventListener('click', function () {
+        // Open the options page
+        const url = `chrome-extension://${chrome.runtime.id}/log.html`
+        chrome.tabs.create({ url: url });
+    });
 
 });
