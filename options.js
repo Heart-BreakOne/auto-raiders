@@ -101,7 +101,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
             // Create a table row
             const row = document.createElement('tr');
-            row.innerHTML = `<td>${i + 1}</td>
+            row.innerHTML = `<td>${counter}</td>
                 <td>${entry.logId}</td>
                 <td>${entry.logCapName}</td>
                 <td>${entry.logMode}</td>
@@ -117,6 +117,9 @@ document.addEventListener('DOMContentLoaded', function () {
 
             // Append the row to the table
             tableElement.appendChild(row);
+
+            //Because of the continue, the index can get desynced. So a counter gives a more precise counting
+            counter++;
         }
 
         // Append the table to the data container
