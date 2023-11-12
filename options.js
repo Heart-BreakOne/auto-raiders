@@ -66,7 +66,7 @@ document.addEventListener('DOMContentLoaded', function () {
             const startingTime = String(startHour).padStart(2, '0') + ":" + String(startMinute).padStart(2, '0');
 
             //Getting human-readable colors
-            const color = colorCodeMap[entry.colorCode] || "Normal";
+            let color = colorCodeMap[entry.colorCode] || "Normal";
 
             if (entry.elapsedTime === undefined) {
                 elapsed = 'tbd';
@@ -86,8 +86,15 @@ document.addEventListener('DOMContentLoaded', function () {
                 elapsed = "Unknown";
             }
 
-            if (color !== "Normal" && color !== "Purple") {
+            if (!(color === "Normal" || color === "Purple")) {
                 res = "Possible color status.";
+            }
+
+            if (color !== "Normal" && color !== "Purple"
+                && entry.chest !== "Unknown" && entry.chest !== "tbd" && entry.chest !== "abandoned"
+                && (entry.result !== "Victory" || entry.result !== "Defeat" || entry.result !== "Abandoned")) {
+                res = "Victory";
+                color = "Normal";
             }
 
             //Getting human-readable chest name and picture
