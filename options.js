@@ -49,7 +49,9 @@ document.addEventListener('DOMContentLoaded', function () {
 
         // Populate the table with array data
         let counter = 1;
-        sortedData.forEach(entry => {
+        for (let i = 0; i < sortedData.length; i++) {
+            const entry = sortedData[i];
+
             let chestName;
             let url;
             let elapsed;
@@ -63,27 +65,32 @@ document.addEventListener('DOMContentLoaded', function () {
             // Using padStart to ensure two digits for hours and minutes
             const startingTime = String(startHour).padStart(2, '0') + ":" + String(startMinute).padStart(2, '0');
 
-            //Getting human readable colors
+            //Getting human-readable colors
             const color = colorCodeMap[entry.colorCode] || "Normal";
 
             if (entry.elapsedTime === undefined) {
-                elapsed = tbd
+                elapsed = 'tbd';
+                continue;
             } else {
                 elapsed = entry.elapsedTime;
             }
+
             if (entry.result === undefined) {
-                res = tbd
+                res = 'tbd';
+                continue;
             } else {
                 res = entry.result;
             }
+
             if (entry.currentTime === entry.elapsedTime) {
                 elapsed = "Unknown";
             }
+
             if (color !== "Normal" && color !== "Purple") {
-                res = "Possible color status."
+                res = "Possible color status.";
             }
 
-            //Getting human readable chest name and picture
+            //Getting human-readable chest name and picture
             for (const battleChest of battleChests) {
                 if (battleChest.key.includes(entry.chest)) {
                     chestName = battleChest.name;
@@ -91,26 +98,26 @@ document.addEventListener('DOMContentLoaded', function () {
                     break;
                 }
             }
+
             // Create a table row
             const row = document.createElement('tr');
-            row.innerHTML = `<td>${counter}</td>
-            <td>${entry.logId}</td>
-            <td>${entry.logCapName}</td>
-            <td>${entry.logMode}</td>
-            <td style="border: 1px solid #ddd; padding: 8px; color: ${color};">${color}</td>
-            <td>${startingTime}</td><td>${elapsed}</td>
-            <td>${res}</td>
-            <td style="text-align: center; vertical-align: middle;">
-                <div style="display: flex; flex-direction: column; align-items: center;">
-                     ${chestName}
-                     <img src="${url}" alt="Chest Image" style="height: 30px; width: auto">
-                </div>
-            </td>
-  `;
+            row.innerHTML = `<td>${i + 1}</td>
+                <td>${entry.logId}</td>
+                <td>${entry.logCapName}</td>
+                <td>${entry.logMode}</td>
+                <td style="border: 1px solid #ddd; padding: 8px; color: ${color};">${color}</td>
+                <td>${startingTime}</td><td>${elapsed}</td>
+                <td>${res}</td>
+                <td style="text-align: center; vertical-align: middle;">
+                    <div style="display: flex; flex-direction: column; align-items: center;">
+                        ${chestName}
+                        <img src="${url}" alt="Chest Image" style="height: 30px; width: auto">
+                    </div>
+                </td>`;
+
             // Append the row to the table
             tableElement.appendChild(row);
-            counter++
-        });
+        }
 
         // Append the table to the data container
         dataContainer.appendChild(tableElement);
