@@ -89,7 +89,7 @@ async function setLogCaptain(logId, logCapName, logMode, currentTime, colorCode)
                     && loggedData[existingEntryIndex].elapsedTime === undefined
                     && loggedData[existingEntryIndex].chest === undefined && loggedData[existingEntryIndex].result === undefined) {
                     loggedData[existingEntryIndex].colorCode = colorCode;
-                    loggedData[existingEntryIndex].result = "Possibly won't join";
+                    loggedData[existingEntryIndex].result = "Unknown";
                 }
             }
 
