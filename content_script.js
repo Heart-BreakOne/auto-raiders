@@ -147,7 +147,7 @@ async function start() {
   }
 
   // Collects chests and savages rewards
-  collectChests();
+  await collectChests();
 
   // Collects rewards if there are any
   const rewardButton = document.querySelector(".actionButton.actionButtonPrimary.rewardsButton");
@@ -812,7 +812,7 @@ const conf = { childList: true, subtree: true };
 obsv.observe(tgtNode, conf);
 
 //Collect rewards and savages chests
-function collectChests() {
+async function collectChests() {
   let collecRewardButtons = document.querySelectorAll(".actionButton.capSlotButton.capSlotButtonAction");
   const buttonLabels = ["SEE RESULTS", "OPEN CHEST", "COLLECT KEYS", "COLLECT BONES"];
 
@@ -820,6 +820,10 @@ function collectChests() {
     const button = collecRewardButtons[i];
     const buttonText = button.innerText;
     if (buttonLabels.includes(buttonText)) {
+      const offSetSlot = button.offsetParent;
+      const captainName = offSetSlot.querySelector(".capSlotName").innerText;
+      const battleResult = offSetSlot.querySelector(".capSlotStatus").innerText;
+      await setLogResults(battleResult, captainName);
       button.click();
       break;
     }

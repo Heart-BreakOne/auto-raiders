@@ -27,6 +27,7 @@ chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
   }
 });
 
+//Spoof user agent to load mobile mode 
 
 // Store the tab IDs that have already been processed
 const processedTabs = new Set();
@@ -42,8 +43,6 @@ async function updateUserAgent(tab) {
   }
 
   processedTabs.add(tab.id);
-
-  const rules = await chrome.declarativeNetRequest.getSessionRules();
 
   // Remove any existing rules for the tab
   await chrome.declarativeNetRequest.updateSessionRules({

@@ -64,6 +64,9 @@ async function checkIdleCaptains() {
             if (isIdle) {
                 //Closes captain slot
                 let close = slot.querySelector(".fas.fa-square");
+                const closeOffset = close.offsetParent;
+                const idleCapName = closeOffset.querySelector(".capSlotName").innerText;
+                await setLogResults("Abandoned", idleCapName);
                 close.click();
                 //Checks if modal that appears on certain conditions exists and clicks to close it.
                 const modal = document.querySelector(".modalScrim.modalOn");
