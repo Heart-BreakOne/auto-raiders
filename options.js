@@ -27,9 +27,9 @@ const battleChests = [
 ];
 
 //Event listener for when the page loads
-document.addEventListener('DOMContentLoaded', function () {
+document.addEventListener('DOMContentLoaded', async function () {
 
-    loadLogData();
+    await loadLogData();
 
     // Add event listener for the wipe button
     document.getElementById('deleteLogButton').addEventListener('click', function () {
@@ -38,13 +38,13 @@ document.addEventListener('DOMContentLoaded', function () {
             dataContainer.innerHTML = '';
         });
     });
-    
-        // Add event listener for the update button
-        document.getElementById('updateLogButton').addEventListener('click', function () {
-            // Update logData from local storage
-            dataContainer.innerHTML = '';
-            loadLogData();
-        });
+
+    // Add event listener for the update button
+    document.getElementById('updateLogButton').addEventListener('click', function () {
+        // Update logData from local storage
+        dataContainer.innerHTML = '';
+        loadLogData();
+    });
 });
 
 async function loadLogData() {
@@ -124,7 +124,7 @@ async function loadLogData() {
                 res = "Abandoned";
                 color = "Normal";
             }
-            
+
             //Getting human-readable chest name and picture
             for (const battleChest of battleChests) {
                 if (battleChest.key.includes(entry.chest)) {
@@ -136,19 +136,22 @@ async function loadLogData() {
 
             // Create a table row
             const row = document.createElement('tr');
+            row.id = `${i}`;
             row.innerHTML = `<td>${counter}</td>
                 <td>${entry.logId}</td>
                 <td>${entry.logCapName}</td>
                 <td>${entry.logMode}</td>
                 <td style="border: 1px solid #ddd; padding: 8px; color: ${color};">${color}</td>
-                <td>${startingTime}</td><td>${elapsed}</td>
+                <td>${startingTime}</td>
+                <td>${elapsed}</td>
                 <td>${res}</td>
                 <td style="text-align: center; vertical-align: middle;">
                     <div style="display: flex; flex-direction: column; align-items: center;">
                         ${chestName}
                         <img src="${url}" alt="Chest Image" style="height: 30px; width: auto">
                     </div>
-                </td>`;
+                </td>
+                <td style="text-align: center; vertical-align: middle;"><button id="btn_${i}">DEL</button></td>`;
 
             // Append the row to the table
             tableElement.appendChild(row);
@@ -159,5 +162,45 @@ async function loadLogData() {
 
         // Append the table to the data container
         dataContainer.appendChild(tableElement);
+
+        //Get all buttons from the individual rows
+        const numberButtons = document.querySelectorAll('[id^="btn_"]');
+        //Listen for click events on each butotn
+        numberButtons.forEach(function (button) {
+            button.addEventListener("click", function () {
+                //Get id of the button which is the index number of the entry saved on storage
+                const index = parseInt(button.id.replace("btn_", ""));
+                //Invoke function to delete the entry
+                removeEntry(index);
+                //Remove the row from the table
+                const row = document.getElementById(index);
+                row.remove();
+            });
+        });
+    });
+}
+
+//Get entry from the stored array and remove the entry with the matching index.
+function removeEntry(sortedIndex) {
+    chrome.storage.local.get(["logData"], function (result) {
+        let loggedData = result["logData"] || [];
+
+        //Sort array based on time
+        const sortedArray = loggedData.slice().sort((a, b) => new Date(b.currentTime) - new Date(a.currentTime));
+
+        //Check if the index is valid
+        if (sortedIndex >= 0 && sortedIndex < sortedArray.length) {
+            //Find index entry from the sorted array on the original array
+            const originalIndex = loggedData.findIndex(entry => entry === sortedArray[sortedIndex]);
+
+            //Remove from the original array without sorting it
+            if (originalIndex !== -1) {
+                loggedData.splice(originalIndex, 1);
+
+                //Save the updated array on storage
+                chrome.storage.local.set({ ["logData"]: loggedData }, function () {
+                });
+            }
+        }
     });
 }
