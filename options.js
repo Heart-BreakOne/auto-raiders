@@ -90,6 +90,7 @@ async function loadLogData() {
             //Getting human-readable colors
             let color = colorCodeMap[entry.colorCode] || "Normal";
 
+            //Make changes to some of the values to be display to make them user-friendly
             if (entry.elapsedTime === undefined) {
                 elapsed = 'tbd';
                 continue;
