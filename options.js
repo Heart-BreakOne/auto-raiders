@@ -33,10 +33,15 @@ document.addEventListener('DOMContentLoaded', async function () {
 
     // Add event listener for the wipe button
     document.getElementById('deleteLogButton').addEventListener('click', function () {
-        // Wipe logData from local storage
-        chrome.storage.local.remove(['logData'], function () {
-            dataContainer.innerHTML = '';
-        });
+        //Load confirmation popup
+        const userOption = window.confirm("Are you sure you want to delete all data?");
+
+        if (userOption) {
+            // Wipe logData from local storage
+            chrome.storage.local.remove(['logData'], function () {
+                dataContainer.innerHTML = '';
+            });
+        }
     });
 
     // Add event listener for the update button
@@ -44,8 +49,11 @@ document.addEventListener('DOMContentLoaded', async function () {
         // Update logData from local storage
         dataContainer.innerHTML = '';
         loadLogData();
-    });
+    })
+        ;
 });
+
+
 
 async function loadLogData() {
     // Retrieve data from local storage
@@ -168,13 +176,18 @@ async function loadLogData() {
         //Listen for click events on each butotn
         numberButtons.forEach(function (button) {
             button.addEventListener("click", function () {
-                //Get id of the button which is the index number of the entry saved on storage
-                const index = parseInt(button.id.replace("btn_", ""));
-                //Invoke function to delete the entry
-                removeEntry(index);
-                //Remove the row from the table
-                const row = document.getElementById(index);
-                row.remove();
+
+                //Confirm what you all to do
+                const userOption = window.confirm("Are you sure you want to delete the row?");
+                if (userOption) {
+                    //Get id of the button which is the index number of the entry saved on storage
+                    const index = parseInt(button.id.replace("btn_", ""));
+                    //Invoke function to delete the entry
+                    removeEntry(index);
+                    //Remove the row from the table
+                    const row = document.getElementById(index);
+                    row.remove();
+                }
             });
         });
     });

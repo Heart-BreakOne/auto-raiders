@@ -50,7 +50,6 @@ const documentNode = document.body;
 const logConf = { childList: true, subtree: true };
 logObserver.observe(documentNode, logConf);
 
-
 //Saves initial battle information to the local storage
 async function setLogCaptain(logId, logCapName, logMode, currentTime, colorCode) {
 
