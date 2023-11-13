@@ -197,7 +197,7 @@ async function switchIdleCaptain() {
     //Gets the full list of captains
     let fullCaptainList = document.querySelectorAll(".searchResult");
     //Invokes function to get list with gold loyalty captains
-    let diamondLoyaltyList = createLoyaltyList(fullCaptainList, goldLoyaltyString);
+    let diamondLoyaltyList = createLoyaltyList(fullCaptainList, diamondLoyaltyString);
     //Invokes function to get list with gold loyalty captains
     let goldLoyaltyList = createLoyaltyList(fullCaptainList, goldLoyaltyString);
     //Invokes function to get list with silver loyalty captains
