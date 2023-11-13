@@ -309,7 +309,7 @@ async function openBattlefield() {
       goHome();
       return;
     }
-    if (!isLoyaltyChest(chest, loyaltyChests) && isLoyaltyChest(chest, notLoyaltyChest)) {
+    if (isLoyaltyChest(chest, loyaltyChests) && !isLoyaltyChest(chest, notLoyaltyChest)) {
       //Flag the captain loyalty since the current map is to be skipped
       await flagCaptain('captainLoyalty');
       //Close the chest info popup and return to main menu
