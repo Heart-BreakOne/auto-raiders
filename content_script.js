@@ -128,8 +128,9 @@ async function start() {
       }
     }
     clickNavBar(navItems, "Army");
-    await delay(1000);
+    
     clickNavBar(navItems, "Battle");
+    await delay(2000);
   }
 
   //Checks if the user wants to replace idle captains and invoke the function to check and replace them.
