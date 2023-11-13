@@ -35,6 +35,12 @@ const loyaltyChests = [
   "Loyalty Boss"
 ];
 
+const notLoyaltyChest = [
+  "Bronze Chest",
+  "Silver Chest",
+  "Gold Chest"
+];
+
 const arrayOfBattleFieldMarkers = [
   { key: "NO", icon: "SVFCVFFVKM+J2ICS+HWVYAAAAASUVORK5CYII=" },
   { key: "VIBE", icon: "1EPFWIYQTQRB9OWOGAAAABJRU5ERKJGGG" },
@@ -140,6 +146,7 @@ async function start() {
       }
     }
     clickNavBar(navItems, "Army");
+    await delay(1000);
     clickNavBar(navItems, "Battle");
   }
 
@@ -302,7 +309,7 @@ async function openBattlefield() {
       goHome();
       return;
     }
-    if (loyaltyChests.includes(chest)) {
+    if (!isLoyaltyChest(chest, loyaltyChests) && isLoyaltyChest(chest, notLoyaltyChest)) {
       //Flag the captain loyalty since the current map is to be skipped
       await flagCaptain('captainLoyalty');
       //Close the chest info popup and return to main menu
@@ -856,6 +863,16 @@ async function collectChests() {
       break;
     }
   }
+}
+
+//Check battle type based on the chest
+function isLoyaltyChest(chest, loyaltyChestArray) {
+  for (let i = 0; i < loyaltyChestArray.length; i++) {
+    if (chest === loyaltyChestArray[i]) {
+      return true;
+    }
+  }
+  return false;
 }
 
 //This function resets the running state and closes the battlefield back to home.
