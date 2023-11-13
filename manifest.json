@@ -1,7 +1,7 @@
 {
    "manifest_version": 3,
    "name": "AutoRaiders",
-   "version": "4.0.5",
+   "version": "4.0.6",
    "description": "SR helper",
    "action": {
       "default_popup": "popup.html",
@@ -14,10 +14,6 @@
       "storage",
       "declarativeNetRequestWithHostAccess"
    ],
-   "options_ui": {
-      "page": "log.html",
-      "open_in_tab": true
-    },
    "content_scripts": [
       {
          "js": [

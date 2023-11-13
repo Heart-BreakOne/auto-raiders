@@ -15,7 +15,8 @@ width: auto;
 margin-right: 15px;
 color: white;
 padding: 15px;
-font-size: 18px;
+font-weight: bold;
+font-size: 25px;
 `;
 let temporaryStyles = `
 display: flex;
@@ -96,6 +97,18 @@ function injectIntoDOM() {
     }
 
     // Checks if wipe button already exists
+    let logButton = document.querySelector(".logButton");
+    //If button doesn't exist one is created and injected.
+    if (!logButton) {
+        logButton = document.createElement("button");
+        logButton.className = "logButton";
+        logButton.innerHTML = "Log";
+        logButton.style.cssText = wipeStyles;
+        let quantityItemsCont = document.querySelector(".quantityItemsCont");
+        quantityItemsCont.appendChild(logButton);
+    }
+
+    // Checks if wipe button already exists
     let elapsedTimeContainer = document.querySelector(".elapsedTimeContainer");
     //If button doesn't exist one is created and injected.
     if (!elapsedTimeContainer) {
@@ -105,7 +118,6 @@ function injectIntoDOM() {
         let quantityItemsCont = document.querySelector(".quantityItemsCont");
         quantityItemsCont.appendChild(elapsedTimeContainer);
     }
-
 }
 
 
@@ -128,6 +140,12 @@ document.addEventListener("click", function (event) {
             button.innerText = pause;
             saveStateToStorage(captainName, true);
         }
+    }
+
+    //Event listener for a button to open the options page of the extension (log.html)
+    if (event.target.classList.contains("logButton")) {
+        // Send message to the background script to open a new page.
+        chrome.runtime.sendMessage({ action: 'openNewTab' });
     }
 
     /* User clicked on the offline slot button.

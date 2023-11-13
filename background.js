@@ -27,8 +27,15 @@ chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
   }
 });
 
-//Spoof user agent to load mobile mode 
+//Open log page on a new tab from the game tab
+chrome.runtime.onMessage.addListener(function (request) {
+  if (request.action === 'openNewTab') {
+    const url = `chrome-extension://${chrome.runtime.id}/log.html`;
+    chrome.tabs.create({ url: url });
+  }
+});
 
+//Spoof user agent to load mobile mode 
 // Store the tab IDs that have already been processed
 const processedTabs = new Set();
 
