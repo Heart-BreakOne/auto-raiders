@@ -133,11 +133,14 @@ async function start() {
     return;
   } else {
     //If navItem exists, open main menu
-    navItems.forEach(navItem => {
-      if (navItem.innerText === "Battle") {
-        navItem.click();
+    function clickNavBar(navItems, targetText) {
+      const tgtNavItem = Array.from(navItems).find(navItem => navItem.innerText === targetText);
+      if (tgtNavItem) {
+        tgtNavItem.click();
       }
-    })
+    }
+    clickNavBar(navItems, "Army");
+    clickNavBar(navItems, "Battle");
   }
 
   //Checks if the user wants to replace idle captains and invoke the function to check and replace them.
