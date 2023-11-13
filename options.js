@@ -118,7 +118,12 @@ async function loadLogData() {
                 res = "Victory";
                 color = "Normal";
             }
-
+            if (color !== "Normal" && color !== "Purple"
+                && entry.chest == "abandoned" && entry.result == "Abandoned") {
+                res = "Abandoned";
+                color = "Normal";
+            }
+            
             //Getting human-readable chest name and picture
             for (const battleChest of battleChests) {
                 if (battleChest.key.includes(entry.chest)) {

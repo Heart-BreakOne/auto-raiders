@@ -10,12 +10,15 @@
             width: 300px;
         }
     </style>
+    <link rel="stylesheet" type="text/css" href="/styles/styles.css">
 </head>
 
 <body>
     <b><br>
-        <a href="https://heart-breakone.github.io/webpages/how_to_play.html" target="_blank">Instructions</a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="chrome-extension://oopcdcbbmehdbjlkcnbjmlnpodmohkfc/log.html" id="battle_log" target="_blank">Battle
-            log</a><br></br>
+        <div class="button_container">
+            <button id="instructions_button">Instructions</button>
+            <button id="log_button">Log</button>
+        </div>
         <div style="text-align: justify;">DISCLAIMER: For the switches to work the SR tab must be active in view
             otherwise a connection between this popup and the main script cannot be established<br></div>
         <label for="offlineSwitch"><input type="checkbox" id="offlineSwitch"> Switch idle captain</label>
