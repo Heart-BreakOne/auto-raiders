@@ -28,6 +28,26 @@ const battleChests = [
 
 //Event listener for when the page loads
 document.addEventListener('DOMContentLoaded', function () {
+
+    loadLogData();
+
+    // Add event listener for the wipe button
+    document.getElementById('deleteLogButton').addEventListener('click', function () {
+        // Wipe logData from local storage
+        chrome.storage.local.remove(['logData'], function () {
+            dataContainer.innerHTML = '';
+        });
+    });
+    
+        // Add event listener for the update button
+        document.getElementById('updateLogButton').addEventListener('click', function () {
+            // Update logData from local storage
+            dataContainer.innerHTML = '';
+            loadLogData();
+        });
+});
+
+async function loadLogData() {
     // Retrieve data from local storage
     chrome.storage.local.get(['logData'], function (result) {
         const arrayData = result.logData || [];
@@ -133,13 +153,5 @@ document.addEventListener('DOMContentLoaded', function () {
 
         // Append the table to the data container
         dataContainer.appendChild(tableElement);
-
-        // Add event listener for the wipe button
-        document.getElementById('wipeButton').addEventListener('click', function () {
-            // Wipe logData from local storage
-            chrome.storage.local.remove(['logData'], function () {
-                dataContainer.innerHTML = '';
-            });
-        });
     });
-});
+}

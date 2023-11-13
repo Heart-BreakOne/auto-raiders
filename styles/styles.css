@@ -2,7 +2,9 @@
     text-align: center;
 }
 
-h1,h2, button {
+h1,
+h2,
+button {
     margin-bottom: 20px;
 }
 
@@ -10,6 +12,7 @@ h2 {
     padding-left: 20%;
     padding-right: 20%;
 }
+
 table {
     border-collapse: collapse;
     width: 90%;
@@ -18,11 +21,28 @@ table {
     margin: 0 auto;
 }
 
-th, td {
+th,
+td {
     border: 1px solid #ddd;
     padding: 8px;
 }
 
 th {
     text-align: center;
+}
+
+#deleteLogButton {
+    width: 90px;
+    height: 25px;
+    color: white;
+    background-color: red;
+}
+
+#updateLogButton {
+    width: 110px;
+    height: 50px;
+    font-weight: bold;
+    color: white;
+    background-color: #5fa695;
+    margin-right: 50px;
 }
