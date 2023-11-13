@@ -12,6 +12,8 @@ const battleChests = [
     { key: "undefined", name: "tbd", url: "/icons/tbd.png" },
     { key: "Unknown", name: "Unknown", url: "/icons/unknown.png" },
     { key: "abandoned", name: "abandoned", url: "/icons/block.png" },
+    { key: "bones", name: "PvP", url: "https://d2k2g0zg1te1mr.cloudfront.net/env/prod1/mobile-lite/static/media/iconBones.56e87204.png" },
+    { key: "keys", name: "Dungeons", url: "/icons/keys.png" },
     { key: "chestsalvage", name: "Defeat", url: "https://d2k2g0zg1te1mr.cloudfront.net/mobilelite/chests/iconChestSalvage.7f5d2511b08f.png" },
     { key: "chestbronze", name: "Bronze", url: "https://d2k2g0zg1te1mr.cloudfront.net/mobilelite/chests/iconChestBronze.7f5d2511b08f.png" },
     { key: "chestsilver", name: "Silver", url: "https://d2k2g0zg1te1mr.cloudfront.net/mobilelite/chests/iconChestSilver.7f5d2511b08f.png" },
@@ -136,8 +138,6 @@ document.addEventListener('DOMContentLoaded', function () {
         document.getElementById('wipeButton').addEventListener('click', function () {
             // Wipe logData from local storage
             chrome.storage.local.remove(['logData'], function () {
-                console.log('logData wiped from local storage');
-                // Optionally, you can also clear the displayed data on the options page
                 dataContainer.innerHTML = '';
             });
         });

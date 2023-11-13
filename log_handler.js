@@ -30,7 +30,6 @@ const logObserver = new MutationObserver(async function (mutations) {
             if (logMode === undefined) {
                 logMode = "Campaign"
             }
-            console.log(logMode);
         } catch (error) {
             logMode = "Campaign";
         }
@@ -40,9 +39,7 @@ const logObserver = new MutationObserver(async function (mutations) {
             } else {
                 continue;
             }
-        } catch (error) {
-            console.log("log" + error);
-        }
+        } catch (error) { }
 
         //Invoke setLogCaptain with the variables obtained above.
         await setLogCaptain(logId, logCapName, logMode, currentTime, colorCode)

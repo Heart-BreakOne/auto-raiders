@@ -826,15 +826,30 @@ async function collectChests() {
       //Get battle result and chest type to add to storage log
       const battleResult = offSetSlot.querySelector(".capSlotStatus").innerText;
       let chestString;
+      let chestStringAlt;
       if (battleResult.includes("Defeat")) {
-        chestString = "chestsalvage";
+        chestStringAlt = "chestsalvage";
       } else {
-        chestString = button.querySelector('img').alt;
+        try {
+          chestString = button.querySelector('img');
+          try {
+            chestStringAlt = chestString.alt;
+            if (chestStringAlt === "") {
+              if (chestString.getAttribute('src').toLowerCase().includes("bone")) {
+                chestStringAlt = "bones";
+              } else if (chestString.getAttribute('src').toLowerCase().includes("key")) {
+                chestStringAlt = "keys";
+              }
+            }
+          } catch (error) {
+          }
+        } catch (error) {
+        };
       }
-      
+
       button.click();
       await delay(1000);
-      await setLogResults(battleResult, captainName, chestString);
+      await setLogResults(battleResult, captainName, chestStringAlt);
       break;
     }
   }
