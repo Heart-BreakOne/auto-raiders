@@ -243,7 +243,7 @@ function setCaptainList(list) {
 
     // Save the array to Chrome's local storage
     chrome.storage.local.set(storageObject, function () {
-        // Optional: Add a callback or any additional logic after saving
+        alert('List updated successfully!');
     });
 
 }
