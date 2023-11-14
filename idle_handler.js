@@ -197,14 +197,21 @@ async function switchIdleCaptain() {
     await idleDelay(3000);
     //Gets the full list of captains
     let fullCaptainList = Array.from(document.querySelectorAll(".searchResult"));
+
+    let whiteList = await filterCaptainList('whitelist', fullCaptainList);
+    let blackList = await filterCaptainList('blacklist', fullCaptainList);
+    const acceptableList = fullCaptainList.filter(
+        entry => !blackList.includes(entry)
+    );
+
     //Invokes function to get list with gold loyalty captains
-    let diamondLoyaltyList = createLoyaltyList(fullCaptainList, diamondLoyaltyString);
+    let diamondLoyaltyList = createLoyaltyList(fullCaptainList, diamondLoyaltyString, blackList);
     //Invokes function to get list with gold loyalty captains
-    let goldLoyaltyList = createLoyaltyList(fullCaptainList, goldLoyaltyString);
+    let goldLoyaltyList = createLoyaltyList(fullCaptainList, goldLoyaltyString, blackList);
     //Invokes function to get list with silver loyalty captains
-    let silverLoyaltyList = createLoyaltyList(fullCaptainList, silverLoyaltyString);
+    let silverLoyaltyList = createLoyaltyList(fullCaptainList, silverLoyaltyString, blackList);
     //Invokes function to get list with bronze loyalty captains
-    let bronzeLoyaltyList = createLoyaltyList(fullCaptainList, bronzeLoyaltyString);
+    let bronzeLoyaltyList = createLoyaltyList(fullCaptainList, bronzeLoyaltyString, blackList);
     //Gets list of favorited captains that are running campaign
     let favoriteList = Array.from(fullCaptainList).filter(captain => {
         //Gets favorite icon
@@ -219,11 +226,6 @@ async function switchIdleCaptain() {
             versusLabelElement && versusLabelElement.textContent.trim() === 'Campaign' &&
             (!joinLabelElement || joinLabelElement.textContent.trim() !== 'Already joined Captain');
     });
-    let whiteList = await filterCaptainList('whitelist', fullCaptainList);
-    let blackList = await filterCaptainList('blacklist', fullCaptainList);
-    const acceptableList = fullCaptainList.filter(
-        entry => !blackList.includes(entry)
-    );
 
     //If diamond loyalty captains exist, click on a random one
     if (diamondLoyaltyList.length != 0) {
@@ -302,8 +304,11 @@ function getRandomIndex(max) {
 and returns an sub array with only captains that match the loyalty string and
 captains that are running campaign and captains that have not been joined yet */
 
-function createLoyaltyList(fullCaptainList, loyaltyString) {
-    return Array.from(fullCaptainList).filter(captain => {
+function createLoyaltyList(fullCaptainList, loyaltyString, blackList) {
+
+    const filteredList = fullCaptainList.filter(item => !blackList.includes(item));
+
+    return Array.from(filteredList).filter(captain => {
         //Gets loyalty icon for comparison
         const imgElement = captain.querySelector('.searchResultLoyalty img');
         //Gets game mode
