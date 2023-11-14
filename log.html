@@ -18,8 +18,8 @@
         <h2>Duration is the time in minutes from when placement started up to the time the captain handed out the chest
             rewards</h2>
         <div>
-            <button id="updateLogButton">Update Log</button>
-            <button id="deleteLogButton">Delete log</button><br><br>
+            <button id="updateLogButton" class="green_button">Update Log</button>
+            <button id="deleteLogButton" class="green_button">Delete log</button><br><br>
         </div>
     </div>
     <div id="dataContainer"></div><br><br>
@@ -35,16 +35,20 @@
                 captainz1, CAPTAINZ1 are all valid because their only difference is the casing)</li>
         </ul>
         <div>
-            <label >Whitelist:</label><br>
+            <label>Whitelist:</label><br>
             <textarea id="whitelist" name="whitelist" placeholder="captain1 captain2 captain3 captain4"></textarea><br>
             <button id="whitelist_button">Whitelist</button>
-            <br>      
-            <label >Blacklist:</label><br>
+            <br>
+            <label>Blacklist:</label><br>
             <textarea id="blacklist" name="blacklist" placeholder="captain1 captain2 captain3 captain4"></textarea><br>
             <button id="blacklist_button">Blacklist</button>
         </div>
     </div>
-
+    <div class="center-container">
+        <h2>Export and import your settings, captains lists and log here<br>WARNING: IMPORTING OVERWRITES THE CURRENT DATA</h2>
+        <button id="exportButton" class="green_button" style="font-weight: normal">Export your settings to file</button>
+        <button id="importButton" class="green_button" style="font-weight: normal">Import your setting from file</button>
+        <input type="file" id="file-input">
+    </div>
 </body>
-
 </html>

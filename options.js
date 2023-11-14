@@ -42,6 +42,16 @@ document.addEventListener('DOMContentLoaded', async function () {
         setCaptainList('blacklist');
     });
 
+    //Export all settings to a file.
+    document.getElementById("exportButton").addEventListener("click", function () {
+        exportData();
+    });
+
+    //Import all settings to a file.
+    document.getElementById("importButton").addEventListener("click", function () {
+        importData();
+    });
+
     await loadAndInjectList('whitelist');
     await loadAndInjectList('blacklist');
 
@@ -70,28 +80,35 @@ document.addEventListener('DOMContentLoaded', async function () {
 
 
 async function loadLogData() {
-    // Retrieve data from local storage
+
+    //If table already exists, remove it so a new one can be injected
+    const isTable = document.getElementById("logTable");
+    if (isTable) {
+        isTable.remove();
+    }
+    //Retrieve data from local storage
     chrome.storage.local.get(['logData'], function (result) {
         const arrayData = result.logData || [];
 
-        // Sort the array based on the time they were added.
+        //Sort the array based on the time they were added.
         const sortedData = arrayData.sort((a, b) => new Date(b.currentTime) - new Date(a.currentTime));
 
-        // Get the data container div
+        //Get the data container div
         const dataContainer = document.getElementById('dataContainer');
         dataContainer.style.textAlign = "justify";
 
-        // Create a table 
+        //Create a table 
         const tableElement = document.createElement('table');
+        tableElement.id = "logTable";
 
-        // Create table header row
+        //Create table header row
         const headerRow = document.createElement('tr');
         headerRow.innerHTML = '<th>#</th><th>Slot</th><th>Captain Name</th><th>Mode</th><th>Color Code</th><th>Start time</th><th>Duration</th><th>Result</th><th>Chest</th>';
 
-        // Append header row to the table
+        //Append header row to the table
         tableElement.appendChild(headerRow);
 
-        // Populate the table with array data
+        //Populate the table with array data
         let counter = 1;
         for (let i = 0; i < sortedData.length; i++) {
             const entry = sortedData[i];
@@ -101,12 +118,12 @@ async function loadLogData() {
             let elapsed;
             let res;
 
-            // Convert the string to a Date object
+            //Convert the string to a Date object
             const startTime = new Date(entry.currentTime);
             const startHour = startTime.getHours();
             const startMinute = startTime.getMinutes();
 
-            // Using padStart to ensure two digits for hours and minutes
+            //Using padStart to ensure two digits for hours and minutes
             const startingTime = String(startHour).padStart(2, '0') + ":" + String(startMinute).padStart(2, '0');
 
             //Getting human-readable colors
@@ -266,4 +283,59 @@ async function loadAndInjectList(list) {
             document.getElementById(textareaId).value = listArray.join(' ');
         }
     });
+}
+
+//Export data from chrome local storage into a file
+async function exportData() {
+    chrome.storage.local.get(null, function (items) {
+        const allKeys = Object.keys(items);
+
+        chrome.storage.local.get(allKeys, function (result) {
+
+            const jsonData = JSON.stringify(result);
+
+            const blob = new Blob([jsonData], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'sr_helper_backup.json';
+            document.body.appendChild(a);
+            a.click();
+
+            //Cleanup
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+        });
+    });
+}
+
+//Import data from a file to chrome loca storage.
+async function importData() {
+    const fileInput = document.getElementById('file-input');
+    const file = fileInput.files[0];
+
+    if (file) {
+        const reader = new FileReader();
+
+        reader.onload = function (e) {
+            const jsonContent = e.target.result;
+
+            try {
+                const parsedData = JSON.parse(jsonContent);
+
+                chrome.storage.local.set(parsedData, function () {
+                    alert('Data imported sucessfully!');
+                    loadLogData();
+                    loadAndInjectList('whitelist');
+                    loadAndInjectList('blacklist');
+                });
+            } catch (error) {
+                alert('An error occurred', error);
+            }
+        };
+        reader.readAsText(file);
+    } else {
+        alert('Please select a file!');
+    }
 }
