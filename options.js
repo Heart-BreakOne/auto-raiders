@@ -29,12 +29,15 @@ const battleChests = [
 //Event listener for when the page loads
 document.addEventListener('DOMContentLoaded', async function () {
 
+    //Load the battle log
     await loadLogData();
 
+    //Listen for click events on the save whitelist button
     document.getElementById("whitelist_button").addEventListener("click", function () {
         setCaptainList('whitelist');
     });
 
+    //Listen to click events on the save blacklist butotn
     document.getElementById("blacklist_button").addEventListener("click", function () {
         setCaptainList('blacklist');
     });

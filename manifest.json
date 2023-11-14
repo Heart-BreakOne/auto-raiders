@@ -1,8 +1,8 @@
 {
    "manifest_version": 3,
-   "name": "AutoRaiders",
-   "version": "4.0.10",
-   "description": "SR helper",
+   "name": "SRHelper",
+   "version": "4.0.11",
+   "description": "Stream Raiders Helper",
    "action": {
       "default_popup": "popup.html",
       "default_icon": {
