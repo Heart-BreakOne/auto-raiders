@@ -257,7 +257,7 @@ async function switchIdleCaptain() {
     }
     //Get a acceptable captain
     else if (acceptableList.length != 0) {
-        captainButton = whiteList[0].querySelector(".actionButton.actionButtonPrimary.searchResultButton");
+        captainButton = acceptableList[0].querySelector(".actionButton.actionButtonPrimary.searchResultButton");
         captainButton.click()
     }
     //No special captains (no loyalty, not favorite, no whitelist, no acceptable captains) exist
