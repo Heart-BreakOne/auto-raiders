@@ -196,7 +196,7 @@ async function switchIdleCaptain() {
     await scroll();
     await idleDelay(3000);
     //Gets the full list of captains
-    let fullCaptainList = document.querySelectorAll(".searchResult");
+    let fullCaptainList = Array.from(document.querySelectorAll(".searchResult"));
     //Invokes function to get list with gold loyalty captains
     let diamondLoyaltyList = createLoyaltyList(fullCaptainList, diamondLoyaltyString);
     //Invokes function to get list with gold loyalty captains
@@ -220,7 +220,10 @@ async function switchIdleCaptain() {
             (!joinLabelElement || joinLabelElement.textContent.trim() !== 'Already joined Captain');
     });
     let whiteList = await filterCaptainList('whitelist', fullCaptainList);
-    let blackList = await filterCaptainList('blaclist', fullCaptainList);
+    let blackList = await filterCaptainList('blacklist', fullCaptainList);
+    const acceptableList = fullCaptainList.filter(
+        entry => !blackList.includes(entry)
+    );
 
     //If diamond loyalty captains exist, click on a random one
     if (diamondLoyaltyList.length != 0) {
@@ -247,18 +250,23 @@ async function switchIdleCaptain() {
         captainButton = favoriteList[getRandomIndex(favoriteList.length)].querySelector(".actionButton.actionButtonPrimary.searchResultButton");
         captainButton.click()
     }
+    //Get a whitelisted captain
     else if (whiteList.length != 0) {
         captainButton = whiteList[0].querySelector(".actionButton.actionButtonPrimary.searchResultButton");
         captainButton.click()
     }
-    //No special captains (no loyalty, not favorite) exist
+    //Get a acceptable captain
+    else if (acceptableList.length != 0) {
+        captainButton = whiteList[0].querySelector(".actionButton.actionButtonPrimary.searchResultButton");
+        captainButton.click()
+    }
+    //No special captains (no loyalty, not favorite, no whitelist, no acceptable captains) exist
     else {
         //Checks if the user wants to switch to non special captains, if not the list is closed
         const skipSwitch = await retrieveFromStorage("skipSwitch")
         if (skipSwitch) {
             //Closes the list
             closeAll();
-
         }
         //Any captain is selected
         else {
@@ -340,8 +348,8 @@ async function filterCaptainList(type, fullCaptainList) {
             const joinLabelElement = captain.querySelector('.searchResultJoinLabel');
 
             if (captainName.toUpperCase() === listedCaptain.toUpperCase() &&
-            versusLabelElement && versusLabelElement.textContent.trim() === 'Campaign' &&
-            (!joinLabelElement || joinLabelElement.textContent.trim() !== 'Already joined Captain')) {
+                versusLabelElement && versusLabelElement.textContent.trim() === 'Campaign' &&
+                (!joinLabelElement || joinLabelElement.textContent.trim() !== 'Already joined Captain')) {
                 filteredArray.push(captain);
             }
         }
