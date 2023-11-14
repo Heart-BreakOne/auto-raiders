@@ -245,14 +245,14 @@ async function switchIdleCaptain() {
         captainButton = bronzeLoyaltyList[getRandomIndex(bronzeLoyaltyList.length)].querySelector(".actionButton.actionButtonPrimary.searchResultButton");
         captainButton.click();
     }
-    //If favorited captains exist, click on a random one
-    else if (favoriteList.length != 0) {
-        captainButton = favoriteList[getRandomIndex(favoriteList.length)].querySelector(".actionButton.actionButtonPrimary.searchResultButton");
-        captainButton.click()
-    }
     //Get a whitelisted captain
     else if (whiteList.length != 0) {
         captainButton = whiteList[0].querySelector(".actionButton.actionButtonPrimary.searchResultButton");
+        captainButton.click()
+    }
+    //If favorited captains exist, click on a random one
+    else if (favoriteList.length != 0) {
+        captainButton = favoriteList[getRandomIndex(favoriteList.length)].querySelector(".actionButton.actionButtonPrimary.searchResultButton");
         captainButton.click()
     }
     //Get a acceptable captain
