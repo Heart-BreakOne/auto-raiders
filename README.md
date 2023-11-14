@@ -1,7 +1,7 @@
 # AutoRaiders
 ## Click emulator for SR - Google Chrome extension.
 
-[Download at the Chrome Web Store](https://chrome.google.com/webstore/detail/autoraiders/aehnpgifioecdfmcdnlpcljdcpjogeld)
+[Download at the Chrome Web Store](https://chrome.google.com/webstore/detail/srhelper/flgahoglenmjoegheodkhahipokcilal)
 
 ### Special thanks to contributor:
 Heather1209
