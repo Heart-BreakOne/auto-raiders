@@ -13,14 +13,39 @@
 <body>
     <div class="center-container">
         <h1>This is your battle log</h1>
-        <h2>Unknown time and result means the extension couldn't get a battle closure, this generally means that the battle was manually abandoned or the reward chest manually collected.</h2>
-        <h2>Duration is the time in minutes from when placement started up to the time the captain handed out the chest rewards</h2>
+        <h2>Unknown time and result means the extension couldn't get a battle closure, this generally means that the
+            battle was manually abandoned or the reward chest manually collected.</h2>
+        <h2>Duration is the time in minutes from when placement started up to the time the captain handed out the chest
+            rewards</h2>
         <div>
             <button id="updateLogButton">Update Log</button>
             <button id="deleteLogButton">Delete log</button><br><br>
         </div>
     </div>
     <div id="dataContainer"></div><br><br>
+    <div class="bulleted-list">
+        <h1>Whitelist and blacklist captains here</h1>
+        <ul>
+            <li>When switching an idle captain the order of priority is: Diamond > Gold > Silver > Bronze > Whitelist >
+                Favorites > Any captain</li>
+            <li>Blacklisted captains will be ignored, unless they are the only ones in the Any Captains list.</li>
+            <li>Write the name of the Captains with a space in between</li>
+            <li>The order you write the captains is the order of their priority</li>
+            <li>Uppercasing and lowercasing don't matter, but the captain name MUST be typed correctly (e.g CaptainZ1,
+                captainz1, CAPTAINZ1 are all valid because their only difference is the casing)</li>
+        </ul>
+        <div>
+            <label >Whitelist:</label><br>
+            <textarea id="whitelist" name="whitelist" placeholder="captain1 captain2 captain3 captain4"></textarea><br>
+            <button id="whitelist_button">Whitelist</button>
+        
+            <br>
+        
+            <label >Blacklist:</label><br>
+            <textarea id="blacklist" name="blacklist" placeholder="captain1 captain2 captain3 captain4"></textarea><br>
+            <button id="blacklist_button">Blacklist</button>
+        </div>
+    </div>
 
 </body>
 

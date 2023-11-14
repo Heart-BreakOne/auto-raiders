@@ -35,13 +35,14 @@ async function checkIdleCaptains() {
 
         //Gets button id form the current slot
         try {
-        const btn = slot.querySelector(".capSlotStatus .offlineButton");
-        const buttonId = btn.getAttribute('id');
-        //Checks if the user wants to switch idle captains by passing the button id
-        const currentIdleState = await getIdleState(buttonId);
-        if (!currentIdleState) {
-            continue;
-        } } catch (error) {
+            const btn = slot.querySelector(".capSlotStatus .offlineButton");
+            const buttonId = btn.getAttribute('id');
+            //Checks if the user wants to switch idle captains by passing the button id
+            const currentIdleState = await getIdleState(buttonId);
+            if (!currentIdleState) {
+                continue;
+            }
+        } catch (error) {
             return;
         }
 
@@ -218,6 +219,9 @@ async function switchIdleCaptain() {
             versusLabelElement && versusLabelElement.textContent.trim() === 'Campaign' &&
             (!joinLabelElement || joinLabelElement.textContent.trim() !== 'Already joined Captain');
     });
+    let whiteList = await filterCaptainList('whitelist', fullCaptainList);
+    let blackList = await filterCaptainList('blaclist', fullCaptainList);
+
     //If diamond loyalty captains exist, click on a random one
     if (diamondLoyaltyList.length != 0) {
         captainButton = diamondLoyaltyList[getRandomIndex(diamondLoyaltyList.length)].querySelector(".actionButton.actionButtonPrimary.searchResultButton");
@@ -241,6 +245,10 @@ async function switchIdleCaptain() {
     //If favorited captains exist, click on a random one
     else if (favoriteList.length != 0) {
         captainButton = favoriteList[getRandomIndex(favoriteList.length)].querySelector(".actionButton.actionButtonPrimary.searchResultButton");
+        captainButton.click()
+    }
+    else if (whiteList.length != 0) {
+        captainButton = whiteList[0].querySelector(".actionButton.actionButtonPrimary.searchResultButton");
         captainButton.click()
     }
     //No special captains (no loyalty, not favorite) exist
@@ -303,12 +311,50 @@ function createLoyaltyList(fullCaptainList, loyaltyString) {
 }
 
 
+//This function receives the list type and the full list and sorts the matching captains
+async function filterCaptainList(type, fullCaptainList) {
+
+    let filteredArray = [];
+    function getListedCaptains() {
+        return new Promise((resolve) => {
+            chrome.storage.local.get({ [type]: [] }, function (result) {
+                resolve(result[type] || []);
+            });
+        });
+    }
+
+    // Use async/await to wait for the storage data
+    const listArray = await getListedCaptains();
+
+    //Create a filtered nodeList array of captains with the order of favoritism
+    for (let i = 0; i < listArray.length; i++) {
+        //Get favorite captain in order
+        const listedCaptain = listArray[i];
+        //Check if the captainName and other condition match, add it to filtered array
+        for (let j = 0; j < fullCaptainList.length; j++) {
+            const captain = fullCaptainList[j];
+            const captainName = captain.querySelector('.searchResultCaptainName').innerText;
+            //Gets game mode
+            const versusLabelElement = captain.querySelector('.versusLabelContainer');
+            //Gets whether or not the captain has been joined already.
+            const joinLabelElement = captain.querySelector('.searchResultJoinLabel');
+
+            if (captainName.toUpperCase() === listedCaptain.toUpperCase() &&
+            versusLabelElement && versusLabelElement.textContent.trim() === 'Campaign' &&
+            (!joinLabelElement || joinLabelElement.textContent.trim() !== 'Already joined Captain')) {
+                filteredArray.push(captain);
+            }
+        }
+    }
+    return filteredArray;
+}
+
 //Scroll to the bottom of the page and load all captains
 async function scroll() {
     //Initialized the scrollable element
     const scroll = document.querySelector('.capSearchResults');
     //Scrolls to the bottom with a delay so the new dynamically elements can be loaded
-    for (let i = 0; i < 15; i++) {
+    for (let i = 0; i < 20; i++) {
         scroll.scrollTop = scroll.scrollHeight;
         await idleDelay(450);
     }

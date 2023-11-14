@@ -23,7 +23,9 @@ td {
     padding: 8px;
 }
 
-th, .button_container, .center-container {
+th,
+.button_container,
+.center-container {
     text-align: center;
 }
 
@@ -34,7 +36,7 @@ th, .button_container, .center-container {
     background-color: red;
 }
 
-#updateLogButton {
+#updateLogButton, #list_button{
     width: 110px;
     height: 50px;
     font-weight: bold;
@@ -45,4 +47,34 @@ th, .button_container, .center-container {
 
 #instructions_button {
     margin-right: 10px;
+}
+
+.bulleted-list {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: left;
+    font-size: large;
+}
+
+.bulleted-list {
+    max-width: auto;
+    margin: 0 auto;
+}
+
+ul {
+    padding-left: 20px;
+}
+
+li {
+    margin-bottom: 10px;
+}
+
+textarea {
+    margin: 0 auto; /* Center the form horizontally */
+    max-width: 1000px;
+    width: 100vw;
+    height: 200px;
+    padding: 10px; /* Add padding to the input for spacing */
+    box-sizing: border-box; /* Include padding and border in the element's total width and height */
 }

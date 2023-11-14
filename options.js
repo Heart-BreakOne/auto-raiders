@@ -31,6 +31,17 @@ document.addEventListener('DOMContentLoaded', async function () {
 
     await loadLogData();
 
+    document.getElementById("whitelist_button").addEventListener("click", function () {
+        setCaptainList('whitelist');
+    });
+
+    document.getElementById("blacklist_button").addEventListener("click", function () {
+        setCaptainList('blacklist');
+    });
+
+    await loadAndInjectList('whitelist');
+    await loadAndInjectList('blacklist');
+
     // Add event listener for the wipe button
     document.getElementById('deleteLogButton').addEventListener('click', function () {
         //Load confirmation popup
@@ -49,8 +60,8 @@ document.addEventListener('DOMContentLoaded', async function () {
         // Update logData from local storage
         dataContainer.innerHTML = '';
         loadLogData();
-    })
-        ;
+    });
+
 });
 
 
@@ -214,6 +225,42 @@ function removeEntry(sortedIndex) {
                 chrome.storage.local.set({ ["logData"]: loggedData }, function () {
                 });
             }
+        }
+    });
+}
+
+//Set whitelist and blacklist on storage
+function setCaptainList(list) {
+    //Get the text from the user
+    const userInput = document.getElementById(list).value;
+
+    //Split text an array every space
+    const listArray = userInput.split(' ');
+
+    // Create an object with the dynamic list key
+    const storageObject = {};
+    storageObject[list] = listArray;
+
+    // Save the array to Chrome's local storage
+    chrome.storage.local.set(storageObject, function () {
+        // Optional: Add a callback or any additional logic after saving
+    });
+
+}
+
+// Function to load and inject the array into the textarea
+async function loadAndInjectList(list) {
+    // Retrieve the array from Chrome's local storage
+    chrome.storage.local.get({ [list]: [] }, function (result) {
+        // Handle the retrieved data
+        const listArray = result[list];
+
+        // Check if the array exists and is an array with at least one element
+        if (Array.isArray(listArray) && listArray.length > 0) {
+            const textareaId = list === 'whitelist' ? 'whitelist' : 'blacklist';
+
+            // Inject the array entries into the textarea
+            document.getElementById(textareaId).value = listArray.join(' ');
         }
     });
 }
