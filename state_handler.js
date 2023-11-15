@@ -115,7 +115,7 @@ const observer = new MutationObserver(function (mutations) {
       //Hide some elements from user view so they don't affect user interaction.
       const rewardsScrim = document.querySelector(".rewardsScrim");
       const toast = document.querySelector(".toastsCont.toastsContMore");
-      function hideElementsFromView (element) {
+      function hideElementsFromView(element) {
         if (element) {
           element.style.width = '0';
           element.style.height = '0';
@@ -185,3 +185,15 @@ const observer = new MutationObserver(function (mutations) {
 const targetNode = document.body;
 const config = { childList: true, subtree: true };
 observer.observe(targetNode, config);
+
+
+window.onerror = function (message, source, lineno, colno, error) {
+  // Check if the error message contains the specific string
+  if (message.includes('Cannot remove scroll-on-drag from nullish target!')) {
+    try {
+      goHome();
+    } catch (error) {
+      location.reload();
+    }
+  }
+};

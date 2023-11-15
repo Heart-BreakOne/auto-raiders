@@ -80,7 +80,7 @@ async function updateUserAgent(tab) {
 
   // Reload the tab
   chrome.tabs.reload(tab.id, {
-    bypassCache: false // You can set this to true or false based on your requirements
+    bypassCache: false
   });
 }
 

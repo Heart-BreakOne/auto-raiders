@@ -116,21 +116,19 @@ async function start() {
   }
 
   //Initialized nav items, if they don't exist it means the extension is already executing.
-  navItems = document.querySelectorAll('.mainNavItemText');
-  if (navItems.length == 0 || navItems === undefined) {
+  const navItems = document.querySelectorAll('.mainNavItemText');
+  if (navItems.length === 0 || navItems === undefined) {
     return;
   } else {
     //If navItem exists, open main menu
-    function clickNavBar(navItems, targetText) {
-      const tgtNavItem = Array.from(navItems).find(navItem => navItem.innerText === targetText);
-      if (tgtNavItem) {
-        tgtNavItem.click();
+    for (let i = 0; i < navItems.length; i++) {
+      let navItem = navItems[i];
+      if (navItem.innerText === "Battle") {
+        navItem.click();
+        await delay(2000);
+        break;
       }
     }
-    clickNavBar(navItems, "Army");
-    
-    clickNavBar(navItems, "Battle");
-    await delay(2000);
   }
 
   //Checks if the user wants to replace idle captains and invoke the function to check and replace them.
