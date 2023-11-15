@@ -23,7 +23,6 @@ const gameBlue = 'rgb(42, 96, 132)';
 const cancelButtonSelector = ".actionButton.actionButtonNegative.placerButton";
 let delay = ms => new Promise(res => setTimeout(res, ms));
 
-const loyaltyChests = ["chestboostedgold", "chestboostedskin_maps01to11", "chestboostedscroll", "chestboostedtoken", "chestboss", "chestbosssuper"];
 const arrayOfBattleFieldMarkers = [
   { key: "NO", icon: "SVFCVFFVKM+J2ICS+HWVYAAAAASUVORK5CYII=" },
   { key: "VIBE", icon: "1EPFWIYQTQRB9OWOGAAAABJRU5ERKJGGG" },
@@ -129,7 +128,7 @@ async function start() {
       }
     }
     clickNavBar(navItems, "Army");
-
+    
     clickNavBar(navItems, "Battle");
     await delay(2000);
   }
@@ -828,11 +827,7 @@ async function collectChests() {
           chestString = button.querySelector('img');
           try {
             chestStringAlt = chestString.alt;
-            if (loyaltyChests.some(chest => offSetSlot.outerHTML.includes(chest)) && offSetSlot.outerHTML.includes('LoyaltyDiamond')) {
-              await abandonBattle("Unknown", offSetSlot, "Unknown");
-              return;
-            }
-            else if (chestStringAlt === "") {
+            if (chestStringAlt === "") {
               if (chestString.getAttribute('src').toLowerCase().includes("bone")) {
                 chestStringAlt = "bones";
               } else if (chestString.getAttribute('src').toLowerCase().includes("key")) {
