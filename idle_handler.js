@@ -63,28 +63,9 @@ async function checkIdleCaptains() {
             const isIdle = await getBattleStatus(captainName)
             //Captain is idle, switch and select a new one
             if (isIdle) {
-                //Closes captain slot
-                let close = slot.querySelector(".fas.fa-square");
-                const c = close.offsetParent;
-                const closeOffset = c.offsetParent;
-                const idleCapName = closeOffset.querySelector(".capSlotName").innerText;
-                close.click();
-                await delay(1000);
-                //Store battle result as abandoned on storage log
-                await setLogResults("Abandoned", idleCapName, "abandoned");
-                //Checks if modal that appears on certain conditions exists and clicks to close it.
-                const modal = document.querySelector(".modalScrim.modalOn");
-                if (modal) {
-                    await delay(2000);
-                    close = modal.querySelector(".actionButton.actionButtonPrimary");
-                    close.click();
-                }
-                await idleDelay(2000);
-                //Clicks the select button to open captain selection list
-                const selectButton = slot.querySelector(".actionButton.actionButtonPrimary.capSlotButton.capSlotButtonAction");
-                selectButton.click();
+                await abandonBattle("Abandoned", slot, "abandoned");
                 //Invokes function to get a captain replacement.
-                switchIdleCaptain()
+                switchIdleCaptain();
                 return;
             }
         }
@@ -371,4 +352,28 @@ async function scroll() {
         scroll.scrollTop = scroll.scrollHeight;
         await idleDelay(450);
     }
+}
+
+//Abandon the battle and select a new captain
+async function abandonBattle(status, slot, status1) {
+    //Closes captain slot
+    let close = slot.querySelector(".fas.fa-square");
+    const c = close.offsetParent;
+    const closeOffset = c.offsetParent;
+    const idleCapName = closeOffset.querySelector(".capSlotName").innerText;
+    close.click();
+    await delay(1000);
+    //Store battle result as abandoned on storage log
+    await setLogResults(status, idleCapName, status1);
+    //Checks if modal that appears on certain conditions exists and clicks to close it.
+    const modal = document.querySelector(".modalScrim.modalOn");
+    if (modal) {
+        await delay(2000);
+        close = modal.querySelector(".actionButton.actionButtonPrimary");
+        close.click();
+    }
+    await idleDelay(2000);
+    //Clicks the select button to open captain selection list
+    const selectButton = slot.querySelector(".actionButton.actionButtonPrimary.capSlotButton.capSlotButtonAction");
+    selectButton.click();
 }
