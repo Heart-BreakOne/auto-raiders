@@ -283,9 +283,11 @@ async function openBattlefield() {
     //Opens battle info and checks chest type.
     battleInfo = document.querySelector(".battleInfoMapTitle")
     battleInfo.click();
+    await delay(1000);
     let chest;
     try {
       chest = document.querySelector(".mapInfoRewardsName").innerText;
+      closeAll();
     } catch (error) {
       goHome();
       return;

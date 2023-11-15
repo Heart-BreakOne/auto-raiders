@@ -1,20 +1,22 @@
+/* Spacing for heading 1, heading 2, and buttons */
 h1,
 h2,
 button {
     margin-bottom: 20px;
 }
 
+/* Padding for heading 2 */
 h2 {
     padding-left: 20%;
     padding-right: 20%;
 }
 
+/* Styling for tables */
 table {
     border-collapse: collapse;
     width: 90%;
-    padding-left: 10px;
-    padding-right: 10px;
     margin: 0 auto;
+    padding: 0 10px;
 }
 
 th,
@@ -23,44 +25,44 @@ td {
     padding: 8px;
 }
 
+/* Center alignment for th, buttons, and container */
 th,
 .button_container,
 .center-container {
     text-align: center;
 }
 
-#deleteLogButton {
-    padding: 5px 20px;
+/* Styling for delete button and green button */
+#deleteLogButton, .green_button {
     color: white;
-    border: none;
     font-weight: bold;
-    background-color: red;
     margin-right: 50px;
     cursor: pointer;
-}
-.green_button {
-    padding: 16px 20px;
-    color: white;
-    border: none;
-    font-weight: bold;
-    background-color: #5fa695;
-    margin-right: 50px;
-    cursor: pointer;
+    border: solid black;
 }
 
+#deleteLogButton {
+    padding: 5px 20px;
+    background-color: red;
+}
+
+.green_button {
+    padding: 16px 20px;
+    background-color: #5fa695;
+}
+
+/* Styling for instructions button */
 #instructions_button {
     margin-right: 10px;
 }
 
+/* Styling for bulleted list */
 .bulleted-list {
     display: flex;
     flex-direction: column;
     align-items: center;
     text-align: left;
     font-size: large;
-}
-
-.bulleted-list {
     max-width: auto;
     margin: 0 auto;
 }
@@ -73,6 +75,7 @@ li {
     margin-bottom: 10px;
 }
 
+/* Styling for textarea */
 textarea {
     margin: 0 auto;
     max-width: 1000px;
@@ -82,10 +85,11 @@ textarea {
     box-sizing: border-box;
 }
 
+/* Styling for file input container and hiding file input */
 .file-input-container {
     display: inline-block;
 }
 
 #file-input {
-    display:none;
+    display: none;
 }
