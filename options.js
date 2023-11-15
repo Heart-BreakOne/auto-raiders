@@ -48,9 +48,11 @@ document.addEventListener('DOMContentLoaded', async function () {
     });
 
     //Import all settings to a file.
-    document.getElementById("importButton").addEventListener("click", function () {
+    document.getElementById('file-input').addEventListener('change', function () {
         importData();
+        this.value = '';
     });
+
 
     await loadAndInjectList('whitelist');
     await loadAndInjectList('blacklist');

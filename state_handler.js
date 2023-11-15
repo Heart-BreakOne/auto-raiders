@@ -115,7 +115,7 @@ const observer = new MutationObserver(function (mutations) {
       //Hide some elements from user view so they don't affect user interaction.
       const rewardsScrim = document.querySelector(".rewardsScrim");
       const toast = document.querySelector(".toastsCont.toastsContMore");
-      function hideElementsFromView(element) {
+      function hideElementsFromView (element) {
         if (element) {
           element.style.width = '0';
           element.style.height = '0';

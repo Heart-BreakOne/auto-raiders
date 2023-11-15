@@ -30,19 +30,22 @@ th,
 }
 
 #deleteLogButton {
-    width: 90px;
-    height: 25px;
+    padding: 5px 20px;
     color: white;
-    background-color: red;
-}
-
-.green_button{
-    width: 110px;
-    height: 50px;
+    border: none;
     font-weight: bold;
+    background-color: red;
+    margin-right: 50px;
+    cursor: pointer;
+}
+.green_button {
+    padding: 16px 20px;
     color: white;
+    border: none;
+    font-weight: bold;
     background-color: #5fa695;
     margin-right: 50px;
+    cursor: pointer;
 }
 
 #instructions_button {
@@ -71,10 +74,23 @@ li {
 }
 
 textarea {
-    margin: 0 auto; /* Center the form horizontally */
+    margin: 0 auto;
     max-width: 1000px;
     width: 100vw;
     height: 200px;
-    padding: 10px; /* Add padding to the input for spacing */
-    box-sizing: border-box; /* Include padding and border in the element's total width and height */
+    padding: 10px;
+    box-sizing: border-box;
+}
+
+.file-input-container {
+    display: inline-block;
+}
+
+#file-input {
+    position: absolute;
+    top: 0;
+    right: 0;
+    margin: 0;
+    padding: 0;
+    cursor: pointer;
 }
