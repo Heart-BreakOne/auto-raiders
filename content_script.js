@@ -283,7 +283,7 @@ async function openBattlefield() {
     //Opens battle info and checks chest type.
     battleInfo = document.querySelector(".battleInfoMapTitle")
     battleInfo.click();
-    await delay(1000);
+    await delay(2000);
     let chest;
     try {
       chest = document.querySelector(".mapInfoRewardsName").innerText;
@@ -335,29 +335,30 @@ async function getValidMarkers() {
   let nodeListOfMarkers = document.querySelectorAll(".planIcon");
   arrayOfMarkers = Array.from(nodeListOfMarkers);
   nodeListOfMarkers = null;
+  
+  const clockElement = document.querySelector('.battlePhaseTextClock .clock');
+  if (clockElement == null) {
+    goHome();
+    return;
+  } else {
+    //Initializes a variable with battle clock
+    const timeText = clockElement.innerText.replace(':', '');
+    const time = parseInt(timeText, 10);
+    //If the timer is at 29:00 or above, go back to the main menu as the captain may still place be placing markers.
+    if (time > 2830) {
+      goHome();
+      return;
+    }
+  }
   //Captain is on open map only
   if (arrayOfMarkers.length == 0) {
     //Map without any markers.
-    //Initializes a variable with battle clock
-    const clockElement = document.querySelector('.battlePhaseTextClock .clock');
-    if (clockElement == null) {
-      goHome();
-      return;
-    }
-    const timeText = clockElement.innerText.replace(':', '');
-    const time = parseInt(timeText, 10);
-    //If the timer is at 29:15 or above, go back to the main menu as the captain may place still be placing markers.
-    if (time > 2915) {
-      goHome();
-      return;
-    } else {
-      //If captain haven't placed any markers, initialize a node list with ally placements
-      arrayOfAllyPlacement = document.querySelectorAll(".placementAlly");
-      //Get one position within the ally placements
-      currentMarker = arrayOfAllyPlacement[Math.floor(Math.random() * arrayOfAllyPlacement.length)];
-      //Scroll into the currentMarker position
-      moveScreenRandomPosition();
-    }
+    //If captain haven't placed any markers, initialize a node list with ally placements
+    arrayOfAllyPlacement = document.querySelectorAll(".placementAlly");
+    //Get one position within the ally placements
+    currentMarker = arrayOfAllyPlacement[Math.floor(Math.random() * arrayOfAllyPlacement.length)];
+    //Scroll into the currentMarker position
+    moveScreenRandomPosition();
     //There are markers of some kind in the map.
   } else {
     //Treat the markers to remove block markers
@@ -369,7 +370,7 @@ async function getValidMarkers() {
       }
     }
 
-    //Check what inside new array.
+    //Check what is inside new array.
     if (arrayOfMarkers.length == 0 && (arrayOfAllyPlacement == undefined || arrayOfAllyPlacement.length == 0)) {
       //Captain is using a mix of block markers and open zones
       await flagCaptain('flaggedCaptains');
