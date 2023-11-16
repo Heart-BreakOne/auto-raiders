@@ -229,6 +229,7 @@ async function start() {
         //If all is clear, it checks if the captain is diamond loyalty for future comparison.
         //Assigns the placeUnit button and breaks.
         else {
+          diamondLoyalty = false;
           diamondLoyalty = captainSlot.outerHTML.includes('LoyaltyDiamond');
           placeUnit = button
           break;
@@ -278,6 +279,10 @@ async function openBattlefield() {
   //Check if user wants to preserve diamond loyalty
   const preserveDiamond = await retrieveFromStorage('loyaltySwitch');
 
+  if (preserveDiamond === null || preserveDiamond === undefined) {
+    goHome();
+    return;
+  }
   //User wants to preserve diamond loyalty and current captain is not diamond and current mode is campaign
   if (preserveDiamond && !diamondLoyalty && mode == false) {
     //Opens battle info and checks chest type.
@@ -304,6 +309,7 @@ async function openBattlefield() {
       closeAll();
       zoom();
     }
+    diamondLoyalty = false;
   } else {
     //User doesn't want to preserve diamond loyalty
     zoom();
@@ -335,7 +341,7 @@ async function getValidMarkers() {
   let nodeListOfMarkers = document.querySelectorAll(".planIcon");
   arrayOfMarkers = Array.from(nodeListOfMarkers);
   nodeListOfMarkers = null;
-  
+
   const clockElement = document.querySelector('.battlePhaseTextClock .clock');
   if (clockElement == null) {
     goHome();
