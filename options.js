@@ -2,60 +2,44 @@
 //Declaring/Initializing variables
 let chestName;
 let url;
-const tbd = "TDB"
+const tbd = "TDB";
 const colorCodeMap = {
     "rgb(185, 242, 255)": "Blue",
     "rgb(255, 204, 203)": "Red",
     "rgb(203, 195, 227)": "Purple",
 };
 const battleChests = [
-    { key: "undefined", name: "tbd", url: "/icons/tbd.png" },
-    { key: "Unknown", name: "Unknown", url: "/icons/unknown.png" },
-    { key: "abandoned", name: "abandoned", url: "/icons/block.png" },
-    { key: "bones", name: "PvP", url: "https://d2k2g0zg1te1mr.cloudfront.net/env/prod1/mobile-lite/static/media/iconBones.56e87204.png" },
-    { key: "keys", name: "Dungeons", url: "/icons/keys.png" },
-    { key: "chestsalvage", name: "Defeat", url: "https://d2k2g0zg1te1mr.cloudfront.net/mobilelite/chests/iconChestSalvage.7f5d2511b08f.png" },
-    { key: "chestbronze", name: "Bronze", url: "https://d2k2g0zg1te1mr.cloudfront.net/mobilelite/chests/iconChestBronze.7f5d2511b08f.png" },
-    { key: "chestsilver", name: "Silver", url: "https://d2k2g0zg1te1mr.cloudfront.net/mobilelite/chests/iconChestSilver.7f5d2511b08f.png" },
-    { key: "chestgold", name: "Gold", url: "https://d2k2g0zg1te1mr.cloudfront.net/mobilelite/chests/iconChestGold.7f5d2511b08f.png" },
-    { key: "chestboostedgold", name: "Loyalty Gold", url: "https://d2k2g0zg1te1mr.cloudfront.net/mobilelite/chests/iconChestGoldBoosted.c0e0bcd2b145.png" },
-    { key: "chestboostedskin_maps01to11", name: "Loyalty Skin", url: "https://d2k2g0zg1te1mr.cloudfront.net/mobilelite/chests/iconChestSkinBoosted.c0e0bcd2b145.png " },
-    { key: "chestboostedscroll", name: "Loyalty Scroll", url: "https://d2k2g0zg1te1mr.cloudfront.net/mobilelite/chests/iconChestScrollBoosted.ff3678509435.png" },
-    { key: "chestboostedtoken", name: "Loyalty Token", url: "https://d2k2g0zg1te1mr.cloudfront.net/mobilelite/chests/iconChestTokenBoosted.c0e0bcd2b145.png" },
-    { key: "chestboss", name: "Loyalty Boss", url: "https://d2k2g0zg1te1mr.cloudfront.net/mobilelite/chests/iconChestBoss.7f5d2511b08f.png" },
-    { key: "chestbosssuper", name: "Loyalty Super Boss", url: "https://d2k2g0zg1te1mr.cloudfront.net/mobilelite/chests/iconChestBossSuper.c0e0bcd2b145.png" },
+    { key: "undefined", name: "tbd", outcome: "tbd", url: "/icons/tbd.png" },
+    { key: "Unknown", name: "Unknown", outcome: "Unknown", url: "/icons/unknown.png" },
+    { key: "abandoned", name: "abandoned", outcome: "Abandoned", url: "/icons/block.png" },
+    { key: "bones", name: "PvP", outcome: "Victory", url: "https://d2k2g0zg1te1mr.cloudfront.net/env/prod1/mobile-lite/static/media/iconBones.56e87204.png" },
+    { key: "keys", name: "Dungeons", outcome: "Victory", url: "/icons/keys.png" },
+    { key: "chestsalvage", name: "Defeat", outcome: "Defeat", url: "https://d2k2g0zg1te1mr.cloudfront.net/mobilelite/chests/iconChestSalvage.7f5d2511b08f.png" },
+    { key: "chestbronze", name: "Bronze", outcome: "Victory", url: "https://d2k2g0zg1te1mr.cloudfront.net/mobilelite/chests/iconChestBronze.7f5d2511b08f.png" },
+    { key: "chestsilver", name: "Silver", outcome: "Victory", url: "https://d2k2g0zg1te1mr.cloudfront.net/mobilelite/chests/iconChestSilver.7f5d2511b08f.png" },
+    { key: "chestgold", name: "Gold", outcome: "Victory", url: "https://d2k2g0zg1te1mr.cloudfront.net/mobilelite/chests/iconChestGold.7f5d2511b08f.png" },
+    { key: "chestboostedgold", name: "Loyalty Gold", outcome: "Victory", url: "https://d2k2g0zg1te1mr.cloudfront.net/mobilelite/chests/iconChestGoldBoosted.c0e0bcd2b145.png" },
+    { key: "chestboostedskin_maps01to11", name: "Loyalty Skin", outcome: "Victory", url: "https://d2k2g0zg1te1mr.cloudfront.net/mobilelite/chests/iconChestSkinBoosted.c0e0bcd2b145.png " },
+    { key: "chestboostedscroll", name: "Loyalty Scroll", outcome: "Victory", url: "https://d2k2g0zg1te1mr.cloudfront.net/mobilelite/chests/iconChestScrollBoosted.ff3678509435.png" },
+    { key: "chestboostedtoken", name: "Loyalty Token", outcome: "Victory", url: "https://d2k2g0zg1te1mr.cloudfront.net/mobilelite/chests/iconChestTokenBoosted.c0e0bcd2b145.png" },
+    { key: "chestboss", name: "Loyalty Boss", outcome: "Victory", url: "https://d2k2g0zg1te1mr.cloudfront.net/mobilelite/chests/iconChestBoss.7f5d2511b08f.png" },
+    { key: "chestbosssuper", name: "Loyalty Super Boss", outcome: "Victory", url: "https://d2k2g0zg1te1mr.cloudfront.net/mobilelite/chests/iconChestBossSuper.c0e0bcd2b145.png" },
 ];
 
+let chestCounter = [
+    { key: "chestboostedgold", name: "Loyalty Gold", quantity: 0 },
+    { key: "chestboostedskin_maps01to11", name: "Loyalty Skin", quantity: 0 },
+    { key: "chestboostedscroll", name: "Loyalty Scroll", quantity: 0 },
+    { key: "chestboostedtoken", name: "Loyalty Token", quantity: 0 },
+    { key: "chestboss", name: "Loyalty Boss", quantity: 0 },
+    { key: "chestbosssuper", name: "Loyalty Super Boss", quantity: 0 },
+];
 //Event listener for when the page loads
 document.addEventListener('DOMContentLoaded', async function () {
 
     //Load the battle log
     await loadLogData();
-
-    //Listen for click events on the save whitelist button
-    document.getElementById("whitelist_button").addEventListener("click", function () {
-        setCaptainList('whitelist');
-    });
-
-    //Listen to click events on the save blacklist butotn
-    document.getElementById("blacklist_button").addEventListener("click", function () {
-        setCaptainList('blacklist');
-    });
-
-    //Export all settings to a file.
-    document.getElementById("exportButton").addEventListener("click", function () {
-        exportData();
-    });
-
-    //Import all settings to a file.
-    document.getElementById('file-input').addEventListener('change', function () {
-        importData();
-        this.value = '';
-    });
-
-
-    await loadAndInjectList('whitelist');
-    await loadAndInjectList('blacklist');
+    loadChestCounter();
 
     // Add event listener for the wipe button
     document.getElementById('deleteLogButton').addEventListener('click', function () {
@@ -118,7 +102,7 @@ async function loadLogData() {
             let chestName;
             let url;
             let elapsed;
-            let res;
+            let outcome;
 
             //Convert the string to a Date object
             const startTime = new Date(entry.currentTime);
@@ -150,29 +134,28 @@ async function loadLogData() {
                 elapsed = "Unknown";
             }
 
-            if (!(color === "Normal" || color === "Purple")) {
-                res = "Possible color status.";
-            }
-
-            if (color !== "Normal" && color !== "Purple"
-                && entry.chest !== "Unknown" && entry.chest !== "tbd" && entry.chest !== "abandoned"
-                && (entry.result !== "Victory" || entry.result !== "Defeat" || entry.result !== "Abandoned")) {
-                res = "Victory";
-                color = "Normal";
-            }
-            if (color !== "Normal" && color !== "Purple"
-                && entry.chest == "abandoned" && entry.result == "Abandoned") {
-                res = "Abandoned";
-                color = "Normal";
-            }
-
             //Getting human-readable chest name and picture
             for (const battleChest of battleChests) {
                 if (battleChest.key.includes(entry.chest)) {
                     chestName = battleChest.name;
+                    outcome = battleChest.outcome;
                     url = battleChest.url;
+
+                    //Increment chest counter
+                    for (const loyaltyChest of chestCounter) {
+                        if (loyaltyChest.key.includes(entry.chest)) {
+                            loyaltyChest.quantity += 1;
+                            break;
+                        }
+                    }
                     break;
                 }
+            }
+
+            if (color !== "Normal" && outcome === "Unknown") {
+                outcome = "Possible color status";
+            } else {
+                color = "Normal";
             }
 
             // Create a table row
@@ -185,7 +168,7 @@ async function loadLogData() {
                 <td style="border: 1px solid #ddd; padding: 8px; color: ${color};">${color}</td>
                 <td>${startingTime}</td>
                 <td>${elapsed}</td>
-                <td>${res}</td>
+                <td>${outcome}</td>
                 <td style="text-align: center; vertical-align: middle;">
                     <div style="display: flex; flex-direction: column; align-items: center;">
                         ${chestName}
@@ -223,6 +206,7 @@ async function loadLogData() {
                 }
             });
         });
+        loadChestCounter();
     });
 }
 
@@ -251,93 +235,16 @@ function removeEntry(sortedIndex) {
     });
 }
 
-//Set whitelist and blacklist on storage
-function setCaptainList(list) {
-    //Get the text from the user
-    const userInput = document.getElementById(list).value;
-
-    //Split text an array every space
-    const listArray = userInput.split(' ');
-
-    // Create an object with the dynamic list key
-    const storageObject = {};
-    storageObject[list] = listArray;
-
-    // Save the array to Chrome's local storage
-    chrome.storage.local.set(storageObject, function () {
-        alert('List updated successfully!');
-    });
-
-}
-
-// Function to load and inject the array into the textarea
-async function loadAndInjectList(list) {
-    // Retrieve the array from Chrome's local storage
-    chrome.storage.local.get({ [list]: [] }, function (result) {
-        // Handle the retrieved data
-        const listArray = result[list];
-
-        // Check if the array exists and is an array with at least one element
-        if (Array.isArray(listArray) && listArray.length > 0) {
-            const textareaId = list === 'whitelist' ? 'whitelist' : 'blacklist';
-
-            // Inject the array entries into the textarea
-            document.getElementById(textareaId).value = listArray.join(' ');
+function loadChestCounter() {
+    const counterContainer = document.querySelector('.counter-container');
+    counterContainer.innerHTML = '';
+    // Loop through the data and create HTML elements
+    chestCounter.forEach(item => {
+        if (item.quantity !== 0) {
+            const div = document.createElement('div');
+            div.innerHTML = `<p"><b>${item.name} Chest:</b> ${item.quantity}</pn>`;
+            counterContainer.appendChild(div);
+            item.quantity = 0;
         }
     });
-}
-
-//Export data from chrome local storage into a file
-async function exportData() {
-    chrome.storage.local.get(null, function (items) {
-        const allKeys = Object.keys(items);
-
-        chrome.storage.local.get(allKeys, function (result) {
-
-            const jsonData = JSON.stringify(result);
-
-            const blob = new Blob([jsonData], { type: 'application/json' });
-            const url = URL.createObjectURL(blob);
-
-            const a = document.createElement('a');
-            a.href = url;
-            a.download = 'sr_helper_backup.json';
-            document.body.appendChild(a);
-            a.click();
-
-            //Cleanup
-            document.body.removeChild(a);
-            URL.revokeObjectURL(url);
-        });
-    });
-}
-
-//Import data from a file to chrome loca storage.
-async function importData() {
-    const fileInput = document.getElementById('file-input');
-    const file = fileInput.files[0];
-
-    if (file) {
-        const reader = new FileReader();
-
-        reader.onload = function (e) {
-            const jsonContent = e.target.result;
-
-            try {
-                const parsedData = JSON.parse(jsonContent);
-
-                chrome.storage.local.set(parsedData, function () {
-                    alert('Data imported sucessfully!');
-                    loadLogData();
-                    loadAndInjectList('whitelist');
-                    loadAndInjectList('blacklist');
-                });
-            } catch (error) {
-                alert('An error occurred', error);
-            }
-        };
-        reader.readAsText(file);
-    } else {
-        alert('Please select a file!');
-    }
 }
