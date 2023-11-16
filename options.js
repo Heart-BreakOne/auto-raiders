@@ -27,12 +27,12 @@ const battleChests = [
 ];
 
 let chestCounter = [
-    { key: "chestboostedgold", name: "Loyalty Gold", quantity: 0 },
-    { key: "chestboostedskin_maps01to11", name: "Loyalty Skin", quantity: 0 },
-    { key: "chestboostedscroll", name: "Loyalty Scroll", quantity: 0 },
-    { key: "chestboostedtoken", name: "Loyalty Token", quantity: 0 },
-    { key: "chestboss", name: "Loyalty Boss", quantity: 0 },
-    { key: "chestbosssuper", name: "Loyalty Super Boss", quantity: 0 },
+    { key: "chestboostedgold", name: "Loyalty Gold", quantity: 0, max: 65 },
+    { key: "chestboostedskin_maps01to11", name: "Loyalty Skin", quantity: 0, max: 110 },
+    { key: "chestboostedscroll", name: "Loyalty Scroll", quantity: 0, max: 0 },
+    { key: "chestboostedtoken", name: "Loyalty Token", quantity: 0, max: 65 },
+    { key: "chestboss", name: "Loyalty Boss", quantity: 0, max: 190 },
+    { key: "chestbosssuper", name: "Loyalty Super Boss", quantity: 0, max: 35 },
 ];
 //Event listener for when the page loads
 document.addEventListener('DOMContentLoaded', async function () {
@@ -242,7 +242,7 @@ function loadChestCounter() {
     chestCounter.forEach(item => {
         if (item.quantity !== 0) {
             const div = document.createElement('div');
-            div.innerHTML = `<p"><b>${item.name} Chest:</b> ${item.quantity}</pn>`;
+            div.innerHTML = `<p"><b>${item.name} Chest:</b> &nbsp;${item.quantity} &nbsp;&nbsp;&nbsp;&nbsp;<b>Max</b> &nbsp;${item.max}</pn>`;
             counterContainer.appendChild(div);
             item.quantity = 0;
         }
