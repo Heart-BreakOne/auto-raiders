@@ -113,7 +113,6 @@ async function importData() {
 
                 chrome.storage.local.set(parsedData, function () {
                     alert('Data imported sucessfully!');
-                    loadLogData();
                     loadAndInjectList('whitelist');
                     loadAndInjectList('blacklist');
                 });

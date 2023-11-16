@@ -50,6 +50,7 @@ document.addEventListener('DOMContentLoaded', async function () {
             // Wipe logData from local storage
             chrome.storage.local.remove(['logData'], function () {
                 dataContainer.innerHTML = '';
+                loadChestCounter();
             });
         }
     });
