@@ -18,6 +18,7 @@ document.addEventListener("DOMContentLoaded", function () {
     initializeSwitch("offlineSwitch");
     initializeSwitch("skipSwitch");
     initializeSwitch("dailySwitch");
+    initializeSwitch("equipSwitch");
 });
 
 //When the user interacts with the toggle switches, it gets the current stored value and update them with the value.

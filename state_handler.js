@@ -95,7 +95,7 @@ function closeAll() {
 }
 
 //Mutator observer to remove stuck modals, frozen states and update recently loaded elements.
-const observer = new MutationObserver(function (mutations) {
+const observer = new MutationObserver(async function (mutations) {
 
   domChanged = true;
   reloadRoot();
@@ -107,10 +107,30 @@ const observer = new MutationObserver(function (mutations) {
     return;
   };
 
-  mutations.forEach(async function (mutation) {
-    //Hides reward modal that fails to be clicked.
+  //Check if current screen is the menu to trigger the equip requests.
+  const equipSwitch = await retrieveFromStorage("equipSwitch");
+  if (equipSwitch) {
+    const captainSelectionView = document.querySelector(".battleView");
+    if (captainSelectionView) {
+      const port = chrome.runtime.connect({ name: "content-script" });
+      port.postMessage({ action: "start" });
+    }
+  }
 
+  mutations.forEach(async function (mutation) {
     mutation.addedNodes.forEach(async function (node) {
+
+      // Check for changes in capSlot changes to equip skins
+      if (equipSwitch) {
+        document.querySelectorAll('.capSlot').forEach(capSlotElement => {
+          if (capSlotElement.classList.contains('capSlotActive') || capSlotElement.classList.contains('capSlotInactive')) {
+            const port = chrome.runtime.connect({ name: "content-script" });
+            port.postMessage({ action: "start" });
+          }
+        });
+      }
+
+      //Hides reward modal that fails to be clicked.
 
       //Hide some elements from user view so they don't affect user interaction.
       const rewardsScrim = document.querySelector(".rewardsScrim");

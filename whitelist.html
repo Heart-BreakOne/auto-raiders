@@ -13,6 +13,7 @@
 <body>
     <div class="bulleted-list">
         <h1>Whitelist and blacklist captains here</h1>
+        <h1>Import and export your settings here</h1>
         <ul>
             <li>When switching an idle captain the order of priority is: Diamond > Gold > Silver > Bronze > Whitelist >
                 Favorites > Any captain</li>
@@ -26,14 +27,13 @@
         <div>
             <label>Whitelist:</label><br>
             <textarea id="whitelist" name="whitelist" placeholder="captain1 captain2 captain3 captain4"></textarea><br>
-            <button id="whitelist_button">Whitelist</button>
             <br>
             <label>Blacklist:</label><br>
             <textarea id="blacklist" name="blacklist" placeholder="captain1 captain2 captain3 captain4"></textarea><br>
-            <button id="blacklist_button">Blacklist</button>
         </div>
     </div>
     <div class="center-container">
+        <button id="updateList_button" class="green_button">Update lists</button>
         <h2>Export and import your settings, captains lists and log here<br>WARNING: IMPORTING OVERWRITES THE CURRENT
             DATA</h2>
         <button id="exportButton" class="green_button">Export your settings to file</button>

@@ -1,14 +1,16 @@
 //Event listener for when the page loads
+
+let isSuccess = [];
 document.addEventListener('DOMContentLoaded', async function () {
 
+    isSuccess = [false, false];
     //Listen for click events on the save whitelist button
-    document.getElementById("whitelist_button").addEventListener("click", function () {
-        setCaptainList('whitelist');
-    });
-
-    //Listen to click events on the save blacklist butotn
-    document.getElementById("blacklist_button").addEventListener("click", function () {
-        setCaptainList('blacklist');
+    document.getElementById("updateList_button").addEventListener("click", function () {
+        setCaptainList('whitelist', 0);
+        setCaptainList('blacklist', 1);
+        if (isSuccess.every(Boolean)) {
+            alert("Lists updated successfully!");
+        }
     });
 
     //Export all settings to a file.
@@ -22,14 +24,13 @@ document.addEventListener('DOMContentLoaded', async function () {
         this.value = '';
     });
 
-
     await loadAndInjectList('whitelist');
     await loadAndInjectList('blacklist');
 
 });
 
 //Set whitelist and blacklist on storage
-function setCaptainList(list) {
+function setCaptainList(list, position) {
     //Get the text from the user
     const userInput = document.getElementById(list).value;
 
@@ -42,9 +43,8 @@ function setCaptainList(list) {
 
     // Save the array to Chrome's local storage
     chrome.storage.local.set(storageObject, function () {
-        alert('List updated successfully!');
+        isSuccess[position] = true;
     });
-
 }
 
 // Function to load and inject the array into the textarea
