@@ -163,10 +163,12 @@ async function start() {
         //Get captain name from the slot
         var captainSlot = button.closest('.capSlot');
         const captainNameFromDOM = captainSlot.querySelector('.capSlotName').innerText;
-        //Retrieve the slot state (mode, loyalty and no units) from storage using the captain name
-        const slotState = await retrieveStateFromStorage(captainNameFromDOM);
+        //Retrieve the slot pause state
+        const btn = captainSlot.querySelector(".capSlotStatus .offlineButton");
+        const buttonId = btn.getAttribute('id');
+        const slotState = await getIdleState(buttonId);
         //If slot state is true, move to the next slot
-        if (slotState) {
+        if (!slotState) {
           continue
         }
         //Check if the captain is the one running a game mode
@@ -742,19 +744,6 @@ const obsv = new MutationObserver(function (mutations) {
         capNameDOM = capSlot.querySelector('.capSlotName').innerText;
       } catch (error) {
         continue;
-      }
-
-      //Set pause button states after load
-      const play = String.fromCharCode(9654)
-      const pause = String.fromCharCode(9208)
-      //Get pause button state for the current captain 
-      const state = await retrieveStateFromStorage(capNameDOM);
-      const pauseButton = capSlot.querySelector('.pauseButton');
-      //Set button innerText based on retrieved state
-      if (state && capSlot.innerText.includes(play)) {
-        pauseButton.innerText = pause;
-      } else if (!state && capSlot.innerText.includes(pause)) {
-        pauseButton.innerText = play;
       }
 
       //Get flag states

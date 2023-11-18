@@ -2,8 +2,6 @@
 This file also handles the state of these injected buttons. */
 
 //Initializing variables
-let pause = String.fromCharCode(9208);
-let play = String.fromCharCode(9654);
 let dataArray = [];
 let existingElement;
 let newButton;
@@ -17,15 +15,6 @@ color: white;
 padding: 15px;
 font-weight: bold;
 font-size: 25px;
-`;
-let temporaryStyles = `
-display: flex;
-justify-content: center;
-height: 100vh;
-align-items: center;
-font-size: 60px;
-color: white;
-text-align: center;
 `;
 let elapsedTimeStyles = `
 font-size: 30px;
@@ -61,26 +50,6 @@ function injectIntoDOM() {
             slotStatus.appendChild(newButton);
             // Increment the counter for the next button
             buttonCounter++;
-        }
-    });
-
-    //Initializes a node list with captain names
-    let capSlotNameContList = document.querySelectorAll(".capSlotNameCont");
-    // Iterate through the list captain names
-    capSlotNameContList.forEach(function (capSlotNameCont) {
-        // Check if the button already exists inside the current capSlotNameCont
-        existingElement = capSlotNameCont.querySelector(".pauseButton");
-
-        //If button doesn't exist one is created and injected.
-        if (!existingElement) {
-            // Create a new button element
-            newButton = document.createElement("div");
-            newButton.classList.add("pauseButton");
-            newButton.innerText = play; // Set the button text
-            newButton.style.paddingLeft = "40px";
-            newButton.style.fontSize = "100px";
-            // Append the new button to the capSlotNameCont element
-            capSlotNameCont.appendChild(newButton);
         }
     });
 
@@ -120,27 +89,8 @@ function injectIntoDOM() {
     }
 }
 
-
 //Event listened for user clicks on the injected buttons
 document.addEventListener("click", function (event) {
-    //User clicked on the pause slot button
-    //The pause button prevents the auto player from placing units on the paused slot.
-    if (event.target.classList.contains("pauseButton")) {
-        let button = event.target;
-        //Gets captain name from the slot
-        let capSlotNameCont = event.target.closest(".capSlotNameCont");
-        let captainName = capSlotNameCont.querySelector(".capSlotName > div").innerText;
-        //Checks button current inner text, updates it and saves to storage.
-        if (button.innerText === pause) {
-            //Play
-            button.innerText = play;
-            saveStateToStorage(captainName, false);
-        } else {
-            //Pause
-            button.innerText = pause;
-            saveStateToStorage(captainName, true);
-        }
-    }
 
     //Event listener for a button to open the options page of the extension (log.html)
     if (event.target.classList.contains("logButton")) {
@@ -180,9 +130,6 @@ document.addEventListener("click", function (event) {
             //Resets button properties on the user interface.
             let captainPauseSlots = document.querySelectorAll(".capSlot");
             captainPauseSlots.forEach(function (slot) {
-                try {
-                    slot.querySelector(".pauseButton").innerText = play;
-                } catch (error) { };
                 slot.querySelector(".offlineButton").innerText = "ENABLED";
                 slot.querySelector(".offlineButton").style.backgroundColor = "#5fa695";
             });
