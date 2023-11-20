@@ -207,6 +207,9 @@ async function start() {
         }
         //If captain has any flags, change color and move to the next slot
         if (captainLoyalty || captainFlag) {
+          if (captainLoyalty) {
+            captainSlot.style.backgroundColor = blue;
+          }
           continue;
         } else {
           captainSlot.style.backgroundColor = gameBlue;
