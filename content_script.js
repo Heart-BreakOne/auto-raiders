@@ -16,6 +16,8 @@ let mode;
 let diamondLoyalty;
 let arrayOfAllyPlacement;
 let firstReload;
+let captainNameFromDOM;
+let arrayOfSkinUnits;
 const blue = 'rgb(185, 242, 255)';
 const red = 'rgb(255, 204, 203)';
 const purple = 'rgb(203, 195, 227)';
@@ -146,6 +148,7 @@ async function start() {
     rewardButton.click();
   }
 
+  captainNameFromDOM = "";
   //Initialized a node list with placeable buttons
   const placeUnitButtons = document.querySelectorAll(".actionButton.actionButtonPrimary.capSlotButton.capSlotButtonAction");
   let placeUnit = null;
@@ -162,7 +165,7 @@ async function start() {
       if (button.innerText.includes("PLACE UNIT")) {
         //Get captain name from the slot
         var captainSlot = button.closest('.capSlot');
-        const captainNameFromDOM = captainSlot.querySelector('.capSlotName').innerText;
+        captainNameFromDOM = captainSlot.querySelector('.capSlotName').innerText;
         //Retrieve the slot pause state
         const btn = captainSlot.querySelector(".capSlotStatus .offlineButton");
         const buttonId = btn.getAttribute('id');

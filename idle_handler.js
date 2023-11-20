@@ -238,20 +238,20 @@ async function switchIdleCaptain() {
         captainButton = favoriteList[getRandomIndex(favoriteList.length)].querySelector(".actionButton.actionButtonPrimary.searchResultButton");
         captainButton.click()
     }
-    //Get a acceptable captain
-    else if (acceptableList.length != 0) {
-        captainButton = acceptableList[0].querySelector(".actionButton.actionButtonPrimary.searchResultButton");
-        captainButton.click()
-    }
-    //No special captains (no loyalty, not favorite, no whitelist, no acceptable captains) exist
     else {
         //Checks if the user wants to switch to non special captains, if not the list is closed
         const skipSwitch = await retrieveFromStorage("skipSwitch")
         if (skipSwitch) {
             //Closes the list
             closeAll();
+            return;
         }
-        //Any captain is selected
+        //Get an acceptable captain
+        if (acceptableList.length != 0) {
+            captainButton = acceptableList[0].querySelector(".actionButton.actionButtonPrimary.searchResultButton");
+            captainButton.click();
+        }
+        //No special captains (no loyalty, not favorite, no whitelist, no acceptable captains) exist
         else {
             for (let i = 0; i < fullCaptainList.length; i++) {
                 //Iterates through the list of captains
