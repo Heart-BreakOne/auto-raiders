@@ -1,0 +1,42 @@
+body {
+    font-size: xxx-large;
+    font-weight: bold;
+    color: gray;
+}
+
+input[type="checkbox"] {
+    width: 50px;
+    height: 50px;
+}
+
+input[type="radio"] {
+    width: 50px;
+    height: 50px;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+th,
+td {
+    border: 1px solid transparent;
+    text-align: left;
+    padding: 8px;
+}
+
+.button_container {
+    text-align: center;
+}
+
+.green_button {
+    font-size: xx-large;
+    color: white;
+    font-weight: bold;
+    margin-right: 50px;
+    cursor: pointer;
+    border: solid black;
+    padding: 16px 20px;
+    background-color: #5fa695;
+}

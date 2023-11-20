@@ -1,9 +1,49 @@
-//Event listener for when the page loads
 
+//Declaring/Initializing variables
 let isSuccess = [];
+const keysToExport = [
+    "battlepassSwitch",
+    "clashCaptain",
+    "clashSwitch",
+    "commonSwitch",
+    "dailySwitch",
+    "duelCaptain",
+    "duelSwitch",
+    "dungeonCaptain",
+    "dungeonSwitch",
+    "equipSwitch",
+    "extraSwitch",
+    "idleData",
+    "legendarySwitch",
+    "loyaltySwitch",
+    "offlinePermission",
+    "offlineSwitch",
+    "questSwitch",
+    "rareSwitch",
+    "scrollSwitch",
+    "selectedOption",
+    "skipSwitch",
+    "uncommonSwitch",
+    "whitelist",
+    "blacklist",
+];
+
+//Event listener for when the page loads
 document.addEventListener('DOMContentLoaded', async function () {
 
     isSuccess = [false, false];
+
+    //Export all settings to a file.
+    document.getElementById("exportButton").addEventListener("click", function () {
+        exportData(keysToExport);
+    });
+
+    //Import all settings to a file.
+    document.getElementById('settings-file-input').addEventListener('change', function () {
+        importData("settings-file-input");
+        this.value = '';
+    });
+
     //Listen for click events on the save whitelist button
     document.getElementById("updateList_button").addEventListener("click", function () {
         setCaptainList('whitelist', 0);
@@ -13,21 +53,11 @@ document.addEventListener('DOMContentLoaded', async function () {
         }
     });
 
-    //Export all settings to a file.
-    document.getElementById("exportButton").addEventListener("click", function () {
-        exportData();
-    });
-
-    //Import all settings to a file.
-    document.getElementById('file-input').addEventListener('change', function () {
-        importData();
-        this.value = '';
-    });
-
     await loadAndInjectList('whitelist');
     await loadAndInjectList('blacklist');
 
 });
+
 
 //Set whitelist and blacklist on storage
 function setCaptainList(list, position) {
@@ -64,8 +94,69 @@ async function loadAndInjectList(list) {
     });
 }
 
-//Export data from chrome local storage into a file
-async function exportData() {
+// Export data from Chrome local storage into a file
+async function exportData(arrayOfKeys) {
+    chrome.storage.local.get(arrayOfKeys, function (result) {
+
+        const jsonData = JSON.stringify(result);
+
+        const blob = new Blob([jsonData], { type: 'application/json' });
+        const url = URL.createObjectURL(blob);
+
+        const a = document.createElement('a');
+        a.href = url;
+        let time = new Date();
+
+        function addLeadZero(number) {
+            return number < 10 ? '0' + number : number;
+        }
+
+        let formattedTime = `${addLeadZero(time.getHours())}${addLeadZero(time.getMinutes())}_${time.getFullYear()}_${addLeadZero(time.getMonth() + 1)}_${addLeadZero(time.getDate())}`;
+        console.log(formattedTime)
+        a.download = `SETTINGS_SRhelper_backup_${formattedTime}.json`;
+        document.body.appendChild(a);
+        a.click();
+
+        // Cleanup
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url);
+    });
+}
+
+//Import data from a file to chrome loca storage.
+async function importData(string) {
+    const fileInput = document.getElementById(string);
+    const file = fileInput.files[0];
+
+    if (file) {
+        const reader = new FileReader();
+
+        reader.onload = function (e) {
+            const jsonContent = e.target.result;
+
+            try {
+                const parsedData = JSON.parse(jsonContent);
+
+                chrome.storage.local.set(parsedData, function () {
+                    alert('Data imported sucessfully!');
+                    loadAndInjectList('whitelist');
+                    loadAndInjectList('blacklist');
+                });
+            } catch (error) {
+                alert('An error occurred', error);
+            }
+        };
+        reader.readAsText(file);
+    } else {
+        alert('Please select a file!');
+    }
+}
+
+
+
+
+/* EXPORT ALL KEYS
+async function exportAllData() {
     chrome.storage.local.get(null, function (items) {
         const allKeys = Object.keys(items);
 
@@ -97,31 +188,4 @@ async function exportData() {
     });
 }
 
-//Import data from a file to chrome loca storage.
-async function importData() {
-    const fileInput = document.getElementById('file-input');
-    const file = fileInput.files[0];
-
-    if (file) {
-        const reader = new FileReader();
-
-        reader.onload = function (e) {
-            const jsonContent = e.target.result;
-
-            try {
-                const parsedData = JSON.parse(jsonContent);
-
-                chrome.storage.local.set(parsedData, function () {
-                    alert('Data imported sucessfully!');
-                    loadAndInjectList('whitelist');
-                    loadAndInjectList('blacklist');
-                });
-            } catch (error) {
-                alert('An error occurred', error);
-            }
-        };
-        reader.readAsText(file);
-    } else {
-        alert('Please select a file!');
-    }
-}
+*/

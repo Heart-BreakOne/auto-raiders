@@ -1,6 +1,7 @@
 
 //Declaring/Initializing variables
 let chestName;
+let isSuccess = [];
 let url;
 const tbd = "TDB";
 const colorCodeMap = {
@@ -34,8 +35,11 @@ let chestCounter = [
     { key: "chestboss", name: "Loyalty Boss", quantity: 0, max: 190 },
     { key: "chestbosssuper", name: "Loyalty Super Boss", quantity: 0, max: 35 },
 ];
+
 //Event listener for when the page loads
 document.addEventListener('DOMContentLoaded', async function () {
+
+    isSuccess = [false, false];
 
     //Load the battle log
     await loadLogData();
@@ -62,9 +66,18 @@ document.addEventListener('DOMContentLoaded', async function () {
         loadLogData();
     });
 
+    //Export all settings to a file.
+    document.getElementById("exportLogButton").addEventListener("click", function () {
+        exportData(["logData"]);
+    });
+
+    //Import all settings to a file.
+    document.getElementById('log-file-input').addEventListener('change', function () {
+        importData("log-file-input");
+        this.value = '';
+    });
+
 });
-
-
 
 async function loadLogData() {
 
@@ -248,4 +261,61 @@ function loadChestCounter() {
             item.quantity = 0;
         }
     });
+}
+
+// Export data from Chrome local storage into a file
+async function exportData(arrayOfKeys) {
+    chrome.storage.local.get(arrayOfKeys, function (result) {
+
+        const jsonData = JSON.stringify(result);
+
+        const blob = new Blob([jsonData], { type: 'application/json' });
+        const url = URL.createObjectURL(blob);
+
+        const a = document.createElement('a');
+        a.href = url;
+        let time = new Date();
+
+        function addLeadZero(number) {
+            return number < 10 ? '0' + number : number;
+        }
+
+        let formattedTime = `${addLeadZero(time.getHours())}${addLeadZero(time.getMinutes())}_${time.getFullYear()}_${addLeadZero(time.getMonth() + 1)}_${addLeadZero(time.getDate())}`;
+        console.log(formattedTime)
+        a.download = `LOG_SRHelper_backup_${formattedTime}.json`;
+        document.body.appendChild(a);
+        a.click();
+
+        // Cleanup
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url);
+    });
+}
+
+//Import data from a file to chrome loca storage.
+async function importData(string) {
+    const fileInput = document.getElementById(string);
+    const file = fileInput.files[0];
+
+    if (file) {
+        const reader = new FileReader();
+
+        reader.onload = function (e) {
+            const jsonContent = e.target.result;
+
+            try {
+                const parsedData = JSON.parse(jsonContent);
+
+                chrome.storage.local.set(parsedData, function () {
+                    alert('Data imported sucessfully!');
+                    loadLogData();
+                });
+            } catch (error) {
+                alert('An error occurred', error);
+            }
+        };
+        reader.readAsText(file);
+    } else {
+        alert('Please select a file!');
+    }
 }

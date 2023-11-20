@@ -1,53 +1,17 @@
-<!-- A simple html file for the popup, it has instructions, the several toggle switches and the radio button for the user to in interact with -->
 <!DOCTYPE html>
 <html>
 
 <head>
     <title>Autoraiders</title>
     <script src="popup.js"></script>
-    <style>
-        body {
-            width: 300px;
-        }
-    </style>
-    <link rel="stylesheet" type="text/css" href="/styles/styles.css">
+    <link rel="stylesheet" type="text/css" href="/styles/popup_styles.css">
 </head>
-
 <body>
-    <b><br>
-        <div class="button_container">
-            <button id="instructions_button">Instructions</button>
-            <button id="log_button">Log</button>
-            <button id="whitelist_button">Whitelist</button>
-        </div>
-        <div style="text-align: justify;">DISCLAIMER: For the switches to work the SR tab must be active in view
-            otherwise a connection between this popup and the main script cannot be established<br></div>
-        <label for="offlineSwitch"><input type="checkbox" id="offlineSwitch"> Switch idle captain</label>
-        <label for="skipSwitch"><input type="checkbox" id="skipSwitch"> Leave slot empty if there aren't any loyalty
-            captains to switch</label><br>
-        <label for="scrollSwitch"><input type="checkbox" id="scrollSwitch"> Buy scrolls</label><br>
-        <label for="extraSwitch"><input type="checkbox" id="extraSwitch"> Buy extra $100 scrolls</label><br>
-        <label for="questSwitch"><input type="checkbox" id="questSwitch"> Collect quests</label><br>
-        <label for="dailySwitch"><input type="checkbox" id="dailySwitch"> Collect daily reward</label><br>
-        <label for="battlepassSwitch"><input type="checkbox" id="battlepassSwitch"> Collect battlepass</label><br>
-        <label for="loyaltySwitch"><input type="checkbox" id="loyaltySwitch"> Preserve diamond loyalty</label><br>
-        <label for="equipSwitch"><input type="checkbox" id="equipSwitch"> Equip captain skins</label><br>
-        <label for="commonSwitch"><input type="checkbox" id="commonSwitch"> Use common units</label><br>
-        <label for="uncommonSwitch"><input type="checkbox" id="uncommonSwitch"> Use uncommon units</label><br>
-        <label for="rareSwitch"><input type="checkbox" id="rareSwitch"> Use rare units</label><br>
-        <label for="legendarySwitch"><input type="checkbox" id="legendarySwitch"> Use legendary units</label><br>
-        <label for="duelSwitch"><input type="checkbox" id="duelSwitch"> Unlimited duels</label><br>
-        <label for="clashSwitch"><input type="checkbox" id="clashSwitch"> Unlimited clashes</label><br>
-        <label for="dungeonSwitch"><input type="checkbox" id="dungeonSwitch"> Unlimited dungeons</label><br>
-        <label>POTIONS</label><br>
-        <label><input type="radio" name="potion" value="0"> No potions</label><br>
-        <label><input type="radio" name="potion" value="1"> Potions at 45 </label><br>
-        <label><input type="radio" name="potion" value="2"> Potions at 100</label><br><br>
-        Color code:<br>
-        &#128997; Captain switched to Campaign mode<br>
-        &#129002; There aren't any units that match any of the markers<br>
-        &#128998; Captain loyalty isn't diamond<br>
-    </b>
+    <div class="button_container">
+        <button id="instructions_button" class="green_button">Instructions</button>
+        <button id="log_button" class="green_button">Log</button>
+        <button id="whitelist_button" class="green_button">Whitelist</button>
+    </div>
 </body>
 
 </html>

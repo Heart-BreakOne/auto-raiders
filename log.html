@@ -6,7 +6,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Battle Log</title>
-    <script src="options.js"></script>
+    <script src="log.js"></script>
     <link rel="stylesheet" type="text/css" href="/styles/styles.css">
 </head>
 
@@ -19,7 +19,12 @@
             rewards</h2>
         <div>
             <button id="updateLogButton" class="green_button">Update Log</button>
-            <button id="deleteLogButton" class="green_button">Delete log</button><br><br>
+            <button id="deleteLogButton" class="green_button">Delete log</button>
+            <button id="exportLogButton" class="green_button">Export Log</button>
+            <div class="file-input-container">
+                <label for="log-file-input" class="green_button">Import your log from file</label>
+                <input type="file" id="log-file-input">
+            </div>
         </div>
         <h3>Loyalty Chest counter</h3>
         <div class="counter-container"></div>

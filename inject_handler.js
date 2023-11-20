@@ -25,6 +25,35 @@ font-weight: bold;
 //When invoked this function injects buttons into the page
 function injectIntoDOM() {
 
+    //Injecting iframe
+    const iframeCheck = document.querySelector('.settings_iframe');
+    const capSlotsCheck = document.querySelector('.capSlots');
+    const battleViewCheck = document.querySelector('.battleView');
+    if (!iframeCheck && capSlotsCheck && battleViewCheck) {
+        // Set the source to a local file path
+        const iframe = document.createElement('iframe');
+        const localFileURL = chrome.runtime.getURL('iframe.html');
+
+        // Set the iframe source to the extension URL
+        iframe.src = localFileURL;
+
+        var height = window.innerHeight || document.documentElement.clientHeight;
+
+        // Set other attributes if needed
+        iframe.width = '90%';
+        iframe.height = height;
+        iframe.frameBorder = '0';
+
+        capSlotsCheck.style.marginBottom = '0px';
+        iframe.style.marginLeft = '50px';
+        iframe.style.marginBottom = '20px';
+        iframe.allowFullscreen = true;
+        iframe.classList.add('settings_iframe');
+
+        // Insert the iframe before the capSlots element inside the battleview element
+        battleViewCheck.insertBefore(iframe, capSlotsCheck.nextSibling);
+    }
+
     //Initialized a node list with all the captains slots
     const offlineSlots = document.querySelectorAll(".capSlot");
     // Initialize a counter for generating unique IDs
@@ -66,18 +95,6 @@ function injectIntoDOM() {
     }
 
     // Checks if wipe button already exists
-    let logButton = document.querySelector(".logButton");
-    //If button doesn't exist one is created and injected.
-    if (!logButton) {
-        logButton = document.createElement("button");
-        logButton.className = "logButton";
-        logButton.innerHTML = "Log";
-        logButton.style.cssText = wipeStyles;
-        let quantityItemsCont = document.querySelector(".quantityItemsCont");
-        quantityItemsCont.appendChild(logButton);
-    }
-
-    // Checks if wipe button already exists
     let elapsedTimeContainer = document.querySelector(".elapsedTimeContainer");
     //If button doesn't exist one is created and injected.
     if (!elapsedTimeContainer) {
@@ -91,12 +108,6 @@ function injectIntoDOM() {
 
 //Event listened for user clicks on the injected buttons
 document.addEventListener("click", function (event) {
-
-    //Event listener for a button to open the options page of the extension (log.html)
-    if (event.target.classList.contains("logButton")) {
-        // Send message to the background script to open a new page.
-        chrome.runtime.sendMessage({ action: 'openNewTab' });
-    }
 
     /* User clicked on the offline slot button.
     The offline button prevents the idle switcher from replacing

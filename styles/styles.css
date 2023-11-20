@@ -46,8 +46,10 @@ th,
     border: solid black;
 }
 
-#deleteLogButton {
+#deleteLogButton, #importLogButton {
     padding: 5px 20px;
+    font-weight: bold;
+    color: white;
     background-color: red;
 }
 
@@ -100,6 +102,6 @@ textarea {
     display: inline-block;
 }
 
-#file-input {
+#settings-file-input, #log-file-input {
     display: none;
 }

@@ -28,7 +28,18 @@
             "inject_handler.js",
             "idle_handler.js",
             "rotation_handler.js",
-            "log_handler.js"
+            "log_handler.js",
+            "iframe.js"
+         ],
+         "matches": [
+            "https://www.streamraiders.com/*"
+         ]
+      }
+   ],
+   "web_accessible_resources": [
+      {
+         "resources": [
+            "iframe.html"
          ],
          "matches": [
             "https://www.streamraiders.com/*"
