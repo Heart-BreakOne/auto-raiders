@@ -250,6 +250,11 @@ async function getUnits() {
 //Now that all lists were obtained, it's time to sort the data
 function manageArray() {
 
+  //Shuffle captains
+  shuffleArray(captainArrayData);
+  shuffleArray(skinArrayData);
+  shuffleArray(unitArrayData);
+
   //Remove skins that dont belong to any of the current captain slots
   skinArrayData = skinArrayData.filter(value => {
     return captainArrayData.some(substring => value.includes(substring));
@@ -308,4 +313,10 @@ async function equipSkins() {
   }
 }
 
-
+// Fisher-Yates shuffle for the captain array.
+function shuffleArray(array) {
+  for (let i = array.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [array[i], array[j]] = [array[j], array[i]];
+  }
+}

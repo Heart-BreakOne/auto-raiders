@@ -543,9 +543,8 @@ async function selectUnit() {
     }
   }
   //Handles unit drawer.
-  let unitDrawer;
-  unitName = ""
-  unitDrawer = document.querySelectorAll(".unitSelectionCont");
+  let unitName = ""
+  const unitDrawer = [...document.querySelectorAll(".unitSelectionCont")];
   //Initializes a node list with all units
   let unitsQuantity;
   //Attempts to get ammount of units in the units drawers
@@ -556,9 +555,18 @@ async function selectUnit() {
     return;
   }
 
+  //Sort the array so units that match the captain skin are put on the front.
+  for (let i = 1; i <= unitsQuantity; i++) {
+    const unit = unitDrawer[0].querySelector(".unitSelectionItemCont:nth-child(" + i + ") .unitItem:nth-child(1)");
+    if (unit.innerHTML.includes(captainNameFromDOM)) {
+      const unitIndex = unitDrawer.indexOf(unit);
+      unitDrawer.splice(unitIndex, 1);
+      unitDrawer.unshift(unit);
+    }
+  }
+
   for (let i = 1; i <= unitsQuantity; i++) {
     //Iterates through every unit
-    //Get unit
     const unit = unitDrawer[0].querySelector(".unitSelectionItemCont:nth-child(" + i + ") .unitItem:nth-child(1)");
 
     //Get unit rarity
@@ -574,7 +582,7 @@ async function selectUnit() {
 
     //Get unit type and unit name so it can be compared with the marker and determine if the placement is valid.
     let unitType = unit.querySelector('.unitClass img').getAttribute('alt').toUpperCase();
-    let unitName = unit.querySelector('.unitClass img').getAttribute('src').slice(-50).toUpperCase();
+    unitName = unit.querySelector('.unitClass img').getAttribute('src').slice(-50).toUpperCase();
     let commonSwitch;
     let uncommonSwitch;
     let rareSwitch;
