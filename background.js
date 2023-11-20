@@ -102,10 +102,6 @@ chrome.runtime.onConnect.addListener((port) => {
     }
   });
 
-  // Remove the port from the map when disconnected
-  port.onDisconnect.addListener(() => {
-    connectedPorts.delete(port.sender.tab.id);
-  });
 });
 
 //Declaring variables

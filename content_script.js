@@ -563,14 +563,19 @@ async function selectUnit() {
   }
 
   //Sort the array so units that match the captain skin are put on the front.
-  for (let i = 1; i <= unitsQuantity; i++) {
-    const unit = unitDrawer[0].querySelector(".unitSelectionItemCont:nth-child(" + i + ") .unitItem:nth-child(1)");
-    if (unit.innerHTML.includes(captainNameFromDOM)) {
-      const unitIndex = unitDrawer.indexOf(unit);
-      unitDrawer.splice(unitIndex, 1);
-      unitDrawer.unshift(unit);
+  async function shiftUnits() {
+    for (let i = 1; i <= unitsQuantity; i++) {
+      const unit = unitDrawer[0].querySelector(".unitSelectionItemCont:nth-child(" + i + ") .unitItem:nth-child(1)");
+
+      if (unit.innerHTML.includes(captainNameFromDOM)) {
+        const unitIndex = unitDrawer.indexOf(unit);
+        unitDrawer.splice(unitIndex, 1);
+        unitDrawer.unshift(unit);
+      }
     }
   }
+
+  await shiftUnits();
 
   for (let i = 1; i <= unitsQuantity; i++) {
     //Iterates through every unit
