@@ -4,18 +4,14 @@ body {
     color: gray;
 }
 
-input[type="checkbox"] {
-    box-sizing: border-box;
-    width: 15%;
-    height: 40px;
-    position: relative;
-}
-
+input[type="checkbox"],
 input[type="radio"] {
     box-sizing: border-box;
-    width: 15%;
+    width: 100%;
+    max-width: 200px;
     height: 40px;
     position: relative;
+    margin-bottom: 10px;
 }
 
 table {

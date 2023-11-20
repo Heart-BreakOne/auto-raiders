@@ -281,7 +281,6 @@ async function exportData(arrayOfKeys) {
         }
 
         let formattedTime = `${addLeadZero(time.getHours())}${addLeadZero(time.getMinutes())}_${time.getFullYear()}_${addLeadZero(time.getMonth() + 1)}_${addLeadZero(time.getDate())}`;
-        console.log(formattedTime)
         a.download = `LOG_SRHelper_backup_${formattedTime}.json`;
         document.body.appendChild(a);
         a.click();

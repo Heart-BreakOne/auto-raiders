@@ -37,15 +37,12 @@ function injectIntoDOM() {
         // Set the iframe source to the extension URL
         iframe.src = localFileURL;
 
-        var height = window.innerHeight || document.documentElement.clientHeight;
-
         // Set other attributes if needed
-        iframe.width = '90%';
-        iframe.height = height;
+        iframe.style.width = '100vw';
+        iframe.style.height = '50vh';
         iframe.frameBorder = '0';
 
         capSlotsCheck.style.marginBottom = '0px';
-        iframe.style.marginLeft = '50px';
         iframe.style.marginBottom = '20px';
         iframe.allowFullscreen = true;
         iframe.classList.add('settings_iframe');
