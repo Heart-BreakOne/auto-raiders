@@ -13,7 +13,8 @@
    "permissions": [
       "storage",
       "declarativeNetRequestWithHostAccess",
-      "cookies"
+      "cookies",
+      "declarativeNetRequest"
    ],
    "content_scripts": [
       {

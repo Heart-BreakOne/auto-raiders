@@ -88,10 +88,17 @@ chrome.runtime.onConnect.addListener((port) => {
   connectedPorts.set(port.sender.tab.id, port);
 
   // Listen for messages from content script
-  port.onMessage.addListener((msg) => {
+  port.onMessage.addListener(async (msg) => {
     if (msg.action === "start") {
-
       startEquipSkins();
+    }
+
+    if (msg.action === "getLoyalty") {
+      // Handle the message, access payload with msg.payload
+      // Do something with the payload
+      //Might need async handling
+      const response = await getCaptainLoyalty(msg.captainNameFromDOM);
+      port.postMessage({ response });
     }
   });
 
@@ -124,23 +131,7 @@ async function startEquipSkins() {
   unitArrayData = [];
   equipArrayData = [];
 
-  //Get client and game version for http request
-  const response = await fetch('https://www.streamraiders.com/api/game/?cn=getUser&command=getUser');
-  const data = await response.json();
-  if (data && data.info && data.info.version && data.info.clientVersion) {
-    clientVersion = data.info.version;
-    gameDataVersion = data.info.dataVersion;
-  }
-
-  //Get cookies for http request
-  chrome.cookies.getAll({ url: 'https://www.streamraiders.com/' }, function (cookies) {
-    // Process the retrieved cookies
-    if (cookies && cookies.length > 0) {
-      cookieString = cookies.map(cookie => `${cookie.name}=${cookie.value}`).join('; ');
-    } else {
-      return;
-    }
-  });
+  await getCookies();
 
   //Get current slot captains names
   await getActiveRaids();
@@ -158,6 +149,26 @@ async function startEquipSkins() {
   await equipSkins();
 
   isRunning = false;
+}
+
+async function getCookies() {
+  //Get client and game version for http request
+  const response = await fetch('https://www.streamraiders.com/api/game/?cn=getUser&command=getUser');
+  const data = await response.json();
+  if (data && data.info && data.info.version && data.info.clientVersion) {
+    clientVersion = data.info.version;
+    gameDataVersion = data.info.dataVersion;
+  }
+
+  //Get cookies for http request
+  chrome.cookies.getAll({ url: 'https://www.streamraiders.com/' }, function (cookies) {
+    // Process the retrieved cookies
+    if (cookies && cookies.length > 0) {
+      cookieString = cookies.map(cookie => `${cookie.name}=${cookie.value}`).join('; ');
+    } else {
+      return;
+    }
+  });
 }
 
 // Get current slot captains names
@@ -320,3 +331,114 @@ function shuffleArray(array) {
     [array[i], array[j]] = [array[j], array[i]];
   }
 }
+
+//TRUE IF LOYALTY IS LOW AND LOYALTY CHEST
+// FALSE IF LOYALTY IS HIGH OR NON LOYALTY CHEST
+async function getCaptainLoyalty(captainName) {
+  try {
+    await getCookies();
+
+    // Post request to get all units
+    const response = await fetch(`https://www.streamraiders.com/api/game/?cn=getActiveRaids&clientVersion=${clientVersion}&clientPlatform=MobileLite&gameDataVersion=${gameDataVersion}&command=getActiveRaidsLite&isCaptain=0`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/x-www-form-urlencoded',
+        'Cookie': cookieString,
+      },
+    });
+
+    if (!response.ok) {
+      throw new Error('Network response was not ok');
+    }
+
+    // Get unit id and name.
+    const activeRaids = await response.json();
+
+    for (let i = 0; i < activeRaids.data.length; i++) {
+      const position = activeRaids.data[i];
+      const raidId = position.raidId;
+      const loyalty = position.pveLoyaltyLevel;
+      const cptName = position.twitchDisplayName;
+
+      if (cptName === captainName) {
+        if (loyalty === 4) {
+          return false;
+        }
+
+        const mapLoyalty = await getRaidChest(raidId);
+        return mapLoyalty;
+      }
+    }
+
+    //No match found
+    return false;
+
+  } catch (error) {
+    console.error('Error in getCaptainLoyalty:', error);
+    return false;
+  }
+}
+
+// MAKE TWO POST REQUESTS, ONE FOR THE CURRENT CHEST AND ANOTHER TO COMPARE
+async function getRaidChest(raidId) {
+  try {
+    const response = await fetch(`https://www.streamraiders.com/api/game/?cn=getRaid&raidId=${raidId}&placementStartIndex=0&maybeSendNotifs=false&clientVersion=${clientVersion}&clientPlatform=WebLite&gameDataVersion=${gameDataVersion}&command=getRaid&isCaptain=0`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/x-www-form-urlencoded',
+        'Cookie': cookieString,
+      },
+    });
+
+    if (!response.ok) {
+      throw new Error('Network response was not ok');
+    }
+
+    const chestJson = await fetch(`https://heart-breakone.github.io/webpages/loyalty_chests.json`);
+
+    if (!chestJson.ok) {
+      throw new Error('Network response was not ok');
+    }
+
+    const currentRaid = await response.json();
+    const chests = await chestJson.json();
+    const nodeKeys = [];
+
+    for (const key in chests.MapNodes) {
+      if (chests.MapNodes.hasOwnProperty(key)) {
+        nodeKeys.push(key);
+      }
+    }
+
+    const nodeId = currentRaid.data.nodeId;
+    if (nodeKeys.includes(nodeId)) {
+      return true;
+    }
+    else {
+      return false;
+    }
+
+  } catch (error) {
+    console.error('Error in getRaidChest:', error);
+    return false;
+  }
+}
+
+
+async function fetchWithCors(url) {
+  const response = await fetch(url);
+  const blob = await response.blob();
+  return new Response(blob, { headers: { 'Access-Control-Allow-Origin': '*' } });
+}
+
+chrome.runtime.onInstalled.addListener(function () {
+  // Use fetchWithCors to make the request with CORS headers
+  fetchWithCors('https://heart-breakone.github.io/webpages/loyalty_chests.json')
+    .then(response => response.json())
+    .then(data => {
+      console.log('Data with CORS headers:', data);
+    })
+    .catch(error => {
+      console.error('Error with CORS headers:', error);
+    });
+});

@@ -188,6 +188,7 @@ async function start() {
         //Pass captain name and check if the captain is flagged
         try {
           captainFlag = await getCaptainFlag(captainNameFromDOM, 'flaggedCaptains');
+          //Make a second attempt to set loyalty flag
         } catch (error) {
           captainFlag = false
         }
@@ -195,6 +196,9 @@ async function start() {
         if (await retrieveFromStorage('loyaltySwitch')) {
           try {
             captainLoyalty = await getCaptainFlag(captainNameFromDOM, 'captainLoyalty');
+            if (!captainLoyalty || captainLoyalty == undefined) {
+              captainLoyalty = await requestLoyalty(captainNameFromDOM);
+            }
           } catch (error) {
             captainLoyalty = false;
           }
@@ -861,4 +865,30 @@ function goHome() {
   if (backHome) {
     backHome.click();
   }
+}
+
+const contentPort = chrome.runtime.connect({ name: "content-script" });
+
+async function requestLoyalty(captainNameFromDOM) {
+  return new Promise((resolve, reject) => {
+    const timeout = setTimeout(() => {
+      reject(new Error('Timeout while waiting for response'));
+      contentPort.onMessage.removeListener(responseListener);
+    }, 5000);
+
+    const responseListener = (response) => {
+      clearTimeout(timeout);
+      // Handle the response (true/false)
+      if (response !== undefined) {
+        resolve(response.response);
+      } else {
+        reject(new Error('Invalid response format from background script'));
+      }
+      contentPort.onMessage.removeListener(responseListener);
+    };
+
+    contentPort.onMessage.addListener(responseListener);
+
+    contentPort.postMessage({ action: "getLoyalty", captainNameFromDOM });
+  });
 }
