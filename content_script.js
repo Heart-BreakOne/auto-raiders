@@ -874,7 +874,7 @@ async function requestLoyalty(captainNameFromDOM) {
     const timeout = setTimeout(() => {
       reject(new Error('Timeout while waiting for response'));
       contentPort.onMessage.removeListener(responseListener);
-    }, 5000);
+    }, 8000);
 
     const responseListener = (response) => {
       clearTimeout(timeout);
