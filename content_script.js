@@ -563,19 +563,27 @@ async function selectUnit() {
   }
 
   //Sort the array so units that match the captain skin are put on the front.
-  async function shiftUnits() {
-    for (let i = 1; i <= unitsQuantity; i++) {
-      const unit = unitDrawer[0].querySelector(".unitSelectionItemCont:nth-child(" + i + ") .unitItem:nth-child(1)");
-
-      if (unit.innerHTML.includes(captainNameFromDOM)) {
-        const unitIndex = unitDrawer.indexOf(unit);
-        unitDrawer.splice(unitIndex, 1);
-        unitDrawer.unshift(unit);
+    async function shiftUnits() {
+      for (let i = 1; i <= unitsQuantity; i++) {
+        const unit = unitDrawer[0].querySelector(".unitSelectionItemCont:nth-child(" + i + ") .unitItem:nth-child(1)");
+        if (unit.innerHTML.includes(captainNameFromDOM)) {
+          const unitIndex = Array.from(unitDrawer[0].children).findIndex(item => item === unit.parentElement);
+          if (unitIndex === -1) {
+            continue;
+          } else {
+            unitDrawer[0].insertBefore(unitDrawer[0].children[unitIndex], unitDrawer[0].children[0]);
+          }
+        }
       }
     }
-  }
 
-  await shiftUnits();
+  if (await retrieveFromStorage("equipSwitch")) {
+    try {
+      await shiftUnits();
+    } catch (error) {
+      console.log("log" + error);
+    }
+  }
 
   for (let i = 1; i <= unitsQuantity; i++) {
     //Iterates through every unit

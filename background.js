@@ -435,6 +435,6 @@ chrome.runtime.onInstalled.addListener(function () {
       console.log('Data with CORS headers:', data);
     })
     .catch(error => {
-      console.error('Error with CORS headers:', error);
+
     });
 });
