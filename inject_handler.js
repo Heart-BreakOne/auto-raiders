@@ -39,7 +39,7 @@ function injectIntoDOM() {
 
         // Set other attributes if needed
         iframe.style.width = '100%';
-        iframe.style.height = '50vh';
+        iframe.style.height = '90vh';
         iframe.frameBorder = '0';
 
         capSlotsCheck.style.marginBottom = '0px';
