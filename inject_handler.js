@@ -32,7 +32,7 @@ function injectIntoDOM() {
     if (!iframeCheck && capSlotsCheck && battleViewCheck) {
         // Set the source to a local file path
         const iframe = document.createElement('iframe');
-        const localFileURL = chrome.runtime.getURL(`/html/iframe.html`);
+        const localFileURL = chrome.runtime.getURL(`iframe.html`);
 
         // Set the iframe source to the extension URL
         iframe.src = localFileURL;

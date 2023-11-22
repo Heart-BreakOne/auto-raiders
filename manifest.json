@@ -39,7 +39,7 @@
    "web_accessible_resources": [
       {
          "resources": [
-            "html/iframe.html"
+            "iframe.html"
          ],
          "matches": [
             "https://www.streamraiders.com/*"
