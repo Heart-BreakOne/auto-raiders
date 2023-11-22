@@ -289,11 +289,10 @@ async function openBattlefield() {
     mode = true;
   }
   //Check if user wants to preserve diamond loyalty
-  const preserveDiamond = await retrieveFromStorage('loyaltySwitch');
+  let preserveDiamond = await retrieveFromStorage('loyaltySwitch');
 
   if (preserveDiamond === null || preserveDiamond === undefined) {
-    goHome();
-    return;
+    preserveDiamond = false;
   }
   //User wants to preserve diamond loyalty and current captain is not diamond and current mode is campaign
   if (preserveDiamond && !diamondLoyalty && mode == false) {
@@ -317,7 +316,7 @@ async function openBattlefield() {
       goHome();
       return;
     } else {
-      //Current chest is not special, close cheset info and zoom
+      //Current chest is not special, close chest info and zoom
       closeAll();
       zoom();
     }
