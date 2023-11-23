@@ -107,6 +107,16 @@ const observer = new MutationObserver(async function (mutations) {
     return;
   };
 
+  let blackFridayBanner = document.querySelector(".tickerItemCont");
+  let saleTag = document.querySelector(".saleTagCont");
+  if (saleTag) {
+    saleTag.style.display = "none";
+    if (blackFridayBanner) {
+      blackFridayBanner.style.display = "none";
+    }
+  }
+
+
   //Check if current screen is the menu to trigger the equip requests.
   const equipSwitch = await retrieveFromStorage("equipSwitch");
   if (equipSwitch) {

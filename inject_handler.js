@@ -30,6 +30,7 @@ function injectIntoDOM() {
     const capSlotsCheck = document.querySelector('.capSlots');
     const battleViewCheck = document.querySelector('.battleView');
     if (!iframeCheck && capSlotsCheck && battleViewCheck) {
+        capSlotsCheck.style.marginBottom = '0px';
         // Set the source to a local file path
         const iframe = document.createElement('iframe');
         const localFileURL = chrome.runtime.getURL(`iframe.html`);
@@ -38,13 +39,12 @@ function injectIntoDOM() {
         iframe.src = localFileURL;
 
         // Set other attributes if needed
-        iframe.style.width = '100%';
-        iframe.style.height = '90vh';
+        iframe.style.width = '100vw';
+        iframe.style.height = '100vh';
+        iframe.style.position = 'relative';
         iframe.frameBorder = '0';
 
-        capSlotsCheck.style.marginBottom = '0px';
-        iframe.style.marginBottom = '20px';
-        iframe.allowFullscreen = true;
+        iframe.style.margin = '0 0 20px 0';
         iframe.classList.add('settings_iframe');
 
         // Insert the iframe before the capSlots element inside the battleview element
