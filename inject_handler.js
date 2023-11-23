@@ -28,8 +28,11 @@ function injectIntoDOM() {
     //Injecting iframe
     const iframeCheck = document.querySelector('.settings_iframe');
     const capSlotsCheck = document.querySelector('.capSlots');
+    const portraitContainer = document.querySelector(".mainNavContPortrait");
+    const landscapeContainer = document.querySelector(".mainNavContLandscape");
     const battleViewCheck = document.querySelector('.battleView');
     if (!iframeCheck && capSlotsCheck && battleViewCheck) {
+
         capSlotsCheck.style.marginBottom = '0px';
         // Set the source to a local file path
         const iframe = document.createElement('iframe');
@@ -48,7 +51,20 @@ function injectIntoDOM() {
         iframe.classList.add('settings_iframe');
 
         // Insert the iframe before the capSlots element inside the battleview element
-        battleViewCheck.insertBefore(iframe, capSlotsCheck.nextSibling);
+        if (landscapeContainer) {
+            //User in landscape mode
+            const root = document.documentElement;
+            root.style.setProperty('--main-nav-width-landscape', 'inherit');
+            battleViewCheck.insertBefore(iframe, capSlotsCheck.nextSibling);
+        } else {
+            //User in portrait mode
+            iframe.style.position = 'absolute';
+            const navbarHeight = portraitContainer.offsetHeight;
+            iframe.style.margin = `${navbarHeight}px 0 20px 0`;
+            portraitContainer.style.marginTop = '50vh';
+            portraitContainer.style.bottom = 'inherit';
+            portraitContainer.appendChild(iframe);
+        }
     }
 
     //Initialized a node list with all the captains slots
