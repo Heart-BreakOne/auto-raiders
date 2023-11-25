@@ -15,8 +15,8 @@ function getSwitchState(switchId) {
 //When invoked this function returns the radio button value from storage
 function getRadioButton() {
     return new Promise((resolve, reject) => {
-        chrome.storage.local.get(["radio"], function (result) {
-            resolve(result.radio);
+        chrome.storage.local.get(["selectedOption"], function (result) {
+            resolve(result.selectedOption);
         });
     });
 }

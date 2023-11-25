@@ -26,12 +26,13 @@ const keysToExport = [
     "uncommonSwitch",
     "whitelist",
     "blacklist",
+    "potionlist"
 ];
 
 //Event listener for when the page loads
 document.addEventListener('DOMContentLoaded', async function () {
 
-    isSuccess = [false, false];
+    isSuccess = [false, false, false];
 
     //Export all settings to a file.
     document.getElementById("exportButton").addEventListener("click", function () {
@@ -44,10 +45,11 @@ document.addEventListener('DOMContentLoaded', async function () {
         this.value = '';
     });
 
-    //Listen for click events on the save whitelist button
+    //Listen for click events on the save list button
     document.getElementById("updateList_button").addEventListener("click", function () {
         setCaptainList('whitelist', 0);
         setCaptainList('blacklist', 1);
+        setCaptainList('potionlist', 2);
         if (isSuccess.every(Boolean)) {
             alert("Lists updated successfully!");
         }
@@ -55,11 +57,12 @@ document.addEventListener('DOMContentLoaded', async function () {
 
     await loadAndInjectList('whitelist');
     await loadAndInjectList('blacklist');
+    await loadAndInjectList('potionlist');
 
 });
 
 
-//Set whitelist and blacklist on storage
+//Set lists on storage
 function setCaptainList(list, position) {
     //Get the text from the user
     const userInput = document.getElementById(list).value;
@@ -67,11 +70,11 @@ function setCaptainList(list, position) {
     //Split text an array every space
     const listArray = userInput.split(' ');
 
-    // Create an object with the dynamic list key
+    //Create an object with the dynamic list key
     const storageObject = {};
     storageObject[list] = listArray;
 
-    // Save the array to Chrome's local storage
+    //Save the array to Chrome's local storage
     chrome.storage.local.set(storageObject, function () {
         isSuccess[position] = true;
     });
@@ -79,17 +82,15 @@ function setCaptainList(list, position) {
 
 // Function to load and inject the array into the textarea
 async function loadAndInjectList(list) {
-    // Retrieve the array from Chrome's local storage
+    //Retrieve the array from chrome's local storage
     chrome.storage.local.get({ [list]: [] }, function (result) {
         // Handle the retrieved data
         const listArray = result[list];
 
-        // Check if the array exists and is an array with at least one element
+        //Check if the array exists and is an array with at least one element
         if (Array.isArray(listArray) && listArray.length > 0) {
-            const textareaId = list === 'whitelist' ? 'whitelist' : 'blacklist';
-
-            // Inject the array entries into the textarea
-            document.getElementById(textareaId).value = listArray.join(' ');
+            //Inject the array entries into the textarea
+            document.getElementById(list).value = listArray.join(' ');
         }
     });
 }
@@ -140,6 +141,7 @@ async function importData(string) {
                     alert('Data imported sucessfully!');
                     loadAndInjectList('whitelist');
                     loadAndInjectList('blacklist');
+                    loadAndInjectList('potionlist');
                 });
             } catch (error) {
                 alert('An error occurred', error);

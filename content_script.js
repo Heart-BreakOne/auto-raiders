@@ -523,9 +523,31 @@ async function selectUnit() {
     allUnitsButton.click();
   }
   //Checks if user wants to use potions.
-  const potionState = await getRadioButton();
+  let potionState = await getRadioButton();
+  const favoriteSwitch = await getSwitchState("favoriteSwitch")
   let number;
   let epicButton;
+
+  //User wants to use potions with specific captains.
+  //Check if current captain is a favorite potion captain
+  if (potionState != 0 && !mode && favoriteSwitch) {
+    const potionCaptainsList = await new Promise((resolve) => {
+      chrome.storage.local.get({ ['potionlist']: [] }, function (result) {
+        const potionCaptainsList = result["potionlist"];
+        resolve(potionCaptainsList);
+      });
+    });
+    // Check if the array exists and is an array with at least one element
+    if (Array.isArray(potionCaptainsList) && potionCaptainsList.length > 0) {
+      //Check if current captain is a favorite potion captain. If not set potion state to 0.
+      if (!potionCaptainsList.some(item => item.toUpperCase() === captainNameFromDOM.toUpperCase())) {
+        potionState = 0;
+      }
+    } else {
+      //The user wants to use potions with favorite potion captains, but the list is empty.
+      potionState = 0;
+    }
+  }
 
   //User wants to use potions
   if (potionState != 0 && !mode) {
@@ -567,19 +589,19 @@ async function selectUnit() {
   }
 
   //Sort the array so units that match the captain skin are put on the front.
-    async function shiftUnits() {
-      for (let i = 1; i <= unitsQuantity; i++) {
-        const unit = unitDrawer[0].querySelector(".unitSelectionItemCont:nth-child(" + i + ") .unitItem:nth-child(1)");
-        if (unit.innerHTML.includes(captainNameFromDOM)) {
-          const unitIndex = Array.from(unitDrawer[0].children).findIndex(item => item === unit.parentElement);
-          if (unitIndex === -1) {
-            continue;
-          } else {
-            unitDrawer[0].insertBefore(unitDrawer[0].children[unitIndex], unitDrawer[0].children[0]);
-          }
+  async function shiftUnits() {
+    for (let i = 1; i <= unitsQuantity; i++) {
+      const unit = unitDrawer[0].querySelector(".unitSelectionItemCont:nth-child(" + i + ") .unitItem:nth-child(1)");
+      if (unit.innerHTML.includes(captainNameFromDOM)) {
+        const unitIndex = Array.from(unitDrawer[0].children).findIndex(item => item === unit.parentElement);
+        if (unitIndex === -1) {
+          continue;
+        } else {
+          unitDrawer[0].insertBefore(unitDrawer[0].children[unitIndex], unitDrawer[0].children[0]);
         }
       }
     }
+  }
 
   if (await retrieveFromStorage("equipSwitch")) {
     try {
