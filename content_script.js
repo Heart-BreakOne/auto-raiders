@@ -25,6 +25,7 @@ const gameBlue = 'rgb(42, 96, 132)';
 const cancelButtonSelector = ".actionButton.actionButtonNegative.placerButton";
 let delay = ms => new Promise(res => setTimeout(res, ms));
 
+//Battlefield markers.
 const arrayOfBattleFieldMarkers = [
   { key: "NO", icon: "SVFCVFFVKM+J2ICS+HWVYAAAAASUVORK5CYII=" },
   { key: "VIBE", icon: "1EPFWIYQTQRB9OWOGAAAABJRU5ERKJGGG" },
@@ -33,6 +34,7 @@ const arrayOfBattleFieldMarkers = [
   { key: "MELEE", icon: "4HMCIMNBN" },
   { key: "RANGED", icon: "BSBDMAAZVZ+IAAAAAELFTKSUQMCC" },
   { key: "SUPPORT", icon: "RWRLLLPGN4N+DRB7+UDVYFQAAAABJRU5ERKJGGG" },
+  { key: "AMAZON", type: "MELEE", icon: "NAMVYSLRIQJS202XHJVO5EQBTUZG9FDQ38LWVXKFCRKB" },
   { key: "ARCHER", type: "RANGED", icon: "EX5GK5JX6QAAAABJRU5ERKJGGG==" },
   { key: "ARTILLERY", type: "RANGED", icon: "U1JPAB82/+YAAAAASUVORK5CYII=" },
   { key: "BALLOON", type: "RANGED", icon: "RNP6GWGFWBAAAAAASUVORK5CYII=" },
@@ -65,9 +67,11 @@ const arrayOfBattleFieldMarkers = [
   { key: "WARRIOR", type: "MELEE", icon: "GXC5CPDJVY5YIAAAAASUVORK5CYII=" },
 ];
 
+//Unit icons markers (the icon on the top left corner of the unit square)
 const arrayOfUnits = [
   { key: "", type: "", icon: "" },
   { key: "VIBE", type: "VIBE", icon: "VIBE" },
+  { key: "AMAZON", type: "MELEE", icon: "6E8FWQ9MA9ZAAJ2WXSHI1NVQ5GDJRPXQ7V8AHO" },
   { key: "ARCHER", type: "RANGED", icon: "FBPKAZY" },
   { key: "ARTILLERY", type: "RANGED", icon: "3GY1DLAQ" },
   { key: "BALLOON", type: "RANGED", icon: "FOPPA6G" },
