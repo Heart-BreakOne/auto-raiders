@@ -119,7 +119,8 @@ async function start() {
 
   //Initialized nav items, if they don't exist it means the extension is already executing.
   const navItems = document.querySelectorAll('.mainNavItemText');
-  if (navItems.length === 0 || navItems === undefined) {
+  const settingsIframe = document.querySelectorAll('.outer_container');
+  if (navItems.length === 0 || navItems === undefined || settingsIframe.length != 0) {
     return;
   } else {
     //If navItem exists, open main menu

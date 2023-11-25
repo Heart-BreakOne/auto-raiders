@@ -25,46 +25,25 @@ font-weight: bold;
 //When invoked this function injects buttons into the page
 function injectIntoDOM() {
 
-    //Injecting iframe
-    const iframeCheck = document.querySelector('.settings_iframe');
-    const capSlotsCheck = document.querySelector('.capSlots');
-    const portraitContainer = document.querySelector(".mainNavContPortrait");
-    const landscapeContainer = document.querySelector(".mainNavContLandscape");
-    const battleViewCheck = document.querySelector('.battleView');
-    if (!iframeCheck && capSlotsCheck && battleViewCheck) {
+    //Injecting button
+    let settingsNavItem = document.querySelector(".settingsNavItem");
+    let mainNavContainer = document.querySelector(".mainNavCont");
+    if (!settingsNavItem && mainNavContainer) {
+        settingsNavItem = document.createElement("div");
+        settingsNavItem.className = "settingsNavItem";
 
-        capSlotsCheck.style.marginBottom = '0px';
-        // Set the source to a local file path
-        const iframe = document.createElement('iframe');
-        const localFileURL = chrome.runtime.getURL(`iframe.html`);
+        settingsNavItem.innerHTML = `
+        <div class="mainNavItem" style="padding-right: 20px; font-size: xx-large; font-weight: bold">
 
-        // Set the iframe source to the extension URL
-        iframe.src = localFileURL;
+        <div class="mainNavItemText">SETTINGS</div>
+    </div >
+    `;
 
-        // Set other attributes if needed
-        iframe.style.width = '100vw';
-        iframe.style.height = '100vh';
-        iframe.style.position = 'relative';
-        iframe.frameBorder = '0';
+        mainNavContainer.appendChild(settingsNavItem);
 
-        iframe.style.margin = '0 0 20px 0';
-        iframe.classList.add('settings_iframe');
-
-        // Insert the iframe before the capSlots element inside the battleview element
-        if (landscapeContainer) {
-            //User in landscape mode
-            const root = document.documentElement;
-            root.style.setProperty('--main-nav-width-landscape', 'inherit');
-            battleViewCheck.insertBefore(iframe, capSlotsCheck.nextSibling);
-        } else {
-            //User in portrait mode
-            iframe.style.position = 'absolute';
-            const navbarHeight = portraitContainer.offsetHeight;
-            iframe.style.margin = `${navbarHeight}px 0 20px 0`;
-            portraitContainer.style.marginTop = '50vh';
-            portraitContainer.style.bottom = 'inherit';
-            portraitContainer.appendChild(iframe);
-        }
+        settingsNavItem.addEventListener("click", function () {
+            injectOuterIframe();
+        });
     }
 
     //Initialized a node list with all the captains slots
@@ -166,27 +145,27 @@ document.addEventListener("click", function (event) {
 It updates the states of whether or not a unit can be placed on the slot
 It receives the captain name and the new slot state to save in storage */
 function saveStateToStorage(name, booleanValue) {
-    // Check if an item with the same name already exists
+    //Check if an item with the same name already exists
     let existingItem = dataArray.find((item) => item.name === name);
 
     //Item exists so the value is updated
     if (existingItem) {
-        // Update the booleanValue of the existing item
+        //Update the booleanValue of the existing item
         existingItem.booleanValue = booleanValue;
     }
     //Item does not exist so the item is added
     else {
-        // Add a new object to the array
+        //Add a new object to the array
         dataArray.push({ name, booleanValue });
 
-        // Check if the array length exceeds 4 as there are 4 slots
+        //Check if the array length exceeds 4 as there are 4 slots
         if (dataArray.length > 4) {
             // Remove the oldest item (first item in the array)
             dataArray.shift();
         }
     }
 
-    // Save updated array to local storage, but only if it has 3 or fewer items
+    //Save updated array to local storage, but only if it has 3 or fewer items
     //Loads a banner signaling completion
     if (dataArray.length <= 4) {
         chrome.storage.local.set({ "dataArray": dataArray }, function () {
@@ -262,5 +241,83 @@ function getIdleState(id) {
             let booleanValue = ids[id];
             resolve(booleanValue !== undefined ? booleanValue : true);
         });
+    });
+}
+
+function injectOuterIframe() {
+    const outerContainer = document.querySelector(".outer_container");
+    const battleViewCheck = document.querySelector('.battleView');
+
+    if (!outerContainer && battleViewCheck) {
+        const outerContainer = document.createElement('div');
+
+        outerContainer.style.width = '100%';
+        outerContainer.style.height = '100%';
+        outerContainer.style.position = 'absolute';
+
+        outerContainer.style.top = '0';
+        outerContainer.style.left = '0';
+        outerContainer.style.backgroundColor = '#1b2a35';
+
+        outerContainer.style.margin = '0';
+        outerContainer.classList.add('outer_container');
+
+        document.body.appendChild(outerContainer);
+
+        injectIFrame(outerContainer);
+        injectCloseButton(outerContainer);
+    }
+}
+
+function injectIFrame(outerContainer) {
+    const innerIframeCheck = outerContainer.querySelector('.settings_iframe');
+
+    if (!innerIframeCheck) {
+        const innerIframe = document.createElement('iframe');
+        const localFileURL = chrome.runtime.getURL('iframe.html');
+
+        innerIframe.src = localFileURL;
+
+        innerIframe.style.width = '100%';
+        innerIframe.style.height = '85%';
+        innerIframe.style.border = 'none';
+
+        innerIframe.classList.add('settings_iframe');
+
+
+        outerContainer.appendChild(innerIframe);
+    }
+}
+
+function injectCloseButton(outerContainer) {
+
+    const closeButton = document.createElement('button');
+    const innerIframe = document.querySelector(".settings_iframe");
+
+    closeButton.innerText = 'CLOSE SETTINGS';
+    closeButton.style.fontSize = "xx-large";
+    closeButton.style.fontWeight = "bold";
+    closeButton.style.position = 'absolute';
+    closeButton.style.bottom = '20px';
+    closeButton.style.right = '50%';
+    closeButton.style.transform = 'translateX(50%)';
+    closeButton.style.zIndex = '9999';
+    closeButton.style.width = '250px';
+    closeButton.style.height = '200px';
+    closeButton.style.padding = '5px 10px';
+    closeButton.style.backgroundColor = 'red';
+    closeButton.style.color = 'white';
+    closeButton.style.border = 'none';
+    closeButton.style.borderRadius = '5px';
+    closeButton.style.cursor = 'pointer';
+
+    // Add the close button to the outerContainer
+    outerContainer.appendChild(closeButton);
+
+    // Add a click event listener to the button
+    closeButton.addEventListener('click', function () {
+        closeButton.remove();
+        innerIframe.remove();
+        outerContainer.remove();
     });
 }
