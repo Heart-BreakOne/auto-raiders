@@ -3,6 +3,9 @@
 let chestName;
 let isSuccess = [];
 let url;
+let startingTime;
+let endingTime;
+let elapsed;
 const tbd = "TDB";
 const colorCodeMap = {
     "rgb(185, 242, 255)": "Blue",
@@ -103,7 +106,7 @@ async function loadLogData() {
 
         //Create table header row
         const headerRow = document.createElement('tr');
-        headerRow.innerHTML = '<th>#</th><th>Slot</th><th>Captain Name</th><th>Mode</th><th>Color Code</th><th>Start time</th><th>Duration</th><th>Result</th><th>Chest</th>';
+        headerRow.innerHTML = '<th>#</th><th>Slot</th><th>Captain Name</th><th>Mode</th><th>Color Code</th><th>Start time</th><th>End time</th><th>Duration</th><th>Result</th><th>Chest</th>';
 
         //Append header row to the table
         tableElement.appendChild(headerRow);
@@ -115,16 +118,10 @@ async function loadLogData() {
 
             let chestName;
             let url;
-            let elapsed;
             let outcome;
 
-            //Convert the string to a Date object
-            const startTime = new Date(entry.currentTime);
-            const startHour = startTime.getHours();
-            const startMinute = startTime.getMinutes();
-
-            //Using padStart to ensure two digits for hours and minutes
-            const startingTime = String(startHour).padStart(2, '0') + ":" + String(startMinute).padStart(2, '0');
+            //Convert the string to a Date object and get hour and minutes.
+            const startingTime = getTimeString(new Date(entry.currentTime));
 
             //Getting human-readable colors
             let color = colorCodeMap[entry.colorCode] || "Normal";
@@ -172,6 +169,20 @@ async function loadLogData() {
                 color = "Normal";
             }
 
+            //Get ending time
+            try {
+                endingTime = ""
+                if (elapsed !== "Unknown") {
+                    tempTime = new Date(entry.currentTime);
+                    tempTime.setMinutes(tempTime.getMinutes() + parseInt(elapsed));
+                    endingTime = getTimeString(tempTime);
+                } else {
+                    endingTime = "Unknown";
+                }
+            }catch (error) {
+                console.log("log", error);
+                endingTime = "Unknown"
+            }
             // Create a table row
             const row = document.createElement('tr');
             row.id = `${i}`;
@@ -181,6 +192,7 @@ async function loadLogData() {
                 <td>${entry.logMode}</td>
                 <td style="border: 1px solid #ddd; padding: 8px; color: ${color};">${color}</td>
                 <td>${startingTime}</td>
+                <td>${endingTime}</td>
                 <td>${elapsed}</td>
                 <td>${outcome}</td>
                 <td style="text-align: center; vertical-align: middle;">
@@ -317,4 +329,14 @@ async function importData(string) {
     } else {
         alert('Please select a file!');
     }
+}
+
+
+function getTimeString(startTime) {
+    //Get hours and minutes
+    const startHour = startTime.getHours();
+    const startMinute = startTime.getMinutes();
+
+    //Using padStart to ensure two digits for hours and minutes
+    return String(startHour).padStart(2, '0') + ":" + String(startMinute).padStart(2, '0');
 }
