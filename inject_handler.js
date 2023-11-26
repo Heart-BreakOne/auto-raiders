@@ -294,24 +294,20 @@ function injectCloseButton(outerContainer) {
     const closeButton = document.createElement('button');
     const innerIframe = document.querySelector(".settings_iframe");
 
-    closeButton.innerText = 'CLOSE SETTINGS';
-    closeButton.style.fontSize = "xx-large";
-    closeButton.style.fontWeight = "bold";
+    //Button styles
     closeButton.style.position = 'absolute';
     closeButton.style.bottom = '20px';
     closeButton.style.right = '50%';
     closeButton.style.transform = 'translateX(50%)';
     closeButton.style.zIndex = '9999';
-    closeButton.style.width = '250px';
-    closeButton.style.height = '200px';
-    closeButton.style.padding = '5px 10px';
-    closeButton.style.backgroundColor = 'red';
-    closeButton.style.color = 'white';
-    closeButton.style.border = 'none';
-    closeButton.style.borderRadius = '5px';
     closeButton.style.cursor = 'pointer';
+    closeButton.classList.add("far", "fa-times");
+    //Get dimensions
+    const tempBtn = document.querySelector(".far.fa-times");
+    const tempsize = parseFloat(window.getComputedStyle(tempBtn).width) || 0;
+    const increaseAmount = tempsize * 0.003;
+    closeButton.style.width = closeButton.style.height = `${tempsize + increaseAmount}px`;
 
-    // Add the close button to the outerContainer
     outerContainer.appendChild(closeButton);
 
     // Add a click event listener to the button

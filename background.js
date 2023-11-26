@@ -1,6 +1,6 @@
 //Listens for messages from the popup script containing the toggle switch states and send them to the content script.
 'use strict';
-
+console.log("log");
 //Open log page on a new tab from the game tab
 chrome.runtime.onMessage.addListener(function (request) {
   if (request.action === 'openNewTab') {
