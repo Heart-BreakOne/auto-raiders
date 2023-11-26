@@ -42,6 +42,23 @@ let chestCounter = [
 //Event listener for when the page loads
 document.addEventListener('DOMContentLoaded', async function () {
 
+    const scrollToTopBtn = document.getElementById("scrollBtn");
+
+    // Show or hide the button based on scroll position
+    window.onscroll = function () {
+        if (document.body.scrollTop > 20 || document.documentElement.scrollTop > 20) {
+            scrollToTopBtn.style.display = "block";
+        } else {
+            scrollToTopBtn.style.display = "none";
+        }
+    };
+
+    // Scroll back to the top when the button is clicked
+    scrollToTopBtn.addEventListener("click", function () {
+        document.body.scrollTop = 0;
+        document.documentElement.scrollTop = 0;
+    });
+
     isSuccess = [false, false];
 
     //Load the battle log
@@ -63,7 +80,7 @@ document.addEventListener('DOMContentLoaded', async function () {
     });
 
     // Add event listener for the update button
-    document.getElementById('updateLogButton').addEventListener('click', function () {
+    document.getElementById("updateLogButton").addEventListener('click', function () {
         // Update logData from local storage
         dataContainer.innerHTML = '';
         loadLogData();
@@ -75,7 +92,7 @@ document.addEventListener('DOMContentLoaded', async function () {
     });
 
     //Import all settings to a file.
-    document.getElementById('log-file-input').addEventListener('change', function () {
+    document.getElementById("log-file-input").addEventListener('change', function () {
         importData("log-file-input");
         this.value = '';
     });
@@ -179,7 +196,7 @@ async function loadLogData() {
                 } else {
                     endingTime = "Unknown";
                 }
-            }catch (error) {
+            } catch (error) {
                 console.log("log", error);
                 endingTime = "Unknown"
             }
