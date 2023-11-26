@@ -1,6 +1,5 @@
 
 //Declaring/Initializing variables
-let isSuccess = [];
 const keysToExport = [
     "battlepassSwitch",
     "clashCaptain",
@@ -32,8 +31,6 @@ const keysToExport = [
 //Event listener for when the page loads
 document.addEventListener('DOMContentLoaded', async function () {
 
-    isSuccess = [false, false, false];
-
     //Export all settings to a file.
     document.getElementById("exportButton").addEventListener("click", function () {
         exportData(keysToExport);
@@ -46,13 +43,11 @@ document.addEventListener('DOMContentLoaded', async function () {
     });
 
     //Listen for click events on the save list button
-    document.getElementById("updateList_button").addEventListener("click", function () {
-        setCaptainList('whitelist', 0);
-        setCaptainList('blacklist', 1);
-        setCaptainList('potionlist', 2);
-        if (isSuccess.every(Boolean)) {
+    document.getElementById("updateList_button").addEventListener("click", async function () {
+        await setCaptainList('whitelist');
+        await setCaptainList('blacklist');
+        await setCaptainList('potionlist');
             alert("Lists updated successfully!");
-        }
     });
 
     await loadAndInjectList('whitelist');
@@ -63,7 +58,7 @@ document.addEventListener('DOMContentLoaded', async function () {
 
 
 //Set lists on storage
-function setCaptainList(list, position) {
+async function setCaptainList(list) {
     //Get the text from the user
     const userInput = document.getElementById(list).value;
 
@@ -76,7 +71,6 @@ function setCaptainList(list, position) {
 
     //Save the array to Chrome's local storage
     chrome.storage.local.set(storageObject, function () {
-        isSuccess[position] = true;
     });
 }
 
