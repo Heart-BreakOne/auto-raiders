@@ -524,33 +524,34 @@ async function selectUnit() {
   }
   //Checks if user wants to use potions.
   let potionState = await getRadioButton();
-  const favoriteSwitch = await getSwitchState("favoriteSwitch")
+  //CHeck if user wants to use potions only with specific captains
+  const favoriteSwitch = await getSwitchState("favoriteSwitch");
+  let favoritePotion = false;
   let number;
   let epicButton;
 
-  //User wants to use potions with specific captains.
   //Check if current captain is a favorite potion captain
-  if (potionState != 0 && !mode && favoriteSwitch) {
-    const potionCaptainsList = await new Promise((resolve) => {
-      chrome.storage.local.get({ ['potionlist']: [] }, function (result) {
-        const potionCaptainsList = result["potionlist"];
-        resolve(potionCaptainsList);
+  try {
+    if (potionState != 0 && !mode && favoriteSwitch) {
+      const potionCaptainsList = await new Promise((resolve) => {
+        chrome.storage.local.get({ ['potionlist']: [] }, function (result) {
+          const potionCaptainsList = result["potionlist"];
+          resolve(potionCaptainsList);
+        });
       });
-    });
-    // Check if the array exists and is an array with at least one element
-    if (Array.isArray(potionCaptainsList) && potionCaptainsList.length > 0) {
-      //Check if current captain is a favorite potion captain. If not set potion state to 0.
-      if (!potionCaptainsList.some(item => item.toUpperCase() === captainNameFromDOM.toUpperCase())) {
-        potionState = 0;
+      // Check if the array exists and is an array with at least one element
+      if (Array.isArray(potionCaptainsList) && potionCaptainsList.length > 0) {
+        //Check if current captain is a favorite potion captain. If not set potion state to 0.
+        if (potionCaptainsList.some(item => item.toUpperCase() === captainNameFromDOM.toUpperCase())) {
+          favoritePotion = true;
+        }
       }
-    } else {
-      //The user wants to use potions with favorite potion captains, but the list is empty.
-      potionState = 0;
     }
-  }
+  } catch (error) { }
+
 
   //User wants to use potions
-  if (potionState != 0 && !mode) {
+  if (potionState != 0 && !mode && favoritePotion) {
     //Get potion strings so the string can be trimmed and converted to int for validation
     let potions;
     //Attempts to get potion quantity
