@@ -47,7 +47,7 @@ document.addEventListener('DOMContentLoaded', async function () {
         await setCaptainList('whitelist');
         await setCaptainList('blacklist');
         await setCaptainList('potionlist');
-            alert("Lists updated successfully!");
+        alert("Lists updated successfully!");
     });
 
     await loadAndInjectList('whitelist');
@@ -71,6 +71,9 @@ async function setCaptainList(list) {
 
     //Save the array to Chrome's local storage
     chrome.storage.local.set(storageObject, function () {
+        if (chrome.runtime.lastError) {
+            alert(`An error occurred while saving the ${list}`)
+        }
     });
 }
 
