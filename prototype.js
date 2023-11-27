@@ -27,7 +27,7 @@ function getMapMatrix(arrayOfMarkers) {
         const captainIcon = captain.querySelector("img").src;
         if (captainIcon === icon) {
             for (let j = arrayOfBattleFieldUnitClickAreas.length - 1; j >= 0; j--) {
-                
+
                 const lastUnitSize = arrayOfBattleFieldUnitClickAreas[j].querySelector(".battleFieldUnitClickArea").offsetWidth;
                 const captainSizeForComparison = captain.querySelector(".battleFieldUnitClickArea").offsetWidth;
 
@@ -35,7 +35,7 @@ function getMapMatrix(arrayOfMarkers) {
                     captainUnit = captain;
                     break outerLoop;
                 } else if (captainSizeForComparison / 2 == lastUnitSize) {
-                 
+
                     break;
                 } else if (captainSizeForComparison === lastUnitSize) {
                     continue;
@@ -45,30 +45,34 @@ function getMapMatrix(arrayOfMarkers) {
     }
 
     const captainRect = captainUnit.getBoundingClientRect();
-    const captainTop = captainRect.top;
-    const captainLeft = captainRect.left;
-    const captainWidth = captainRect.width;
-    const captainHeight = captainRect.height;
+    const elementSize = captainRect.width;
+
+    const divisionSize = (elementSize / 8) * 3;
+
+    const captainTop = captainRect.top + divisionSize;
+    const captainLeft = captainRect.left + divisionSize;
+
+    const reducedElementSize = (elementSize / 8) * 2;
 
     const sortedArray = [];
 
     for (let i = 0; i < arrayOfMarkers.length; i++) {
         const marker = arrayOfMarkers[i];
         const markerRect = marker.getBoundingClientRect();
+
         const markerTop = markerRect.top;
         const markerLeft = markerRect.left;
-        const markerWidth = markerRect.width;
-        const markerHeight = markerRect.height;
 
         const squaredDistance = (
             Math.pow(markerTop - captainTop, 2) +
             Math.pow(markerLeft - captainLeft, 2) +
-            Math.pow(markerWidth - captainWidth, 2) +
-            Math.pow(markerHeight - captainHeight, 2)
+            Math.pow(markerRect.width - reducedElementSize, 2) +
+            Math.pow(markerRect.height - reducedElementSize, 2)
         );
 
         sortedArray.push({ marker, squaredDistance });
     }
+
 
     sortedArray.sort((a, b) => a.squaredDistance - b.squaredDistance);
 
