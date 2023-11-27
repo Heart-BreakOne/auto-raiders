@@ -73,7 +73,6 @@ function getMapMatrix(arrayOfMarkers) {
         sortedArray.push({ marker, squaredDistance });
     }
 
-
     sortedArray.sort((a, b) => a.squaredDistance - b.squaredDistance);
 
     return sortedArray.map(item => item.marker);
