@@ -1,7 +1,7 @@
 {
    "manifest_version": 3,
    "name": "SRHelper",
-   "version": "4.0.22",
+   "version": "4.0.23",
    "description": "Stream Raiders Helper",
    "action": {
       "default_popup": "popup.html",
@@ -29,7 +29,8 @@
             "idle_handler.js",
             "rotation_handler.js",
             "log_handler.js",
-            "iframe.js"
+            "iframe.js",
+            "prototype.js"
          ],
          "matches": [
             "https://www.streamraiders.com/*"

@@ -400,7 +400,8 @@ async function getValidMarkers() {
       return;
     } else {
       //There are vibe or set markers that can be used.
-      getSetMarker();
+      getMapMatrix(arrayOfMarkers);
+      getSetMarker(arrayOfMarkers);
     }
   }
 }
