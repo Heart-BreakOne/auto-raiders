@@ -9,6 +9,7 @@ setInterval(start, 20000);
 let currentMarkerKey = "";
 let currentMarker;
 let arrayOfMarkers;
+let sortedArrayOfMarkers;
 let markerAttempt;
 let computedStyle;
 let backgroundImageValue;
@@ -342,6 +343,7 @@ function zoom() {
     //Resets tracking variables
     markerAttempt = 0;
     arrayOfMarkers = null;
+    sortedArrayOfMarkers = null;
     currentMarker = null;
     //Invoke getValidMarkers function
     getValidMarkers();
@@ -400,8 +402,14 @@ async function getValidMarkers() {
       return;
     } else {
       //There are vibe or set markers that can be used.
-      getMapMatrix(arrayOfMarkers);
-      getSetMarker(arrayOfMarkers);
+      try {
+        //Attempt to sort the markers based on how close they are to the captain
+        sortedArrayOfMarkers = getMapMatrix(arrayOfMarkers);
+        arrayOfMarkers = sortedArrayOfMarkers;
+      } catch (error) {
+        console.log();
+      }
+      getSetMarker();
     }
   }
 }
@@ -441,7 +449,12 @@ async function getSetMarker() {
   } else {
     currentMarkerKey = ""
     // The randomization of the index increased the chances of getting a valid placement.
-    currentMarker = arrayOfMarkers[Math.floor(Math.random() * (arrayOfMarkers.length - 1))];
+    if (sortedArrayOfMarkers != null) {
+      currentMarker = arrayOfMarkers[0];
+    } else {
+      currentMarker = arrayOfMarkers[Math.floor(Math.random() * (arrayOfMarkers.length - 1))];
+    }
+
     // This bit gets the marker type for comparison later
     computedStyle = getComputedStyle(currentMarker);
     backgroundImageValue = computedStyle.getPropertyValue('background-image').toUpperCase();
