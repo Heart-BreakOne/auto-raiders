@@ -44,13 +44,12 @@ function getMapMatrix(arrayOfMarkers) {
         }
     }
 
-    const captainRect = captainUnit.getBoundingClientRect();
-    const elementSize = captainRect.width;
+    const elementSize = captainUnit.offsetWidth;
 
     const divisionSize = (elementSize / 8) * 3;
 
-    const captainTop = captainRect.top + divisionSize;
-    const captainLeft = captainRect.left + divisionSize;
+    const captainTop = captainUnit.offsetTop + divisionSize;
+    const captainLeft = captainUnit.offsetLeft + divisionSize;
 
     const reducedElementSize = (elementSize / 8) * 2;
 
@@ -58,17 +57,15 @@ function getMapMatrix(arrayOfMarkers) {
 
     for (let i = 0; i < arrayOfMarkers.length; i++) {
         const marker = arrayOfMarkers[i];
-        const markerRect = marker.getBoundingClientRect();
 
-        const markerTop = markerRect.top;
-        const markerLeft = markerRect.left;
+        const markerTop = marker.offsetTop;
+        const markerLeft = marker.offsetLeft;
 
-        const squaredDistance = (
+        const squaredDistance =
             Math.pow(markerTop - captainTop, 2) +
             Math.pow(markerLeft - captainLeft, 2) +
-            Math.pow(markerRect.width - reducedElementSize, 2) +
-            Math.pow(markerRect.height - reducedElementSize, 2)
-        );
+            Math.pow(marker.offsetWidth - reducedElementSize, 2) +
+            Math.pow(marker.offsetHeight - reducedElementSize, 2);
 
         sortedArray.push({ marker, squaredDistance });
     }
