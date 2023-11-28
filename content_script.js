@@ -188,6 +188,7 @@ async function start() {
         const clashSwitch = await retrieveFromStorage('clashSwitch');
         const dungeonSwitch = await retrieveFromStorage('dungeonSwitch');
         const duelSwitch = await retrieveFromStorage('duelSwitch');
+        const campaignSwitch = await retrieveFromStorage('campaignSwitch');
         let captainFlag
         let captainLoyalty
 
@@ -240,7 +241,7 @@ async function start() {
         /* Checks if the slot is a special game mode and if a unit has already been placed it check if the user wants to place
         multiple units on special modes */
         else if (((captainSlot.innerText.includes("Dungeons") && !dungeonSwitch) || (captainSlot.innerText.includes("Clash") && !clashSwitch) ||
-          ((captainSlot.innerText.includes("Duel") && !duelSwitch))) &&
+          ((captainSlot.innerText.includes("Duel") && !duelSwitch)) || !campaignSwitch) &&
           captainSlot.querySelector('.capSlotClose') == null) {
           continue
         }

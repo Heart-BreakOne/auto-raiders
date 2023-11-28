@@ -13,6 +13,7 @@ document.addEventListener("DOMContentLoaded", function () {
     initializeSwitch("dungeonSwitch");
     initializeSwitch("duelSwitch");
     initializeSwitch("clashSwitch");
+    initializeSwitch("campaignSwitch");
     initializeSwitch("loyaltySwitch");
     initializeSwitch("battlepassSwitch");
     initializeSwitch("offlineSwitch");
