@@ -1,9 +1,16 @@
 const arrayOfUnitNames = ["AMAZON", "ARCHER", "ARTILLERY", "BALLOON", "BARBARIAN", "BERSERKER", "BLOB", "BOMBER", "BUSTER", "CENTURION", "FAIRY", "FLAG", "FLYING", "GLADIATOR", "HEALER", "LANCER", "MAGE", "MONK", "MUSKETEER", "NECROMANCER", "ORC", "PALADIN", "ROGUE", "SAINT", "SHINOBI", "SPY", "TANK", "TEMPLAR", "VAMPIRE", "WARBEAST", "WARRIOR"];
-let allUnits
-let unitDimension
+let allUnits;
+let unitDimension;
 let settingImaginaryMarker = false;
 
 function setImaginaryMarkers(placementTiles) {
+    const blockMarkers = Array.from(document.querySelectorAll(".planIcon"));
+    if (blockMarkers.length !== 0) {
+        blockMarkers.forEach(marker => {
+            marker.classList.remove("planIcon");
+            marker.classList.add("blockMarker");
+        });
+    }
 
     if (settingImaginaryMarker) {
         return;
@@ -26,10 +33,9 @@ function setImaginaryMarkers(placementTiles) {
         } else {
             continue;
         }
-
     }
 
-    unitDimension = dimension
+    unitDimension = dimension;
     dimension = dimension * 1.3333333333333333;
 
     if (dimension === 0) {
@@ -43,10 +49,10 @@ function setImaginaryMarkers(placementTiles) {
 
         for (let x = 0; x < numberOfMarkersX; x++) {
             for (let y = 0; y < numberOfMarkersY; y++) {
-                const proposedMarkerTop = parseFloat(tile.offsetTop + (x * dimension));
-                const proposedMarkerLeft = parseFloat(tile.offsetLeft + (y * dimension));
+                const proposedMarkerTop = parseFloat(tile.offsetTop + x * dimension);
+                const proposedMarkerLeft = parseFloat(tile.offsetLeft + y * dimension);
 
-                if (checkOverlapWithUnits(proposedMarkerTop, proposedMarkerLeft, dimension)) {
+                if (checkOverlapWithUnits(proposedMarkerTop, proposedMarkerLeft, dimension) || checkOverlapWithBlockMarkers(proposedMarkerTop, proposedMarkerLeft, dimension)) {
                     continue;
                 }
 
@@ -58,7 +64,6 @@ function setImaginaryMarkers(placementTiles) {
                 imaginaryMarker.style.width = dimension + "px";
                 imaginaryMarker.style.height = dimension + "px";
                 imaginaryMarker.style.backgroundImage = "url('1EPFWIYQTQRB9OWOGAAAABJRU5ERKJGGG')";
-
                 //For testing uncomment
                 //imaginaryMarker.style.backgroundColor = "blue";
                 //imaginaryMarker.style.backgroundSize = "0";
@@ -78,11 +83,10 @@ function setImaginaryMarkers(placementTiles) {
 function checkOverlapWithUnits(top, left, dimension) {
     for (let i = 0; i < allUnits.length; i++) {
         const unit = allUnits[i];
-        const unitParent = unit.parentElement; 
+        const unitParent = unit.parentElement;
 
         const unitTop = unitParent.offsetTop + (unitParent.offsetHeight / 2) - (unit.offsetHeight / 2);
         const unitLeft = unitParent.offsetLeft + (unitParent.offsetWidth / 2) - (unit.offsetWidth / 2);
-
 
         if (
             top + dimension > unitTop &&
@@ -97,8 +101,22 @@ function checkOverlapWithUnits(top, left, dimension) {
     return false;
 }
 
+function checkOverlapWithBlockMarkers(top, left, dimension) {
+    const blockMarkers = Array.from(document.querySelectorAll(".blockMarker"));
+    for (let i = 0; i < blockMarkers.length; i++) {
+        const blockMarker = blockMarkers[i];
+        const blockMarkerTop = parseFloat(blockMarker.style.top);
+        const blockMarkerLeft = parseFloat(blockMarker.style.left);
 
-function filterBlockMarkers(arrayOfMarkers, arrayOfAllyPlacement) {
-    //The map has block markers and open zones, place imaginary markers where there no block markers.
+        if (
+            top + dimension > blockMarkerTop &&
+            left + dimension > blockMarkerLeft &&
+            top < blockMarkerTop + dimension &&
+            left < blockMarkerLeft + dimension
+        ) {
+            return true;
+        }
+    }
 
+    return false;
 }

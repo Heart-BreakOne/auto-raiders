@@ -407,8 +407,7 @@ async function getValidMarkers() {
     //Check what is inside new array.
     if (arrayOfMarkers.length == 0 && (arrayOfAllyPlacement == undefined || arrayOfAllyPlacement.length == 0)) {
       //Captain is using a mix of block markers and open zones
-      const allyPlacement = filterBlockMarkers(arrayOfMarkers, arrayOfAllyPlacement);
-      setImaginaryMarkers(document.querySelectorAll(".placementAlly"));
+      arrayOfMarkers = setImaginaryMarkers(document.querySelectorAll(".placementAlly"))
       getValidMarkers();
       return;
 
