@@ -15,7 +15,6 @@ const keysToExport = [
     "extraSwitch",
     "idleData",
     "legendarySwitch",
-    "loyaltySwitch",
     "offlinePermission",
     "offlineSwitch",
     "questSwitch",

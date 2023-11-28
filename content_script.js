@@ -203,7 +203,8 @@ async function start() {
           captainFlag = false
         }
         //Pass captain name and check if the captain has a loyalty flag.
-        if (await retrieveFromStorage('loyaltySwitch')) {
+        const loyaltyRadio = await getRadioButton("loyalty");
+        if (loyaltyRadio != 0 && loyaltyRadio != undefined) {
           try {
             captainLoyalty = await getCaptainFlag(captainNameFromDOM, 'captainLoyalty');
             if (!captainLoyalty || captainLoyalty == undefined) {

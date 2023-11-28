@@ -14,7 +14,6 @@ document.addEventListener("DOMContentLoaded", function () {
     initializeSwitch("duelSwitch");
     initializeSwitch("clashSwitch");
     initializeSwitch("campaignSwitch");
-    initializeSwitch("loyaltySwitch");
     initializeSwitch("battlepassSwitch");
     initializeSwitch("offlineSwitch");
     initializeSwitch("skipSwitch");
