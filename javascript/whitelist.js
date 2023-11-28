@@ -4,6 +4,7 @@ const keysToExport = [
     "battlepassSwitch",
     "clashCaptain",
     "clashSwitch",
+    "campaignSwitch",
     "commonSwitch",
     "dailySwitch",
     "duelCaptain",
@@ -25,7 +26,8 @@ const keysToExport = [
     "uncommonSwitch",
     "whitelist",
     "blacklist",
-    "potionlist"
+    "potionlist",
+    "loyalty"
 ];
 
 //Event listener for when the page loads

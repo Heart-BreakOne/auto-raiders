@@ -104,7 +104,10 @@ const arrayOfUnits = [
   { key: "WARBEAST", type: "MELEE", icon: "SRJSYO" },
   { key: "WARRIOR", type: "MELEE", icon: "YTUUAHQ" },
 ];
-
+const loyaltyArray = [{ key: 1, value: "Wood" },
+{ key: 2, value: "Blue" },
+{ key: 3, value: "Gold" },
+{ key: 4, value: "Diamond" }]
 // This is the start, it selects a captain placement as well as collect any rewards to proceed
 async function start() {
 
@@ -249,7 +252,7 @@ async function start() {
         //Assigns the placeUnit button and breaks.
         else {
           diamondLoyalty = false;
-          diamondLoyalty = captainSlot.outerHTML.includes('LoyaltyDiamond');
+          diamondLoyalty = captainSlot.outerHTML;
           placeUnit = button
           break;
         }
@@ -296,13 +299,20 @@ async function openBattlefield() {
     mode = true;
   }
   //Check if user wants to preserve diamond loyalty
-  let preserveDiamond = await retrieveFromStorage('loyaltySwitch');
+  let radioLoyalty = await getRadioButton("loyalty");
 
-  if (preserveDiamond === null || preserveDiamond === undefined) {
-    preserveDiamond = false;
+  let acceptableLoyalty = false;
+  const matchingEntry = loyaltyArray.find(item => diamondLoyalty.includes(item.value));
+  const matchingKey = matchingEntry ? matchingEntry.key : null;
+
+  if (radioLoyalty === 0) {
+    acceptableLoyalty = true;
+  } else if (matchingKey >= radioLoyalty) {
+    acceptableLoyalty = true;
   }
+
   //User wants to preserve diamond loyalty and current captain is not diamond and current mode is campaign
-  if (preserveDiamond && !diamondLoyalty && mode == false) {
+  if (!acceptableLoyalty && mode == false) {
     //Opens battle info and checks chest type.
     battleInfo = document.querySelector(".battleInfoMapTitle")
     battleInfo.click();
@@ -378,7 +388,7 @@ async function getValidMarkers() {
   //Captain is on open map only
   if (arrayOfMarkers.length == 0) {
     //Map without any markers.
-    
+
     //Place imaginary markers to use instead and restart the function to get valid markers
     setImaginaryMarkers(document.querySelectorAll(".placementAlly"));
     getValidMarkers();
@@ -396,9 +406,11 @@ async function getValidMarkers() {
     //Check what is inside new array.
     if (arrayOfMarkers.length == 0 && (arrayOfAllyPlacement == undefined || arrayOfAllyPlacement.length == 0)) {
       //Captain is using a mix of block markers and open zones
-      await flagCaptain('flaggedCaptains');
-      goHome();
+      const allyPlacement = filterBlockMarkers(arrayOfMarkers, arrayOfAllyPlacement);
+      setImaginaryMarkers(document.querySelectorAll(".placementAlly"));
+      getValidMarkers();
       return;
+
     } else {
       //There are vibe or set markers that can be used.
       try {
@@ -536,7 +548,7 @@ async function selectUnit() {
     allUnitsButton.click();
   }
   //Checks if user wants to use potions.
-  let potionState = await getRadioButton();
+  let potionState = await getRadioButton("selectedOption");
   //CHeck if user wants to use potions only with specific captains
   const favoriteSwitch = await getSwitchState("favoriteSwitch");
   let favoritePotion = false;

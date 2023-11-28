@@ -47,28 +47,58 @@ function initializeSwitch(switchId) {
 
 //Event listener to initialize the radio buttons as well as update their states
 document.addEventListener("DOMContentLoaded", function () {
-    // Function to save the new radio button state on the storage
-    function handleRadioButtonChange() {
+    //Function to save the new radio button state on the storage
+    function handlePotionRadioButtonChange() {
         let selectedOption = document.querySelector('input[name="potion"]:checked').value;
-        chrome.storage.local.set({ selectedOption: selectedOption });
-        if (chrome.runtime.lastError) {
-            loadBanner(failureMessage, redColor)
-        } else {
-            loadBanner(successMessage, greenColor)
-        }
+        chrome.storage.local.set({ selectedOption: selectedOption }, function () {
+            if (chrome.runtime.lastError) {
+                loadBanner(failureMessage, redColor);
+            } else {
+                loadBanner(successMessage, greenColor);
+            }
+        });
     }
 
-    // Event listener for when the radio button is changed by the user
-    let radioButtons = document.querySelectorAll('input[name="potion"]');
-    radioButtons.forEach(function (radioButton) {
-        radioButton.addEventListener("change", handleRadioButtonChange);
+    //Event listener for when the potion radio button is changed by the user
+    let potionRadioButtons = document.querySelectorAll('input[name="potion"]');
+    potionRadioButtons.forEach(function (radioButton) {
+        radioButton.addEventListener("change", handlePotionRadioButtonChange);
     });
 
-    // Get radio button state from storage and set the button with the value for the user to visually see
+    //Get potion radio button state from storage and set the button with the value for the user to visually see
     chrome.storage.local.get(["selectedOption"], function (result) {
         let savedOption = result.selectedOption;
         if (savedOption) {
-            let radioToCheck = document.querySelector('input[value="' + savedOption + '"]');
+            let radioToCheck = document.querySelector('input[name="potion"][value="' + savedOption + '"]');
+            if (radioToCheck) {
+                radioToCheck.checked = true;
+            }
+        }
+    });
+
+    //Function to save the new radio button state on the storage
+    function handleLoyaltyRadioButtonChange() {
+        let loyaltyOption = document.querySelector('input[name="loyalty"]:checked').value;
+        chrome.storage.local.set({ loyalty: loyaltyOption }, function () {
+            if (chrome.runtime.lastError) {
+                loadBanner(failureMessage, redColor);
+            } else {
+                loadBanner(successMessage, greenColor);
+            }
+        });
+    }
+
+    // Event listener for when the loyalty radio button is changed by the user
+    let loyaltyRadioButtons = document.querySelectorAll('input[name="loyalty"]');
+    loyaltyRadioButtons.forEach(function (radioButton) {
+        radioButton.addEventListener("change", handleLoyaltyRadioButtonChange);
+    });
+
+    //Get loyalty radio button state from storage and set the button with the value for the user to visually see
+    chrome.storage.local.get(["loyalty"], function (result) {
+        let savedOption = result.loyalty;
+        if (savedOption) {
+            let radioToCheck = document.querySelector('input[name="loyalty"][value="' + savedOption + '"]');
             if (radioToCheck) {
                 radioToCheck.checked = true;
             }
@@ -76,13 +106,13 @@ document.addEventListener("DOMContentLoaded", function () {
     });
 
     document.getElementById("instructions_button").addEventListener('click', function () {
-        // Open the options page
+        //Open the options page
         chrome.tabs.create({ url: "https://heart-breakone.github.io/webpages/how_to_play.html" });
     });
 
     //Event listener for a button to open the options page of the extension (log.html)
     document.getElementById("log_button").addEventListener('click', function () {
-        // Open the options page
+        //Open the options page
         const url = `chrome-extension://${chrome.runtime.id}/html/log.html`
         chrome.tabs.create({ url: url });
     });

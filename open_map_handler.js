@@ -96,3 +96,9 @@ function checkOverlapWithUnits(top, left, dimension) {
 
     return false;
 }
+
+
+function filterBlockMarkers(arrayOfMarkers, arrayOfAllyPlacement) {
+    //The map has block markers and open zones, place imaginary markers where there no block markers.
+
+}
