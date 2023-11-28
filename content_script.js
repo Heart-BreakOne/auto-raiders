@@ -377,6 +377,7 @@ async function getValidMarkers() {
   //Captain is on open map only
   if (arrayOfMarkers.length == 0) {
     //Map without any markers.
+
     //If captain haven't placed any markers, initialize a node list with ally placements
     arrayOfAllyPlacement = document.querySelectorAll(".placementAlly");
     //Get one position within the ally placements
@@ -384,6 +385,12 @@ async function getValidMarkers() {
     //Scroll into the currentMarker position
     moveScreenRandomPosition();
     //There are markers of some kind in the map.
+
+    //Place imaginary markers to use instead and restart the function to get valid markers
+    //setImaginaryMarkers(document.querySelectorAll(".placementAlly"));
+    //getValidMarkers();
+    //return;
+
   } else {
     //Treat the markers to remove block markers
     for (let i = arrayOfMarkers.length - 1; i >= 0; i--) {
@@ -544,6 +551,9 @@ async function selectUnit() {
   let number;
   let epicButton;
 
+  if (!favoriteSwitch) {
+    favoritePotion = true;
+  }
   //Check if current captain is a favorite potion captain
   try {
     if (potionState != 0 && !mode && favoriteSwitch) {
