@@ -1,53 +1,69 @@
-
 const arrayOfUnitNames = ["AMAZON", "ARCHER", "ARTILLERY", "BALLOON", "BARBARIAN", "BERSERKER", "BLOB", "BOMBER", "BUSTER", "CENTURION", "FAIRY", "FLAG", "FLYING", "GLADIATOR", "HEALER", "LANCER", "MAGE", "MONK", "MUSKETEER", "NECROMANCER", "ORC", "PALADIN", "ROGUE", "SAINT", "SHINOBI", "SPY", "TANK", "TEMPLAR", "VAMPIRE", "WARBEAST", "WARRIOR"];
 let allUnits
+let unitDimension
+let settingImaginaryMarker = false;
 
 function setImaginaryMarkers(placementTiles) {
-    allUnits = Array.from(document.querySelectorAll(".battleFieldUnitClickArea"));
-    const last10Units = Array.from(allUnits).slice(-10);
 
+    if (settingImaginaryMarker) {
+        return;
+    }
+    settingImaginaryMarker = true;
+    allUnits = Array.from(document.querySelectorAll(".battleFieldUnitClickArea"));
     let dimension = 0;
 
-    // Calculate the smallest dimension among the selected units
-    for (let i = 0; i < last10Units.length; i++) {
-        const unit = last10Units[i];
-        if (!arrayOfUnitNames.includes(unit.previousSibling.alt.toUpperCase())) {
+    for (let i = allUnits.length - 1; i >= 0; i--) {
+        const unit = allUnits[i];
+        let unitName = unit.previousSibling.alt;
+        unitName = unitName.replace(" ", "").toUpperCase();
+        if (arrayOfUnitNames.some(substring => unitName.includes(substring))) {
+            const newDimension = unit.offsetWidth;
+            if (dimension === 0) {
+                dimension = newDimension;
+            } else if (newDimension < dimension) {
+                dimension = newDimension;
+            }
+        } else {
             continue;
         }
-        const newDimension = unit.offsetWidth;
-        if (dimension === 0 || newDimension < dimension) {
-            dimension = newDimension;
-        }
+
     }
+
+    unitDimension = dimension
+    dimension = dimension * 1.3333333333333333;
+
+    if (dimension === 0) {
+        return;
+    }
+
     for (let i = 0; i < placementTiles.length; i++) {
         const tile = placementTiles[i];
-        const numberOfMarkersX = Math.ceil(tile.offsetHeight / dimension); // Use height for X and round up
-        const numberOfMarkersY = Math.ceil(tile.offsetWidth / dimension); // Use width for Y and round up
+        const numberOfMarkersX = Math.ceil(tile.offsetHeight / dimension);
+        const numberOfMarkersY = Math.ceil(tile.offsetWidth / dimension);
 
         for (let x = 0; x < numberOfMarkersX; x++) {
             for (let y = 0; y < numberOfMarkersY; y++) {
-                // Skip bottom row and rightmost column
-                if (x === numberOfMarkersX - 1 || y === numberOfMarkersY - 1) {
+                const proposedMarkerTop = parseFloat(tile.offsetTop + (x * dimension));
+                const proposedMarkerLeft = parseFloat(tile.offsetLeft + (y * dimension));
+
+                if (checkOverlapWithUnits(proposedMarkerTop, proposedMarkerLeft, dimension)) {
                     continue;
                 }
+
                 const imaginaryMarker = document.createElement("div");
                 imaginaryMarker.classList.add("planIcon");
                 imaginaryMarker.style.position = "absolute";
-
-                // Calculate the position of each imaginary marker within the tile
-                const markerTop = parseInt(tile.offsetTop + (x * dimension));
-                const markerLeft = parseInt(tile.offsetLeft + (y * dimension));
-
-                imaginaryMarker.style.top = markerTop + "px";
-                imaginaryMarker.style.left = markerLeft + "px";
+                imaginaryMarker.style.top = proposedMarkerTop + "px";
+                imaginaryMarker.style.left = proposedMarkerLeft + "px";
                 imaginaryMarker.style.width = dimension + "px";
                 imaginaryMarker.style.height = dimension + "px";
-                imaginaryMarker.style.backgroundColor = "blue";
                 imaginaryMarker.style.backgroundImage = "url('1EPFWIYQTQRB9OWOGAAAABJRU5ERKJGGG')";
-                imaginaryMarker.style.backgroundSize = "0";
-                imaginaryMarker.style.border = "2px solid black";
 
-                // Append the imaginary marker to the element with class 'battlefield'
+                //For testing uncomment
+                //imaginaryMarker.style.backgroundColor = "blue";
+                //imaginaryMarker.style.backgroundSize = "0";
+                //imaginaryMarker.style.border = "2px solid black";
+
                 const battlefieldElement = document.querySelector(".battlefield");
                 if (battlefieldElement) {
                     battlefieldElement.appendChild(imaginaryMarker);
@@ -56,4 +72,27 @@ function setImaginaryMarkers(placementTiles) {
         }
     }
 
+    settingImaginaryMarker = false;
+}
+
+function checkOverlapWithUnits(top, left, dimension) {
+    for (let i = 0; i < allUnits.length; i++) {
+        const unit = allUnits[i];
+        const unitParent = unit.parentElement; 
+
+        const unitTop = unitParent.offsetTop + (unitParent.offsetHeight / 2) - (unit.offsetHeight / 2);
+        const unitLeft = unitParent.offsetLeft + (unitParent.offsetWidth / 2) - (unit.offsetWidth / 2);
+
+
+        if (
+            top + dimension > unitTop &&
+            left + dimension > unitLeft &&
+            top < unitTop + unit.offsetHeight &&
+            left < unitLeft + unit.offsetWidth
+        ) {
+            return true;
+        }
+    }
+
+    return false;
 }
