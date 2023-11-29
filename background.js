@@ -1,17 +1,9 @@
 //Listens for messages from the popup script containing the toggle switch states and send them to the content script.
 'use strict';
-console.log("log");
-//Open log page on a new tab from the game tab
-chrome.runtime.onMessage.addListener(function (request) {
-  if (request.action === 'openNewTab') {
-    const url = `chrome-extension://${chrome.runtime.id}/log.html`;
-    chrome.tabs.create({ url: url });
-  }
-});
 
 //Spoof user agent to load mobile mode 
 // Store the tab IDs that have already been processed
-const processedTabs = new Set();
+let processedTabs = new Set();
 
 // Define the static user agent
 const staticUserAgent = 'Mozilla/5.0 (Linux; Android 13; Pixel 7 Pro) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/112.0.0.0 Mobile Safari/537.36';
@@ -54,13 +46,17 @@ async function updateUserAgent(tab) {
 
   // Reload the tab
   chrome.tabs.reload(tab.id, {
-    bypassCache: false
+    bypassCache: true
   });
 }
 
 // Run the logic when a tab is updated
 chrome.tabs.onUpdated.addListener((tabId, changeInfo, tab) => {
   if (changeInfo.status === 'complete') {
+    if (processedTabs.has(tabId)) {
+      return;
+    }
+    processedTabs.add(tabId);
     updateUserAgent(tab);
   }
 });
@@ -78,6 +74,7 @@ chrome.tabs.onRemoved.addListener(tabId => {
   // Remove the tab from the processedTabs set
   processedTabs.delete(tabId);
 });
+
 
 // Map to keep track of connected ports
 const connectedPorts = new Map();
@@ -99,6 +96,16 @@ chrome.runtime.onConnect.addListener((port) => {
       //Might need async handling
       const response = await getCaptainLoyalty(msg.captainNameFromDOM);
       port.postMessage({ response });
+    }
+
+    if (msg.action === "reloadCleanCache") {
+      processedTabs = new Set();
+      chrome.tabs.query({ active: true, currentWindow: true }, function (tabs) {
+        if (tabs && tabs.length > 0) {
+          const currentTab = tabs[0];
+          updateUserAgent(currentTab);
+        }
+      });
     }
   });
 

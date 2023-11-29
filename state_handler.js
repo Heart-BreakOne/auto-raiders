@@ -1,9 +1,21 @@
 //This file keeps track of situation in which the game froze or crashes as well as handling of the back buttons.
 
+
+/* Force a tab crash
+chrome://crash
+*/
+
 //Initializing variables
 const battleDelay = (ms) => new Promise((res) => setTimeout(res, ms));
 let domChanged = false;
 let checkingBattle = false;
+let placeUnitCounter = 0;
+let confirmCounter = 0
+let previousPlaceButtonCount = 0;
+let previousConfirmButtonCount = 0;
+let isBattlefield = null;
+let initialPlaceButton = null;
+let initialConfirmButton = null;
 //Runs checkBattle() every 15 seconds
 setInterval(checkBattle, 15000);
 
@@ -97,6 +109,11 @@ function closeAll() {
 //Mutator observer to remove stuck modals, frozen states and update recently loaded elements.
 const observer = new MutationObserver(async function (mutations) {
 
+  //If desktop mode loads, reload with mobile mode
+  if (document.querySelector("#\\#canvas")) {
+    contentPort.postMessage({ action: "reloadCleanCache", });
+  }
+
   domChanged = true;
   reloadRoot();
 
@@ -107,16 +124,6 @@ const observer = new MutationObserver(async function (mutations) {
     return;
   };
 
-  let blackFridayBanner = document.querySelector(".tickerItemCont");
-  let saleTag = document.querySelector(".saleTagCont");
-  if (saleTag) {
-    saleTag.style.display = "none";
-    if (blackFridayBanner) {
-      blackFridayBanner.style.display = "none";
-    }
-  }
-
-
   //Check if current screen is the menu to trigger the equip requests.
   const equipSwitch = await retrieveFromStorage("equipSwitch");
   if (equipSwitch) {
@@ -124,6 +131,41 @@ const observer = new MutationObserver(async function (mutations) {
     if (captainSelectionView) {
       const port = chrome.runtime.connect({ name: "content-script" });
       port.postMessage({ action: "start" });
+    }
+  }
+
+  //If there too many attemps to place a unit, go home.
+
+  if (isBattlefield == null || isBattlefield === undefined) {
+    isBattlefield = document.querySelector(".battlefield");
+  } else {
+    let placeButton = document.querySelector(".actionButton.actionButtonPrimary.placeUnitButton");
+    let confirmButton = document.querySelector(".actionButton.actionButtonDisabled.placerButton");
+
+    if (placeButton && placeButton !== initialPlaceButton && !placeButton.classList.contains("new")) {
+      placeUnitCounter++;
+      initialPlaceButton = placeButton;
+      placeButton.classList.add("new");
+    } else if (confirmButton && confirmButton !== initialConfirmButton && !confirmButton.classList.contains("new")) {
+      confirmCounter++;
+      initialConfirmButton = confirmButton;
+      confirmButton.classList.add("new");
+    }
+
+    if (placeUnitCounter >= 4 || confirmCounter >= 4) {
+      isBattlefield = null;
+      initialPlaceButton = null;
+      initialConfirmButton = null;
+      confirmButton = null;
+      placeButton = null;
+      placeUnitCounter = 0;
+      confirmCounter = 0;
+      const close = document.querySelector(".actionButton.actionButtonNegative.placerButton");
+      if(close) {
+        close.click();
+      }
+      goHome();
+      return;
     }
   }
 
