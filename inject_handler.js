@@ -25,27 +25,6 @@ font-weight: bold;
 //When invoked this function injects buttons into the page
 function injectIntoDOM() {
 
-    //Injecting button
-    let settingsNavItem = document.querySelector(".settingsNavItem");
-    let mainNavContainer = document.querySelector(".mainNavCont");
-    if (!settingsNavItem && mainNavContainer) {
-        settingsNavItem = document.createElement("div");
-        settingsNavItem.className = "settingsNavItem";
-
-        settingsNavItem.innerHTML = `
-        <div class="mainNavItem" style="padding-right: 20px; font-size: xx-large; font-weight: bold">
-
-        <div class="mainNavItemText">SETTINGS</div>
-    </div >
-    `;
-
-        mainNavContainer.appendChild(settingsNavItem);
-
-        settingsNavItem.addEventListener("click", function () {
-            injectOuterIframe();
-        });
-    }
-
     //Initialized a node list with all the captains slots
     const offlineSlots = document.querySelectorAll(".capSlot");
     // Initialize a counter for generating unique IDs
@@ -80,7 +59,7 @@ function injectIntoDOM() {
     if (!existingButton) {
         newButton = document.createElement("button");
         newButton.className = "wipeButton";
-        newButton.innerHTML = "Wipe<br>data";
+        newButton.innerHTML = "Wipe<br>states";
         newButton.style.cssText = wipeStyles;
         let quantityItemsCont = document.querySelector(".quantityItemsCont");
         quantityItemsCont.insertBefore(newButton, quantityItemsCont.firstChild);
@@ -241,79 +220,5 @@ function getIdleState(id) {
             let booleanValue = ids[id];
             resolve(booleanValue !== undefined ? booleanValue : true);
         });
-    });
-}
-
-function injectOuterIframe() {
-    const outerContainer = document.querySelector(".outer_container");
-    const battleViewCheck = document.querySelector('.battleView');
-
-    if (!outerContainer && battleViewCheck) {
-        const outerContainer = document.createElement('div');
-
-        outerContainer.style.width = '100%';
-        outerContainer.style.height = '100%';
-        outerContainer.style.position = 'absolute';
-
-        outerContainer.style.top = '0';
-        outerContainer.style.left = '0';
-        outerContainer.style.backgroundColor = '#1b2a35';
-
-        outerContainer.style.margin = '0';
-        outerContainer.classList.add('outer_container');
-
-        document.body.appendChild(outerContainer);
-
-        injectIFrame(outerContainer);
-        injectCloseButton(outerContainer);
-    }
-}
-
-function injectIFrame(outerContainer) {
-    const innerIframeCheck = outerContainer.querySelector('.settings_iframe');
-
-    if (!innerIframeCheck) {
-        const innerIframe = document.createElement('iframe');
-        const localFileURL = chrome.runtime.getURL('iframe.html');
-
-        innerIframe.src = localFileURL;
-
-        innerIframe.style.width = '100%';
-        innerIframe.style.height = '85%';
-        innerIframe.style.border = 'none';
-
-        innerIframe.classList.add('settings_iframe');
-
-
-        outerContainer.appendChild(innerIframe);
-    }
-}
-
-function injectCloseButton(outerContainer) {
-
-    const closeButton = document.createElement('button');
-    const innerIframe = document.querySelector(".settings_iframe");
-
-    //Button styles
-    closeButton.style.position = 'absolute';
-    closeButton.style.bottom = '20px';
-    closeButton.style.right = '50%';
-    closeButton.style.transform = 'translateX(50%)';
-    closeButton.style.zIndex = '9999';
-    closeButton.style.cursor = 'pointer';
-    closeButton.classList.add("far", "fa-times");
-    //Get dimensions
-    const tempBtn = document.querySelector(".far.fa-times");
-    const tempsize = parseFloat(window.getComputedStyle(tempBtn).width) || 0;
-    const increaseAmount = tempsize * 0.003;
-    closeButton.style.width = closeButton.style.height = `${tempsize + increaseAmount}px`;
-
-    outerContainer.appendChild(closeButton);
-
-    // Add a click event listener to the button
-    closeButton.addEventListener('click', function () {
-        closeButton.remove();
-        innerIframe.remove();
-        outerContainer.remove();
     });
 }

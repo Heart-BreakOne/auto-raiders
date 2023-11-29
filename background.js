@@ -4,7 +4,6 @@
 //Spoof user agent to load mobile mode 
 // Store the tab IDs that have already been processed
 let processedTabs = new Set();
-
 // Define the static user agent
 const staticUserAgent = 'Mozilla/5.0 (Linux; Android 13; Pixel 7 Pro) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/112.0.0.0 Mobile Safari/537.36';
 
@@ -86,8 +85,17 @@ chrome.runtime.onConnect.addListener((port) => {
 
   // Listen for messages from content script
   port.onMessage.addListener(async (msg) => {
-    if (msg.action === "start") {
-      startEquipSkins();
+    if (msg.action === "equipSkin") {
+      let response = { success: false, result: null };
+
+      try {
+        await startEquipSkins(msg.data.captainNameFromDOM);
+        response.success = true;
+        response.result = "Equipped skin";
+      } catch (error) {
+        response.result = error.message;
+      }
+      port.postMessage({ action: "equipSkin", success: response.success, result: response.result });
     }
 
     if (msg.action === "getLoyalty") {
@@ -114,7 +122,6 @@ chrome.runtime.onConnect.addListener((port) => {
 //Declaring variables
 let isRunning = false;
 let cookieString;
-let captainArrayData;
 let skinArrayData;
 let unitArrayData;
 let equipArrayData;
@@ -123,24 +130,20 @@ let clientVersion;
 let gameDataVersion;
 
 //Initialize arrays with null values, get authentication cookies and make requests for the data of interest.
-async function startEquipSkins() {
+async function startEquipSkins(captainNameFromDOM) {
 
   if (isRunning) {
     return;
   }
   isRunning = true;
-  captainArrayData = [];
   skinArrayData = [];
   unitArrayData = [];
   equipArrayData = [];
 
   await getCookies();
 
-  //Get current slot captains names
-  await getActiveRaids();
-
   //Get list of all skins
-  await getSkins();
+  await getSkins(captainNameFromDOM);
 
   //Get list of all units
   await getUnits();
@@ -174,37 +177,8 @@ async function getCookies() {
   });
 }
 
-// Get current slot captains names
-async function getActiveRaids() {
-  //Post request to get the list of captain names
-  try {
-    const response = await fetch(`https://www.streamraiders.com/api/game/?cn=getActiveRaidsLite&clientVersion=${clientVersion}&clientPlatform=MobileLite&gameDataVersion=${gameDataVersion}&command=getActiveRaidsLite&isCaptain=0`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/x-www-form-urlencoded',
-        'Cookie': cookieString,
-      },
-    });
-
-    if (!response.ok) {
-      throw new Error('Network response was not ok');
-    }
-
-    //Get captain name from the json reponse
-    const raidDataArray = await response.json();
-
-    for (let i = 0; i < raidDataArray.data.length; i++) {
-      const position = raidDataArray.data[i];
-      captainArrayData.push(position.twitchUserName)
-    };
-
-  } catch (error) {
-    console.error('Error fetching active raids:', error.message);
-  }
-}
-
 //Get all skins
-async function getSkins() {
+async function getSkins(captainName) {
   //Post request to get the list of skins
   try {
     const response = await fetch(`https://www.streamraiders.com/api/game/?cn=getUserItems&clientVersion=${clientVersion}&clientPlatform=MobileLite&gameDataVersion=${gameDataVersion}&command=getUserItems&isCaptain=0`, {
@@ -224,7 +198,10 @@ async function getSkins() {
 
     for (let i = 0; i < skinsArray.data.length; i++) {
       const position = skinsArray.data[i];
-      skinArrayData.push(position.productId)
+      const skinId = position.productId.toUpperCase()
+      if (skinId.includes(captainName.toUpperCase())) {
+        skinArrayData.push(position.productId);
+      }
     };
 
   } catch (error) {
@@ -264,15 +241,8 @@ async function getUnits() {
 //Now that all lists were obtained, it's time to sort the data
 function manageArray() {
 
-  //Shuffle captains
-  shuffleArray(captainArrayData);
+  //Shuffle arrays
   shuffleArray(skinArrayData);
-  shuffleArray(unitArrayData);
-
-  //Remove skins that dont belong to any of the current captain slots
-  skinArrayData = skinArrayData.filter(value => {
-    return captainArrayData.some(substring => value.includes(substring));
-  });
 
   //Remove substrings from the unitType that will invalidate future checks
   unitArrayData.forEach(unit => {

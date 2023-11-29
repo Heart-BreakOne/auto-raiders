@@ -140,15 +140,13 @@ function loadBanner(message, color) {
     //Banner styles so a retangle can be displayed on the center of the screen
     const bannerStyles = `
         background-color: ${color};
+        zIndex: 9999;
         color: white;
         position: fixed;
         font-size: xxx-large;
         text-align: center;
         padding: 10px;
-        margin-top: 20%;
-        margin-left: 30%;
-        margin-right: 30%;
-        border-radius: 25px;
+        width: 100%;
     `;
 
     //Creates the element

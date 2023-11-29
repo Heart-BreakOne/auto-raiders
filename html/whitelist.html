@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="en">
 
@@ -15,7 +14,7 @@
         <h1>Whitelist and blacklist captains here</h1>
         <h1>Import and export your settings here</h1>
         <ul>
-            <li>When switching an idle captain the order of priority is: Diamond > Gold > Silver > Bronze > Whitelist >
+            <li>When switching an idle captain the order of priority is: Masterlist > Diamond > Gold > Silver > Bronze > Whitelist >
                 Favorites > Any captain</li>
             <li>Blacklisted captains will be ignored, unless they are the only ones in the Any Captains list.</li>
             <li>Write the name of the Captains with a space in between</li>
@@ -23,8 +22,14 @@
             <li>When you blacklist a captain, make sure they are not in the in-game favorites list</li>
             <li>Uppercasing and lowercasing don't matter, but the captain name MUST be typed correctly (e.g CaptainZ1,
                 captainz1, CAPTAINZ1 are all valid because their only difference is the casing)</li>
+            <li><b>WARNING: Masterlist has two states</b></li>
+            <li>IDLE SWITCHER: Master list has priority over the other states if enabled</li>
+            <li>ENABLE ON THE SETTINGS: Automatically switch to a masterlisted captain.</li>
         </ul>
         <div>
+            <label>Masterlist (WARNING, MASTERLIST HAS BYPASS PRIORITY. READ ABOVE):</label><br>
+            <textarea id="whitelist" name="whitelist" placeholder="captain1 captain2 captain3 captain4"></textarea><br>
+            <br>
             <label>Whitelist:</label><br>
             <textarea id="whitelist" name="whitelist" placeholder="captain1 captain2 captain3 captain4"></textarea><br>
             <br>
@@ -32,7 +37,8 @@
             <textarea id="blacklist" name="blacklist" placeholder="captain1 captain2 captain3 captain4"></textarea><br>
             <br>
             <label>Potion whitelist (ENABLE ON THE SETTINGS):</label><br>
-            <textarea id="potionlist" name="potionlist" placeholder="captain1 captain2 captain3 captain4"></textarea><br>
+            <textarea id="potionlist" name="potionlist"
+                placeholder="captain1 captain2 captain3 captain4"></textarea><br>
         </div>
     </div>
     <div class="center-container">

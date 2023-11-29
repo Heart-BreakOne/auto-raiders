@@ -11,7 +11,7 @@ input[type="radio"] {
 table {
     width: 100%;
     border-collapse: collapse;
-    font-size: xx-large;
+    font-size: large;
     font-weight: bold;
     color: gray;
 }
@@ -23,12 +23,12 @@ td {
     padding: 8px;
 }
 
-.button_container {
+.button_container, h1 {
     text-align: center;
 }
 
 .green_button {
-    font-size: xx-large;
+    font-size: large;
     color: white;
     font-weight: bold;
     margin-right: 50px;

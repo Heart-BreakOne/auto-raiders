@@ -124,16 +124,6 @@ const observer = new MutationObserver(async function (mutations) {
     return;
   };
 
-  //Check if current screen is the menu to trigger the equip requests.
-  const equipSwitch = await retrieveFromStorage("equipSwitch");
-  if (equipSwitch) {
-    const captainSelectionView = document.querySelector(".battleView");
-    if (captainSelectionView) {
-      const port = chrome.runtime.connect({ name: "content-script" });
-      port.postMessage({ action: "start" });
-    }
-  }
-
   //If there too many attemps to place a unit, go home.
 
   if (isBattlefield == null || isBattlefield === undefined) {
@@ -171,19 +161,8 @@ const observer = new MutationObserver(async function (mutations) {
 
   mutations.forEach(async function (mutation) {
     mutation.addedNodes.forEach(async function (node) {
-
-      // Check for changes in capSlot changes to equip skins
-      if (equipSwitch) {
-        document.querySelectorAll('.capSlot').forEach(capSlotElement => {
-          if (capSlotElement.classList.contains('capSlotActive') || capSlotElement.classList.contains('capSlotInactive')) {
-            const port = chrome.runtime.connect({ name: "content-script" });
-            port.postMessage({ action: "start" });
-          }
-        });
-      }
-
+      
       //Hides reward modal that fails to be clicked.
-
       //Hide some elements from user view so they don't affect user interaction.
       const rewardsScrim = document.querySelector(".rewardsScrim");
       const toast = document.querySelector(".toastsCont.toastsContMore");

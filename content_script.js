@@ -265,6 +265,31 @@ async function start() {
 
   //If place unit exists, clicks it and loads the invokes the openBattlefield function
   if (placeUnit) {
+    //Equip units from here
+    const equipSwitch = await retrieveFromStorage("equipSwitch");
+    if (equipSwitch) {
+      const port = chrome.runtime.connect({ name: "content-script" });
+
+      try {
+        port.postMessage({
+          action: "equipSkin",
+          data: { captainNameFromDOM }
+        });
+
+        await new Promise((resolve) => {
+          port.onMessage.addListener((msg) => {
+            if (msg.action === "equipSkin") {
+              resolve();
+            }
+          });
+        });
+      } catch (error) {
+        console.error(error.result);
+      } finally {
+        port.disconnect();
+      }
+    }
+
     placeUnit.click();
     await delay(1000);
     openBattlefield();
@@ -299,7 +324,7 @@ async function openBattlefield() {
   if (battleInfo.includes("Level") || battleInfo.includes("Versus")) {
     mode = true;
   }
-  //Check if user wants to preserve diamond loyalty
+  //Check if user wants to preserve loyalty
   let radioLoyalty = await getRadioButton("loyalty");
 
   let acceptableLoyalty = false;
@@ -380,7 +405,7 @@ async function getValidMarkers() {
     //Initializes a variable with battle clock
     const timeText = clockElement.innerText.replace(':', '');
     const time = parseInt(timeText, 10);
-    //If the timer is at 29:00 or above, go back to the main menu as the captain may still place be placing markers.
+    //If the timer is at 29:00 or above, go back to the main menu as the captain may still be placing markers.
     if (time > 2830) {
       goHome();
       return;
@@ -406,7 +431,8 @@ async function getValidMarkers() {
 
     //Check what is inside new array.
     if (arrayOfMarkers.length == 0 && (arrayOfAllyPlacement == undefined || arrayOfAllyPlacement.length == 0)) {
-      //Captain is using a mix of block markers and open zones
+      //Captain is using a mix of block markers and open zones.
+      //Place imaginary markers to use instead
       arrayOfMarkers = setImaginaryMarkers(document.querySelectorAll(".placementAlly"))
       getValidMarkers();
       return;

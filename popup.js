@@ -1,6 +1,6 @@
 //Event listener to initialize the radio buttons as well as update their states
 document.addEventListener("DOMContentLoaded", function () {
-    
+
     document.getElementById("instructions_button").addEventListener('click', function () {
         // Open the options page
         chrome.tabs.create({ url: "https://heart-breakone.github.io/webpages/how_to_play.html" });
@@ -19,4 +19,8 @@ document.addEventListener("DOMContentLoaded", function () {
         chrome.tabs.create({ url: url });
     });
 
+    document.getElementById('iframe_button').addEventListener('click', () => {
+        const url = `chrome-extension://${chrome.runtime.id}/iframe.html`
+        chrome.tabs.create({ url: url });
+    });
 });
