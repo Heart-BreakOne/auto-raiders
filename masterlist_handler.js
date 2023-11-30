@@ -20,6 +20,9 @@ async function switchToMasterList() {
 
         const slot = allCaptains[i];
 
+        if (slot.innerHTML.includes("DISABLED")) {
+            continue;
+        }
         //Remove captains with passwords
         const close = slot.querySelector(".capSlotClose");
         if (slot.innerHTML.includes("ENTER_CODE")) {
