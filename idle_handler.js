@@ -12,7 +12,6 @@ let captainButton;
 
 //This function checks if a captain is idling or if the slot is empty and gets a replacement
 async function checkIdleCaptains() {
-
     //Checks if the game is on the main menu, returns if not.
     const battleView = document.querySelector(".battleView");
     if (!battleView) return;
@@ -51,7 +50,7 @@ async function checkIdleCaptains() {
             //Clicks select button to open the captains list
             selectButton.click();
             //Invokes function to get a captain replacement.
-            switchIdleCaptain()
+           await switchIdleCaptain()
             return;
         } else if (statusArray.includes(battleStatus)) {
             //If the captain is possibly on an idle state
@@ -65,7 +64,7 @@ async function checkIdleCaptains() {
             if (isIdle) {
                 await abandonBattle("Abandoned", slot, "abandoned");
                 //Invokes function to get a captain replacement.
-                switchIdleCaptain();
+                await switchIdleCaptain();
                 return;
             }
         }
@@ -181,9 +180,19 @@ async function switchIdleCaptain() {
 
     let whiteList = await filterCaptainList('whitelist', fullCaptainList);
     let blackList = await filterCaptainList('blacklist', fullCaptainList);
+    let masterList = await filterCaptainList('masterlist', fullCaptainList);
     const acceptableList = fullCaptainList.filter(
         entry => !blackList.includes(entry)
     );
+
+    //Manage masterlist states
+    const skipIdleMasterSwitch = await getSwitchState("skipIdleMasterSwitch");
+    const idleMasterSwitch = await getSwitchState("idleMasterSwitch");
+    //User wants to leave slot blank if there no masterlisted captains online
+    if (skipIdleMasterSwitch && masterList.length == 0) {
+        closeAll();
+        return;
+    }
 
     //Invokes function to get list with gold loyalty captains
     let diamondLoyaltyList = createLoyaltyList(fullCaptainList, diamondLoyaltyString, blackList);
@@ -209,7 +218,10 @@ async function switchIdleCaptain() {
     });
 
     //If diamond loyalty captains exist, click on a random one
-    if (diamondLoyaltyList.length != 0) {
+    if (idleMasterSwitch && masterList.length != 0) {
+        captainButton = masterList[0].querySelector(".actionButton.actionButtonPrimary.searchResultButton");
+        captainButton.click();
+    } else if (diamondLoyaltyList.length != 0) {
         captainButton = diamondLoyaltyList[getRandomIndex(diamondLoyaltyList.length)].querySelector(".actionButton.actionButtonPrimary.searchResultButton");
         captainButton.click();
     }
@@ -376,4 +388,4 @@ async function abandonBattle(status, slot, status1) {
     //Clicks the select button to open captain selection list
     const selectButton = slot.querySelector(".actionButton.actionButtonPrimary.capSlotButton.capSlotButtonAction");
     selectButton.click();
-}
+} 

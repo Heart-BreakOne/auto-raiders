@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>How to play</title>
+    <link rel="stylesheet" href="/styles/how_to_play_styles.css">
+</head>
+
+<body>
+    <h1>SRHelper is a click emulator for the game Stream Raiders.</h1>
+    <h2>Download for Google Chrome at the extension store <a href="https://chromewebstore.google.com/detail/srhelper/flgahoglenmjoegheodkhahipokcilal">here</a></h2>
+    <label></label><br>
+    <div class="container">
+        To get started, load the game after installing the extension and click on the extension icon on the extensions
+        tab. That will open the SRHelper popup screen.<br>The popup has several settings to tailor the gameplay to
+        your
+        needs. Some of them are mandatory such as which units are allowed to be placed.<br>
+        Below is the explanation of all the extension settings and how they work:
+    </div><br>
+    <table border="1">
+        <tr>
+            <td>Reloader</td>
+            <td>Due to memory and caching, the game eventually becomes unstable and unresponsive until the tab unrecoverably crashes. To mitigate this effect, set a period in minutes for the website's page to automatically refresh so the game is cleared from memory. Default is 60 minutes.</td>
+        </tr>
+        <tr>
+            <td>Switch idle captain: It will always switch to a
+                campaign captain</td>
+            <td>Switch idle captain after 15 minutes, the idle states are: if a captain doesn't find a battle, doesn't
+                start a battle or doesn't collect the reward.</td>
+        </tr>
+        <tr>
+            <td>Leave slot empty if there aren't any loyalty captains to switch</td>
+            <td>After removing an idle captain, by default the extension will seek a captain with loyalty: diamond,
+                gold, silver, then bronze. If it doesn't find any it will seek a favorited captain. If doesn't find any
+                it will randomly select one, if this option is enabled it won't select a random captain if a loyalty/favorite
+                captain isn't available.</td>
+        </tr>
+        <tr>
+            <td>Buy Scrolls</td>
+            <td>Automatically buy scrolls from the store.</td>
+        </tr>
+        <tr>
+            <td>Buy extra $100 scrolls</td>
+            <td>Refresh the store for 100 coins and buy the scrolls.</td>
+        </tr>
+        <tr>
+            <td>Collect quests</td>
+            <td>Collect completed quests.</td>
+        </tr>
+        <tr>
+            <td>Collect daily reward</td>
+            <td>Collect free daily event rewards such as cupcakes.</td>
+        </tr>
+        <tr>
+            <td>Equip captain skins</td>
+            <td>Automatically equip captain skins</td>
+        </tr>
+        <tr>
+            <td>Collect battlepass</td>
+            <td>Collect completed battlepasses (it will not collect potions if the amount of potions is maxed out).</td>
+        </tr>
+        <tr>
+            <td colspan="2" style="font-size: 18px; text-align: center;"><b>Placeable units</b></td>
+        </tr>
+        <tr>
+            <td>Use common units</td>
+            <td>Allow the placement of common units.</td>
+        </tr>
+        <tr>
+            <td>Use uncommon units</td>
+            <td>Allow the placement of uncommon units.</td>
+        </tr>
+        <tr>
+            <td>Use rare units</td>
+            <td>Allow the placement of rare units.</td>
+        </tr>
+        <tr>
+            <td>Use legendary units</td>
+            <td>Allow the placement of legendary units.</td>
+        </tr>
+        <tr>
+            <td colspan="2" style="font-size: 18px; text-align: center;"><b>Throttle to place only one unit.</b></td>
+        </tr>
+        <tr>
+            <td>Unlimited campaign</td>
+            <td>Place more than one unit on campaign mode.</td>
+        </tr>
+        <tr>
+            <td>Unlimited duels</td>
+            <td>Place more than one unit on duel mode.</td>
+        </tr>
+        <tr>
+            <td>Unlimited clashes</td>
+            <td>Place more than one unit on clash mode.</td>
+        </tr>
+        <tr>
+            <td>Unlimited dungeons</td>
+            <td>Place more than one unit on dungeon mode.</td>
+        </tr>
+        <tr>
+            <td colspan="2" style="font-size: 18px; text-align: center;"><b>Loyalty preservation.</b></td>
+        </tr>
+        <tr>
+            <td>Don't preserve loyalty</td>
+            <td>Switch to a captain regardless of loyalty.</td>
+        </tr>
+        <tr>
+            <td>Preserve bronze loyalty</td>
+            <td>Switch to ac aptain if they are at least bronze.</td>
+        </tr>
+        <tr>
+            <td>Preserve silver loyalty</td>
+            <td>Switch to a captain if they are at least silver.</td>
+        </tr>
+        <tr>
+            <td>Preserve gold loyalty</td>
+            <td>Switch to a  captain if they are at least gold.</td>
+        </tr>
+        <tr>
+            <td>Preserve diamond loyalty</td>
+            <td>Switch to a captain if they are at least diamond.</td>
+        </tr>
+        <tr>
+            <td colspan="2" style="font-size: 18px; text-align: center;"><b>Live captains and Masterlist</b></td>
+        </tr>
+        <tr>
+            <td>Force live switch to masterlist</td>
+            <td>If a slot has a captain that isn't masterlisted, it will be switched on the first opportunity.</td>
+        </tr>
+        <tr>
+            <td>Force live switch to priority masterlist</td>
+            <td>Switch a masterlisted captain to another masterlisted captain that is in front of the list.</td>
+        </tr>
+        <tr>
+            <td colspan="2" style="font-size: 18px; text-align: center;"><b>Idle captains and Masterlist</b></td>
+        </tr>
+        <tr>
+            <td>Prioritize masterlist on idle switch</td>
+            <td>Masterlist will have priority over diamond, gold, silver, bronze, whitelist and favorite list.</td>
+        </tr>
+        <tr>
+            <td>Skip idle switch if no masterlist is online</td>
+            <td>If there are no masterlist captains online, leave the slot empty.</td>
+        </tr>
+        <tr>
+            <td colspan="2" style="font-size: 18px; text-align: center;"><b>Epic units/Potion usage</b></td>
+        </tr>
+        <tr>
+            <td>Potion whitelist</td>
+            <td>Use potions only if the captain is potionlisted. Potion usage must be set to 45 or 100.</td>
+        </tr>
+        <tr>
+            <td>No potions</td>
+            <td>No potions will be used.</td>
+        </tr>
+        <tr>
+            <td>Potions at 45</td>
+            <td>If there's a minimum of 45 potions, epic units will used.</td>
+        </tr>
+        <tr>
+            <td>Potions at 100</td>
+            <td>If there's exactly 100 potions, epic units will be used.</td>
+        </tr>
+        <tr>
+            <td colspan="2" style="font-size: 18px; text-align: center;"><b>Color code: From time to time you'll see the slots changing colors, here's what they
+                    mean. Units won't be placed on colored slots, new placement attempts are made every 3 minutes</b></td>
+        </tr>
+        <tr>
+            <td>Red</td>
+            <td>It means that a slot is running a special mode (dungeons/PVP) while a second captain switched to the same mode, the second
+                captain will be colored red and no units will be placed to avoid resetting keys for example. It also
+                means that a captain was running a special mode and switched to campaign, some users dislike this
+                because it locks the slot for 30 minutes, no units will be placed to preserve the slot.</td>
+        </tr>
+        <tr>
+            <td>Purple</td>
+            <td>There aren't any units available to be placed on the available markers, this can be due to units on
+                cooldown or unmatching markers.</td>
+        </tr>
+        <tr>
+            <td>Blue</td>
+            <td>If the preserve diamond loyalty option is enabled and the captain is on a loyalty chest and doesn't have
+                loyalty no units will be placed.</td>
+        </tr>
+        <tr>
+            <td>Wipe data button</td>
+            <td>Reset the red, purple and gold states as well as the enabled/disabled buttons.</td>
+        </tr>
+        <tr>
+            <td>ENABLED/DISABLED idle switcher buttons</td>
+            <td>Pause slot placement and offline switching.
+            </td>
+        </tr>
+    </table>
+</body>
+
+</html>

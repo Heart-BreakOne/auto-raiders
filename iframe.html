@@ -1,4 +1,5 @@
 <html>
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -6,6 +7,7 @@
     <link rel="stylesheet" type="text/css" href="/styles/iframe_styles.css">
 </head>
 <main class="main"></main>
+
 <body>
     <h1 style="font-size: xx-large;">Set your preferences here</h1>
     <table>
@@ -17,8 +19,17 @@
                     <button id="whitelist_button" class="green_button">Whitelist</button>
                 </th>
             </tr>
+
         </thead>
         <tbody>
+            <tr>
+                <td colspan="1"></td>
+            </tr>
+            <tr>
+                <td><label for="reloaderInput">Reloader&nbsp;&nbsp;&nbsp;<input type="number"
+                            id="reloaderInput"></label></td>
+                <td><button id="reloaderButton" style="width: fit-content; height: fit-content; text-align: center; background-color: #5fa695;">Set</button></td>
+            </tr>
             <tr>
                 <td colspan="3"></td>
             </tr>
@@ -42,41 +53,63 @@
                 <td><label for="equipSwitch"><input type="checkbox" id="equipSwitch"> Equip captain skins</label></td>
             </tr>
             <tr>
+                <td style="color: red;"><label for="priorityListSwitch"><input type="checkbox" id="priorityListSwitch">Enable priority
+                        list</label>
                 <td><label for="commonSwitch"><input type="checkbox" id="commonSwitch"> Use common units</label></td>
                 <td><label for="uncommonSwitch"><input type="checkbox" id="uncommonSwitch"> Use uncommon units</label>
                 </td>
-                <td><label for="rareSwitch"><input type="checkbox" id="rareSwitch"> Use rare units</label></td>
             </tr>
             <tr>
+                <td><label for="rareSwitch"><input type="checkbox" id="rareSwitch"> Use rare units</label></td>
                 <td><label for="legendarySwitch"><input type="checkbox" id="legendarySwitch"> Use legendary
                         units</label></td>
                 <td><label for="campaignSwitch"><input type="checkbox" id="campaignSwitch"> Unlimited Campaign</label>
                 </td>
-                <td><label for="duelSwitch"><input type="checkbox" id="duelSwitch"> Unlimited duels</label></td>
+
             </tr>
             <tr>
+                <td><label for="duelSwitch"><input type="checkbox" id="duelSwitch"> Unlimited duels</label></td>
                 <td><label for="clashSwitch"><input type="checkbox" id="clashSwitch"> Unlimited clashes</label></td>
                 <td><label for="dungeonSwitch"><input type="checkbox" id="dungeonSwitch"> Unlimited dungeons</label>
                 </td>
-                <td><label for="favoriteSwitch"><input type="checkbox" id="favoriteSwitch"> Potions whitelist
-                        only</label></td>
+            </tr>
+            <tr>
+                <td><label for="liveMasterSwitch"><input type="checkbox" id="liveMasterSwitch"> Force live switch to
+                        masterlist</label></td>
+                <td><label for="priorityMasterSwitch"><input type="checkbox" id="priorityMasterSwitch"> Force live
+                        switch to priority masterlist</label></td>
+                <td><label for="idleMasterSwitch"><input type="checkbox" id="idleMasterSwitch"> Prioritize masterlist on
+                        idle switch</label></td>
+                <td><label for=skipIdleMasterSwitch"><input type="checkbox" id="skipIdleMasterSwitch"> Skip idle switch
+                        if no masterlist is online</label></td>
             </tr>
             <tr>
                 <td><label><input type="radio" name="loyalty" value="0"> Don't preserve loyalty</label></td>
-            </tr>
-            <tr>
+                <td><label><input type="radio" name="loyalty" value="1"> Preserve if not bronze</label></td>
                 <td><label><input type="radio" name="loyalty" value="2"> Preserve if not silver</label></td>
                 <td><label><input type="radio" name="loyalty" value="3"> Preserve if not gold</label></td>
                 <td><label><input type="radio" name="loyalty" value="4"> Preserve if not diamond</label></td>
-                <td></td>
             </tr>
             <tr>
+                <td><label for="favoriteSwitch"><input type="checkbox" id="favoriteSwitch"> Potions whitelist
+                        only</label></td>
                 <td><label><input type="radio" name="potion" value="0"> No potions</label></td>
                 <td><label><input type="radio" name="potion" value="1"> Potions at 45</label></td>
                 <td><label><input type="radio" name="potion" value="2"> Potions at 100</label></td>
             </tr>
         </tbody>
     </table>
+    <div style="text-align: center; padding-top: 50px; align-items: center; color: red;">
+        <h1>THIS HAS NOT BEEN IMPLEMENTED YET</h1>
+        <h1>Enable priority list on the settings</h1>
+        <button id="setUnits_button" class="green_button">SAVE/UPDATE</button>
+        <div id="unitTableContainer"></div>
+        <h1>Only use this button:</h1>
+        <h2>For the first time if the list empty</h2>
+        <h2>When you level up your units or specialize/respecialize them</h2>
+        <h2>To reset everything back to 0</h2>
+        <button id="getUnits_button" class="green_button" style="background-color: red;">Reload your units</button>
+    </div>
 </body>
 
 </html>

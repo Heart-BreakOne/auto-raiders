@@ -11,10 +11,9 @@
 
 <body>
     <div class="bulleted-list">
-        <h1>Whitelist and blacklist captains here</h1>
-        <h1>Import and export your settings here</h1>
+        <h1>Set you priority captains lists</h1>
         <ul>
-            <li>When switching an idle captain the order of priority is: Masterlist > Diamond > Gold > Silver > Bronze > Whitelist >
+            <li>When switching an idle captain the order of priority is: Masterlist (if enabled to do so) > Diamond > Gold > Silver > Bronze > Whitelist >
                 Favorites > Any captain</li>
             <li>Blacklisted captains will be ignored, unless they are the only ones in the Any Captains list.</li>
             <li>Write the name of the Captains with a space in between</li>
@@ -22,13 +21,11 @@
             <li>When you blacklist a captain, make sure they are not in the in-game favorites list</li>
             <li>Uppercasing and lowercasing don't matter, but the captain name MUST be typed correctly (e.g CaptainZ1,
                 captainz1, CAPTAINZ1 are all valid because their only difference is the casing)</li>
-            <li><b>WARNING: Masterlist has two states</b></li>
-            <li>IDLE SWITCHER: Master list has priority over the other states if enabled</li>
-            <li>ENABLE ON THE SETTINGS: Automatically switch to a masterlisted captain.</li>
+            <li><b>Masterlist has two states and bypass priority, read instructions</b></li>
         </ul>
         <div>
-            <label>Masterlist (WARNING, MASTERLIST HAS BYPASS PRIORITY. READ ABOVE):</label><br>
-            <textarea id="whitelist" name="whitelist" placeholder="captain1 captain2 captain3 captain4"></textarea><br>
+            <label>Masterlist:</label><br>
+            <textarea id="masterlist" name="masterlist" placeholder="captain1 captain2 captain3 captain4"></textarea><br>
             <br>
             <label>Whitelist:</label><br>
             <textarea id="whitelist" name="whitelist" placeholder="captain1 captain2 captain3 captain4"></textarea><br>
@@ -43,6 +40,7 @@
     </div>
     <div class="center-container">
         <button id="updateList_button" class="green_button">Update lists</button>
+        <h1>Import and export your settings here</h1>
         <h2>Export and import your settings, captains lists and log here<br>WARNING: IMPORTING OVERWRITES THE CURRENT
             DATA</h2>
         <button id="exportButton" class="green_button">Export your settings to file</button>

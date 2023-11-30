@@ -3,7 +3,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
     document.getElementById("instructions_button").addEventListener('click', function () {
         // Open the options page
-        chrome.tabs.create({ url: "https://heart-breakone.github.io/webpages/how_to_play.html" });
+        chrome.tabs.create({ url: "/html/how_to_play.html" });
     });
 
     //Event listener for a button to open the options page of the extension (log.html)

@@ -34,7 +34,9 @@
             "log_handler.js",
             "iframe.js",
             "prototype.js",
-            "open_map_handler.js"
+            "open_map_handler.js",
+            "masterlist_handler.js",
+            "headless.js"
          ],
          "matches": [
             "https://www.streamraiders.com/*"

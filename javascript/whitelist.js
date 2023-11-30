@@ -23,10 +23,19 @@ const keysToExport = [
     "selectedOption",
     "skipSwitch",
     "uncommonSwitch",
+    "loyalty",
+    "favoriteSwitch",
+    "liveMasterSwitch",
+    "priorityMasterSwitch",
+    "idleMasterSwitch",
+    "skipIdleMasterSwitch",
+    "priorityListSwitch",
+    "reloaderInput",
+    "masterlist",
     "whitelist",
     "blacklist",
     "potionlist",
-    "loyalty"
+    "unitList",
 ];
 
 //Event listener for when the page loads
@@ -45,12 +54,14 @@ document.addEventListener('DOMContentLoaded', async function () {
 
     //Listen for click events on the save list button
     document.getElementById("updateList_button").addEventListener("click", async function () {
+        await setCaptainList('masterlist');
         await setCaptainList('whitelist');
         await setCaptainList('blacklist');
         await setCaptainList('potionlist');
         alert("Lists updated successfully!");
     });
 
+    await loadAndInjectList('masterlist');
     await loadAndInjectList('whitelist');
     await loadAndInjectList('blacklist');
     await loadAndInjectList('potionlist');
@@ -137,6 +148,7 @@ async function importData(string) {
 
                 chrome.storage.local.set(parsedData, function () {
                     alert('Data imported sucessfully!');
+                    loadAndInjectList('masterlist');
                     loadAndInjectList('whitelist');
                     loadAndInjectList('blacklist');
                     loadAndInjectList('potionlist');

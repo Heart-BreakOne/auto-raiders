@@ -1,3 +1,7 @@
+
+//Headless operation of the extension. Set your variables on the headless.js file.
+isHeadless = false;
+
 /* This file is the heart of the extension, it performs the auto playing, invokes functions to set and get values as well as
 functions to perform tasks such as replacing idle captains or buying scrolls
 */
@@ -19,6 +23,7 @@ let arrayOfAllyPlacement;
 let firstReload;
 let captainNameFromDOM;
 let arrayOfSkinUnits;
+let reload = 0;
 const blue = 'rgb(185, 242, 255)';
 const red = 'rgb(255, 204, 203)';
 const purple = 'rgb(203, 195, 227)';
@@ -111,6 +116,9 @@ const loyaltyArray = [{ key: 1, value: "Wood" },
 // This is the start, it selects a captain placement as well as collect any rewards to proceed
 async function start() {
 
+  if (isHeadless) {
+    await setStorage();
+  }
   //Reload tracker
   if (firstReload === undefined) {
     firstReload = new Date();
@@ -121,9 +129,22 @@ async function start() {
   if (timeContainer && (elapsedMinutes !== null || elapsedMinutes !== undefined)) {
     timeContainer.innerHTML = `Last refresh: ${elapsedMinutes} minutes ago.`;
   }
-  if (elapsedMinutes >= 75) {
+
+  if (reload == 0) {
+    chrome.storage.local.get(['reloaderInput'], function (result) {
+      const reloaderInputValue = result.reloaderInput;
+
+      if (reloaderInputValue !== undefined) {
+        reload = reloaderInputValue;
+      }
+    })
+  }
+
+  if ((reload != undefined && elapsedMinutes >= reload && reload >= 5) || ((reload != undefined || reload != 0) && elapsedMinutes >= 60)) {
     location.reload();
   }
+
+  console.log("Running nominally", toString(firstReload));
 
   //Initialized nav items, if they don't exist it means the extension is already executing.
   const navItems = document.querySelectorAll('.mainNavItemText');
@@ -141,6 +162,9 @@ async function start() {
       }
     }
   }
+
+  //Checks masterlist to switch
+  await switchToMasterList();
 
   //Checks if the user wants to replace idle captains and invoke the function to check and replace them.
   const offline = await retrieveFromStorage("offlineSwitch")
@@ -688,13 +712,7 @@ async function selectUnit() {
     let uncommonSwitch;
     let rareSwitch;
     let legendarySwitch;
-    let isDungeon = false;
 
-    //Check if it's dungeon so the usage of all units can be allowed regardless of user setting
-    let dungeonCheck = document.querySelector('.battleInfoMapTitle');
-    if (dungeonCheck.innerText.includes('Level: ')) {
-      isDungeon = true
-    }
     //Checks what units the user wants to place
     if (legendaryCheck) {
       legendarySwitch = await getSwitchState("legendarySwitch");
@@ -712,10 +730,10 @@ async function selectUnit() {
       unitName = unit1.key;
     }
     //Check if the unit can be used.
-    if ((commonCheck && !commonSwitch && !isDungeon) ||
-      (legendaryCheck && !legendarySwitch && !isDungeon) ||
-      (rareCheck && !rareSwitch && !isDungeon) ||
-      (uncommonCheck && !uncommonSwitch && !isDungeon) ||
+    if ((commonCheck && !commonSwitch) ||
+      (legendaryCheck && !legendarySwitch) ||
+      (rareCheck && !rareSwitch) ||
+      (uncommonCheck && !uncommonSwitch) ||
       coolDownCheck || defeatedCheck || !unitDisabled) {
       if (i >= unitsQuantity) {
         //If there are no units that can be placed, get a new marker until there are no markers available to match any of the available units
