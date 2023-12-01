@@ -126,19 +126,14 @@ chrome.runtime.onConnect.addListener((port) => {
     }
 
     if (msg.action === "switchCaptain") {
-
       const currentCaptain = msg.msg;
       const higherPriorityCaptains = msg.higherPriorityCaptains;
       const index = msg.i
-
       await getCookies();
       const response = await switchCaptains(currentCaptain, higherPriorityCaptains, index);
-
       port.postMessage({ response });
     }
-
   });
-
 });
 
 //Declaring variables
@@ -544,8 +539,11 @@ async function selectCaptain(firstCaptainId, index) {
     if (!response.ok) {
       throw new Error('Network response was not ok');
     }
-    const rep = await response.json();
-    return;
+    chrome.tabs.query({ active: true, currentWindow: true }, function (tabs) {
+      if (tabs.length > 0) {
+        chrome.tabs.reload(tabs[0].id);
+      }
+    });
   } catch (error) {
     console.error('Error fetching skins:', error.message);
     return;

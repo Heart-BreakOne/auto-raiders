@@ -27,7 +27,7 @@ async function switchToMasterList() {
         const close = slot.querySelector(".capSlotClose");
         if (slot.innerHTML.includes("ENTER_CODE")) {
             close.click();
-            return true;
+            return false;
         }
 
         //Check master switching
@@ -47,12 +47,12 @@ async function switchToMasterList() {
             //Makes sure the idler list is not empty
             let idlers;
             if (idlers != undefined) {
-                return true;
+                return false;
             }
             const storageData = await chrome.storage.local.get(['idleData']);
             idlers = storageData.idleData || [];
             if (idlers === undefined) {
-                return true;
+                return false;
             }
 
             //Get the captain names that are currently idling
@@ -84,7 +84,7 @@ async function switchToMasterList() {
 
                             if (higherPriorityCaptains.length === 0) {
                                 //There are no captains with a higher priority than the current captain. Do nothing.
-                                return true;
+                                return false;
                             } else {
                                 //There are captains with a higher priority than the current captain. Switch.
                                 //Use the high priority list array to find an active captain that is within that list.
@@ -93,6 +93,7 @@ async function switchToMasterList() {
                                     const timeout = setTimeout(() => {
                                         reject(new Error('Timeout while waiting for response'));
                                         masterPort.onMessage.removeListener(responseListener);
+                                        return false
                                     }, 8000);
 
                                     const responseListener = (response) => {
@@ -101,8 +102,10 @@ async function switchToMasterList() {
                                         if (response !== undefined) {
                                             unitsArrayList = response.response;
                                             resolve(unitsArrayList);
+                                            return true;
                                         } else {
                                             reject(new Error('Invalid response format from background script'));
+                                            return false
                                         }
                                     };
                                     masterPort.onMessage.addListener(responseListener);
@@ -126,12 +129,13 @@ async function switchToMasterList() {
                                     }
                                 });
                                 if (higherPriorityCaptains.length === 0) {
-                                    return true;
+                                    return false;
                                 } else {
                                     return new Promise((resolve, reject) => {
                                         const timeout = setTimeout(() => {
                                             reject(new Error('Timeout while waiting for response'));
                                             masterPort.onMessage.removeListener(responseListener);
+                                            return false;
                                         }, 8000);
 
                                         const responseListener = (response) => {
@@ -140,8 +144,10 @@ async function switchToMasterList() {
                                             if (response !== undefined) {
                                                 unitsArrayList = response.response;
                                                 resolve(unitsArrayList);
+                                                return true;
                                             } else {
                                                 reject(new Error('Invalid response format from background script'));
+                                                return false
                                             }
                                         };
                                         masterPort.onMessage.addListener(responseListener);
@@ -156,5 +162,5 @@ async function switchToMasterList() {
             });
         }
     }
-    return true;
+    return false;
 }

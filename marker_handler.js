@@ -18,12 +18,13 @@ function getMapMatrix(arrayOfMarkers) {
         const row = allPlacers[i];
         if (row.querySelector(".battlefieldLeaderboardRowDisplayName").innerText === captainName) {
             icon = row.querySelector(".battlefieldLeaderboardRowUnitIconsCont .battlefieldLeaderboardRowUnitIconWrapper img").src;
-            closeAll()
             const menuElements = document.querySelectorAll(".slideMenuCont.slideLeft.slideLeftOpen");
             const leaderboard = Array.from(menuElements).find(element => element.innerText.includes('Leaderboard'));
             if (leaderboard) {
-                leaderboard.remove();
+                leaderboard.classList.remove('slideLeftOpen');
+                leaderboard.classList.add('slideLeftClosed');  
             }
+            closeAll();
         }
     }
 

@@ -164,13 +164,8 @@ async function start() {
   }
 
   //Checks masterlist to switch
-  const isDone = await switchToMasterList();
-  if (isDone === undefined) {
-    console.log("log undefined");
-    return;
-  } else {
-    await delay(20000);
-  }
+  await switchToMasterList();
+  await delay(5000);
 
   //Checks if the user wants to replace idle captains and invoke the function to check and replace them.
   const offline = await retrieveFromStorage("offlineSwitch")
@@ -859,15 +854,15 @@ function placeTheUnit() {
 const obsv = new MutationObserver(function (mutations) {
 
   mutations.forEach(async function (mutation) {
-      if (mutation.type === 'childList') {
-        // Check if the added nodes contain an element with the desired class
-        const addedNodes = mutation.addedNodes;
-        for (const node of addedNodes) {
-          if (node.classList && node.classList.contains('mainNavItemText')) {
-            start();
-          }
+    if (mutation.type === 'childList') {
+      // Check if the added nodes contain an element with the desired class
+      const addedNodes = mutation.addedNodes;
+      for (const node of addedNodes) {
+        if (node.classList && node.classList.contains('mainNavItemText')) {
+          start();
         }
       }
+    }
 
     //Get captain slots or returns if they don't exist
     const captainSlots = document.querySelectorAll(".capSlots");
