@@ -50,7 +50,7 @@ async function checkIdleCaptains() {
             //Clicks select button to open the captains list
             selectButton.click();
             //Invokes function to get a captain replacement.
-           await switchIdleCaptain()
+            await switchIdleCaptain()
             return;
         } else if (statusArray.includes(battleStatus)) {
             //If the captain is possibly on an idle state
@@ -169,6 +169,20 @@ async function getBattleStatus(captainName) {
 //When invoked, the captain selection will be into view
 async function switchIdleCaptain() {
 
+    let idlersList;
+    const storageData = await chrome.storage.local.get(['idleData']);
+    const idlers = storageData.idleData || [];
+
+    if (idlers) {
+        const presentTime = Date.now();
+        const fifteenMinutes = 15 * 60 * 1000;
+        idlersList = idlers
+            .filter(entry => presentTime - entry.presentTime < fifteenMinutes)
+            .map(entry => entry.captainName.toUpperCase());
+    } else {
+        idlersList = []
+    }
+
     //Clicks on the ALL captains tab to obtain the full list of online captains
     const allCaptainsTab = document.querySelector(".subNavItemText");
     allCaptainsTab.click();
@@ -176,7 +190,9 @@ async function switchIdleCaptain() {
     await scroll();
     await idleDelay(3000);
     //Gets the full list of captains
+
     let fullCaptainList = Array.from(document.querySelectorAll(".searchResult"));
+    fullCaptainList = fullCaptainList.filter(captain => !idlersList.includes(captain.textContent.trim().toUpperCase()));
 
     let whiteList = await filterCaptainList('whitelist', fullCaptainList);
     let blackList = await filterCaptainList('blacklist', fullCaptainList);
