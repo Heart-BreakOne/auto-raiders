@@ -82,7 +82,7 @@ const connectedPorts = new Map();
 chrome.runtime.onConnect.addListener((port) => {
   // Store the port
   connectedPorts.set(port.sender.tab.id, port);
-
+  
   // Listen for messages from content script
   port.onMessage.addListener(async (msg) => {
     if (msg.action === "equipSkin") {
@@ -129,8 +129,9 @@ chrome.runtime.onConnect.addListener((port) => {
       const currentCaptain = msg.msg;
       const higherPriorityCaptains = msg.higherPriorityCaptains;
       const index = msg.i
+      const currentTabId = port.sender.tab.id;
       await getCookies();
-      const response = await switchCaptains(currentCaptain, higherPriorityCaptains, index);
+      const response = await switchCaptains(currentCaptain, higherPriorityCaptains, index, currentTabId);
       port.postMessage({ response });
     }
   });
@@ -443,7 +444,7 @@ async function fetchUnits() {
 
 
 //Switch captains to a higher one if available
-async function switchCaptains(currentCaptain, masterList, index) {
+async function switchCaptains(currentCaptain, masterList, index, currentTabId) {
   let captainsArray = [];
   let currentId
 
@@ -497,14 +498,14 @@ async function switchCaptains(currentCaptain, masterList, index) {
   const firstCaptainId = captainsArray.length > 0 ? captainsArray[0].id : null;
 
   if (currentId != undefined && firstCaptainId != undefined) {
-    await removeCaptain(currentId, firstCaptainId, index);
+    await removeCaptain(currentId, firstCaptainId, index, currentTabId);
     return true;
   }
   return false;
 }
 
 //Remove current captain
-async function removeCaptain(currentId, firstCaptainId, index) {
+async function removeCaptain(currentId, firstCaptainId, index, currentTabId) {
   try {
     const response = await fetch(`https://www.streamraiders.com/api/game/?cn=leaveCaptain&captainId=${currentId}&clientVersion=${clientVersion}&clientPlatform=WebLite&gameDataVersion=${gameDataVersion}&command=leaveCaptain&isCaptain=0`, {
       method: 'POST',
@@ -518,7 +519,7 @@ async function removeCaptain(currentId, firstCaptainId, index) {
       throw new Error('Network response was not ok');
     }
     await backgroundDelay(1500);
-    await selectCaptain(firstCaptainId, index);
+    await selectCaptain(firstCaptainId, index, currentTabId);
   } catch (error) {
     console.error('Error fetching skins:', error.message);
     return;
@@ -526,7 +527,7 @@ async function removeCaptain(currentId, firstCaptainId, index) {
 }
 
 //Select new captain
-async function selectCaptain(firstCaptainId, index) {
+async function selectCaptain(firstCaptainId, index, currentTabId) {
   try {
     const response = await fetch(`https://www.streamraiders.com/api/game/?cn=addPlayerToRaid&captainId=${firstCaptainId}&userSortIndex=${index}&clientVersion=${clientVersion}&clientPlatform=WebLite&gameDataVersion=${gameDataVersion}&command=addPlayerToRaid&isCaptain=0`, {
       method: 'POST',
@@ -541,7 +542,7 @@ async function selectCaptain(firstCaptainId, index) {
     }
     chrome.tabs.query({ active: true, currentWindow: true }, function (tabs) {
       if (tabs.length > 0) {
-        chrome.tabs.reload(tabs[0].id);
+        chrome.tabs.reload(tabs[0].currentTabId);
       }
     });
   } catch (error) {

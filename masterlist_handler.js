@@ -109,7 +109,7 @@ async function switchToMasterList() {
                                         }
                                     };
                                     masterPort.onMessage.addListener(responseListener);
-                                    masterPort.postMessage({ action: "switchCaptain", msg: capName, higherPriorityCaptains, i });
+                                    masterPort.postMessage({ action: "switchCaptain", msg: capName, higherPriorityCaptains, i});
                                 });
                             }
 

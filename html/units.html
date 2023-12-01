@@ -1,0 +1,42 @@
+<!-- options.html -->
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Unit priority</title>
+    <script src="/units_handler.js"></script>
+    <link rel="stylesheet" type="text/css" href="/styles/styles.css">
+</head>
+
+<body>
+    <div style="text-align: center; padding-top: 50px; align-items: center;">
+
+        <h1>Prioritize your units here</h1>
+
+        <div style="text-align: left; align-items: center; padding-left: 20%; padding-right: 10%; font-size: medium; font-weight: bold">
+            <ul>
+                <li>Enable priority list on the settings</li>
+                <li>Make sure the unit selector are still enabled accordingly</li>
+                <li>Placement of a priority unit will depend on marker and cooldown availability</li>
+                <li>Priority 0: Completely ignores the unit, even if there are no other units available.</li>
+                <li>Priority 1: Highest priority.</li>
+                <li>The higher the number, the lower the priority and the lower the unit will show at the list.</li>
+            </ul>
+        </div>
+        <button id="setUnits_button" class="green_button">SAVE/UPDATE</button>
+        <div id="unitTableContainer"></div><br>
+        <h1>THIS OPTION RESETS YOUR CHANGES</h1>
+        <h1>Only use this button:</h1>
+
+        <h2>For the first time if the list empty</h2>
+        <h2>When you level up your units, specialize or respecialize them</h2>
+        <h2>To reset everything back to default priority 0</h2>
+        <h2>It takes a few seconds to load the units from the server, don't spam click the button</h2>
+        <button id="getUnits_button" class="green_button" style="background-color: red;">Reload your units</button>
+    </div>
+    <button id="scrollBtn" title="Go to top">Up</button>
+</body>
+
+</html>

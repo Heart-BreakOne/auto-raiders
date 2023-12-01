@@ -165,7 +165,7 @@ async function start() {
 
   //Checks masterlist to switch
   await switchToMasterList();
-  await delay(5000);
+  await delay(10000);
 
   //Checks if the user wants to replace idle captains and invoke the function to check and replace them.
   const offline = await retrieveFromStorage("offlineSwitch")
@@ -657,7 +657,13 @@ async function selectUnit() {
   }
   //Handles unit drawer.
   let unitName = ""
-  const unitDrawer = [...document.querySelectorAll(".unitSelectionCont")];
+  let unitDrawer = [...document.querySelectorAll(".unitSelectionCont")];
+
+  //Sort units based on their priority
+  //if (await retrieveFromStorage("priorityListSwitch")) {
+  //unitDrawer = await sortPriorityUnits(unitDrawer);
+  // }
+
   //Initializes a node list with all units
   let unitsQuantity;
   //Attempts to get ammount of units in the units drawers

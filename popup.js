@@ -18,7 +18,11 @@ document.addEventListener("DOMContentLoaded", function () {
         const url = `chrome-extension://${chrome.runtime.id}/html/whitelist.html`
         chrome.tabs.create({ url: url });
     });
-
+    document.getElementById("unit_button").addEventListener('click', function () {
+        // Open the options page
+        const url = `chrome-extension://${chrome.runtime.id}/html/units.html`
+        chrome.tabs.create({ url: url });
+    });
     document.getElementById('iframe_button').addEventListener('click', () => {
         const url = `chrome-extension://${chrome.runtime.id}/iframe.html`
         chrome.tabs.create({ url: url });

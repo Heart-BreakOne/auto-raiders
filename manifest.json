@@ -36,6 +36,7 @@
             "marker_handler.js",
             "open_map_handler.js",
             "masterlist_handler.js",
+            "units_handler.js",
             "headless.js"
          ],
          "matches": [
