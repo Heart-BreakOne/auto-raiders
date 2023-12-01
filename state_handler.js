@@ -104,12 +104,6 @@ function closeAll() {
       button.click();
     })
   }
-  const secondCloseButton = document.querySelectorAll(".fal.fa-times-square");
-  if (secondCloseButton.length > 0) {
-    secondCloseButton.forEach(button => {
-      button.click();
-    })
-  }
 }
 
 //Mutator observer to remove stuck modals, frozen states and update recently loaded elements.
