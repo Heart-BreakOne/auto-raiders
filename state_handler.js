@@ -104,6 +104,12 @@ function closeAll() {
       button.click();
     })
   }
+  const secondCloseButton = document.querySelectorAll(".fal.fa-times-square");
+  if (secondCloseButton.length > 0) {
+    secondCloseButton.forEach(button => {
+      button.click();
+    })
+  }
 }
 
 //Mutator observer to remove stuck modals, frozen states and update recently loaded elements.
@@ -151,7 +157,7 @@ const observer = new MutationObserver(async function (mutations) {
       placeUnitCounter = 0;
       confirmCounter = 0;
       const close = document.querySelector(".actionButton.actionButtonNegative.placerButton");
-      if(close) {
+      if (close) {
         close.click();
       }
       goHome();
@@ -161,7 +167,7 @@ const observer = new MutationObserver(async function (mutations) {
 
   mutations.forEach(async function (mutation) {
     mutation.addedNodes.forEach(async function (node) {
-      
+
       //Hides reward modal that fails to be clicked.
       //Hide some elements from user view so they don't affect user interaction.
       const rewardsScrim = document.querySelector(".rewardsScrim");

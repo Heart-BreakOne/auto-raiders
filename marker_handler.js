@@ -19,9 +19,15 @@ function getMapMatrix(arrayOfMarkers) {
         if (row.querySelector(".battlefieldLeaderboardRowDisplayName").innerText === captainName) {
             icon = row.querySelector(".battlefieldLeaderboardRowUnitIconsCont .battlefieldLeaderboardRowUnitIconWrapper img").src;
             closeAll()
+            const menuElements = document.querySelectorAll(".slideMenuCont.slideLeft.slideLeftOpen");
+            const leaderboard = Array.from(menuElements).find(element => element.innerText.includes('Leaderboard'));
+            if (leaderboard) {
+                leaderboard.remove();
+            }
         }
     }
 
+    //Get element  that has innerHTML Leaderboard
     outerLoop: for (let i = 0; i < arrayOfBattleFieldUnitClickAreas.length; i++) {
         const captain = arrayOfBattleFieldUnitClickAreas[i];
         const captainIcon = captain.querySelector("img").src;

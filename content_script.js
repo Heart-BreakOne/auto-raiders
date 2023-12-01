@@ -150,10 +150,17 @@ async function start() {
 
   console.log("Running nominally", toString(firstReload));
 
+  //Checks masterlist to switch
+  const isDone = await switchToMasterList();
+  if (isDone === undefined) {
+    return;
+  } else {
+    await delay (2000);
+  }
+
   //Initialized nav items, if they don't exist it means the extension is already executing.
   const navItems = document.querySelectorAll('.mainNavItemText');
-  const settingsIframe = document.querySelectorAll('.outer_container');
-  if (navItems.length === 0 || navItems === undefined || settingsIframe.length != 0) {
+  if (navItems.length === 0 || navItems === undefined) {
     return;
   } else {
     //If navItem exists, open main menu
@@ -166,9 +173,6 @@ async function start() {
       }
     }
   }
-
-  //Checks masterlist to switch
-  await switchToMasterList();
 
   //Checks if the user wants to replace idle captains and invoke the function to check and replace them.
   const offline = await retrieveFromStorage("offlineSwitch")
