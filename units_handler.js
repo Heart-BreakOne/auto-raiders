@@ -1,6 +1,6 @@
 //Unit icons markers (the icon on the top left corner of the unit square)
 const arrUnitNms = [
-    { key: "amazon", icon: "6E8FWQ9MA9ZAAJ2WXSHI1NVQ5GDJRPXQ7V8AHO" },
+    { key: "amazon", icon: "5GhK8AAAAASUVORK5CYII" },
     { key: "archer", icon: "FBPKAZY" },
     { key: "artillery", icon: "3GY1DLAQ" },
     { key: "alliesballoonbuster", icon: "FOPPA6G" },
@@ -258,7 +258,6 @@ async function sortPriorityUnits(unitDrawer) {
 
                     if (unitTypeFromDOM.includes(unitType) && level === levelFromDOM) {
                         tempArray.push(unitArray[0].children[j]);
-                        break;
                     }
                 }
             }
