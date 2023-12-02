@@ -540,11 +540,7 @@ async function selectCaptain(firstCaptainId, index, currentTabId) {
     if (!response.ok) {
       throw new Error('Network response was not ok');
     }
-    chrome.tabs.query({ active: true, currentWindow: true }, function (tabs) {
-      if (tabs.length > 0) {
-        chrome.tabs.reload(tabs[0].currentTabId);
-      }
-    });
+    return;
   } catch (error) {
     console.error('Error fetching skins:', error.message);
     return;

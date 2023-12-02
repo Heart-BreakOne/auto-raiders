@@ -153,9 +153,15 @@ async function start() {
     return;
   } else {
     //If navItem exists, open main menu
-    for (let i = 0; i < navItems.length; i++) {
+    let storeButton;
+    let battleButton;
+    for (let i = navItems.length - 1; i >= 0; i--) {
       let navItem = navItems[i];
+      if(navItem.innerText === "Store") {
+        storeButton = navItem[i];
+      }
       if (navItem.innerText === "Battle") {
+        battleButton = navItem[i];
         navItem.click();
         await delay(2000);
         break;
@@ -166,6 +172,8 @@ async function start() {
   //Checks masterlist to switch
   await switchToMasterList();
   await delay(10000);
+  storeButton.click();
+  battleButton.click();
 
   //Checks if the user wants to replace idle captains and invoke the function to check and replace them.
   const offline = await retrieveFromStorage("offlineSwitch")
