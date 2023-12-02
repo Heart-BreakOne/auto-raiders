@@ -6,7 +6,7 @@ functions to perform tasks such as replacing idle captains or buying scrolls
 */
 
 //Triggers the start function every 20 seconds
-setInterval(start, 20000);
+setInterval(start, 15000);
 
 //Declares/initializes variables
 let currentMarkerKey = "";
@@ -149,22 +149,21 @@ async function start() {
 
   //Initialized nav items, if they don't exist it means the extension is already executing.
   const navItems = document.querySelectorAll('.mainNavItemText');
+  let storeButton;
+  let battleButton;
   if (navItems.length === 0 || navItems === undefined) {
     return;
   } else {
     //If navItem exists, open main menu
-    let storeButton;
-    let battleButton;
     for (let i = navItems.length - 1; i >= 0; i--) {
       let navItem = navItems[i];
-      if(navItem.innerText === "Store") {
-        storeButton = navItem[i];
+      if (navItem.innerText === "Store") {
+        storeButton = navItem;
       }
       if (navItem.innerText === "Battle") {
-        battleButton = navItem[i];
+        battleButton = navItem;
         navItem.click();
         await delay(2000);
-        break;
       }
     }
   }
@@ -174,6 +173,7 @@ async function start() {
   await delay(10000);
   storeButton.click();
   battleButton.click();
+  await delay(5000);
 
   //Checks if the user wants to replace idle captains and invoke the function to check and replace them.
   const offline = await retrieveFromStorage("offlineSwitch")
