@@ -668,9 +668,9 @@ async function selectUnit() {
   let unitDrawer = [...document.querySelectorAll(".unitSelectionCont")];
 
   //Sort units based on their priority
-  //if (await retrieveFromStorage("priorityListSwitch")) {
-  //unitDrawer = await sortPriorityUnits(unitDrawer);
-  // }
+  if (await retrieveFromStorage("priorityListSwitch")) {
+    unitDrawer = await sortPriorityUnits(unitDrawer);
+  }
 
   //Initializes a node list with all units
   let unitsQuantity;

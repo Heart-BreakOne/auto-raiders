@@ -1,5 +1,37 @@
-
-
+//Unit icons markers (the icon on the top left corner of the unit square)
+const arrUnitNms = [
+    { key: "amazon", icon: "6E8FWQ9MA9ZAAJ2WXSHI1NVQ5GDJRPXQ7V8AHO" },
+    { key: "archer", icon: "FBPKAZY" },
+    { key: "artillery", icon: "3GY1DLAQ" },
+    { key: "alliesballoonbuster", icon: "FOPPA6G" },
+    { key: "barbarian", icon: "Y2AZRA3G" },
+    { key: "berserker", icon: "BCIAAA" },
+    { key: "blob", icon: "LXTAAA" },
+    { key: "bomber", icon: "QWP8WBK" },
+    { key: "buster", icon: "PCCPYIHW" },
+    { key: "centurion", icon: "DUWAAA" },
+    { key: "fairy", icon: "FNJQA" },
+    { key: "flagbearer", icon: "KF7A" },
+    { key: "flyingarcher", icon: "GSGE2MI" },
+    { key: "gladiator", icon: "EMWA84U" },
+    { key: "healer", icon: "UY3N8" },
+    { key: "lancer", icon: "PU+OGW" },
+    { key: "mage", icon: "4Q+BQML8" },
+    { key: "monk", icon: "D46EKXW" },
+    { key: "musketeer", icon: "DL9SBC7G" },
+    { key: "necromancer", icon: "85VI" },
+    { key: "orcslayer", icon: "VPAASGY8" },
+    { key: "alliespaladin", icon: "IYUEO" },
+    { key: "rogue", icon: "GRJLD" },
+    { key: "saint", icon: "PBUHPCG" },
+    { key: "shinobi", icon: "XSCZQ" },
+    { key: "spy", icon: "FJBDFFQ" },
+    { key: "tank", icon: "XEK7HQU" },
+    { key: "templar", icon: "CYNUL" },
+    { key: "vampire", icon: "BL5378" },
+    { key: "warbeast", icon: "SRJSYO" },
+    { key: "warrior", icon: "YTUUAHQ" },
+];
 document.addEventListener("DOMContentLoaded", async function () {
 
     const scrollToTopBtn = document.getElementById("scrollBtn");
@@ -61,6 +93,7 @@ async function getUnits() {
                     delete item.soulId;
                     delete item.soulType;
                     delete item.userId;
+                    delete item.specializationUid;
                 }
                 const storageObject = {};
                 storageObject['unitList'] = unitsArrayList;
@@ -102,7 +135,7 @@ async function displayUnits() {
             table.id = "tableOfUnits"
 
             const headerRow = table.insertRow(0);
-            const headers = ['Index', 'Unit Name', 'Unit Level', 'Unit Specialization', 'Priority', 'Unit identifier'];
+            const headers = ['Index', 'Unit Name', 'Unit Level', 'Priority', 'Unit identifier'];
 
             headers.forEach((headerText) => {
                 const headerCell = headerRow.insertCell();
@@ -122,22 +155,14 @@ async function displayUnits() {
                 const unitLevelCell = row.insertCell(2);
                 unitLevelCell.textContent = position.level;
 
-                const unitSpecializationCell = row.insertCell(3);
-                if (position.specializationUid != "") {
-                    unitSpecializationCell.textContent = "Specialized"
-                } else {
-                    unitSpecializationCell.textContent = "Not specialized"
-                }
-
-
-                const unitId = row.insertCell(4);
-                unitId.textContent = position.index;
-
-                const inputCell = row.insertCell(4);
+                const inputCell = row.insertCell(3);
                 const inputSpinner = document.createElement('input');
                 inputSpinner.type = 'number';
                 inputSpinner.min = 0;
                 inputSpinner.value = position.priority;
+
+                const unitId = row.insertCell(4);
+                unitId.textContent = position.index;
 
                 inputSpinner.id = `${i}`;
 
@@ -164,14 +189,12 @@ async function saveUnits() {
 
             const unitType = row.cells[1].textContent;
             const level = row.cells[2].textContent;
-            const specializationUid = row.cells[3].textContent;
             const priority = inputNumber.value;
-            const index = row.cells[5].textContent;
+            const index = row.cells[4].textContent;
 
             const rowData = {
                 unitType,
                 level,
-                specializationUid,
                 priority,
                 index
             };
@@ -200,46 +223,55 @@ async function saveUnits() {
     });
 }
 
-
-
-
-
-//Function to sort units based on priority.
+//Sort units based on their priority
 async function sortPriorityUnits(unitDrawer) {
-    await new Promise((resolve) => {
+    return new Promise((resolve) => {
         chrome.storage.local.get(['unitList'], (result) => {
+            let arrayFromStorage = result.unitList;
 
-            let array = result.unitList;
-
-            if (array === undefined) {
-                return unitDrawer;
+            if (arrayFromStorage === undefined) {
+                resolve(unitDrawer);
+                return;
             }
 
-            //Remove units that are not supposed to be used from the array.
-            array = array.filter(item => item.priority !== '0');
-            const unitArray = Array.from(unitDrawer);
+            arrayFromStorage = arrayFromStorage.filter(item => item.priority !== '0');
+            let unitArray = Array.from(unitDrawer);
             const unitSize = unitArray[0].children.length;
-            for (let i = 0; i < array.length; i++) {
-                const level = array[i].level;
-                const unitType = array[i].unitType;
-                const specializationUid = array[i].specializationUid
+            let tempArray = [];
+
+            for (let i = 0; i < arrayFromStorage.length; i++) {
+                const level = arrayFromStorage[i].level;
+                let unitType = arrayFromStorage[i].unitType;
+
+                for (let j = 0; j < arrUnitNms.length; j++) {
+                    if (unitType === arrUnitNms[j].key) {
+                        unitType = arrUnitNms[j].icon;
+                        break;
+                    }
+                }
 
                 for (let j = unitSize - 1; j >= 0; j--) {
-                    const unit = unitArray[0].children[i];
-                    const u = unit.querySelector(".unitItem:nth-child(1)")
-                    const level = u.querySelector(".unitNormalLevel").innerText;
-                    const nameIdentifier = u.querySelector('.unitClass img').getAttribute('src').slice(-50).toUpperCase();
-                    const spec = u.querySelector('.unitSpecialized img').getAttribute('alt').toUpperCase();
+                    const unit = unitArray[0].children[j];
+                    const u = unit.querySelector(".unitItem:nth-child(1)");
+                    const levelFromDOM = u.querySelector(".unitNormalLevel").innerText;
+                    const unitTypeFromDOM = u.querySelector('.unitClass img').getAttribute('src').slice(-50).toUpperCase();
 
-                    
-                    console.log();
+                    if (unitTypeFromDOM.includes(unitType) && level === levelFromDOM) {
+                        tempArray.push(unitArray[0].children[j]);
+                        break;
+                    }
                 }
             }
 
-            return unitDrawer;
+            while (unitArray[0].children.length > 0) {
+                unitArray[0].children[0].remove();
+            }
+
+            tempArray.forEach((item) => {
+                unitArray[0].appendChild(item);
+            });
+
+            resolve(unitArray);
         });
     });
-
-
 }
-
