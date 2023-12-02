@@ -76,7 +76,7 @@ const arrayOfBattleFieldMarkers = [
 const arrayOfUnits = [
   { key: "", type: "", icon: "" },
   { key: "VIBE", type: "VIBE", icon: "VIBE" },
-  { key: "AMAZON", type: "MELEE", icon: "6E8FWQ9MA9ZAAJ2WXSHI1NVQ5GDJRPXQ7V8AHO" },
+  { key: "AMAZON", type: "MELEE", icon: "8AAAAASUVORK5CYII=" },
   { key: "ARCHER", type: "RANGED", icon: "FBPKAZY" },
   { key: "ARTILLERY", type: "RANGED", icon: "3GY1DLAQ" },
   { key: "BALLOON", type: "RANGED", icon: "FOPPA6G" },
