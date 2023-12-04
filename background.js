@@ -469,12 +469,14 @@ async function switchCaptains(currentCaptain, masterList, index) {
         const name = current.twitchUserName.toUpperCase();
         const pvp = current.isPvp;
         const id = current.userId;
+        
+        const type = current.type;
 
         if (currentCaptain === name) {
           currentId = id;
         }
         captainsArray.push({
-          name, pvp, id
+          name, pvp, id, type
         });
       }
     } catch (error) {
@@ -483,9 +485,10 @@ async function switchCaptains(currentCaptain, masterList, index) {
     }
   }
 
-  // Filter live captains so only masterlist remains
+  // Filter live captains so only masterlist, no pvp and no dungeon remains
+  //type 1 = campaign. type 3 = dungeon.
   captainsArray = captainsArray.filter(captain => {
-    return captain.name !== currentCaptain && masterList.includes(captain.name) && !captain.pvp;
+    return captain.name !== currentCaptain && masterList.includes(captain.name) && !captain.pvp && captain.type != 3;
   });
 
   // Sort live captains based on their order on the masterlist
