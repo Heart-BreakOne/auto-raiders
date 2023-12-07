@@ -51,6 +51,9 @@ async function displayMessage() {
                 if (message === "message_02") {
                     messageState = "";
                     messagesToDisplay = `${messagesToDisplay}${captName} is on the LAST BATTLE.  `
+                } else if (message === "message_01") {
+                    messageState = "";
+                    messagesToDisplay = `${messagesToDisplay}${captName} has a GIVEAWAY.   `
                 }
                 //These bits show every message.
                 //const messageState = arrayOfBattleMessages.find(entry => entry.key === message)?.value;
