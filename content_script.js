@@ -131,8 +131,10 @@ async function start() {
   //Keep track of time and reload after 1hr15min to avoid the browser crashing due to low memory.
   const elapsedMinutes = Math.floor((new Date() - firstReload.getTime()) / (1000 * 60));
   const timeContainer = document.querySelector(".elapsedTimeContainer");
+  let battleMessages = ""
   if (timeContainer && (elapsedMinutes !== null || elapsedMinutes !== undefined)) {
-    timeContainer.innerHTML = `Last refresh: ${elapsedMinutes} minutes ago.`;
+    battleMessages = await displayMessage();
+    timeContainer.innerHTML = `Refresh: ${elapsedMinutes} mins ago. <span style="color: white; font-weight: bold">${battleMessages}</span>`;
   }
 
   if (reload == 0) {
@@ -297,33 +299,8 @@ async function start() {
     }
   }
 
-  //If place unit exists, clicks it and loads the invokes the openBattlefield function
+  //If place unit exists, click it and call the openBattlefield function
   if (placeUnit) {
-    //Equip units from here
-    const equipSwitch = await retrieveFromStorage("equipSwitch");
-    if (equipSwitch) {
-      const port = chrome.runtime.connect({ name: "content-script" });
-
-      try {
-        port.postMessage({
-          action: "equipSkin",
-          data: { captainNameFromDOM }
-        });
-
-        await new Promise((resolve) => {
-          port.onMessage.addListener((msg) => {
-            if (msg.action === "equipSkin") {
-              resolve();
-            }
-          });
-        });
-      } catch (error) {
-        console.error(error.result);
-      } finally {
-        port.disconnect();
-      }
-    }
-
     placeUnit.click();
     await delay(1000);
     openBattlefield();
@@ -607,6 +584,27 @@ async function selectUnit() {
   if (allUnitsButton) {
     allUnitsButton.click();
   }
+
+  //Check if user wants to auto equip skins and equip them
+  const equipSwitch = await retrieveFromStorage("equipSwitch");
+  //Get the unit switcher container
+  const unitSwitcher = document.querySelector('.settingsSwitchCont');
+  if (equipSwitch !== undefined && unitSwitcher) {
+    //Get the unit switch check box, doing it inside the if garantees the the checkbox exists.
+    const checkbox = unitSwitcher.querySelector('input[type="checkbox"]');
+    if (checkbox) {
+      //Assign true or false to the checkbox
+      checkbox.checked = equipSwitch;
+    }
+  } else if (unitSwitcher) {
+    //Value from storage couldn't be retrieved, assign false to the unit checkbox
+    const checkbox = unitSwitcher.querySelector('input[type="checkbox"]');
+    if (checkbox) {
+      checkbox.checked = false;
+    }
+  }
+
+  await delay(500)
   //Checks if user wants to use potions.
   let potionState = await getRadioButton("selectedOption");
   //CHeck if user wants to use potions only with specific captains
