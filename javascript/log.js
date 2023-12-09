@@ -292,31 +292,44 @@ function loadChestCounter() {
     });
 }
 
-// Export data from Chrome local storage into a file
+//Export data from chrome local storage into a file
 async function exportData(arrayOfKeys) {
     chrome.storage.local.get(arrayOfKeys, function (result) {
 
+        //JSON
         const jsonData = JSON.stringify(result);
+        const jsonBlob = new Blob([jsonData], { type: 'application/json' });
+        const jsonUrl = URL.createObjectURL(jsonBlob);
 
-        const blob = new Blob([jsonData], { type: 'application/json' });
-        const url = URL.createObjectURL(blob);
+        const jsonLink = document.createElement('a');
+        jsonLink.href = jsonUrl;
 
-        const a = document.createElement('a');
-        a.href = url;
         let time = new Date();
-
-        function addLeadZero(number) {
-            return number < 10 ? '0' + number : number;
-        }
-
         let formattedTime = `${addLeadZero(time.getHours())}${addLeadZero(time.getMinutes())}_${time.getFullYear()}_${addLeadZero(time.getMonth() + 1)}_${addLeadZero(time.getDate())}`;
-        a.download = `LOG_SRHelper_backup_${formattedTime}.json`;
-        document.body.appendChild(a);
-        a.click();
 
-        // Cleanup
-        document.body.removeChild(a);
-        URL.revokeObjectURL(url);
+        jsonLink.download = `LOG_SRHelper_backup_${formattedTime}.json`;
+
+        document.body.appendChild(jsonLink);
+        jsonLink.click();
+
+        document.body.removeChild(jsonLink);
+        URL.revokeObjectURL(jsonUrl);
+
+        //CSV
+        const csvData = convertJsonToCsv(result);
+        const csvBlob = new Blob([csvData], { type: 'text/csv' });
+        const csvUrl = URL.createObjectURL(csvBlob);
+
+        const csvLink = document.createElement('a');
+        csvLink.href = csvUrl;
+
+        csvLink.download = `LOG_SRHelper_backup_${formattedTime}.csv`;
+
+        document.body.appendChild(csvLink);
+        csvLink.click();
+
+        document.body.removeChild(csvLink);
+        URL.revokeObjectURL(csvUrl);
     });
 }
 
@@ -356,4 +369,21 @@ function getTimeString(startTime) {
 
     //Using padStart to ensure two digits for hours and minutes
     return String(startHour).padStart(2, '0') + ":" + String(startMinute).padStart(2, '0');
+}
+
+//Convert json to csv
+function convertJsonToCsv(jsonData) {
+    const keys = Object.keys(jsonData);
+    const csvArray = [keys.join(',')];
+
+    keys.forEach(key => {
+        const values = Object.values(jsonData[key]).map(value => JSON.stringify(value));
+        csvArray.push(values.join(','));
+    });
+
+    return csvArray.join('\n');
+}
+
+function addLeadZero(number) {
+    return number < 10 ? '0' + number : number;
 }
