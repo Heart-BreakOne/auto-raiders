@@ -373,11 +373,12 @@ function getTimeString(startTime) {
 
 //Convert json to csv
 function convertJsonToCsv(jsonData) {
-    const keys = Object.keys(jsonData);
-    const csvArray = [keys.join(',')];
+    const logData = jsonData.logData;
+    const keys = Object.keys(logData[0]);
+    const csvArray = [keys.map(key => `logData/${key}`).join(',')];
 
-    keys.forEach(key => {
-        const values = Object.values(jsonData[key]).map(value => JSON.stringify(value));
+    logData.forEach(item => {
+        const values = keys.map(key => JSON.stringify(item[key]));
         csvArray.push(values.join(','));
     });
 
