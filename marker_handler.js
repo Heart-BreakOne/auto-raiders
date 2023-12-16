@@ -22,7 +22,7 @@ function getMapMatrix(arrayOfMarkers) {
             const leaderboard = Array.from(menuElements).find(element => element.innerText.includes('Leaderboard'));
             if (leaderboard) {
                 leaderboard.classList.remove('slideLeftOpen');
-                leaderboard.classList.add('slideLeftClosed');  
+                leaderboard.classList.add('slideLeftClosed');
             }
             closeAll();
         }
@@ -79,6 +79,12 @@ function getMapMatrix(arrayOfMarkers) {
 
     sortedArray.sort((a, b) => a.squaredDistance - b.squaredDistance);
 
+    //Randomize first 10 markers to reduce misplacements and still remain near the captain.
+    const itemsToRandomize = Math.min(sortedArray.length, 10);
+    for (let i = itemsToRandomize - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [sortedArray[i], sortedArray[j]] = [sortedArray[j], sortedArray[i]];
+    }
     return sortedArray.map(item => item.marker);
 
 }
