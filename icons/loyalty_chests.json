@@ -1,0 +1,3479 @@
+{
+  "url": "https://streamcap-prod1.3.amazonaws.com/data/data.1f6c65d29463.json",
+  "MapNodes": {
+    "map12nodea6": {
+      "ChestType": "chestboostedgold",
+      "MapId": "map12",
+      "NodeConnections": "map12nodea7",
+      "Uid": "map12nodea6"
+    },
+    "map12nodea8": {
+      "ChestType": "chestboss",
+      "MapId": "map12",
+      "NodeConnections": "",
+      "Uid": "map12nodea8"
+    },
+    "map12nodeb6": {
+      "ChestType": "chestboss",
+      "MapId": "map12",
+      "NodeConnections": "",
+      "Uid": "map12nodeb6"
+    },
+    "map12noded1": {
+      "ChestType": "chestboostedtoken",
+      "MapId": "map12",
+      "NodeConnections": "map12nodec5",
+      "Uid": "map12noded1"
+    },
+    "map13nodea10": {
+      "ChestType": "chestboss",
+      "MapId": "map13",
+      "NodeConnections": "",
+      "Uid": "map13nodea10"
+    },
+    "map13nodeb2": {
+      "ChestType": "chestboostedscroll",
+      "MapId": "map13",
+      "NodeConnections": "map13nodeb3",
+      "Uid": "map13nodeb2"
+    },
+    "map13nodeb6": {
+      "ChestType": "chestboostedskin",
+      "MapId": "map13",
+      "NodeConnections": "map13nodeb7",
+      "Uid": "map13nodeb6"
+    },
+    "map13nodeb7": {
+      "ChestType": "chestboostedscroll",
+      "MapId": "map13",
+      "NodeConnections": "map13nodeb8,map13nodea8",
+      "Uid": "map13nodeb7"
+    },
+    "map13nodec6": {
+      "ChestType": "chestboostedgold",
+      "MapId": "map13",
+      "NodeConnections": "map13nodec7",
+      "Uid": "map13nodec6"
+    },
+    "map14nodea10": {
+      "ChestType": "chestboss",
+      "MapId": "map14",
+      "NodeConnections": "",
+      "Uid": "map14nodea10"
+    },
+    "map14nodea5": {
+      "ChestType": "chestboostedscroll",
+      "MapId": "map14",
+      "NodeConnections": "map14nodea6,map14nodeb6",
+      "Uid": "map14nodea5"
+    },
+    "map14nodea7": {
+      "ChestType": "chestboostedskin",
+      "MapId": "map14",
+      "NodeConnections": "map14nodea8",
+      "Uid": "map14nodea7"
+    },
+    "map14nodec10": {
+      "ChestType": "chestboss",
+      "MapId": "map14",
+      "NodeConnections": "",
+      "Uid": "map14nodec10"
+    },
+    "map14nodec3": {
+      "ChestType": "chestboostedgold",
+      "MapId": "map14",
+      "NodeConnections": "map14nodec4",
+      "Uid": "map14nodec3"
+    },
+    "map14nodec5": {
+      "ChestType": "chestboostedscroll",
+      "MapId": "map14",
+      "NodeConnections": "map14nodec6,map14nodec7",
+      "Uid": "map14nodec5"
+    },
+    "map15nodea10": {
+      "ChestType": "chestboss",
+      "MapId": "map15",
+      "NodeConnections": "",
+      "Uid": "map15nodea10"
+    },
+    "map15nodeb6": {
+      "ChestType": "chestboostedtoken",
+      "MapId": "map15",
+      "NodeConnections": "map15nodeb7,map15nodea7",
+      "Uid": "map15nodeb6"
+    },
+    "map15nodec5": {
+      "ChestType": "chestboostedscroll",
+      "MapId": "map15",
+      "NodeConnections": "map15nodec6",
+      "Uid": "map15nodec5"
+    },
+    "map15nodec6": {
+      "ChestType": "chestboostedgold",
+      "MapId": "map15",
+      "NodeConnections": "map15nodec7",
+      "Uid": "map15nodec6"
+    },
+    "map16nodea10": {
+      "ChestType": "chestboss",
+      "MapId": "map16",
+      "NodeConnections": "",
+      "Uid": "map16nodea10"
+    },
+    "map16nodea8": {
+      "ChestType": "chestboostedtoken",
+      "MapId": "map16",
+      "NodeConnections": "map16nodea9",
+      "Uid": "map16nodea8"
+    },
+    "map16nodeb10": {
+      "ChestType": "chestboss",
+      "MapId": "map16",
+      "NodeConnections": "",
+      "Uid": "map16nodeb10"
+    },
+    "map16nodeb7": {
+      "ChestType": "chestboostedskin",
+      "MapId": "map16",
+      "NodeConnections": "map16nodeb8,map16nodec8",
+      "Uid": "map16nodeb7"
+    },
+    "map16nodec2": {
+      "ChestType": "chestboostedscroll",
+      "MapId": "map16",
+      "NodeConnections": "map16nodec3,map16nodeb4",
+      "Uid": "map16nodec2"
+    },
+    "map16nodec8": {
+      "ChestType": "chestboostedscroll",
+      "MapId": "map16",
+      "NodeConnections": "map16nodeb9,map16nodea9",
+      "Uid": "map16nodec8"
+    },
+    "map17nodea10": {
+      "ChestType": "chestbosssuper",
+      "MapId": "map17",
+      "NodeConnections": "",
+      "Uid": "map17nodea10"
+    },
+    "map17nodea7": {
+      "ChestType": "chestboostedskin",
+      "MapId": "map17",
+      "NodeConnections": "map17nodea8",
+      "Uid": "map17nodea7"
+    },
+    "map17nodea8": {
+      "ChestType": "chestboostedscroll",
+      "MapId": "map17",
+      "NodeConnections": "map17nodea9",
+      "Uid": "map17nodea8"
+    },
+    "map17nodeb6": {
+      "ChestType": "chestboostedgold",
+      "MapId": "map17",
+      "NodeConnections": "map17nodeb7",
+      "Uid": "map17nodeb6"
+    },
+    "map17nodeb7": {
+      "ChestType": "chestboostedgold",
+      "MapId": "map17",
+      "NodeConnections": "map17nodeb8,map17nodec8",
+      "Uid": "map17nodeb7"
+    },
+    "map17nodec8": {
+      "ChestType": "chestboostedscroll",
+      "MapId": "map17",
+      "NodeConnections": "map17nodec9",
+      "Uid": "map17nodec8"
+    },
+    "map18nodea10": {
+      "ChestType": "chestboss",
+      "MapId": "map18",
+      "NodeConnections": "",
+      "Uid": "map18nodea10"
+    },
+    "map18nodea9": {
+      "ChestType": "chestboostedtoken",
+      "MapId": "map18",
+      "NodeConnections": "map18nodec9",
+      "Uid": "map18nodea9"
+    },
+    "map18nodeb6": {
+      "ChestType": "chestboostedscroll",
+      "MapId": "map18",
+      "NodeConnections": "map18nodeb7,map18nodea6",
+      "Uid": "map18nodeb6"
+    },
+    "map18nodec10": {
+      "ChestType": "chestboss",
+      "MapId": "map18",
+      "NodeConnections": "",
+      "Uid": "map18nodec10"
+    },
+    "map18nodec6": {
+      "ChestType": "chestboostedtoken",
+      "MapId": "map18",
+      "NodeConnections": "map18nodec7,map18nodea8,map18nodeb7",
+      "Uid": "map18nodec6"
+    },
+    "map19nodea10": {
+      "ChestType": "chestboss",
+      "MapId": "map19",
+      "NodeConnections": "",
+      "Uid": "map19nodea10"
+    },
+    "map19nodeb6": {
+      "ChestType": "chestboostedscroll",
+      "MapId": "map19",
+      "NodeConnections": "map19nodeb7",
+      "Uid": "map19nodeb6"
+    },
+    "map19nodeb7": {
+      "ChestType": "chestboostedskin",
+      "MapId": "map19",
+      "NodeConnections": "map19nodeb8,map19nodea8",
+      "Uid": "map19nodeb7"
+    },
+    "map19nodec10": {
+      "ChestType": "chestboss",
+      "MapId": "map19",
+      "NodeConnections": "",
+      "Uid": "map19nodec10"
+    },
+    "map19nodec5": {
+      "ChestType": "chestboostedscroll",
+      "MapId": "map19",
+      "NodeConnections": "map19nodec6",
+      "Uid": "map19nodec5"
+    },
+    "map19nodec6": {
+      "ChestType": "chestboostedgold",
+      "MapId": "map19",
+      "NodeConnections": "map19nodec7",
+      "Uid": "map19nodec6"
+    },
+    "map19nodecd1": {
+      "ChestType": "chestboostedscroll",
+      "MapId": "map19",
+      "NodeConnections": "map19nodec7",
+      "Uid": "map19nodecd1"
+    },
+    "map20nodea10": {
+      "ChestType": "chestboss",
+      "MapId": "map20",
+      "NodeConnections": "",
+      "Uid": "map20nodea10"
+    },
+    "map20nodea5": {
+      "ChestType": "chestboostedtoken",
+      "MapId": "map20",
+      "NodeConnections": "map20nodea6,map20nodeb6",
+      "Uid": "map20nodea5"
+    },
+    "map20nodea6": {
+      "ChestType": "chestboostedscroll",
+      "MapId": "map20",
+      "NodeConnections": "map20nodea7,map20nodeb7",
+      "Uid": "map20nodea6"
+    },
+    "map20nodec10": {
+      "ChestType": "chestboss",
+      "MapId": "map20",
+      "NodeConnections": "",
+      "Uid": "map20nodec10"
+    },
+    "map20nodec6": {
+      "ChestType": "chestboostedskin",
+      "MapId": "map20",
+      "NodeConnections": "map20nodec7,map20nodea7",
+      "Uid": "map20nodec6"
+    },
+    "map21nodea5": {
+      "ChestType": "chestboostedscroll",
+      "MapId": "map21",
+      "NodeConnections": "map21nodea6,map21nodeb6",
+      "Uid": "map21nodea5"
+    },
+    "map21nodeb6": {
+      "ChestType": "chestboostedscroll",
+      "MapId": "map21",
+      "NodeConnections": "map21nodeb7",
+      "Uid": "map21nodeb6"
+    },
+    "map21nodeb8": {
+      "ChestType": "chestboostedtoken",
+      "MapId": "map21",
+      "NodeConnections": "map21nodeb9",
+      "Uid": "map21nodeb8"
+    },
+    "map21nodec10": {
+      "ChestType": "chestboss",
+      "MapId": "map21",
+      "NodeConnections": "",
+      "Uid": "map21nodec10"
+    },
+    "map21nodec5": {
+      "ChestType": "chestboostedscroll",
+      "MapId": "map21",
+      "NodeConnections": "map21nodec6",
+      "Uid": "map21nodec5"
+    },
+    "map21nodec9": {
+      "ChestType": "chestboostedskin",
+      "MapId": "map21",
+      "NodeConnections": "map21nodec10",
+      "Uid": "map21nodec9"
+    },
+    "map22nodea12": {
+      "ChestType": "chestboostedscroll",
+      "MapId": "map22",
+      "NodeConnections": "map22nodea13",
+      "Uid": "map22nodea12"
+    },
+    "map22nodea14": {
+      "ChestType": "chestbosssuper",
+      "MapId": "map22",
+      "NodeConnections": "",
+      "Uid": "map22nodea14"
+    },
+    "map22nodeb4": {
+      "ChestType": "chestboostedgold",
+      "MapId": "map22",
+      "NodeConnections": "map22nodeb5",
+      "Uid": "map22nodeb4"
+    },
+    "map22nodeb7": {
+      "ChestType": "chestboostedtoken",
+      "MapId": "map22",
+      "NodeConnections": "map22nodea12",
+      "Uid": "map22nodeb7"
+    },
+    "map23nodea8": {
+      "ChestType": "chestboss",
+      "MapId": "map23",
+      "NodeConnections": "",
+      "Uid": "map23nodea8"
+    },
+    "map23nodeb6": {
+      "ChestType": "chestboss",
+      "MapId": "map23",
+      "NodeConnections": "",
+      "Uid": "map23nodeb6"
+    },
+    "map24nodea10": {
+      "ChestType": "chestboss",
+      "MapId": "map24",
+      "NodeConnections": "",
+      "Uid": "map24nodea10"
+    },
+    "map25nodea10": {
+      "ChestType": "chestboss",
+      "MapId": "map25",
+      "NodeConnections": "",
+      "Uid": "map25nodea10"
+    },
+    "map25nodec10": {
+      "ChestType": "chestboss",
+      "MapId": "map25",
+      "NodeConnections": "",
+      "Uid": "map25nodec10"
+    },
+    "map26nodea10": {
+      "ChestType": "chestboss",
+      "MapId": "map26",
+      "NodeConnections": "",
+      "Uid": "map26nodea10"
+    },
+    "map27nodea10": {
+      "ChestType": "chestboss",
+      "MapId": "map27",
+      "NodeConnections": "",
+      "Uid": "map27nodea10"
+    },
+    "map27nodeb10": {
+      "ChestType": "chestboss",
+      "MapId": "map27",
+      "NodeConnections": "",
+      "Uid": "map27nodeb10"
+    },
+    "map28nodea10": {
+      "ChestType": "chestboss",
+      "MapId": "map28",
+      "NodeConnections": "",
+      "Uid": "map28nodea10"
+    },
+    "map29nodea10": {
+      "ChestType": "chestboss",
+      "MapId": "map29",
+      "NodeConnections": "",
+      "Uid": "map29nodea10"
+    },
+    "map29nodec10": {
+      "ChestType": "chestboss",
+      "MapId": "map29",
+      "NodeConnections": "",
+      "Uid": "map29nodec10"
+    },
+    "map30nodea10": {
+      "ChestType": "chestboss",
+      "MapId": "map30",
+      "NodeConnections": "",
+      "Uid": "map30nodea10"
+    },
+    "map30nodec10": {
+      "ChestType": "chestboss",
+      "MapId": "map30",
+      "NodeConnections": "",
+      "Uid": "map30nodec10"
+    },
+    "map31nodea10": {
+      "ChestType": "chestboss",
+      "MapId": "map31",
+      "NodeConnections": "",
+      "Uid": "map31nodea10"
+    },
+    "map31nodec10": {
+      "ChestType": "chestboss",
+      "MapId": "map31",
+      "NodeConnections": "",
+      "Uid": "map31nodec10"
+    },
+    "map33nodea3": {
+      "ChestType": "chestboostedgold",
+      "MapId": "map33",
+      "NodeConnections": "map33nodea4",
+      "Uid": "map33nodea3"
+    },
+    "map33nodea8": {
+      "ChestType": "chestboss",
+      "MapId": "map33",
+      "NodeConnections": "",
+      "Uid": "map33nodea8"
+    },
+    "map33nodeb6": {
+      "ChestType": "chestboss",
+      "MapId": "map33",
+      "NodeConnections": "",
+      "Uid": "map33nodeb6"
+    },
+    "map33noded1": {
+      "ChestType": "chestboostedtoken",
+      "MapId": "map33",
+      "NodeConnections": "map33nodec5",
+      "Uid": "map33noded1"
+    },
+    "map34nodea10": {
+      "ChestType": "chestboss",
+      "MapId": "map34",
+      "NodeConnections": "",
+      "Uid": "map34nodea10"
+    },
+    "map34nodeb5": {
+      "ChestType": "chestboostedskinalternate",
+      "MapId": "map34",
+      "NodeConnections": "map34nodeb6,map34nodea5",
+      "Uid": "map34nodeb5"
+    },
+    "map34nodeb7": {
+      "ChestType": "chestboostedscroll",
+      "MapId": "map34",
+      "NodeConnections": "map34nodeb8,map34nodea8",
+      "Uid": "map34nodeb7"
+    },
+    "map34nodec6": {
+      "ChestType": "chestboostedgold",
+      "MapId": "map34",
+      "NodeConnections": "map34nodec7",
+      "Uid": "map34nodec6"
+    },
+    "map35nodea10": {
+      "ChestType": "chestboss",
+      "MapId": "map35",
+      "NodeConnections": "",
+      "Uid": "map35nodea10"
+    },
+    "map35nodea7": {
+      "ChestType": "chestboostedskinalternate",
+      "MapId": "map35",
+      "NodeConnections": "map35nodea8",
+      "Uid": "map35nodea7"
+    },
+    "map35nodeb8": {
+      "ChestType": "chestboostedscroll",
+      "MapId": "map35",
+      "NodeConnections": "map35nodeb9,map35nodea9",
+      "Uid": "map35nodeb8"
+    },
+    "map35nodec10": {
+      "ChestType": "chestboss",
+      "MapId": "map35",
+      "NodeConnections": "",
+      "Uid": "map35nodec10"
+    },
+    "map35nodec3": {
+      "ChestType": "chestboostedgold",
+      "MapId": "map35",
+      "NodeConnections": "map35nodec4",
+      "Uid": "map35nodec3"
+    },
+    "map36nodea10": {
+      "ChestType": "chestboss",
+      "MapId": "map36",
+      "NodeConnections": "",
+      "Uid": "map36nodea10"
+    },
+    "map36nodeb6": {
+      "ChestType": "chestboostedtoken",
+      "MapId": "map36",
+      "NodeConnections": "map36nodeb7,map36nodea7",
+      "Uid": "map36nodeb6"
+    },
+    "map36nodeb7": {
+      "ChestType": "chestboostedscroll",
+      "MapId": "map36",
+      "NodeConnections": "map36nodeb8",
+      "Uid": "map36nodeb7"
+    },
+    "map36nodec6": {
+      "ChestType": "chestboostedgold",
+      "MapId": "map36",
+      "NodeConnections": "map36nodec7",
+      "Uid": "map36nodec6"
+    },
+    "map37nodea10": {
+      "ChestType": "chestboss",
+      "MapId": "map37",
+      "NodeConnections": "",
+      "Uid": "map37nodea10"
+    },
+    "map37nodea7": {
+      "ChestType": "chestboostedtoken",
+      "MapId": "map37",
+      "NodeConnections": "map37nodea8",
+      "Uid": "map37nodea7"
+    },
+    "map37nodeb10": {
+      "ChestType": "chestboss",
+      "MapId": "map37",
+      "NodeConnections": "",
+      "Uid": "map37nodeb10"
+    },
+    "map37nodeb6": {
+      "ChestType": "chestboostedskinalternate",
+      "MapId": "map37",
+      "NodeConnections": "map37nodeb7",
+      "Uid": "map37nodeb6"
+    },
+    "map37nodec8": {
+      "ChestType": "chestboostedscroll",
+      "MapId": "map37",
+      "NodeConnections": "map37nodeb9,map37nodea9",
+      "Uid": "map37nodec8"
+    },
+    "map38nodea10": {
+      "ChestType": "chestbosssuper",
+      "MapId": "map38",
+      "NodeConnections": "",
+      "Uid": "map38nodea10"
+    },
+    "map38nodea7": {
+      "ChestType": "chestboostedskinalternate",
+      "MapId": "map38",
+      "NodeConnections": "map38nodea8",
+      "Uid": "map38nodea7"
+    },
+    "map38nodeb6": {
+      "ChestType": "chestboostedgold",
+      "MapId": "map38",
+      "NodeConnections": "map38nodeb7",
+      "Uid": "map38nodeb6"
+    },
+    "map38nodec5": {
+      "ChestType": "chestboostedscroll",
+      "MapId": "map38",
+      "NodeConnections": "map38nodeb7,map38nodec7",
+      "Uid": "map38nodec5"
+    },
+    "map38nodec6": {
+      "ChestType": "chestboostedscroll",
+      "MapId": "map38",
+      "NodeConnections": "map38nodec7",
+      "Uid": "map38nodec6"
+    },
+    "map39nodea10": {
+      "ChestType": "chestboss",
+      "MapId": "map39",
+      "NodeConnections": "",
+      "Uid": "map39nodea10"
+    },
+    "map39nodea9": {
+      "ChestType": "chestboostedtoken",
+      "MapId": "map39",
+      "NodeConnections": "map39nodec9",
+      "Uid": "map39nodea9"
+    },
+    "map39nodeb7": {
+      "ChestType": "chestboostedscroll",
+      "MapId": "map39",
+      "NodeConnections": "map39nodeb8",
+      "Uid": "map39nodeb7"
+    },
+    "map39nodec10": {
+      "ChestType": "chestboss",
+      "MapId": "map39",
+      "NodeConnections": "",
+      "Uid": "map39nodec10"
+    },
+    "map40nodea10": {
+      "ChestType": "chestboss",
+      "MapId": "map40",
+      "NodeConnections": "",
+      "Uid": "map40nodea10"
+    },
+    "map40nodeb5": {
+      "ChestType": "chestboostedscroll",
+      "MapId": "map40",
+      "NodeConnections": "map40nodeb6",
+      "Uid": "map40nodeb5"
+    },
+    "map40nodeb7": {
+      "ChestType": "chestboostedskinalternate",
+      "MapId": "map40",
+      "NodeConnections": "map40nodeb8,map40nodea8",
+      "Uid": "map40nodeb7"
+    },
+    "map40nodec10": {
+      "ChestType": "chestboss",
+      "MapId": "map40",
+      "NodeConnections": "",
+      "Uid": "map40nodec10"
+    },
+    "map40nodec6": {
+      "ChestType": "chestboostedgold",
+      "MapId": "map40",
+      "NodeConnections": "map40nodec7",
+      "Uid": "map40nodec6"
+    },
+    "map40nodecd1": {
+      "ChestType": "chestboostedscroll",
+      "MapId": "map40",
+      "NodeConnections": "map40nodec7",
+      "Uid": "map40nodecd1"
+    },
+    "map41nodea10": {
+      "ChestType": "chestboss",
+      "MapId": "map41",
+      "NodeConnections": "",
+      "Uid": "map41nodea10"
+    },
+    "map41nodea5": {
+      "ChestType": "chestboostedtoken",
+      "MapId": "map41",
+      "NodeConnections": "map41nodea6,map41nodeb6",
+      "Uid": "map41nodea5"
+    },
+    "map41nodea8": {
+      "ChestType": "chestboostedscroll",
+      "MapId": "map41",
+      "NodeConnections": "map41nodea9",
+      "Uid": "map41nodea8"
+    },
+    "map41nodec10": {
+      "ChestType": "chestboss",
+      "MapId": "map41",
+      "NodeConnections": "",
+      "Uid": "map41nodec10"
+    },
+    "map41nodec6": {
+      "ChestType": "chestboostedskinalternate",
+      "MapId": "map41",
+      "NodeConnections": "map41nodec7,map41nodea7",
+      "Uid": "map41nodec6"
+    },
+    "map42nodea7": {
+      "ChestType": "chestboostedscroll",
+      "MapId": "map42",
+      "NodeConnections": "map42nodea8,map42nodec9",
+      "Uid": "map42nodea7"
+    },
+    "map42nodeb8": {
+      "ChestType": "chestboostedtoken",
+      "MapId": "map42",
+      "NodeConnections": "map42nodeb9",
+      "Uid": "map42nodeb8"
+    },
+    "map42nodec10": {
+      "ChestType": "chestboss",
+      "MapId": "map42",
+      "NodeConnections": "",
+      "Uid": "map42nodec10"
+    },
+    "map42nodec8": {
+      "ChestType": "chestboostedskinalternate",
+      "MapId": "map42",
+      "NodeConnections": "map42nodec9,map42nodecd2",
+      "Uid": "map42nodec8"
+    },
+    "map43nodea10": {
+      "ChestType": "chestboostedtoken",
+      "MapId": "map43",
+      "NodeConnections": "map43nodea11,map43nodeb6",
+      "Uid": "map43nodea10"
+    },
+    "map43nodea11": {
+      "ChestType": "chestboostedscroll",
+      "MapId": "map43",
+      "NodeConnections": "map43nodea12",
+      "Uid": "map43nodea11"
+    },
+    "map43nodea14": {
+      "ChestType": "chestbosssuper",
+      "MapId": "map43",
+      "NodeConnections": "",
+      "Uid": "map43nodea14"
+    },
+    "map43nodea6": {
+      "ChestType": "chestboostedgold",
+      "MapId": "map43",
+      "NodeConnections": "map43nodea7",
+      "Uid": "map43nodea6"
+    },
+    "map43nodeb4": {
+      "ChestType": "chestboostedgold",
+      "MapId": "map43",
+      "NodeConnections": "map43nodeb5",
+      "Uid": "map43nodeb4"
+    },
+    "map43nodeb7": {
+      "ChestType": "chestboostedtoken",
+      "MapId": "map43",
+      "NodeConnections": "map43nodea12",
+      "Uid": "map43nodeb7"
+    },
+    "map44nodea3": {
+      "ChestType": "chestboostedgold",
+      "MapId": "map44",
+      "NodeConnections": "map44nodea4",
+      "Uid": "map44nodea3"
+    },
+    "map44nodea8": {
+      "ChestType": "chestboss",
+      "MapId": "map44",
+      "NodeConnections": "",
+      "Uid": "map44nodea8"
+    },
+    "map44nodeb6": {
+      "ChestType": "chestboss",
+      "MapId": "map44",
+      "NodeConnections": "",
+      "Uid": "map44nodeb6"
+    },
+    "map44nodec2": {
+      "ChestType": "chestboostedtoken",
+      "MapId": "map44",
+      "NodeConnections": "map44nodec3,map44noded1",
+      "Uid": "map44nodec2"
+    },
+    "map44nodec4": {
+      "ChestType": "chestboostedskinalternate",
+      "MapId": "map44",
+      "NodeConnections": "map44nodec5",
+      "Uid": "map44nodec4"
+    },
+    "map45nodea10": {
+      "ChestType": "chestboss",
+      "MapId": "map45",
+      "NodeConnections": "",
+      "Uid": "map45nodea10"
+    },
+    "map45nodea5": {
+      "ChestType": "chestboostedgold",
+      "MapId": "map45",
+      "NodeConnections": "map45nodea6",
+      "Uid": "map45nodea5"
+    },
+    "map45nodeb7": {
+      "ChestType": "chestboostedscroll",
+      "MapId": "map45",
+      "NodeConnections": "map45nodeb8,map45nodea8",
+      "Uid": "map45nodeb7"
+    },
+    "map45nodeb8": {
+      "ChestType": "chestboostedskinalternate",
+      "MapId": "map45",
+      "NodeConnections": "map45nodeb9,map45nodec7",
+      "Uid": "map45nodeb8"
+    },
+    "map45nodec5": {
+      "ChestType": "chestboostedtoken",
+      "MapId": "map45",
+      "NodeConnections": "map45nodec6",
+      "Uid": "map45nodec5"
+    },
+    "map46nodea10": {
+      "ChestType": "chestboss",
+      "MapId": "map46",
+      "NodeConnections": "",
+      "Uid": "map46nodea10"
+    },
+    "map46nodea5": {
+      "ChestType": "chestboostedgold",
+      "MapId": "map46",
+      "NodeConnections": "map46nodea6,map46nodeb6",
+      "Uid": "map46nodea5"
+    },
+    "map46nodeb5": {
+      "ChestType": "chestboostedtoken",
+      "MapId": "map46",
+      "NodeConnections": "map46nodea5",
+      "Uid": "map46nodeb5"
+    },
+    "map46nodeb8": {
+      "ChestType": "chestboostedscroll",
+      "MapId": "map46",
+      "NodeConnections": "map46nodeb9,map46nodea9",
+      "Uid": "map46nodeb8"
+    },
+    "map46nodec10": {
+      "ChestType": "chestboss",
+      "MapId": "map46",
+      "NodeConnections": "",
+      "Uid": "map46nodec10"
+    },
+    "map47nodea10": {
+      "ChestType": "chestboss",
+      "MapId": "map47",
+      "NodeConnections": "",
+      "Uid": "map47nodea10"
+    },
+    "map47nodea6": {
+      "ChestType": "chestboostedgold",
+      "MapId": "map47",
+      "NodeConnections": "map47nodea7",
+      "Uid": "map47nodea6"
+    },
+    "map47nodeb5": {
+      "ChestType": "chestboostedskinalternate",
+      "MapId": "map47",
+      "NodeConnections": "map47nodeb6",
+      "Uid": "map47nodeb5"
+    },
+    "map47nodeb7": {
+      "ChestType": "chestboostedscroll",
+      "MapId": "map47",
+      "NodeConnections": "map47nodeb8",
+      "Uid": "map47nodeb7"
+    },
+    "map48nodea10": {
+      "ChestType": "chestboss",
+      "MapId": "map48",
+      "NodeConnections": "",
+      "Uid": "map48nodea10"
+    },
+    "map48nodea5": {
+      "ChestType": "chestboostedgold",
+      "MapId": "map48",
+      "NodeConnections": "map48nodea6,map48nodec9",
+      "Uid": "map48nodea5"
+    },
+    "map48nodeb10": {
+      "ChestType": "chestboss",
+      "MapId": "map48",
+      "NodeConnections": "",
+      "Uid": "map48nodeb10"
+    },
+    "map48nodeb6": {
+      "ChestType": "chestboostedtoken",
+      "MapId": "map48",
+      "NodeConnections": "map48nodeb7",
+      "Uid": "map48nodeb6"
+    },
+    "map48nodec5": {
+      "ChestType": "chestboostedscroll",
+      "MapId": "map48",
+      "NodeConnections": "map48nodec6,map48nodeb7",
+      "Uid": "map48nodec5"
+    },
+    "map48nodec8": {
+      "ChestType": "chestboostedskinalternate",
+      "MapId": "map48",
+      "NodeConnections": "map48nodeb9,map48nodea9",
+      "Uid": "map48nodec8"
+    },
+    "map48nodec9": {
+      "ChestType": "chestboostedscroll",
+      "MapId": "map48",
+      "NodeConnections": "map48nodea8,map48nodec7",
+      "Uid": "map48nodec9"
+    },
+    "map49nodea10": {
+      "ChestType": "chestbosssuper",
+      "MapId": "map49",
+      "NodeConnections": "",
+      "Uid": "map49nodea10"
+    },
+    "map49nodea5": {
+      "ChestType": "chestboostedtoken",
+      "MapId": "map49",
+      "NodeConnections": "map49nodea6,map49nodec6",
+      "Uid": "map49nodea5"
+    },
+    "map49nodeb6": {
+      "ChestType": "chestboostedgold",
+      "MapId": "map49",
+      "NodeConnections": "map49nodeb7",
+      "Uid": "map49nodeb6"
+    },
+    "map49nodec8": {
+      "ChestType": "chestboostedscroll",
+      "MapId": "map49",
+      "NodeConnections": "map49nodec9",
+      "Uid": "map49nodec8"
+    },
+    "map50nodea5": {
+      "ChestType": "chestboostedgold",
+      "MapId": "map50",
+      "NodeConnections": "map50nodea6",
+      "Uid": "map50nodea5"
+    },
+    "map50nodealt4": {
+      "ChestType": "chestboostedtoken",
+      "MapId": "map50",
+      "NodeConnections": "map50nodeenda",
+      "Uid": "map50nodealt4"
+    },
+    "map50nodeb7": {
+      "ChestType": "chestboostedscroll",
+      "MapId": "map50",
+      "NodeConnections": "map50nodeb8",
+      "Uid": "map50nodeb7"
+    },
+    "map50nodeb8": {
+      "ChestType": "chestboostedskinalternate",
+      "MapId": "map50",
+      "NodeConnections": "map50nodeendbc",
+      "Uid": "map50nodeb8"
+    },
+    "map50nodec6": {
+      "ChestType": "chestboostedtoken",
+      "MapId": "map50",
+      "NodeConnections": "map50nodec7",
+      "Uid": "map50nodec6"
+    },
+    "map50nodeenda": {
+      "ChestType": "chestboss",
+      "MapId": "map50",
+      "NodeConnections": "",
+      "Uid": "map50nodeenda"
+    },
+    "map50nodeendbc": {
+      "ChestType": "chestboss",
+      "MapId": "map50",
+      "NodeConnections": "",
+      "Uid": "map50nodeendbc"
+    },
+    "map51nodea10": {
+      "ChestType": "chestboss",
+      "MapId": "map51",
+      "NodeConnections": "",
+      "Uid": "map51nodea10"
+    },
+    "map51nodea5": {
+      "ChestType": "chestboostedgold",
+      "MapId": "map51",
+      "NodeConnections": "map51nodea6,map51nodeb6",
+      "Uid": "map51nodea5"
+    },
+    "map51nodeb7": {
+      "ChestType": "chestboostedscroll",
+      "MapId": "map51",
+      "NodeConnections": "map51nodeb8,map51nodea8",
+      "Uid": "map51nodeb7"
+    },
+    "map51nodec10": {
+      "ChestType": "chestboss",
+      "MapId": "map51",
+      "NodeConnections": "",
+      "Uid": "map51nodec10"
+    },
+    "map51nodec7": {
+      "ChestType": "chestboostedscroll",
+      "MapId": "map51",
+      "NodeConnections": "map51nodec8",
+      "Uid": "map51nodec7"
+    },
+    "map52nodea10": {
+      "ChestType": "chestboss",
+      "MapId": "map52",
+      "NodeConnections": "",
+      "Uid": "map52nodea10"
+    },
+    "map52nodea6": {
+      "ChestType": "chestboostedtoken",
+      "MapId": "map52",
+      "NodeConnections": "map52nodea7,map52nodeb7",
+      "Uid": "map52nodea6"
+    },
+    "map52nodea7": {
+      "ChestType": "chestboostedscroll",
+      "MapId": "map52",
+      "NodeConnections": "map52nodea8",
+      "Uid": "map52nodea7"
+    },
+    "map52nodeb10": {
+      "ChestType": "chestboss",
+      "MapId": "map52",
+      "NodeConnections": "",
+      "Uid": "map52nodeb10"
+    },
+    "map52nodeb9": {
+      "ChestType": "chestboostedskinalternate",
+      "MapId": "map52",
+      "NodeConnections": "map52nodeb10",
+      "Uid": "map52nodeb9"
+    },
+    "map52nodec6": {
+      "ChestType": "chestboostedscroll",
+      "MapId": "map52",
+      "NodeConnections": "map52nodec7,map52nodeb8",
+      "Uid": "map52nodec6"
+    },
+    "map52nodecalt3": {
+      "ChestType": "chestboostedgold",
+      "MapId": "map52",
+      "NodeConnections": "map52nodea10",
+      "Uid": "map52nodecalt3"
+    },
+    "map53nodea10": {
+      "ChestType": "chestboss",
+      "MapId": "map53",
+      "NodeConnections": "",
+      "Uid": "map53nodea10"
+    },
+    "map53nodeb6": {
+      "ChestType": "chestboostedscroll",
+      "MapId": "map53",
+      "NodeConnections": "map53nodeb7,map53nodea6",
+      "Uid": "map53nodeb6"
+    },
+    "map53nodeb8": {
+      "ChestType": "chestboostedskinalternate",
+      "MapId": "map53",
+      "NodeConnections": "map53nodeb9",
+      "Uid": "map53nodeb8"
+    },
+    "map53nodec10": {
+      "ChestType": "chestboss",
+      "MapId": "map53",
+      "NodeConnections": "",
+      "Uid": "map53nodec10"
+    },
+    "map53nodec6": {
+      "ChestType": "chestboostedscroll",
+      "MapId": "map53",
+      "NodeConnections": "map53nodeb7,map53nodec7,map53nodea8",
+      "Uid": "map53nodec6"
+    },
+    "map54nodea11": {
+      "ChestType": "chestboostedskinalternate",
+      "MapId": "map54",
+      "NodeConnections": "map54nodea12",
+      "Uid": "map54nodea11"
+    },
+    "map54nodea5": {
+      "ChestType": "chestboostedskinalternate",
+      "MapId": "map54",
+      "NodeConnections": "map54nodea6",
+      "Uid": "map54nodea5"
+    },
+    "map54nodeend": {
+      "ChestType": "chestbosssuper",
+      "MapId": "map54",
+      "NodeConnections": "",
+      "Uid": "map54nodeend"
+    },
+    "map56nodea10": {
+      "ChestType": "chestboss",
+      "MapId": "map56",
+      "NodeConnections": "",
+      "Uid": "map56nodea10"
+    },
+    "map56nodeb8": {
+      "ChestType": "chestboostedbeastlands",
+      "MapId": "map56",
+      "NodeConnections": "map56nodeb9",
+      "Uid": "map56nodeb8"
+    },
+    "map56nodec4": {
+      "ChestType": "chestboostedgold",
+      "MapId": "map56",
+      "NodeConnections": "map56nodec6,map56nodec5",
+      "Uid": "map56nodec4"
+    },
+    "map56nodec5": {
+      "ChestType": "chestboostedgold",
+      "MapId": "map56",
+      "NodeConnections": "map56nodeb7,map56nodec7",
+      "Uid": "map56nodec5"
+    },
+    "map56nodec6": {
+      "ChestType": "chestboostedbeastlands",
+      "MapId": "map56",
+      "NodeConnections": "map56nodec7",
+      "Uid": "map56nodec6"
+    },
+    "map56nodec9": {
+      "ChestType": "chestboss",
+      "MapId": "map56",
+      "NodeConnections": "",
+      "Uid": "map56nodec9"
+    },
+    "map57nodea10": {
+      "ChestType": "chestboss",
+      "MapId": "map57",
+      "NodeConnections": "",
+      "Uid": "map57nodea10"
+    },
+    "map57nodeb7": {
+      "ChestType": "chestboostedbeastlands",
+      "MapId": "map57",
+      "NodeConnections": "map57nodeb8,map57nodea8",
+      "Uid": "map57nodeb7"
+    },
+    "map57nodeb8": {
+      "ChestType": "chestboostedtoken",
+      "MapId": "map57",
+      "NodeConnections": "map57nodea10,map57nodecd2",
+      "Uid": "map57nodeb8"
+    },
+    "map57nodec10": {
+      "ChestType": "chestboss",
+      "MapId": "map57",
+      "NodeConnections": "",
+      "Uid": "map57nodec10"
+    },
+    "map57nodec9": {
+      "ChestType": "chestboostedtoken",
+      "MapId": "map57",
+      "NodeConnections": "map57nodeb9",
+      "Uid": "map57nodec9"
+    },
+    "map57nodecd2": {
+      "ChestType": "chestboostedbeastlands",
+      "MapId": "map57",
+      "NodeConnections": "map57nodec10",
+      "Uid": "map57nodecd2"
+    },
+    "map58nodea10": {
+      "ChestType": "chestboss",
+      "MapId": "map58",
+      "NodeConnections": "",
+      "Uid": "map58nodea10"
+    },
+    "map58nodeb4": {
+      "ChestType": "chestboostedgold",
+      "MapId": "map58",
+      "NodeConnections": "map58nodeb5,map58nodec5",
+      "Uid": "map58nodeb4"
+    },
+    "map58nodec5": {
+      "ChestType": "chestboostedbeastlands",
+      "MapId": "map58",
+      "NodeConnections": "map58nodeb7,map58nodec7",
+      "Uid": "map58nodec5"
+    },
+    "map58nodec6": {
+      "ChestType": "chestboostedbeastlands",
+      "MapId": "map58",
+      "NodeConnections": "map58nodec7",
+      "Uid": "map58nodec6"
+    },
+    "map58nodec7": {
+      "ChestType": "chestboostedgold",
+      "MapId": "map58",
+      "NodeConnections": "map58nodec8,map58nodea8",
+      "Uid": "map58nodec7"
+    },
+    "map58nodec9": {
+      "ChestType": "chestboss",
+      "MapId": "map58",
+      "NodeConnections": "",
+      "Uid": "map58nodec9"
+    },
+    "map59nodea10": {
+      "ChestType": "chestboss",
+      "MapId": "map59",
+      "NodeConnections": "",
+      "Uid": "map59nodea10"
+    },
+    "map59nodeb8": {
+      "ChestType": "chestboostedbeastlands",
+      "MapId": "map59",
+      "NodeConnections": "map59nodeb9",
+      "Uid": "map59nodeb8"
+    },
+    "map59nodeb9": {
+      "ChestType": "chestboostedtoken",
+      "MapId": "map59",
+      "NodeConnections": "map59nodea10,map59nodec9",
+      "Uid": "map59nodeb9"
+    },
+    "map59nodec10": {
+      "ChestType": "chestboss",
+      "MapId": "map59",
+      "NodeConnections": "",
+      "Uid": "map59nodec10"
+    },
+    "map59nodec4": {
+      "ChestType": "chestboostedbeastlands",
+      "MapId": "map59",
+      "NodeConnections": "map59nodec5",
+      "Uid": "map59nodec4"
+    },
+    "map59nodec9": {
+      "ChestType": "chestboostedtoken",
+      "MapId": "map59",
+      "NodeConnections": "map59nodec10",
+      "Uid": "map59nodec9"
+    },
+    "map60nodea10": {
+      "ChestType": "chestboss",
+      "MapId": "map60",
+      "NodeConnections": "",
+      "Uid": "map60nodea10"
+    },
+    "map60nodea7": {
+      "ChestType": "chestboostedskin",
+      "MapId": "map60",
+      "NodeConnections": "map60nodea8",
+      "Uid": "map60nodea7"
+    },
+    "map60nodec10": {
+      "ChestType": "chestboss",
+      "MapId": "map60",
+      "NodeConnections": "",
+      "Uid": "map60nodec10"
+    },
+    "map60nodec3": {
+      "ChestType": "chestboostedtoken",
+      "MapId": "map60",
+      "NodeConnections": "map60nodec4",
+      "Uid": "map60nodec3"
+    },
+    "map61nodea10": {
+      "ChestType": "chestboss",
+      "MapId": "map61",
+      "NodeConnections": "",
+      "Uid": "map61nodea10"
+    },
+    "map61nodeb6": {
+      "ChestType": "chestboostedtoken",
+      "MapId": "map61",
+      "NodeConnections": "map61nodeb7,map61nodea7",
+      "Uid": "map61nodeb6"
+    },
+    "map61nodeb8": {
+      "ChestType": "chestboostedgold",
+      "MapId": "map61",
+      "NodeConnections": "map61nodeb9,map61nodea8",
+      "Uid": "map61nodeb8"
+    },
+    "map61nodec6": {
+      "ChestType": "chestboostedskin",
+      "MapId": "map61",
+      "NodeConnections": "map61nodec7",
+      "Uid": "map61nodec6"
+    },
+    "map62nodea10": {
+      "ChestType": "chestboss",
+      "MapId": "map62",
+      "NodeConnections": "",
+      "Uid": "map62nodea10"
+    },
+    "map62nodea7": {
+      "ChestType": "chestboostedtoken",
+      "MapId": "map62",
+      "NodeConnections": "map62nodea8",
+      "Uid": "map62nodea7"
+    },
+    "map62nodeb10": {
+      "ChestType": "chestboss",
+      "MapId": "map62",
+      "NodeConnections": "",
+      "Uid": "map62nodeb10"
+    },
+    "map62nodeb6": {
+      "ChestType": "chestboostedskin",
+      "MapId": "map62",
+      "NodeConnections": "map62nodeb7",
+      "Uid": "map62nodeb6"
+    },
+    "map63nodea10": {
+      "ChestType": "chestboss",
+      "MapId": "map63",
+      "NodeConnections": "",
+      "Uid": "map63nodea10"
+    },
+    "map63nodea7": {
+      "ChestType": "chestboostedskin",
+      "MapId": "map63",
+      "NodeConnections": "map63nodea8",
+      "Uid": "map63nodea7"
+    },
+    "map63nodeb6": {
+      "ChestType": "chestboostedgold",
+      "MapId": "map63",
+      "NodeConnections": "map63nodeb7",
+      "Uid": "map63nodeb6"
+    },
+    "map63nodec4": {
+      "ChestType": "chestboostedtoken",
+      "MapId": "map63",
+      "NodeConnections": "map63nodec6",
+      "Uid": "map63nodec4"
+    },
+    "map64nodea10": {
+      "ChestType": "chestbosssuper",
+      "MapId": "map64",
+      "NodeConnections": "",
+      "Uid": "map64nodea10"
+    },
+    "map64nodea9": {
+      "ChestType": "chestboostedtoken",
+      "MapId": "map64",
+      "NodeConnections": "map64nodec9",
+      "Uid": "map64nodea9"
+    },
+    "map64nodec10": {
+      "ChestType": "chestbosssuper",
+      "MapId": "map64",
+      "NodeConnections": "",
+      "Uid": "map64nodec10"
+    },
+    "map64nodec8": {
+      "ChestType": "chestboostedskin",
+      "MapId": "map64",
+      "NodeConnections": "map64nodec9",
+      "Uid": "map64nodec8"
+    },
+    "map65nodea9": {
+      "ChestType": "chestboostedtoken",
+      "MapId": "map65",
+      "NodeConnections": "map65nodec10",
+      "Uid": "map65nodea9"
+    },
+    "map65nodeb8": {
+      "ChestType": "chestboostedgold",
+      "MapId": "map65",
+      "NodeConnections": "map65nodeb9",
+      "Uid": "map65nodeb8"
+    },
+    "map65nodec10": {
+      "ChestType": "chestboss",
+      "MapId": "map65",
+      "NodeConnections": "",
+      "Uid": "map65nodec10"
+    },
+    "map65nodec8": {
+      "ChestType": "chestboostedskin",
+      "MapId": "map65",
+      "NodeConnections": "map65nodec9,map65nodecd2",
+      "Uid": "map65nodec8"
+    },
+    "map66nodea10": {
+      "ChestType": "chestboss",
+      "MapId": "map66",
+      "NodeConnections": "",
+      "Uid": "map66nodea10"
+    },
+    "map66nodea6": {
+      "ChestType": "chestboostedtoken",
+      "MapId": "map66",
+      "NodeConnections": "map66nodea7",
+      "Uid": "map66nodea6"
+    },
+    "map66nodeb3": {
+      "ChestType": "chestboostedgold",
+      "MapId": "map66",
+      "NodeConnections": "map66nodeb4,map66nodea4",
+      "Uid": "map66nodeb3"
+    },
+    "map66nodec10": {
+      "ChestType": "chestboss",
+      "MapId": "map66",
+      "NodeConnections": "",
+      "Uid": "map66nodec10"
+    },
+    "map66nodec8": {
+      "ChestType": "chestboostedskin",
+      "MapId": "map66",
+      "NodeConnections": "map66nodec9",
+      "Uid": "map66nodec8"
+    },
+    "map67nodea10": {
+      "ChestType": "chestbosssuper",
+      "MapId": "map67",
+      "NodeConnections": "",
+      "Uid": "map67nodea10"
+    },
+    "map67nodea5": {
+      "ChestType": "chestboostedtoken",
+      "MapId": "map67",
+      "NodeConnections": "map67nodea6,map67nodeb6",
+      "Uid": "map67nodea5"
+    },
+    "map67nodea9": {
+      "ChestType": "chestboostedskin",
+      "MapId": "map67",
+      "NodeConnections": "map67nodea10",
+      "Uid": "map67nodea9"
+    },
+    "map67nodec3": {
+      "ChestType": "chestboostedgold",
+      "MapId": "map67",
+      "NodeConnections": "map67nodec4,map67nodeb3",
+      "Uid": "map67nodec3"
+    },
+    "map68nodea10": {
+      "ChestType": "chestbosssuper",
+      "MapId": "map68",
+      "NodeConnections": "",
+      "Uid": "map68nodea10"
+    },
+    "map68nodea3": {
+      "ChestType": "chestboss",
+      "MapId": "map68",
+      "NodeConnections": "map68nodea4,map68nodec3",
+      "Uid": "map68nodea3"
+    },
+    "map68nodea6": {
+      "ChestType": "chestboss",
+      "MapId": "map68",
+      "NodeConnections": "map68nodea7",
+      "Uid": "map68nodea6"
+    },
+    "map68nodea9": {
+      "ChestType": "chestboostedskin",
+      "MapId": "map68",
+      "NodeConnections": "map68nodea10",
+      "Uid": "map68nodea9"
+    },
+    "map68nodeb10": {
+      "ChestType": "chestbosssuper",
+      "MapId": "map68",
+      "NodeConnections": "",
+      "Uid": "map68nodeb10"
+    },
+    "map68nodeb3": {
+      "ChestType": "chestboss",
+      "MapId": "map68",
+      "NodeConnections": "map68nodeb4",
+      "Uid": "map68nodeb3"
+    },
+    "map68nodeb6": {
+      "ChestType": "chestboss",
+      "MapId": "map68",
+      "NodeConnections": "map68nodeb7",
+      "Uid": "map68nodeb6"
+    },
+    "map68nodec2": {
+      "ChestType": "chestboss",
+      "MapId": "map68",
+      "NodeConnections": "map68nodec3,map68nodeb4",
+      "Uid": "map68nodec2"
+    },
+    "map68nodec5": {
+      "ChestType": "chestboss",
+      "MapId": "map68",
+      "NodeConnections": "map68nodec6,map68nodeb7",
+      "Uid": "map68nodec5"
+    },
+    "map68nodec7": {
+      "ChestType": "chestboostedtoken",
+      "MapId": "map68",
+      "NodeConnections": "map68nodec8",
+      "Uid": "map68nodec7"
+    },
+    "map68nodec9": {
+      "ChestType": "chestboss",
+      "MapId": "map68",
+      "NodeConnections": "map68nodea8,map68nodec7",
+      "Uid": "map68nodec9"
+    },
+    "map69nodea10": {
+      "ChestType": "chestbosssuper",
+      "MapId": "map69",
+      "NodeConnections": "",
+      "Uid": "map69nodea10"
+    },
+    "map69nodea3": {
+      "ChestType": "chestboss",
+      "MapId": "map69",
+      "NodeConnections": "map69nodea4",
+      "Uid": "map69nodea3"
+    },
+    "map69nodea6": {
+      "ChestType": "chestboss",
+      "MapId": "map69",
+      "NodeConnections": "map69nodea7",
+      "Uid": "map69nodea6"
+    },
+    "map69nodeb3": {
+      "ChestType": "chestboss",
+      "MapId": "map69",
+      "NodeConnections": "map69nodeb4,map69nodea4",
+      "Uid": "map69nodeb3"
+    },
+    "map69nodeb6": {
+      "ChestType": "chestboss",
+      "MapId": "map69",
+      "NodeConnections": "map69nodeb7,map69nodea7",
+      "Uid": "map69nodeb6"
+    },
+    "map69nodeb7": {
+      "ChestType": "chestboostedtoken",
+      "MapId": "map69",
+      "NodeConnections": "map69nodeb8",
+      "Uid": "map69nodeb7"
+    },
+    "map69nodec4": {
+      "ChestType": "chestboss",
+      "MapId": "map69",
+      "NodeConnections": "map69nodec5",
+      "Uid": "map69nodec4"
+    },
+    "map69nodec6": {
+      "ChestType": "chestboostedskin",
+      "MapId": "map69",
+      "NodeConnections": "map69nodec7",
+      "Uid": "map69nodec6"
+    },
+    "map69nodec7": {
+      "ChestType": "chestboss",
+      "MapId": "map69",
+      "NodeConnections": "map69nodec8,map69nodeb7",
+      "Uid": "map69nodec7"
+    },
+    "map70nodea10": {
+      "ChestType": "chestboss",
+      "MapId": "map70",
+      "NodeConnections": "",
+      "Uid": "map70nodea10"
+    },
+    "map70nodeb5": {
+      "ChestType": "chestboostedskin",
+      "MapId": "map70",
+      "NodeConnections": "map70nodeb6,map70nodea5",
+      "Uid": "map70nodeb5"
+    },
+    "map70nodeb9": {
+      "ChestType": "chestboostedtoken",
+      "MapId": "map70",
+      "NodeConnections": "map70nodea10",
+      "Uid": "map70nodeb9"
+    },
+    "map70nodec6": {
+      "ChestType": "chestboostedgold",
+      "MapId": "map70",
+      "NodeConnections": "map70nodec7",
+      "Uid": "map70nodec6"
+    },
+    "mapvanilla44nodea8": {
+      "ChestType": "chestboss",
+      "MapId": "mapvanilla44",
+      "NodeConnections": "",
+      "Uid": "mapvanilla44nodea8"
+    },
+    "mapvanilla44nodeb6": {
+      "ChestType": "chestboss",
+      "MapId": "mapvanilla44",
+      "NodeConnections": "",
+      "Uid": "mapvanilla44nodeb6"
+    },
+    "mapvanilla45nodea10": {
+      "ChestType": "chestboss",
+      "MapId": "mapvanilla45",
+      "NodeConnections": "",
+      "Uid": "mapvanilla45nodea10"
+    },
+    "mapvanilla46nodea10": {
+      "ChestType": "chestboss",
+      "MapId": "mapvanilla46",
+      "NodeConnections": "",
+      "Uid": "mapvanilla46nodea10"
+    },
+    "mapvanilla46nodec10": {
+      "ChestType": "chestboss",
+      "MapId": "mapvanilla46",
+      "NodeConnections": "",
+      "Uid": "mapvanilla46nodec10"
+    },
+    "mapvanilla47nodea10": {
+      "ChestType": "chestboss",
+      "MapId": "mapvanilla47",
+      "NodeConnections": "",
+      "Uid": "mapvanilla47nodea10"
+    },
+    "mapvanilla48nodea10": {
+      "ChestType": "chestboss",
+      "MapId": "mapvanilla48",
+      "NodeConnections": "",
+      "Uid": "mapvanilla48nodea10"
+    },
+    "mapvanilla48nodeb10": {
+      "ChestType": "chestboss",
+      "MapId": "mapvanilla48",
+      "NodeConnections": "",
+      "Uid": "mapvanilla48nodeb10"
+    },
+    "mapvanilla49nodea10": {
+      "ChestType": "chestboss",
+      "MapId": "mapvanilla49",
+      "NodeConnections": "",
+      "Uid": "mapvanilla49nodea10"
+    },
+    "mapvanilla50nodea10": {
+      "ChestType": "chestboss",
+      "MapId": "mapvanilla50",
+      "NodeConnections": "",
+      "Uid": "mapvanilla50nodea10"
+    },
+    "mapvanilla51nodea10": {
+      "ChestType": "chestboss",
+      "MapId": "mapvanilla51",
+      "NodeConnections": "",
+      "Uid": "mapvanilla51nodea10"
+    },
+    "mapvanilla51nodec10": {
+      "ChestType": "chestboss",
+      "MapId": "mapvanilla51",
+      "NodeConnections": "",
+      "Uid": "mapvanilla51nodec10"
+    },
+    "mapvanilla52nodea10": {
+      "ChestType": "chestboss",
+      "MapId": "mapvanilla52",
+      "NodeConnections": "",
+      "Uid": "mapvanilla52nodea10"
+    },
+    "mapvanilla53nodea10": {
+      "ChestType": "chestboss",
+      "MapId": "mapvanilla53",
+      "NodeConnections": "",
+      "Uid": "mapvanilla53nodea10"
+    },
+    "mapvanilla53nodec10": {
+      "ChestType": "chestboss",
+      "MapId": "mapvanilla53",
+      "NodeConnections": "",
+      "Uid": "mapvanilla53nodec10"
+    },
+    "mapvanilla54nodea10": {
+      "ChestType": "chestboss",
+      "MapId": "mapvanilla54",
+      "NodeConnections": "",
+      "Uid": "mapvanilla54nodea10"
+    },
+    "overworldmap01node_bot_boss": {
+      "ChestType": "chestboss",
+      "MapId": "overworldmap01",
+      "NodeConnections": "",
+      "Uid": "overworldmap01node_bot_boss"
+    },
+    "overworldmap01node_bot_extra2": {
+      "ChestType": "chestboostedgold",
+      "MapId": "overworldmap01",
+      "NodeConnections": "overworldmap01node_bot_boss",
+      "Uid": "overworldmap01node_bot_extra2"
+    },
+    "overworldmap01node_top_boss": {
+      "ChestType": "chestboss",
+      "MapId": "overworldmap01",
+      "NodeConnections": "",
+      "Uid": "overworldmap01node_top_boss"
+    },
+    "overworldmap01node_top_extra": {
+      "ChestType": "chestboostedgold",
+      "MapId": "overworldmap01",
+      "NodeConnections": "overworldmap01node_top_8",
+      "Uid": "overworldmap01node_top_extra"
+    },
+    "overworldmap02node_bot_boss": {
+      "ChestType": "chestboss",
+      "MapId": "overworldmap02",
+      "NodeConnections": "",
+      "Uid": "overworldmap02node_bot_boss"
+    },
+    "overworldmap02node_bot_extra1": {
+      "ChestType": "chestboostedscroll",
+      "MapId": "overworldmap02",
+      "NodeConnections": "overworldmap02node_bot_6a,overworldmap02node_bot_6b",
+      "Uid": "overworldmap02node_bot_extra1"
+    },
+    "overworldmap02node_top_boss": {
+      "ChestType": "chestboss",
+      "MapId": "overworldmap02",
+      "NodeConnections": "",
+      "Uid": "overworldmap02node_top_boss"
+    },
+    "overworldmap02node_top_extra": {
+      "ChestType": "chestboostedscroll",
+      "MapId": "overworldmap02",
+      "NodeConnections": "overworldmap02node_top_8",
+      "Uid": "overworldmap02node_top_extra"
+    },
+    "overworldmap03node_bot_4a": {
+      "ChestType": "chestboostedtoken",
+      "MapId": "overworldmap03",
+      "NodeConnections": "overworldmap03node_bot_5",
+      "Uid": "overworldmap03node_bot_4a"
+    },
+    "overworldmap03node_bot_4b": {
+      "ChestType": "chestboostedtoken",
+      "MapId": "overworldmap03",
+      "NodeConnections": "overworldmap03node_bot_5",
+      "Uid": "overworldmap03node_bot_4b"
+    },
+    "overworldmap03node_bot_6a": {
+      "ChestType": "chestboostedskin_maps01to11",
+      "MapId": "overworldmap03",
+      "NodeConnections": "overworldmap03node_bot_extra,overworldmap03node_bot_boss",
+      "Uid": "overworldmap03node_bot_6a"
+    },
+    "overworldmap03node_bot_6b": {
+      "ChestType": "chestboostedskin_maps01to11",
+      "MapId": "overworldmap03",
+      "NodeConnections": "overworldmap03node_bot_extra,overworldmap03node_bot_boss",
+      "Uid": "overworldmap03node_bot_6b"
+    },
+    "overworldmap03node_bot_boss": {
+      "ChestType": "chestboss",
+      "MapId": "overworldmap03",
+      "NodeConnections": "",
+      "Uid": "overworldmap03node_bot_boss"
+    },
+    "overworldmap03node_top_6a": {
+      "ChestType": "chestboostedtoken",
+      "MapId": "overworldmap03",
+      "NodeConnections": "overworldmap03node_top_7a",
+      "Uid": "overworldmap03node_top_6a"
+    },
+    "overworldmap03node_top_6b": {
+      "ChestType": "chestboostedtoken",
+      "MapId": "overworldmap03",
+      "NodeConnections": "overworldmap03node_top_7b",
+      "Uid": "overworldmap03node_top_6b"
+    },
+    "overworldmap03node_top_7a": {
+      "ChestType": "chestboostedskin_maps01to11",
+      "MapId": "overworldmap03",
+      "NodeConnections": "overworldmap03node_top_8",
+      "Uid": "overworldmap03node_top_7a"
+    },
+    "overworldmap03node_top_7b": {
+      "ChestType": "chestboostedskin_maps01to11",
+      "MapId": "overworldmap03",
+      "NodeConnections": "overworldmap03node_top_8",
+      "Uid": "overworldmap03node_top_7b"
+    },
+    "overworldmap03node_top_boss": {
+      "ChestType": "chestboss",
+      "MapId": "overworldmap03",
+      "NodeConnections": "",
+      "Uid": "overworldmap03node_top_boss"
+    },
+    "overworldmap04node_bot_4a": {
+      "ChestType": "chestboostedgold",
+      "MapId": "overworldmap04",
+      "NodeConnections": "overworldmap04node_bot_5",
+      "Uid": "overworldmap04node_bot_4a"
+    },
+    "overworldmap04node_bot_4b": {
+      "ChestType": "chestboostedgold",
+      "MapId": "overworldmap04",
+      "NodeConnections": "overworldmap04node_bot_5",
+      "Uid": "overworldmap04node_bot_4b"
+    },
+    "overworldmap04node_bot_6a": {
+      "ChestType": "chestboostedskin_maps01to11",
+      "MapId": "overworldmap04",
+      "NodeConnections": "overworldmap04node_bot_boss,overworldmap04node_bot_extra",
+      "Uid": "overworldmap04node_bot_6a"
+    },
+    "overworldmap04node_bot_6b": {
+      "ChestType": "chestboostedskin_maps01to11",
+      "MapId": "overworldmap04",
+      "NodeConnections": "overworldmap04node_bot_boss,overworldmap04node_bot_extra",
+      "Uid": "overworldmap04node_bot_6b"
+    },
+    "overworldmap04node_bot_boss": {
+      "ChestType": "chestboss",
+      "MapId": "overworldmap04",
+      "NodeConnections": "",
+      "Uid": "overworldmap04node_bot_boss"
+    },
+    "overworldmap04node_top_7a": {
+      "ChestType": "chestboostedgold",
+      "MapId": "overworldmap04",
+      "NodeConnections": "overworldmap04node_top_8",
+      "Uid": "overworldmap04node_top_7a"
+    },
+    "overworldmap04node_top_7b": {
+      "ChestType": "chestboostedgold",
+      "MapId": "overworldmap04",
+      "NodeConnections": "overworldmap04node_top_8",
+      "Uid": "overworldmap04node_top_7b"
+    },
+    "overworldmap04node_top_9a": {
+      "ChestType": "chestboostedskin_maps01to11",
+      "MapId": "overworldmap04",
+      "NodeConnections": "overworldmap04node_top_boss",
+      "Uid": "overworldmap04node_top_9a"
+    },
+    "overworldmap04node_top_9b": {
+      "ChestType": "chestboostedskin_maps01to11",
+      "MapId": "overworldmap04",
+      "NodeConnections": "overworldmap04node_top_boss",
+      "Uid": "overworldmap04node_top_9b"
+    },
+    "overworldmap04node_top_boss": {
+      "ChestType": "chestboss",
+      "MapId": "overworldmap04",
+      "NodeConnections": "",
+      "Uid": "overworldmap04node_top_boss"
+    },
+    "overworldmap05node_bot_6a": {
+      "ChestType": "chestboostedskin_maps01to11",
+      "MapId": "overworldmap05",
+      "NodeConnections": "overworldmap05node_bot_boss,overworldmap05node_bot_extra2",
+      "Uid": "overworldmap05node_bot_6a"
+    },
+    "overworldmap05node_bot_6b": {
+      "ChestType": "chestboostedskin_maps01to11",
+      "MapId": "overworldmap05",
+      "NodeConnections": "overworldmap05node_bot_boss,overworldmap05node_bot_extra2",
+      "Uid": "overworldmap05node_bot_6b"
+    },
+    "overworldmap05node_bot_boss": {
+      "ChestType": "chestboss",
+      "MapId": "overworldmap05",
+      "NodeConnections": "",
+      "Uid": "overworldmap05node_bot_boss"
+    },
+    "overworldmap05node_bot_extra1": {
+      "ChestType": "chestboostedscroll",
+      "MapId": "overworldmap05",
+      "NodeConnections": "overworldmap05node_bot_5",
+      "Uid": "overworldmap05node_bot_extra1"
+    },
+    "overworldmap05node_top_6a": {
+      "ChestType": "chestboostedskin_maps01to11",
+      "MapId": "overworldmap05",
+      "NodeConnections": "overworldmap05node_top_7a",
+      "Uid": "overworldmap05node_top_6a"
+    },
+    "overworldmap05node_top_6b": {
+      "ChestType": "chestboostedskin_maps01to11",
+      "MapId": "overworldmap05",
+      "NodeConnections": "overworldmap05node_top_7b",
+      "Uid": "overworldmap05node_top_6b"
+    },
+    "overworldmap05node_top_boss": {
+      "ChestType": "chestboss",
+      "MapId": "overworldmap05",
+      "NodeConnections": "",
+      "Uid": "overworldmap05node_top_boss"
+    },
+    "overworldmap05node_top_extra1": {
+      "ChestType": "chestboostedscroll",
+      "MapId": "overworldmap05",
+      "NodeConnections": "overworldmap05node_top_5",
+      "Uid": "overworldmap05node_top_extra1"
+    },
+    "overworldmap06node_bot_4a": {
+      "ChestType": "chestboostedgold",
+      "MapId": "overworldmap06",
+      "NodeConnections": "overworldmap06node_bot_5",
+      "Uid": "overworldmap06node_bot_4a"
+    },
+    "overworldmap06node_bot_4b": {
+      "ChestType": "chestboostedgold",
+      "MapId": "overworldmap06",
+      "NodeConnections": "overworldmap06node_bot_5",
+      "Uid": "overworldmap06node_bot_4b"
+    },
+    "overworldmap06node_bot_6a": {
+      "ChestType": "chestboostedskin_maps01to11",
+      "MapId": "overworldmap06",
+      "NodeConnections": "overworldmap06node_bot_extra,overworldmap06node_bot_boss",
+      "Uid": "overworldmap06node_bot_6a"
+    },
+    "overworldmap06node_bot_6b": {
+      "ChestType": "chestboostedskin_maps01to11",
+      "MapId": "overworldmap06",
+      "NodeConnections": "overworldmap06node_bot_extra,overworldmap06node_bot_boss",
+      "Uid": "overworldmap06node_bot_6b"
+    },
+    "overworldmap06node_bot_boss": {
+      "ChestType": "chestbosssuper",
+      "MapId": "overworldmap06",
+      "NodeConnections": "",
+      "Uid": "overworldmap06node_bot_boss"
+    },
+    "overworldmap06node_top_4a": {
+      "ChestType": "chestboostedgold",
+      "MapId": "overworldmap06",
+      "NodeConnections": "overworldmap06node_top_5",
+      "Uid": "overworldmap06node_top_4a"
+    },
+    "overworldmap06node_top_4b": {
+      "ChestType": "chestboostedgold",
+      "MapId": "overworldmap06",
+      "NodeConnections": "overworldmap06node_top_5",
+      "Uid": "overworldmap06node_top_4b"
+    },
+    "overworldmap06node_top_7a": {
+      "ChestType": "chestboostedskin_maps01to11",
+      "MapId": "overworldmap06",
+      "NodeConnections": "overworldmap06node_top_8",
+      "Uid": "overworldmap06node_top_7a"
+    },
+    "overworldmap06node_top_7b": {
+      "ChestType": "chestboostedskin_maps01to11",
+      "MapId": "overworldmap06",
+      "NodeConnections": "overworldmap06node_top_8",
+      "Uid": "overworldmap06node_top_7b"
+    },
+    "overworldmap06node_top_boss": {
+      "ChestType": "chestbosssuper",
+      "MapId": "overworldmap06",
+      "NodeConnections": "",
+      "Uid": "overworldmap06node_top_boss"
+    },
+    "overworldmap07node_bot_3b": {
+      "ChestType": "chestboostedtoken",
+      "MapId": "overworldmap07",
+      "NodeConnections": "overworldmap07node_bot_4b",
+      "Uid": "overworldmap07node_bot_3b"
+    },
+    "overworldmap07node_bot_4a": {
+      "ChestType": "chestboostedtoken",
+      "MapId": "overworldmap07",
+      "NodeConnections": "overworldmap07node_bot_5",
+      "Uid": "overworldmap07node_bot_4a"
+    },
+    "overworldmap07node_bot_6a": {
+      "ChestType": "chestboostedskin_maps01to11",
+      "MapId": "overworldmap07",
+      "NodeConnections": "overworldmap07node_bot_boss,overworldmap07node_bot_extra",
+      "Uid": "overworldmap07node_bot_6a"
+    },
+    "overworldmap07node_bot_6b": {
+      "ChestType": "chestboostedskin_maps01to11",
+      "MapId": "overworldmap07",
+      "NodeConnections": "overworldmap07node_bot_boss,overworldmap07node_bot_extra",
+      "Uid": "overworldmap07node_bot_6b"
+    },
+    "overworldmap07node_bot_boss": {
+      "ChestType": "chestboss",
+      "MapId": "overworldmap07",
+      "NodeConnections": "",
+      "Uid": "overworldmap07node_bot_boss"
+    },
+    "overworldmap07node_top_7a": {
+      "ChestType": "chestboostedtoken",
+      "MapId": "overworldmap07",
+      "NodeConnections": "overworldmap07node_top_8",
+      "Uid": "overworldmap07node_top_7a"
+    },
+    "overworldmap07node_top_7b": {
+      "ChestType": "chestboostedtoken",
+      "MapId": "overworldmap07",
+      "NodeConnections": "overworldmap07node_top_8",
+      "Uid": "overworldmap07node_top_7b"
+    },
+    "overworldmap07node_top_9a": {
+      "ChestType": "chestboostedskin_maps01to11",
+      "MapId": "overworldmap07",
+      "NodeConnections": "overworldmap07node_top_boss",
+      "Uid": "overworldmap07node_top_9a"
+    },
+    "overworldmap07node_top_9b": {
+      "ChestType": "chestboostedskin_maps01to11",
+      "MapId": "overworldmap07",
+      "NodeConnections": "overworldmap07node_top_boss",
+      "Uid": "overworldmap07node_top_9b"
+    },
+    "overworldmap07node_top_boss": {
+      "ChestType": "chestboss",
+      "MapId": "overworldmap07",
+      "NodeConnections": "",
+      "Uid": "overworldmap07node_top_boss"
+    },
+    "overworldmap08node_bot_4a": {
+      "ChestType": "chestboostedgold",
+      "MapId": "overworldmap08",
+      "NodeConnections": "overworldmap08node_bot_5",
+      "Uid": "overworldmap08node_bot_4a"
+    },
+    "overworldmap08node_bot_4b": {
+      "ChestType": "chestboostedgold",
+      "MapId": "overworldmap08",
+      "NodeConnections": "overworldmap08node_bot_5",
+      "Uid": "overworldmap08node_bot_4b"
+    },
+    "overworldmap08node_bot_6a": {
+      "ChestType": "chestboostedskin_maps01to11",
+      "MapId": "overworldmap08",
+      "NodeConnections": "overworldmap08node_bot_boss,overworldmap08node_bot_extra",
+      "Uid": "overworldmap08node_bot_6a"
+    },
+    "overworldmap08node_bot_6b": {
+      "ChestType": "chestboostedskin_maps01to11",
+      "MapId": "overworldmap08",
+      "NodeConnections": "overworldmap08node_bot_boss,overworldmap08node_bot_extra",
+      "Uid": "overworldmap08node_bot_6b"
+    },
+    "overworldmap08node_bot_boss": {
+      "ChestType": "chestboss",
+      "MapId": "overworldmap08",
+      "NodeConnections": "",
+      "Uid": "overworldmap08node_bot_boss"
+    },
+    "overworldmap08node_bot_extra": {
+      "ChestType": "chestboostedscroll",
+      "MapId": "overworldmap08",
+      "NodeConnections": "overworldmap08node_bot_boss",
+      "Uid": "overworldmap08node_bot_extra"
+    },
+    "overworldmap08node_top_6a": {
+      "ChestType": "chestboostedgold",
+      "MapId": "overworldmap08",
+      "NodeConnections": "overworldmap08node_top_7a,overworldmap08node_top_extra",
+      "Uid": "overworldmap08node_top_6a"
+    },
+    "overworldmap08node_top_6b": {
+      "ChestType": "chestboostedgold",
+      "MapId": "overworldmap08",
+      "NodeConnections": "overworldmap08node_top_7b,overworldmap08node_top_extra",
+      "Uid": "overworldmap08node_top_6b"
+    },
+    "overworldmap08node_top_9a": {
+      "ChestType": "chestboostedskin_maps01to11",
+      "MapId": "overworldmap08",
+      "NodeConnections": "overworldmap08node_top_boss",
+      "Uid": "overworldmap08node_top_9a"
+    },
+    "overworldmap08node_top_9b": {
+      "ChestType": "chestboostedskin_maps01to11",
+      "MapId": "overworldmap08",
+      "NodeConnections": "overworldmap08node_top_boss",
+      "Uid": "overworldmap08node_top_9b"
+    },
+    "overworldmap08node_top_boss": {
+      "ChestType": "chestboss",
+      "MapId": "overworldmap08",
+      "NodeConnections": "",
+      "Uid": "overworldmap08node_top_boss"
+    },
+    "overworldmap08node_top_extra": {
+      "ChestType": "chestboostedscroll",
+      "MapId": "overworldmap08",
+      "NodeConnections": "overworldmap08node_top_7a,overworldmap08node_top_7b",
+      "Uid": "overworldmap08node_top_extra"
+    },
+    "overworldmap09node_bot_4a": {
+      "ChestType": "chestboostedtoken",
+      "MapId": "overworldmap09",
+      "NodeConnections": "overworldmap09node_bot_5",
+      "Uid": "overworldmap09node_bot_4a"
+    },
+    "overworldmap09node_bot_4b": {
+      "ChestType": "chestboostedtoken",
+      "MapId": "overworldmap09",
+      "NodeConnections": "overworldmap09node_bot_5",
+      "Uid": "overworldmap09node_bot_4b"
+    },
+    "overworldmap09node_bot_6a": {
+      "ChestType": "chestboostedskin_maps01to11",
+      "MapId": "overworldmap09",
+      "NodeConnections": "overworldmap09node_bot_extra,overworldmap09node_bot_boss",
+      "Uid": "overworldmap09node_bot_6a"
+    },
+    "overworldmap09node_bot_6b": {
+      "ChestType": "chestboostedskin_maps01to11",
+      "MapId": "overworldmap09",
+      "NodeConnections": "overworldmap09node_bot_extra,overworldmap09node_bot_boss",
+      "Uid": "overworldmap09node_bot_6b"
+    },
+    "overworldmap09node_bot_boss": {
+      "ChestType": "chestboss",
+      "MapId": "overworldmap09",
+      "NodeConnections": "",
+      "Uid": "overworldmap09node_bot_boss"
+    },
+    "overworldmap09node_top_7a": {
+      "ChestType": "chestboostedskin_maps01to11",
+      "MapId": "overworldmap09",
+      "NodeConnections": "overworldmap09node_top_8",
+      "Uid": "overworldmap09node_top_7a"
+    },
+    "overworldmap09node_top_7b": {
+      "ChestType": "chestboostedskin_maps01to11",
+      "MapId": "overworldmap09",
+      "NodeConnections": "overworldmap09node_top_8",
+      "Uid": "overworldmap09node_top_7b"
+    },
+    "overworldmap09node_top_9a": {
+      "ChestType": "chestboostedtoken",
+      "MapId": "overworldmap09",
+      "NodeConnections": "overworldmap09node_top_boss",
+      "Uid": "overworldmap09node_top_9a"
+    },
+    "overworldmap09node_top_9b": {
+      "ChestType": "chestboostedtoken",
+      "MapId": "overworldmap09",
+      "NodeConnections": "overworldmap09node_top_boss",
+      "Uid": "overworldmap09node_top_9b"
+    },
+    "overworldmap09node_top_boss": {
+      "ChestType": "chestboss",
+      "MapId": "overworldmap09",
+      "NodeConnections": "",
+      "Uid": "overworldmap09node_top_boss"
+    },
+    "overworldmap10node_bot_4a": {
+      "ChestType": "chestboostedgold",
+      "MapId": "overworldmap10",
+      "NodeConnections": "overworldmap10node_bot_5",
+      "Uid": "overworldmap10node_bot_4a"
+    },
+    "overworldmap10node_bot_4b": {
+      "ChestType": "chestboostedgold",
+      "MapId": "overworldmap10",
+      "NodeConnections": "overworldmap10node_bot_5",
+      "Uid": "overworldmap10node_bot_4b"
+    },
+    "overworldmap10node_bot_6a": {
+      "ChestType": "chestboostedskin_maps01to11",
+      "MapId": "overworldmap10",
+      "NodeConnections": "overworldmap10node_bot_boss,overworldmap10node_bot_extra",
+      "Uid": "overworldmap10node_bot_6a"
+    },
+    "overworldmap10node_bot_6b": {
+      "ChestType": "chestboostedskin_maps01to11",
+      "MapId": "overworldmap10",
+      "NodeConnections": "overworldmap10node_bot_boss,overworldmap10node_bot_extra",
+      "Uid": "overworldmap10node_bot_6b"
+    },
+    "overworldmap10node_bot_boss": {
+      "ChestType": "chestboss",
+      "MapId": "overworldmap10",
+      "NodeConnections": "",
+      "Uid": "overworldmap10node_bot_boss"
+    },
+    "overworldmap10node_bot_extra": {
+      "ChestType": "chestboostedscroll",
+      "MapId": "overworldmap10",
+      "NodeConnections": "overworldmap10node_bot_boss",
+      "Uid": "overworldmap10node_bot_extra"
+    },
+    "overworldmap10node_top_7a": {
+      "ChestType": "chestboostedgold",
+      "MapId": "overworldmap10",
+      "NodeConnections": "overworldmap10node_top_8",
+      "Uid": "overworldmap10node_top_7a"
+    },
+    "overworldmap10node_top_7b": {
+      "ChestType": "chestboostedgold",
+      "MapId": "overworldmap10",
+      "NodeConnections": "overworldmap10node_top_8",
+      "Uid": "overworldmap10node_top_7b"
+    },
+    "overworldmap10node_top_9a": {
+      "ChestType": "chestboostedskin_maps01to11",
+      "MapId": "overworldmap10",
+      "NodeConnections": "overworldmap10node_top_boss",
+      "Uid": "overworldmap10node_top_9a"
+    },
+    "overworldmap10node_top_9b": {
+      "ChestType": "chestboostedskin_maps01to11",
+      "MapId": "overworldmap10",
+      "NodeConnections": "overworldmap10node_top_boss",
+      "Uid": "overworldmap10node_top_9b"
+    },
+    "overworldmap10node_top_boss": {
+      "ChestType": "chestboss",
+      "MapId": "overworldmap10",
+      "NodeConnections": "",
+      "Uid": "overworldmap10node_top_boss"
+    },
+    "overworldmap10node_top_extra": {
+      "ChestType": "chestboostedscroll",
+      "MapId": "overworldmap10",
+      "NodeConnections": "overworldmap10node_top_5",
+      "Uid": "overworldmap10node_top_extra"
+    },
+    "overworldmap11node_bot_4a": {
+      "ChestType": "chestboostedtoken",
+      "MapId": "overworldmap11",
+      "NodeConnections": "overworldmap11node_bot_5",
+      "Uid": "overworldmap11node_bot_4a"
+    },
+    "overworldmap11node_bot_4b": {
+      "ChestType": "chestboostedtoken",
+      "MapId": "overworldmap11",
+      "NodeConnections": "overworldmap11node_bot_5",
+      "Uid": "overworldmap11node_bot_4b"
+    },
+    "overworldmap11node_bot_6a": {
+      "ChestType": "chestboostedskin_maps01to11",
+      "MapId": "overworldmap11",
+      "NodeConnections": "overworldmap11node_bot_boss,overworldmap11node_bot_extra",
+      "Uid": "overworldmap11node_bot_6a"
+    },
+    "overworldmap11node_bot_6b": {
+      "ChestType": "chestboostedskin_maps01to11",
+      "MapId": "overworldmap11",
+      "NodeConnections": "overworldmap11node_bot_boss,overworldmap11node_bot_extra",
+      "Uid": "overworldmap11node_bot_6b"
+    },
+    "overworldmap11node_bot_boss": {
+      "ChestType": "chestbosssuper",
+      "MapId": "overworldmap11",
+      "NodeConnections": "",
+      "Uid": "overworldmap11node_bot_boss"
+    },
+    "overworldmap11node_top_4a": {
+      "ChestType": "chestboostedtoken",
+      "MapId": "overworldmap11",
+      "NodeConnections": "overworldmap11node_top_5",
+      "Uid": "overworldmap11node_top_4a"
+    },
+    "overworldmap11node_top_4b": {
+      "ChestType": "chestboostedtoken",
+      "MapId": "overworldmap11",
+      "NodeConnections": "overworldmap11node_top_5",
+      "Uid": "overworldmap11node_top_4b"
+    },
+    "overworldmap11node_top_7a": {
+      "ChestType": "chestboostedskin_maps01to11",
+      "MapId": "overworldmap11",
+      "NodeConnections": "overworldmap11node_top_8",
+      "Uid": "overworldmap11node_top_7a"
+    },
+    "overworldmap11node_top_7b": {
+      "ChestType": "chestboostedskin_maps01to11",
+      "MapId": "overworldmap11",
+      "NodeConnections": "overworldmap11node_top_8",
+      "Uid": "overworldmap11node_top_7b"
+    },
+    "overworldmap11node_top_boss": {
+      "ChestType": "chestbosssuper",
+      "MapId": "overworldmap11",
+      "NodeConnections": "",
+      "Uid": "overworldmap11node_top_boss"
+    },
+    "overworldmap12node_bot_boss": {
+      "ChestType": "chestboss",
+      "MapId": "overworldmap12",
+      "NodeConnections": "",
+      "Uid": "overworldmap12node_bot_boss"
+    },
+    "overworldmap12node_bot_extra2": {
+      "ChestType": "chestboostedgold",
+      "MapId": "overworldmap12",
+      "NodeConnections": "overworldmap12node_bot_boss",
+      "Uid": "overworldmap12node_bot_extra2"
+    },
+    "overworldmap12node_top_boss": {
+      "ChestType": "chestboss",
+      "MapId": "overworldmap12",
+      "NodeConnections": "",
+      "Uid": "overworldmap12node_top_boss"
+    },
+    "overworldmap12node_top_extra": {
+      "ChestType": "chestboostedgold",
+      "MapId": "overworldmap12",
+      "NodeConnections": "overworldmap12node_top_8",
+      "Uid": "overworldmap12node_top_extra"
+    },
+    "overworldmap13node_bot_boss": {
+      "ChestType": "chestboss",
+      "MapId": "overworldmap13",
+      "NodeConnections": "",
+      "Uid": "overworldmap13node_bot_boss"
+    },
+    "overworldmap13node_bot_extra1": {
+      "ChestType": "chestboostedscroll",
+      "MapId": "overworldmap13",
+      "NodeConnections": "overworldmap13node_bot_6a,overworldmap13node_bot_6b",
+      "Uid": "overworldmap13node_bot_extra1"
+    },
+    "overworldmap13node_top_boss": {
+      "ChestType": "chestboss",
+      "MapId": "overworldmap13",
+      "NodeConnections": "",
+      "Uid": "overworldmap13node_top_boss"
+    },
+    "overworldmap13node_top_extra": {
+      "ChestType": "chestboostedscroll",
+      "MapId": "overworldmap13",
+      "NodeConnections": "overworldmap13node_top_8",
+      "Uid": "overworldmap13node_top_extra"
+    },
+    "overworldmap14node_bot_4a": {
+      "ChestType": "chestboostedtoken",
+      "MapId": "overworldmap14",
+      "NodeConnections": "overworldmap14node_bot_5",
+      "Uid": "overworldmap14node_bot_4a"
+    },
+    "overworldmap14node_bot_4b": {
+      "ChestType": "chestboostedtoken",
+      "MapId": "overworldmap14",
+      "NodeConnections": "overworldmap14node_bot_5",
+      "Uid": "overworldmap14node_bot_4b"
+    },
+    "overworldmap14node_bot_6b": {
+      "ChestType": "chestboostedskin_maps12to22",
+      "MapId": "overworldmap14",
+      "NodeConnections": "overworldmap14node_bot_extra,overworldmap14node_bot_boss",
+      "Uid": "overworldmap14node_bot_6b"
+    },
+    "overworldmap14node_bot_boss": {
+      "ChestType": "chestboss",
+      "MapId": "overworldmap14",
+      "NodeConnections": "",
+      "Uid": "overworldmap14node_bot_boss"
+    },
+    "overworldmap14node_top_6a": {
+      "ChestType": "chestboostedtoken",
+      "MapId": "overworldmap14",
+      "NodeConnections": "overworldmap14node_top_7a",
+      "Uid": "overworldmap14node_top_6a"
+    },
+    "overworldmap14node_top_6b": {
+      "ChestType": "chestboostedtoken",
+      "MapId": "overworldmap14",
+      "NodeConnections": "overworldmap14node_top_7b",
+      "Uid": "overworldmap14node_top_6b"
+    },
+    "overworldmap14node_top_7a": {
+      "ChestType": "chestboostedskin_maps12to22",
+      "MapId": "overworldmap14",
+      "NodeConnections": "overworldmap14node_top_8",
+      "Uid": "overworldmap14node_top_7a"
+    },
+    "overworldmap14node_top_7b": {
+      "ChestType": "chestboostedskin_maps12to22",
+      "MapId": "overworldmap14",
+      "NodeConnections": "overworldmap14node_top_8",
+      "Uid": "overworldmap14node_top_7b"
+    },
+    "overworldmap14node_top_boss": {
+      "ChestType": "chestboss",
+      "MapId": "overworldmap14",
+      "NodeConnections": "",
+      "Uid": "overworldmap14node_top_boss"
+    },
+    "overworldmap15node_bot_4a": {
+      "ChestType": "chestboostedgold",
+      "MapId": "overworldmap15",
+      "NodeConnections": "overworldmap15node_bot_5",
+      "Uid": "overworldmap15node_bot_4a"
+    },
+    "overworldmap15node_bot_4b": {
+      "ChestType": "chestboostedgold",
+      "MapId": "overworldmap15",
+      "NodeConnections": "overworldmap15node_bot_5",
+      "Uid": "overworldmap15node_bot_4b"
+    },
+    "overworldmap15node_bot_6a": {
+      "ChestType": "chestboostedskin_maps12to22",
+      "MapId": "overworldmap15",
+      "NodeConnections": "overworldmap15node_bot_boss,overworldmap15node_bot_extra",
+      "Uid": "overworldmap15node_bot_6a"
+    },
+    "overworldmap15node_bot_6b": {
+      "ChestType": "chestboostedskin_maps12to22",
+      "MapId": "overworldmap15",
+      "NodeConnections": "overworldmap15node_bot_boss,overworldmap15node_bot_extra",
+      "Uid": "overworldmap15node_bot_6b"
+    },
+    "overworldmap15node_bot_boss": {
+      "ChestType": "chestboss",
+      "MapId": "overworldmap15",
+      "NodeConnections": "",
+      "Uid": "overworldmap15node_bot_boss"
+    },
+    "overworldmap15node_top_7a": {
+      "ChestType": "chestboostedgold",
+      "MapId": "overworldmap15",
+      "NodeConnections": "overworldmap15node_top_8",
+      "Uid": "overworldmap15node_top_7a"
+    },
+    "overworldmap15node_top_7b": {
+      "ChestType": "chestboostedgold",
+      "MapId": "overworldmap15",
+      "NodeConnections": "overworldmap15node_top_8",
+      "Uid": "overworldmap15node_top_7b"
+    },
+    "overworldmap15node_top_9a": {
+      "ChestType": "chestboostedskin_maps12to22",
+      "MapId": "overworldmap15",
+      "NodeConnections": "overworldmap15node_top_boss",
+      "Uid": "overworldmap15node_top_9a"
+    },
+    "overworldmap15node_top_9b": {
+      "ChestType": "chestboostedskin_maps12to22",
+      "MapId": "overworldmap15",
+      "NodeConnections": "overworldmap15node_top_boss",
+      "Uid": "overworldmap15node_top_9b"
+    },
+    "overworldmap15node_top_boss": {
+      "ChestType": "chestboss",
+      "MapId": "overworldmap15",
+      "NodeConnections": "",
+      "Uid": "overworldmap15node_top_boss"
+    },
+    "overworldmap16node_bot_6a": {
+      "ChestType": "chestboostedskin_maps12to22",
+      "MapId": "overworldmap16",
+      "NodeConnections": "overworldmap16node_bot_boss,overworldmap16node_bot_extra2",
+      "Uid": "overworldmap16node_bot_6a"
+    },
+    "overworldmap16node_bot_6b": {
+      "ChestType": "chestboostedskin_maps12to22",
+      "MapId": "overworldmap16",
+      "NodeConnections": "overworldmap16node_bot_boss,overworldmap16node_bot_extra2",
+      "Uid": "overworldmap16node_bot_6b"
+    },
+    "overworldmap16node_bot_boss": {
+      "ChestType": "chestboss",
+      "MapId": "overworldmap16",
+      "NodeConnections": "",
+      "Uid": "overworldmap16node_bot_boss"
+    },
+    "overworldmap16node_bot_extra1": {
+      "ChestType": "chestboostedscroll",
+      "MapId": "overworldmap16",
+      "NodeConnections": "overworldmap16node_bot_5",
+      "Uid": "overworldmap16node_bot_extra1"
+    },
+    "overworldmap16node_top_6a": {
+      "ChestType": "chestboostedskin_maps12to22",
+      "MapId": "overworldmap16",
+      "NodeConnections": "overworldmap16node_top_7a",
+      "Uid": "overworldmap16node_top_6a"
+    },
+    "overworldmap16node_top_6b": {
+      "ChestType": "chestboostedskin_maps12to22",
+      "MapId": "overworldmap16",
+      "NodeConnections": "overworldmap16node_top_7b",
+      "Uid": "overworldmap16node_top_6b"
+    },
+    "overworldmap16node_top_boss": {
+      "ChestType": "chestboss",
+      "MapId": "overworldmap16",
+      "NodeConnections": "",
+      "Uid": "overworldmap16node_top_boss"
+    },
+    "overworldmap16node_top_extra1": {
+      "ChestType": "chestboostedscroll",
+      "MapId": "overworldmap16",
+      "NodeConnections": "overworldmap16node_top_5",
+      "Uid": "overworldmap16node_top_extra1"
+    },
+    "overworldmap17node_bot_4a": {
+      "ChestType": "chestboostedgold",
+      "MapId": "overworldmap17",
+      "NodeConnections": "overworldmap17node_bot_5",
+      "Uid": "overworldmap17node_bot_4a"
+    },
+    "overworldmap17node_bot_4b": {
+      "ChestType": "chestboostedgold",
+      "MapId": "overworldmap17",
+      "NodeConnections": "overworldmap17node_bot_5",
+      "Uid": "overworldmap17node_bot_4b"
+    },
+    "overworldmap17node_bot_6a": {
+      "ChestType": "chestboostedskin_maps12to22",
+      "MapId": "overworldmap17",
+      "NodeConnections": "overworldmap17node_bot_extra,overworldmap17node_bot_boss",
+      "Uid": "overworldmap17node_bot_6a"
+    },
+    "overworldmap17node_bot_6b": {
+      "ChestType": "chestboostedskin_maps12to22",
+      "MapId": "overworldmap17",
+      "NodeConnections": "overworldmap17node_bot_extra,overworldmap17node_bot_boss",
+      "Uid": "overworldmap17node_bot_6b"
+    },
+    "overworldmap17node_bot_boss": {
+      "ChestType": "chestbosssuper",
+      "MapId": "overworldmap17",
+      "NodeConnections": "",
+      "Uid": "overworldmap17node_bot_boss"
+    },
+    "overworldmap17node_top_4a": {
+      "ChestType": "chestboostedgold",
+      "MapId": "overworldmap17",
+      "NodeConnections": "overworldmap17node_top_5",
+      "Uid": "overworldmap17node_top_4a"
+    },
+    "overworldmap17node_top_4b": {
+      "ChestType": "chestboostedgold",
+      "MapId": "overworldmap17",
+      "NodeConnections": "overworldmap17node_top_5",
+      "Uid": "overworldmap17node_top_4b"
+    },
+    "overworldmap17node_top_7a": {
+      "ChestType": "chestboostedskin_maps12to22",
+      "MapId": "overworldmap17",
+      "NodeConnections": "overworldmap17node_top_8",
+      "Uid": "overworldmap17node_top_7a"
+    },
+    "overworldmap17node_top_7b": {
+      "ChestType": "chestboostedskin_maps12to22",
+      "MapId": "overworldmap17",
+      "NodeConnections": "overworldmap17node_top_8",
+      "Uid": "overworldmap17node_top_7b"
+    },
+    "overworldmap17node_top_boss": {
+      "ChestType": "chestbosssuper",
+      "MapId": "overworldmap17",
+      "NodeConnections": "",
+      "Uid": "overworldmap17node_top_boss"
+    },
+    "overworldmap18node_bot_3b": {
+      "ChestType": "chestboostedtoken",
+      "MapId": "overworldmap18",
+      "NodeConnections": "overworldmap18node_bot_4b",
+      "Uid": "overworldmap18node_bot_3b"
+    },
+    "overworldmap18node_bot_4a": {
+      "ChestType": "chestboostedtoken",
+      "MapId": "overworldmap18",
+      "NodeConnections": "overworldmap18node_bot_5",
+      "Uid": "overworldmap18node_bot_4a"
+    },
+    "overworldmap18node_bot_6a": {
+      "ChestType": "chestboostedskin_maps12to22",
+      "MapId": "overworldmap18",
+      "NodeConnections": "overworldmap18node_bot_boss,overworldmap18node_bot_extra",
+      "Uid": "overworldmap18node_bot_6a"
+    },
+    "overworldmap18node_bot_6b": {
+      "ChestType": "chestboostedskin_maps12to22",
+      "MapId": "overworldmap18",
+      "NodeConnections": "overworldmap18node_bot_boss,overworldmap18node_bot_extra",
+      "Uid": "overworldmap18node_bot_6b"
+    },
+    "overworldmap18node_bot_boss": {
+      "ChestType": "chestboss",
+      "MapId": "overworldmap18",
+      "NodeConnections": "",
+      "Uid": "overworldmap18node_bot_boss"
+    },
+    "overworldmap18node_top_7a": {
+      "ChestType": "chestboostedtoken",
+      "MapId": "overworldmap18",
+      "NodeConnections": "overworldmap18node_top_8",
+      "Uid": "overworldmap18node_top_7a"
+    },
+    "overworldmap18node_top_7b": {
+      "ChestType": "chestboostedtoken",
+      "MapId": "overworldmap18",
+      "NodeConnections": "overworldmap18node_top_8",
+      "Uid": "overworldmap18node_top_7b"
+    },
+    "overworldmap18node_top_9a": {
+      "ChestType": "chestboostedskin_maps12to22",
+      "MapId": "overworldmap18",
+      "NodeConnections": "overworldmap18node_top_boss",
+      "Uid": "overworldmap18node_top_9a"
+    },
+    "overworldmap18node_top_9b": {
+      "ChestType": "chestboostedskin_maps12to22",
+      "MapId": "overworldmap18",
+      "NodeConnections": "overworldmap18node_top_boss",
+      "Uid": "overworldmap18node_top_9b"
+    },
+    "overworldmap18node_top_boss": {
+      "ChestType": "chestboss",
+      "MapId": "overworldmap18",
+      "NodeConnections": "",
+      "Uid": "overworldmap18node_top_boss"
+    },
+    "overworldmap19node_bot_4a": {
+      "ChestType": "chestboostedgold",
+      "MapId": "overworldmap19",
+      "NodeConnections": "overworldmap19node_bot_5",
+      "Uid": "overworldmap19node_bot_4a"
+    },
+    "overworldmap19node_bot_4b": {
+      "ChestType": "chestboostedgold",
+      "MapId": "overworldmap19",
+      "NodeConnections": "overworldmap19node_bot_5",
+      "Uid": "overworldmap19node_bot_4b"
+    },
+    "overworldmap19node_bot_6a": {
+      "ChestType": "chestboostedskin_maps12to22",
+      "MapId": "overworldmap19",
+      "NodeConnections": "overworldmap19node_bot_boss,overworldmap19node_bot_extra",
+      "Uid": "overworldmap19node_bot_6a"
+    },
+    "overworldmap19node_bot_6b": {
+      "ChestType": "chestboostedskin_maps12to22",
+      "MapId": "overworldmap19",
+      "NodeConnections": "overworldmap19node_bot_boss,overworldmap19node_bot_extra",
+      "Uid": "overworldmap19node_bot_6b"
+    },
+    "overworldmap19node_bot_boss": {
+      "ChestType": "chestboss",
+      "MapId": "overworldmap19",
+      "NodeConnections": "",
+      "Uid": "overworldmap19node_bot_boss"
+    },
+    "overworldmap19node_bot_extra": {
+      "ChestType": "chestboostedscroll",
+      "MapId": "overworldmap19",
+      "NodeConnections": "overworldmap19node_bot_boss",
+      "Uid": "overworldmap19node_bot_extra"
+    },
+    "overworldmap19node_top_6a": {
+      "ChestType": "chestboostedgold",
+      "MapId": "overworldmap19",
+      "NodeConnections": "overworldmap19node_top_7a,overworldmap19node_top_extra",
+      "Uid": "overworldmap19node_top_6a"
+    },
+    "overworldmap19node_top_6b": {
+      "ChestType": "chestboostedgold",
+      "MapId": "overworldmap19",
+      "NodeConnections": "overworldmap19node_top_7b,overworldmap19node_top_extra",
+      "Uid": "overworldmap19node_top_6b"
+    },
+    "overworldmap19node_top_9a": {
+      "ChestType": "chestboostedskin_maps12to22",
+      "MapId": "overworldmap19",
+      "NodeConnections": "overworldmap19node_top_boss",
+      "Uid": "overworldmap19node_top_9a"
+    },
+    "overworldmap19node_top_9b": {
+      "ChestType": "chestboostedskin_maps12to22",
+      "MapId": "overworldmap19",
+      "NodeConnections": "overworldmap19node_top_boss",
+      "Uid": "overworldmap19node_top_9b"
+    },
+    "overworldmap19node_top_boss": {
+      "ChestType": "chestboss",
+      "MapId": "overworldmap19",
+      "NodeConnections": "",
+      "Uid": "overworldmap19node_top_boss"
+    },
+    "overworldmap19node_top_extra": {
+      "ChestType": "chestboostedscroll",
+      "MapId": "overworldmap19",
+      "NodeConnections": "overworldmap19node_top_7a,overworldmap19node_top_7b",
+      "Uid": "overworldmap19node_top_extra"
+    },
+    "overworldmap20node_bot_4a": {
+      "ChestType": "chestboostedtoken",
+      "MapId": "overworldmap20",
+      "NodeConnections": "overworldmap20node_bot_5",
+      "Uid": "overworldmap20node_bot_4a"
+    },
+    "overworldmap20node_bot_4b": {
+      "ChestType": "chestboostedtoken",
+      "MapId": "overworldmap20",
+      "NodeConnections": "overworldmap20node_bot_5",
+      "Uid": "overworldmap20node_bot_4b"
+    },
+    "overworldmap20node_bot_6a": {
+      "ChestType": "chestboostedskin_maps12to22",
+      "MapId": "overworldmap20",
+      "NodeConnections": "overworldmap20node_bot_extra,overworldmap20node_bot_boss",
+      "Uid": "overworldmap20node_bot_6a"
+    },
+    "overworldmap20node_bot_6b": {
+      "ChestType": "chestboostedskin_maps12to22",
+      "MapId": "overworldmap20",
+      "NodeConnections": "overworldmap20node_bot_extra,overworldmap20node_bot_boss",
+      "Uid": "overworldmap20node_bot_6b"
+    },
+    "overworldmap20node_bot_boss": {
+      "ChestType": "chestboss",
+      "MapId": "overworldmap20",
+      "NodeConnections": "",
+      "Uid": "overworldmap20node_bot_boss"
+    },
+    "overworldmap20node_top_7a": {
+      "ChestType": "chestboostedskin_maps12to22",
+      "MapId": "overworldmap20",
+      "NodeConnections": "overworldmap20node_top_8",
+      "Uid": "overworldmap20node_top_7a"
+    },
+    "overworldmap20node_top_7b": {
+      "ChestType": "chestboostedskin_maps12to22",
+      "MapId": "overworldmap20",
+      "NodeConnections": "overworldmap20node_top_8",
+      "Uid": "overworldmap20node_top_7b"
+    },
+    "overworldmap20node_top_9a": {
+      "ChestType": "chestboostedtoken",
+      "MapId": "overworldmap20",
+      "NodeConnections": "overworldmap20node_top_boss",
+      "Uid": "overworldmap20node_top_9a"
+    },
+    "overworldmap20node_top_9b": {
+      "ChestType": "chestboostedtoken",
+      "MapId": "overworldmap20",
+      "NodeConnections": "overworldmap20node_top_boss",
+      "Uid": "overworldmap20node_top_9b"
+    },
+    "overworldmap20node_top_boss": {
+      "ChestType": "chestboss",
+      "MapId": "overworldmap20",
+      "NodeConnections": "",
+      "Uid": "overworldmap20node_top_boss"
+    },
+    "overworldmap21node_bot_4a": {
+      "ChestType": "chestboostedgold",
+      "MapId": "overworldmap21",
+      "NodeConnections": "overworldmap21node_bot_5",
+      "Uid": "overworldmap21node_bot_4a"
+    },
+    "overworldmap21node_bot_4b": {
+      "ChestType": "chestboostedgold",
+      "MapId": "overworldmap21",
+      "NodeConnections": "overworldmap21node_bot_5",
+      "Uid": "overworldmap21node_bot_4b"
+    },
+    "overworldmap21node_bot_6a": {
+      "ChestType": "chestboostedskin_maps12to22",
+      "MapId": "overworldmap21",
+      "NodeConnections": "overworldmap21node_bot_boss,overworldmap21node_bot_extra",
+      "Uid": "overworldmap21node_bot_6a"
+    },
+    "overworldmap21node_bot_6b": {
+      "ChestType": "chestboostedskin_maps12to22",
+      "MapId": "overworldmap21",
+      "NodeConnections": "overworldmap21node_bot_boss,overworldmap21node_bot_extra",
+      "Uid": "overworldmap21node_bot_6b"
+    },
+    "overworldmap21node_bot_boss": {
+      "ChestType": "chestboss",
+      "MapId": "overworldmap21",
+      "NodeConnections": "",
+      "Uid": "overworldmap21node_bot_boss"
+    },
+    "overworldmap21node_bot_extra": {
+      "ChestType": "chestboostedscroll",
+      "MapId": "overworldmap21",
+      "NodeConnections": "overworldmap21node_bot_boss",
+      "Uid": "overworldmap21node_bot_extra"
+    },
+    "overworldmap21node_top_7a": {
+      "ChestType": "chestboostedgold",
+      "MapId": "overworldmap21",
+      "NodeConnections": "overworldmap21node_top_8",
+      "Uid": "overworldmap21node_top_7a"
+    },
+    "overworldmap21node_top_7b": {
+      "ChestType": "chestboostedgold",
+      "MapId": "overworldmap21",
+      "NodeConnections": "overworldmap21node_top_8",
+      "Uid": "overworldmap21node_top_7b"
+    },
+    "overworldmap21node_top_9a": {
+      "ChestType": "chestboostedskin_maps12to22",
+      "MapId": "overworldmap21",
+      "NodeConnections": "overworldmap21node_top_boss",
+      "Uid": "overworldmap21node_top_9a"
+    },
+    "overworldmap21node_top_9b": {
+      "ChestType": "chestboostedskin_maps12to22",
+      "MapId": "overworldmap21",
+      "NodeConnections": "overworldmap21node_top_boss",
+      "Uid": "overworldmap21node_top_9b"
+    },
+    "overworldmap21node_top_boss": {
+      "ChestType": "chestboss",
+      "MapId": "overworldmap21",
+      "NodeConnections": "",
+      "Uid": "overworldmap21node_top_boss"
+    },
+    "overworldmap21node_top_extra": {
+      "ChestType": "chestboostedscroll",
+      "MapId": "overworldmap21",
+      "NodeConnections": "overworldmap21node_top_5",
+      "Uid": "overworldmap21node_top_extra"
+    },
+    "overworldmap22node_bot_4a": {
+      "ChestType": "chestboostedtoken",
+      "MapId": "overworldmap22",
+      "NodeConnections": "overworldmap22node_bot_5",
+      "Uid": "overworldmap22node_bot_4a"
+    },
+    "overworldmap22node_bot_4b": {
+      "ChestType": "chestboostedtoken",
+      "MapId": "overworldmap22",
+      "NodeConnections": "overworldmap22node_bot_5",
+      "Uid": "overworldmap22node_bot_4b"
+    },
+    "overworldmap22node_bot_6a": {
+      "ChestType": "chestboostedskin_maps12to22",
+      "MapId": "overworldmap22",
+      "NodeConnections": "overworldmap22node_bot_boss,overworldmap22node_bot_extra",
+      "Uid": "overworldmap22node_bot_6a"
+    },
+    "overworldmap22node_bot_6b": {
+      "ChestType": "chestboostedskin_maps12to22",
+      "MapId": "overworldmap22",
+      "NodeConnections": "overworldmap22node_bot_boss,overworldmap22node_bot_extra",
+      "Uid": "overworldmap22node_bot_6b"
+    },
+    "overworldmap22node_bot_boss": {
+      "ChestType": "chestbosssuper",
+      "MapId": "overworldmap22",
+      "NodeConnections": "",
+      "Uid": "overworldmap22node_bot_boss"
+    },
+    "overworldmap22node_top_4a": {
+      "ChestType": "chestboostedtoken",
+      "MapId": "overworldmap22",
+      "NodeConnections": "overworldmap22node_top_5",
+      "Uid": "overworldmap22node_top_4a"
+    },
+    "overworldmap22node_top_4b": {
+      "ChestType": "chestboostedtoken",
+      "MapId": "overworldmap22",
+      "NodeConnections": "overworldmap22node_top_5",
+      "Uid": "overworldmap22node_top_4b"
+    },
+    "overworldmap22node_top_7a": {
+      "ChestType": "chestboostedskin_maps12to22",
+      "MapId": "overworldmap22",
+      "NodeConnections": "overworldmap22node_top_8",
+      "Uid": "overworldmap22node_top_7a"
+    },
+    "overworldmap22node_top_7b": {
+      "ChestType": "chestboostedskin_maps12to22",
+      "MapId": "overworldmap22",
+      "NodeConnections": "overworldmap22node_top_8",
+      "Uid": "overworldmap22node_top_7b"
+    },
+    "overworldmap22node_top_boss": {
+      "ChestType": "chestbosssuper",
+      "MapId": "overworldmap22",
+      "NodeConnections": "",
+      "Uid": "overworldmap22node_top_boss"
+    },
+    "overworldmap23node_bot_boss": {
+      "ChestType": "chestboss",
+      "MapId": "overworldmap23",
+      "NodeConnections": "",
+      "Uid": "overworldmap23node_bot_boss"
+    },
+    "overworldmap23node_bot_extra2": {
+      "ChestType": "chestboostedgold",
+      "MapId": "overworldmap23",
+      "NodeConnections": "overworldmap23node_bot_boss",
+      "Uid": "overworldmap23node_bot_extra2"
+    },
+    "overworldmap23node_top_boss": {
+      "ChestType": "chestboss",
+      "MapId": "overworldmap23",
+      "NodeConnections": "",
+      "Uid": "overworldmap23node_top_boss"
+    },
+    "overworldmap23node_top_extra": {
+      "ChestType": "chestboostedgold",
+      "MapId": "overworldmap23",
+      "NodeConnections": "overworldmap23node_top_8",
+      "Uid": "overworldmap23node_top_extra"
+    },
+    "overworldmap24node_bot_boss": {
+      "ChestType": "chestboss",
+      "MapId": "overworldmap24",
+      "NodeConnections": "",
+      "Uid": "overworldmap24node_bot_boss"
+    },
+    "overworldmap24node_bot_extra1": {
+      "ChestType": "chestboostedscroll",
+      "MapId": "overworldmap24",
+      "NodeConnections": "overworldmap24node_bot_6a,overworldmap24node_bot_6b",
+      "Uid": "overworldmap24node_bot_extra1"
+    },
+    "overworldmap24node_top_boss": {
+      "ChestType": "chestboss",
+      "MapId": "overworldmap24",
+      "NodeConnections": "",
+      "Uid": "overworldmap24node_top_boss"
+    },
+    "overworldmap24node_top_extra": {
+      "ChestType": "chestboostedscroll",
+      "MapId": "overworldmap24",
+      "NodeConnections": "overworldmap24node_top_8",
+      "Uid": "overworldmap24node_top_extra"
+    },
+    "overworldmap25node_bot_4a": {
+      "ChestType": "chestboostedtoken",
+      "MapId": "overworldmap25",
+      "NodeConnections": "overworldmap25node_bot_5",
+      "Uid": "overworldmap25node_bot_4a"
+    },
+    "overworldmap25node_bot_4b": {
+      "ChestType": "chestboostedtoken",
+      "MapId": "overworldmap25",
+      "NodeConnections": "overworldmap25node_bot_5",
+      "Uid": "overworldmap25node_bot_4b"
+    },
+    "overworldmap25node_bot_6a": {
+      "ChestType": "chestboostedskin_maps23to33",
+      "MapId": "overworldmap25",
+      "NodeConnections": "overworldmap25node_bot_extra,overworldmap25node_bot_boss",
+      "Uid": "overworldmap25node_bot_6a"
+    },
+    "overworldmap25node_bot_6b": {
+      "ChestType": "chestboostedskin_maps23to33",
+      "MapId": "overworldmap25",
+      "NodeConnections": "overworldmap25node_bot_extra,overworldmap25node_bot_boss",
+      "Uid": "overworldmap25node_bot_6b"
+    },
+    "overworldmap25node_bot_boss": {
+      "ChestType": "chestboss",
+      "MapId": "overworldmap25",
+      "NodeConnections": "",
+      "Uid": "overworldmap25node_bot_boss"
+    },
+    "overworldmap25node_top_6a": {
+      "ChestType": "chestboostedtoken",
+      "MapId": "overworldmap25",
+      "NodeConnections": "overworldmap25node_top_7a",
+      "Uid": "overworldmap25node_top_6a"
+    },
+    "overworldmap25node_top_6b": {
+      "ChestType": "chestboostedtoken",
+      "MapId": "overworldmap25",
+      "NodeConnections": "overworldmap25node_top_7b",
+      "Uid": "overworldmap25node_top_6b"
+    },
+    "overworldmap25node_top_7a": {
+      "ChestType": "chestboostedskin_maps23to33",
+      "MapId": "overworldmap25",
+      "NodeConnections": "overworldmap25node_top_8",
+      "Uid": "overworldmap25node_top_7a"
+    },
+    "overworldmap25node_top_7b": {
+      "ChestType": "chestboostedskin_maps23to33",
+      "MapId": "overworldmap25",
+      "NodeConnections": "overworldmap25node_top_8",
+      "Uid": "overworldmap25node_top_7b"
+    },
+    "overworldmap25node_top_boss": {
+      "ChestType": "chestboss",
+      "MapId": "overworldmap25",
+      "NodeConnections": "",
+      "Uid": "overworldmap25node_top_boss"
+    },
+    "overworldmap26node_bot_4a": {
+      "ChestType": "chestboostedgold",
+      "MapId": "overworldmap26",
+      "NodeConnections": "overworldmap26node_bot_5",
+      "Uid": "overworldmap26node_bot_4a"
+    },
+    "overworldmap26node_bot_4b": {
+      "ChestType": "chestboostedgold",
+      "MapId": "overworldmap26",
+      "NodeConnections": "overworldmap26node_bot_5",
+      "Uid": "overworldmap26node_bot_4b"
+    },
+    "overworldmap26node_bot_6a": {
+      "ChestType": "chestboostedskin_maps23to33",
+      "MapId": "overworldmap26",
+      "NodeConnections": "overworldmap26node_bot_boss,overworldmap26node_bot_extra",
+      "Uid": "overworldmap26node_bot_6a"
+    },
+    "overworldmap26node_bot_6b": {
+      "ChestType": "chestboostedskin_maps23to33",
+      "MapId": "overworldmap26",
+      "NodeConnections": "overworldmap26node_bot_boss,overworldmap26node_bot_extra",
+      "Uid": "overworldmap26node_bot_6b"
+    },
+    "overworldmap26node_bot_boss": {
+      "ChestType": "chestboss",
+      "MapId": "overworldmap26",
+      "NodeConnections": "",
+      "Uid": "overworldmap26node_bot_boss"
+    },
+    "overworldmap26node_top_7a": {
+      "ChestType": "chestboostedgold",
+      "MapId": "overworldmap26",
+      "NodeConnections": "overworldmap26node_top_8",
+      "Uid": "overworldmap26node_top_7a"
+    },
+    "overworldmap26node_top_7b": {
+      "ChestType": "chestboostedgold",
+      "MapId": "overworldmap26",
+      "NodeConnections": "overworldmap26node_top_8",
+      "Uid": "overworldmap26node_top_7b"
+    },
+    "overworldmap26node_top_9a": {
+      "ChestType": "chestboostedskin_maps23to33",
+      "MapId": "overworldmap26",
+      "NodeConnections": "overworldmap26node_top_boss",
+      "Uid": "overworldmap26node_top_9a"
+    },
+    "overworldmap26node_top_9b": {
+      "ChestType": "chestboostedskin_maps23to33",
+      "MapId": "overworldmap26",
+      "NodeConnections": "overworldmap26node_top_boss",
+      "Uid": "overworldmap26node_top_9b"
+    },
+    "overworldmap26node_top_boss": {
+      "ChestType": "chestboss",
+      "MapId": "overworldmap26",
+      "NodeConnections": "",
+      "Uid": "overworldmap26node_top_boss"
+    },
+    "overworldmap27node_bot_6a": {
+      "ChestType": "chestboostedskin_maps23to33",
+      "MapId": "overworldmap27",
+      "NodeConnections": "overworldmap27node_bot_boss,overworldmap27node_bot_extra2",
+      "Uid": "overworldmap27node_bot_6a"
+    },
+    "overworldmap27node_bot_6b": {
+      "ChestType": "chestboostedskin_maps23to33",
+      "MapId": "overworldmap27",
+      "NodeConnections": "overworldmap27node_bot_boss,overworldmap27node_bot_extra2",
+      "Uid": "overworldmap27node_bot_6b"
+    },
+    "overworldmap27node_bot_boss": {
+      "ChestType": "chestboss",
+      "MapId": "overworldmap27",
+      "NodeConnections": "",
+      "Uid": "overworldmap27node_bot_boss"
+    },
+    "overworldmap27node_bot_extra1": {
+      "ChestType": "chestboostedscroll",
+      "MapId": "overworldmap27",
+      "NodeConnections": "overworldmap27node_bot_5",
+      "Uid": "overworldmap27node_bot_extra1"
+    },
+    "overworldmap27node_top_6a": {
+      "ChestType": "chestboostedskin_maps23to33",
+      "MapId": "overworldmap27",
+      "NodeConnections": "overworldmap27node_top_7a",
+      "Uid": "overworldmap27node_top_6a"
+    },
+    "overworldmap27node_top_6b": {
+      "ChestType": "chestboostedskin_maps23to33",
+      "MapId": "overworldmap27",
+      "NodeConnections": "overworldmap27node_top_7b",
+      "Uid": "overworldmap27node_top_6b"
+    },
+    "overworldmap27node_top_boss": {
+      "ChestType": "chestboss",
+      "MapId": "overworldmap27",
+      "NodeConnections": "",
+      "Uid": "overworldmap27node_top_boss"
+    },
+    "overworldmap27node_top_extra1": {
+      "ChestType": "chestboostedscroll",
+      "MapId": "overworldmap27",
+      "NodeConnections": "overworldmap27node_top_5",
+      "Uid": "overworldmap27node_top_extra1"
+    },
+    "overworldmap28node_bot_4a": {
+      "ChestType": "chestboostedgold",
+      "MapId": "overworldmap28",
+      "NodeConnections": "overworldmap28node_bot_5",
+      "Uid": "overworldmap28node_bot_4a"
+    },
+    "overworldmap28node_bot_4b": {
+      "ChestType": "chestboostedgold",
+      "MapId": "overworldmap28",
+      "NodeConnections": "overworldmap28node_bot_5",
+      "Uid": "overworldmap28node_bot_4b"
+    },
+    "overworldmap28node_bot_6a": {
+      "ChestType": "chestboostedskin_maps23to33",
+      "MapId": "overworldmap28",
+      "NodeConnections": "overworldmap28node_bot_extra,overworldmap28node_bot_boss",
+      "Uid": "overworldmap28node_bot_6a"
+    },
+    "overworldmap28node_bot_6b": {
+      "ChestType": "chestboostedskin_maps23to33",
+      "MapId": "overworldmap28",
+      "NodeConnections": "overworldmap28node_bot_extra,overworldmap28node_bot_boss",
+      "Uid": "overworldmap28node_bot_6b"
+    },
+    "overworldmap28node_bot_boss": {
+      "ChestType": "chestbosssuper",
+      "MapId": "overworldmap28",
+      "NodeConnections": "",
+      "Uid": "overworldmap28node_bot_boss"
+    },
+    "overworldmap28node_top_4a": {
+      "ChestType": "chestboostedgold",
+      "MapId": "overworldmap28",
+      "NodeConnections": "overworldmap28node_top_5",
+      "Uid": "overworldmap28node_top_4a"
+    },
+    "overworldmap28node_top_4b": {
+      "ChestType": "chestboostedgold",
+      "MapId": "overworldmap28",
+      "NodeConnections": "overworldmap28node_top_5",
+      "Uid": "overworldmap28node_top_4b"
+    },
+    "overworldmap28node_top_7a": {
+      "ChestType": "chestboostedskin_maps23to33",
+      "MapId": "overworldmap28",
+      "NodeConnections": "overworldmap28node_top_8",
+      "Uid": "overworldmap28node_top_7a"
+    },
+    "overworldmap28node_top_7b": {
+      "ChestType": "chestboostedskin_maps23to33",
+      "MapId": "overworldmap28",
+      "NodeConnections": "overworldmap28node_top_8",
+      "Uid": "overworldmap28node_top_7b"
+    },
+    "overworldmap28node_top_boss": {
+      "ChestType": "chestbosssuper",
+      "MapId": "overworldmap28",
+      "NodeConnections": "",
+      "Uid": "overworldmap28node_top_boss"
+    },
+    "overworldmap29node_bot_3b": {
+      "ChestType": "chestboostedtoken",
+      "MapId": "overworldmap29",
+      "NodeConnections": "overworldmap29node_bot_4b",
+      "Uid": "overworldmap29node_bot_3b"
+    },
+    "overworldmap29node_bot_4a": {
+      "ChestType": "chestboostedtoken",
+      "MapId": "overworldmap29",
+      "NodeConnections": "overworldmap29node_bot_5",
+      "Uid": "overworldmap29node_bot_4a"
+    },
+    "overworldmap29node_bot_6a": {
+      "ChestType": "chestboostedskin_maps23to33",
+      "MapId": "overworldmap29",
+      "NodeConnections": "overworldmap29node_bot_boss,overworldmap29node_bot_extra",
+      "Uid": "overworldmap29node_bot_6a"
+    },
+    "overworldmap29node_bot_6b": {
+      "ChestType": "chestboostedskin_maps23to33",
+      "MapId": "overworldmap29",
+      "NodeConnections": "overworldmap29node_bot_boss,overworldmap29node_bot_extra",
+      "Uid": "overworldmap29node_bot_6b"
+    },
+    "overworldmap29node_bot_boss": {
+      "ChestType": "chestboss",
+      "MapId": "overworldmap29",
+      "NodeConnections": "",
+      "Uid": "overworldmap29node_bot_boss"
+    },
+    "overworldmap29node_top_7a": {
+      "ChestType": "chestboostedtoken",
+      "MapId": "overworldmap29",
+      "NodeConnections": "overworldmap29node_top_8",
+      "Uid": "overworldmap29node_top_7a"
+    },
+    "overworldmap29node_top_7b": {
+      "ChestType": "chestboostedtoken",
+      "MapId": "overworldmap29",
+      "NodeConnections": "overworldmap29node_top_8",
+      "Uid": "overworldmap29node_top_7b"
+    },
+    "overworldmap29node_top_9a": {
+      "ChestType": "chestboostedskin_maps23to33",
+      "MapId": "overworldmap29",
+      "NodeConnections": "overworldmap29node_top_boss",
+      "Uid": "overworldmap29node_top_9a"
+    },
+    "overworldmap29node_top_9b": {
+      "ChestType": "chestboostedskin_maps23to33",
+      "MapId": "overworldmap29",
+      "NodeConnections": "overworldmap29node_top_boss",
+      "Uid": "overworldmap29node_top_9b"
+    },
+    "overworldmap29node_top_boss": {
+      "ChestType": "chestboss",
+      "MapId": "overworldmap29",
+      "NodeConnections": "",
+      "Uid": "overworldmap29node_top_boss"
+    },
+    "overworldmap30node_bot_4a": {
+      "ChestType": "chestboostedgold",
+      "MapId": "overworldmap30",
+      "NodeConnections": "overworldmap30node_bot_5",
+      "Uid": "overworldmap30node_bot_4a"
+    },
+    "overworldmap30node_bot_4b": {
+      "ChestType": "chestboostedgold",
+      "MapId": "overworldmap30",
+      "NodeConnections": "overworldmap30node_bot_5",
+      "Uid": "overworldmap30node_bot_4b"
+    },
+    "overworldmap30node_bot_6a": {
+      "ChestType": "chestboostedskin_maps23to33",
+      "MapId": "overworldmap30",
+      "NodeConnections": "overworldmap30node_bot_boss,overworldmap30node_bot_extra",
+      "Uid": "overworldmap30node_bot_6a"
+    },
+    "overworldmap30node_bot_6b": {
+      "ChestType": "chestboostedskin_maps23to33",
+      "MapId": "overworldmap30",
+      "NodeConnections": "overworldmap30node_bot_boss,overworldmap30node_bot_extra",
+      "Uid": "overworldmap30node_bot_6b"
+    },
+    "overworldmap30node_bot_boss": {
+      "ChestType": "chestboss",
+      "MapId": "overworldmap30",
+      "NodeConnections": "",
+      "Uid": "overworldmap30node_bot_boss"
+    },
+    "overworldmap30node_bot_extra": {
+      "ChestType": "chestboostedscroll",
+      "MapId": "overworldmap30",
+      "NodeConnections": "overworldmap30node_bot_boss",
+      "Uid": "overworldmap30node_bot_extra"
+    },
+    "overworldmap30node_top_6a": {
+      "ChestType": "chestboostedgold",
+      "MapId": "overworldmap30",
+      "NodeConnections": "overworldmap30node_top_7a,overworldmap30node_top_extra",
+      "Uid": "overworldmap30node_top_6a"
+    },
+    "overworldmap30node_top_6b": {
+      "ChestType": "chestboostedgold",
+      "MapId": "overworldmap30",
+      "NodeConnections": "overworldmap30node_top_7b,overworldmap30node_top_extra",
+      "Uid": "overworldmap30node_top_6b"
+    },
+    "overworldmap30node_top_9a": {
+      "ChestType": "chestboostedskin_maps23to33",
+      "MapId": "overworldmap30",
+      "NodeConnections": "overworldmap30node_top_boss",
+      "Uid": "overworldmap30node_top_9a"
+    },
+    "overworldmap30node_top_9b": {
+      "ChestType": "chestboostedskin_maps23to33",
+      "MapId": "overworldmap30",
+      "NodeConnections": "overworldmap30node_top_boss",
+      "Uid": "overworldmap30node_top_9b"
+    },
+    "overworldmap30node_top_boss": {
+      "ChestType": "chestboss",
+      "MapId": "overworldmap30",
+      "NodeConnections": "",
+      "Uid": "overworldmap30node_top_boss"
+    },
+    "overworldmap30node_top_extra": {
+      "ChestType": "chestboostedscroll",
+      "MapId": "overworldmap30",
+      "NodeConnections": "overworldmap30node_top_7a,overworldmap30node_top_7b",
+      "Uid": "overworldmap30node_top_extra"
+    },
+    "overworldmap31node_bot_4a": {
+      "ChestType": "chestboostedtoken",
+      "MapId": "overworldmap31",
+      "NodeConnections": "overworldmap31node_bot_5",
+      "Uid": "overworldmap31node_bot_4a"
+    },
+    "overworldmap31node_bot_4b": {
+      "ChestType": "chestboostedtoken",
+      "MapId": "overworldmap31",
+      "NodeConnections": "overworldmap31node_bot_5",
+      "Uid": "overworldmap31node_bot_4b"
+    },
+    "overworldmap31node_bot_6a": {
+      "ChestType": "chestboostedskin_maps23to33",
+      "MapId": "overworldmap31",
+      "NodeConnections": "overworldmap31node_bot_extra,overworldmap31node_bot_boss",
+      "Uid": "overworldmap31node_bot_6a"
+    },
+    "overworldmap31node_bot_6b": {
+      "ChestType": "chestboostedskin_maps23to33",
+      "MapId": "overworldmap31",
+      "NodeConnections": "overworldmap31node_bot_extra,overworldmap31node_bot_boss",
+      "Uid": "overworldmap31node_bot_6b"
+    },
+    "overworldmap31node_bot_boss": {
+      "ChestType": "chestboss",
+      "MapId": "overworldmap31",
+      "NodeConnections": "",
+      "Uid": "overworldmap31node_bot_boss"
+    },
+    "overworldmap31node_top_7a": {
+      "ChestType": "chestboostedskin_maps23to33",
+      "MapId": "overworldmap31",
+      "NodeConnections": "overworldmap31node_top_8",
+      "Uid": "overworldmap31node_top_7a"
+    },
+    "overworldmap31node_top_7b": {
+      "ChestType": "chestboostedskin_maps23to33",
+      "MapId": "overworldmap31",
+      "NodeConnections": "overworldmap31node_top_8",
+      "Uid": "overworldmap31node_top_7b"
+    },
+    "overworldmap31node_top_9a": {
+      "ChestType": "chestboostedtoken",
+      "MapId": "overworldmap31",
+      "NodeConnections": "overworldmap31node_top_boss",
+      "Uid": "overworldmap31node_top_9a"
+    },
+    "overworldmap31node_top_9b": {
+      "ChestType": "chestboostedtoken",
+      "MapId": "overworldmap31",
+      "NodeConnections": "overworldmap31node_top_boss",
+      "Uid": "overworldmap31node_top_9b"
+    },
+    "overworldmap31node_top_boss": {
+      "ChestType": "chestboss",
+      "MapId": "overworldmap31",
+      "NodeConnections": "",
+      "Uid": "overworldmap31node_top_boss"
+    },
+    "overworldmap32node_bot_4a": {
+      "ChestType": "chestboostedgold",
+      "MapId": "overworldmap32",
+      "NodeConnections": "overworldmap32node_bot_5",
+      "Uid": "overworldmap32node_bot_4a"
+    },
+    "overworldmap32node_bot_4b": {
+      "ChestType": "chestboostedgold",
+      "MapId": "overworldmap32",
+      "NodeConnections": "overworldmap32node_bot_5",
+      "Uid": "overworldmap32node_bot_4b"
+    },
+    "overworldmap32node_bot_6a": {
+      "ChestType": "chestboostedskin_maps23to33",
+      "MapId": "overworldmap32",
+      "NodeConnections": "overworldmap32node_bot_boss,overworldmap32node_bot_extra",
+      "Uid": "overworldmap32node_bot_6a"
+    },
+    "overworldmap32node_bot_6b": {
+      "ChestType": "chestboostedskin_maps23to33",
+      "MapId": "overworldmap32",
+      "NodeConnections": "overworldmap32node_bot_boss,overworldmap32node_bot_extra",
+      "Uid": "overworldmap32node_bot_6b"
+    },
+    "overworldmap32node_bot_boss": {
+      "ChestType": "chestboss",
+      "MapId": "overworldmap32",
+      "NodeConnections": "",
+      "Uid": "overworldmap32node_bot_boss"
+    },
+    "overworldmap32node_bot_extra": {
+      "ChestType": "chestboostedscroll",
+      "MapId": "overworldmap32",
+      "NodeConnections": "overworldmap32node_bot_boss",
+      "Uid": "overworldmap32node_bot_extra"
+    },
+    "overworldmap32node_top_7a": {
+      "ChestType": "chestboostedgold",
+      "MapId": "overworldmap32",
+      "NodeConnections": "overworldmap32node_top_8",
+      "Uid": "overworldmap32node_top_7a"
+    },
+    "overworldmap32node_top_7b": {
+      "ChestType": "chestboostedgold",
+      "MapId": "overworldmap32",
+      "NodeConnections": "overworldmap32node_top_8",
+      "Uid": "overworldmap32node_top_7b"
+    },
+    "overworldmap32node_top_9a": {
+      "ChestType": "chestboostedskin_maps23to33",
+      "MapId": "overworldmap32",
+      "NodeConnections": "overworldmap32node_top_boss",
+      "Uid": "overworldmap32node_top_9a"
+    },
+    "overworldmap32node_top_9b": {
+      "ChestType": "chestboostedskin_maps23to33",
+      "MapId": "overworldmap32",
+      "NodeConnections": "overworldmap32node_top_boss",
+      "Uid": "overworldmap32node_top_9b"
+    },
+    "overworldmap32node_top_boss": {
+      "ChestType": "chestboss",
+      "MapId": "overworldmap32",
+      "NodeConnections": "",
+      "Uid": "overworldmap32node_top_boss"
+    },
+    "overworldmap32node_top_extra": {
+      "ChestType": "chestboostedscroll",
+      "MapId": "overworldmap32",
+      "NodeConnections": "overworldmap32node_top_5",
+      "Uid": "overworldmap32node_top_extra"
+    },
+    "overworldmap33node_bot_4a": {
+      "ChestType": "chestboostedtoken",
+      "MapId": "overworldmap33",
+      "NodeConnections": "overworldmap33node_bot_5",
+      "Uid": "overworldmap33node_bot_4a"
+    },
+    "overworldmap33node_bot_4b": {
+      "ChestType": "chestboostedtoken",
+      "MapId": "overworldmap33",
+      "NodeConnections": "overworldmap33node_bot_5",
+      "Uid": "overworldmap33node_bot_4b"
+    },
+    "overworldmap33node_bot_5": {
+      "ChestType": "chestboostedskin_maps23to33",
+      "MapId": "overworldmap33",
+      "NodeConnections": "overworldmap33node_mid_2,overworldmap33node_bot_6a,overworldmap33node_bot_6b",
+      "Uid": "overworldmap33node_bot_5"
+    },
+    "overworldmap33node_bot_6a": {
+      "ChestType": "chestboostedtoken",
+      "MapId": "overworldmap33",
+      "NodeConnections": "overworldmap33node_bot_boss,overworldmap33node_bot_extra",
+      "Uid": "overworldmap33node_bot_6a"
+    },
+    "overworldmap33node_bot_6b": {
+      "ChestType": "chestboostedgold",
+      "MapId": "overworldmap33",
+      "NodeConnections": "overworldmap33node_bot_boss,overworldmap33node_bot_extra",
+      "Uid": "overworldmap33node_bot_6b"
+    },
+    "overworldmap33node_bot_boss": {
+      "ChestType": "chestbosssuper",
+      "MapId": "overworldmap33",
+      "NodeConnections": "",
+      "Uid": "overworldmap33node_bot_boss"
+    },
+    "overworldmap33node_top_4a": {
+      "ChestType": "chestboostedtoken",
+      "MapId": "overworldmap33",
+      "NodeConnections": "overworldmap33node_top_5",
+      "Uid": "overworldmap33node_top_4a"
+    },
+    "overworldmap33node_top_4b": {
+      "ChestType": "chestboostedtoken",
+      "MapId": "overworldmap33",
+      "NodeConnections": "overworldmap33node_top_5",
+      "Uid": "overworldmap33node_top_4b"
+    },
+    "overworldmap33node_top_7a": {
+      "ChestType": "chestboostedskin_maps23to33",
+      "MapId": "overworldmap33",
+      "NodeConnections": "overworldmap33node_top_8",
+      "Uid": "overworldmap33node_top_7a"
+    },
+    "overworldmap33node_top_7b": {
+      "ChestType": "chestboostedskin_maps23to33",
+      "MapId": "overworldmap33",
+      "NodeConnections": "overworldmap33node_top_8",
+      "Uid": "overworldmap33node_top_7b"
+    },
+    "overworldmap33node_top_boss": {
+      "ChestType": "chestbosssuper",
+      "MapId": "overworldmap33",
+      "NodeConnections": "",
+      "Uid": "overworldmap33node_top_boss"
+    }
+  }
+}

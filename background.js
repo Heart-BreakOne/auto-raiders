@@ -265,13 +265,26 @@ async function getRaidChest(raidId) {
       throw new Error('Network response was not ok');
     }
 
-    const chestJson = await fetch(`https://heart-breakone.github.io/webpages/loyalty_chests.json`);
+    const chestJsonUrl = chrome.runtime.getURL('icons/loyalty_chests.json');
+    const chestJson = await fetch(chestJsonUrl);
     if (!chestJson.ok) {
       throw new Error('Network response was not ok');
     }
 
     const currentRaid = await response.json();
+  
     const chests = await chestJson.json();
+    const raid_url = currentRaid.info.dataPath
+    const storage_url = chests.url
+    let newMap
+    if (raid_url !== storage_url) {
+      newMap = true;
+    } else {
+      newMap = false;
+    }
+    chrome.storage.local.set({ "newMap": newMap });
+
+
     const nodeKeys = [];
 
     for (const key in chests.MapNodes) {
@@ -442,3 +455,142 @@ async function selectCaptain(firstCaptainId, index) {
     return;
   }
 }
+
+
+/*
+11       In Captain Planning Period
+4        In Placement Period
+7        Waiting for Captain to start Battle!
+Cycle restarts.
+The period between 7 and 11 is the time the captain idled or took to hand out rewards
+The captain can spend a lot of time on state 1, not a useful marker in my opinion.
+1        Waiting on Captain to find Battle
+And state 10 can take several minutes while the captain hands out the rewards or mere seconds if the captain doesn't care. If the crawler is not running on this timeframe, it misses.
+10        Waiting for Captain to collect reward! 
+So effectively, the time between 11 and 7 is the battle time. The time between 7 and 11 is the downtime.
+
+
+
+1        Waiting on Captain to find Battle
+4        In Placement Period
+7        Waiting for Captain to start Battle!
+10        Waiting for Captain to collect reward!
+11        In Captain Planning Period
+*/
+//setInterval(logBattleStates, 15000);
+
+async function logBattleStates() {
+
+  await getCookies()
+
+  let captainsArray = [];
+  for (let i = 1; i < 6; i++) {
+    try {
+      const response = await fetch(`https://www.streamraiders.com/api/game/?cn=getCaptainsForSearch&isPlayingS=desc&isLiveS=desc&page=${i}&format=normalized&seed=4140&resultsPerPage=30&filters={%22favorite%22:false,%22isLive%22:1,%22ambassadors%22:%22false%22}&clientVersion=${clientVersion}&clientPlatform=MobileLite&gameDataVersion=${gameDataVersion}&command=getCaptainsForSearch&isCaptain=0`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/x-www-form-urlencoded',
+          'Cookie': cookieString,
+        },
+      });
+
+      if (!response.ok) {
+        throw new Error('Network response was not ok');
+      }
+
+      // get unit id and name.
+      const captainsData = await response.json();
+
+      for (let i = 0; i < captainsData.data.captains.length; i++) {
+
+        const current = captainsData.data.captains[i];
+        const name = current.twitchDisplayName;
+        const state = current.raidState;
+        const type = current.type;
+        let stateString
+        let typeString
+        const currentTime = new Date()
+        let placementTime;
+        let startTime;
+        let idleTime;
+        let resolved = false;
+
+        if (state === 1 || state === 11 || state === 10) {
+          continue;
+        }
+
+        //Make state human readable
+        switch (state) {
+          case 4:
+            stateString = "Placement";
+            placementTime = currentTime
+            break;
+          case 7:
+            stateString = "Start";
+            startTime = currentTime
+            break;
+          default:
+            stateString = "Unknown";
+        }
+
+        //Make type human readable
+        switch (type) {
+          case "1":
+            typeString = "Campaign";
+            break;
+          case "2":
+            typeString = "Clash";
+            break;
+          case "3":
+            typeString = "Dungeons";
+            break;
+          case "4":
+            typeString = "Duel";
+            break;
+          default:
+            typeString = "Unknown";
+        }
+
+        captainsArray.push({
+          name, state, stateString, typeString, placementTime, startTime, idleTime, resolved
+        });
+      }
+    } catch (error) {
+      console.error('Error fetching captains:', error.message);
+      return false;
+    }
+  }
+
+  //If it doesnt exist, add it.
+  //If it exists, check if it's resolved.
+  //If it's resolved, add a new entry.
+  //If new entry only has startTime available, set placementTime as the current time and set as resolved so the cycle restarts.
+
+  //If new entry has placementTime available, set it. Leave the rest as is not resolved.
+  //If not resolved, check if it has placementTime set, if it has placementTime set and startTime is not yet available, do nothing.
+  //If not resolved, placementTime is already set and startTime is now available, set startTime and as resolved. Cycle restarts
+
+  //If placementTime is set and is older than 35 minutes, set startTime to currentTime
+  //If new entry has placementTime and previous is set as resolved, calculate idleTime.
+  //console.log(captainsArray)
+
+  chrome.storage.local.remove("battleData", function () {});
+
+  chrome.storage.local.get(['battleData'], function (result) {
+    let battleData = result.battleData || [];
+    //Add the data if it doesn't exist
+    if (battleData.length === 0) {
+      battleData = captainsArray
+    }
+
+    //Now that the data exists, handle the several possible conditions for new entries
+
+    //Add new entry
+
+
+
+    //console.log(battleData)
+    chrome.storage.local.set({ battleData: battleData });
+  });
+}
+
