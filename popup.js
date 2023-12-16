@@ -27,4 +27,11 @@ document.addEventListener("DOMContentLoaded", function () {
         const url = `chrome-extension://${chrome.runtime.id}/iframe.html`
         chrome.tabs.create({ url: url });
     });
+
+    document.getElementById('map_updater').addEventListener('click', () => {
+        const url = `chrome-extension://${chrome.runtime.id}/html/map_updater.html`
+        chrome.tabs.create({ url: url });
+    });
+
+
 });
