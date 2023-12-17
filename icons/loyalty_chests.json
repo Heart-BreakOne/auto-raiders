@@ -1,5 +1,5 @@
 {
-  "url": "https://streamcap-prod1.3.amazonaws.com/data/data.1f6c65d294.json",
+  "url": " streamcap-prod1.s3.amazonaws.com/data/data.1f6c65d29463.json",
   "MapNodes": {
     "map12nodea6": {
       "ChestType": "chestboostedgold",
@@ -2917,23 +2917,11 @@
       "NodeConnections": "overworldmap24node_top_8",
       "Uid": "overworldmap24node_top_extra"
     },
-    "overworldmap25node_bot_4a": {
-      "ChestType": "chestboostedtoken",
-      "MapId": "overworldmap25",
-      "NodeConnections": "overworldmap25node_bot_5",
-      "Uid": "overworldmap25node_bot_4a"
-    },
     "overworldmap25node_bot_4b": {
       "ChestType": "chestboostedtoken",
       "MapId": "overworldmap25",
       "NodeConnections": "overworldmap25node_bot_5",
       "Uid": "overworldmap25node_bot_4b"
-    },
-    "overworldmap25node_bot_6a": {
-      "ChestType": "chestboostedskin_maps23to33",
-      "MapId": "overworldmap25",
-      "NodeConnections": "overworldmap25node_bot_extra,overworldmap25node_bot_boss",
-      "Uid": "overworldmap25node_bot_6a"
     },
     "overworldmap25node_bot_6b": {
       "ChestType": "chestboostedskin_maps23to33",
@@ -2947,23 +2935,11 @@
       "NodeConnections": "",
       "Uid": "overworldmap25node_bot_boss"
     },
-    "overworldmap25node_top_6a": {
-      "ChestType": "chestboostedtoken",
-      "MapId": "overworldmap25",
-      "NodeConnections": "overworldmap25node_top_7a",
-      "Uid": "overworldmap25node_top_6a"
-    },
     "overworldmap25node_top_6b": {
       "ChestType": "chestboostedtoken",
       "MapId": "overworldmap25",
       "NodeConnections": "overworldmap25node_top_7b",
       "Uid": "overworldmap25node_top_6b"
-    },
-    "overworldmap25node_top_7a": {
-      "ChestType": "chestboostedskin_maps23to33",
-      "MapId": "overworldmap25",
-      "NodeConnections": "overworldmap25node_top_8",
-      "Uid": "overworldmap25node_top_7a"
     },
     "overworldmap25node_top_7b": {
       "ChestType": "chestboostedskin_maps23to33",
@@ -2977,23 +2953,11 @@
       "NodeConnections": "",
       "Uid": "overworldmap25node_top_boss"
     },
-    "overworldmap26node_bot_4a": {
-      "ChestType": "chestboostedgold",
-      "MapId": "overworldmap26",
-      "NodeConnections": "overworldmap26node_bot_5",
-      "Uid": "overworldmap26node_bot_4a"
-    },
     "overworldmap26node_bot_4b": {
       "ChestType": "chestboostedgold",
       "MapId": "overworldmap26",
       "NodeConnections": "overworldmap26node_bot_5",
       "Uid": "overworldmap26node_bot_4b"
-    },
-    "overworldmap26node_bot_6a": {
-      "ChestType": "chestboostedskin_maps23to33",
-      "MapId": "overworldmap26",
-      "NodeConnections": "overworldmap26node_bot_boss,overworldmap26node_bot_extra",
-      "Uid": "overworldmap26node_bot_6a"
     },
     "overworldmap26node_bot_6b": {
       "ChestType": "chestboostedskin_maps23to33",
@@ -3007,23 +2971,11 @@
       "NodeConnections": "",
       "Uid": "overworldmap26node_bot_boss"
     },
-    "overworldmap26node_top_7a": {
-      "ChestType": "chestboostedgold",
-      "MapId": "overworldmap26",
-      "NodeConnections": "overworldmap26node_top_8",
-      "Uid": "overworldmap26node_top_7a"
-    },
     "overworldmap26node_top_7b": {
       "ChestType": "chestboostedgold",
       "MapId": "overworldmap26",
       "NodeConnections": "overworldmap26node_top_8",
       "Uid": "overworldmap26node_top_7b"
-    },
-    "overworldmap26node_top_9a": {
-      "ChestType": "chestboostedskin_maps23to33",
-      "MapId": "overworldmap26",
-      "NodeConnections": "overworldmap26node_top_boss",
-      "Uid": "overworldmap26node_top_9a"
     },
     "overworldmap26node_top_9b": {
       "ChestType": "chestboostedskin_maps23to33",
@@ -3036,12 +2988,6 @@
       "MapId": "overworldmap26",
       "NodeConnections": "",
       "Uid": "overworldmap26node_top_boss"
-    },
-    "overworldmap27node_bot_6a": {
-      "ChestType": "chestboostedskin_maps23to33",
-      "MapId": "overworldmap27",
-      "NodeConnections": "overworldmap27node_bot_boss,overworldmap27node_bot_extra2",
-      "Uid": "overworldmap27node_bot_6a"
     },
     "overworldmap27node_bot_6b": {
       "ChestType": "chestboostedskin_maps23to33",
@@ -3061,12 +3007,6 @@
       "NodeConnections": "overworldmap27node_bot_5",
       "Uid": "overworldmap27node_bot_extra1"
     },
-    "overworldmap27node_top_6a": {
-      "ChestType": "chestboostedskin_maps23to33",
-      "MapId": "overworldmap27",
-      "NodeConnections": "overworldmap27node_top_7a",
-      "Uid": "overworldmap27node_top_6a"
-    },
     "overworldmap27node_top_6b": {
       "ChestType": "chestboostedskin_maps23to33",
       "MapId": "overworldmap27",
@@ -3085,23 +3025,11 @@
       "NodeConnections": "overworldmap27node_top_5",
       "Uid": "overworldmap27node_top_extra1"
     },
-    "overworldmap28node_bot_4a": {
-      "ChestType": "chestboostedgold",
-      "MapId": "overworldmap28",
-      "NodeConnections": "overworldmap28node_bot_5",
-      "Uid": "overworldmap28node_bot_4a"
-    },
     "overworldmap28node_bot_4b": {
       "ChestType": "chestboostedgold",
       "MapId": "overworldmap28",
       "NodeConnections": "overworldmap28node_bot_5",
       "Uid": "overworldmap28node_bot_4b"
-    },
-    "overworldmap28node_bot_6a": {
-      "ChestType": "chestboostedskin_maps23to33",
-      "MapId": "overworldmap28",
-      "NodeConnections": "overworldmap28node_bot_extra,overworldmap28node_bot_boss",
-      "Uid": "overworldmap28node_bot_6a"
     },
     "overworldmap28node_bot_6b": {
       "ChestType": "chestboostedskin_maps23to33",
@@ -3115,23 +3043,11 @@
       "NodeConnections": "",
       "Uid": "overworldmap28node_bot_boss"
     },
-    "overworldmap28node_top_4a": {
-      "ChestType": "chestboostedgold",
-      "MapId": "overworldmap28",
-      "NodeConnections": "overworldmap28node_top_5",
-      "Uid": "overworldmap28node_top_4a"
-    },
     "overworldmap28node_top_4b": {
       "ChestType": "chestboostedgold",
       "MapId": "overworldmap28",
       "NodeConnections": "overworldmap28node_top_5",
       "Uid": "overworldmap28node_top_4b"
-    },
-    "overworldmap28node_top_7a": {
-      "ChestType": "chestboostedskin_maps23to33",
-      "MapId": "overworldmap28",
-      "NodeConnections": "overworldmap28node_top_8",
-      "Uid": "overworldmap28node_top_7a"
     },
     "overworldmap28node_top_7b": {
       "ChestType": "chestboostedskin_maps23to33",
@@ -3145,23 +3061,11 @@
       "NodeConnections": "",
       "Uid": "overworldmap28node_top_boss"
     },
-    "overworldmap29node_bot_3b": {
-      "ChestType": "chestboostedtoken",
-      "MapId": "overworldmap29",
-      "NodeConnections": "overworldmap29node_bot_4b",
-      "Uid": "overworldmap29node_bot_3b"
-    },
     "overworldmap29node_bot_4a": {
       "ChestType": "chestboostedtoken",
       "MapId": "overworldmap29",
       "NodeConnections": "overworldmap29node_bot_5",
       "Uid": "overworldmap29node_bot_4a"
-    },
-    "overworldmap29node_bot_6a": {
-      "ChestType": "chestboostedskin_maps23to33",
-      "MapId": "overworldmap29",
-      "NodeConnections": "overworldmap29node_bot_boss,overworldmap29node_bot_extra",
-      "Uid": "overworldmap29node_bot_6a"
     },
     "overworldmap29node_bot_6b": {
       "ChestType": "chestboostedskin_maps23to33",
@@ -3175,23 +3079,11 @@
       "NodeConnections": "",
       "Uid": "overworldmap29node_bot_boss"
     },
-    "overworldmap29node_top_7a": {
-      "ChestType": "chestboostedtoken",
-      "MapId": "overworldmap29",
-      "NodeConnections": "overworldmap29node_top_8",
-      "Uid": "overworldmap29node_top_7a"
-    },
     "overworldmap29node_top_7b": {
       "ChestType": "chestboostedtoken",
       "MapId": "overworldmap29",
       "NodeConnections": "overworldmap29node_top_8",
       "Uid": "overworldmap29node_top_7b"
-    },
-    "overworldmap29node_top_9a": {
-      "ChestType": "chestboostedskin_maps23to33",
-      "MapId": "overworldmap29",
-      "NodeConnections": "overworldmap29node_top_boss",
-      "Uid": "overworldmap29node_top_9a"
     },
     "overworldmap29node_top_9b": {
       "ChestType": "chestboostedskin_maps23to33",
@@ -3205,23 +3097,11 @@
       "NodeConnections": "",
       "Uid": "overworldmap29node_top_boss"
     },
-    "overworldmap30node_bot_4a": {
-      "ChestType": "chestboostedgold",
-      "MapId": "overworldmap30",
-      "NodeConnections": "overworldmap30node_bot_5",
-      "Uid": "overworldmap30node_bot_4a"
-    },
     "overworldmap30node_bot_4b": {
       "ChestType": "chestboostedgold",
       "MapId": "overworldmap30",
       "NodeConnections": "overworldmap30node_bot_5",
       "Uid": "overworldmap30node_bot_4b"
-    },
-    "overworldmap30node_bot_6a": {
-      "ChestType": "chestboostedskin_maps23to33",
-      "MapId": "overworldmap30",
-      "NodeConnections": "overworldmap30node_bot_boss,overworldmap30node_bot_extra",
-      "Uid": "overworldmap30node_bot_6a"
     },
     "overworldmap30node_bot_6b": {
       "ChestType": "chestboostedskin_maps23to33",
@@ -3241,23 +3121,11 @@
       "NodeConnections": "overworldmap30node_bot_boss",
       "Uid": "overworldmap30node_bot_extra"
     },
-    "overworldmap30node_top_6a": {
-      "ChestType": "chestboostedgold",
-      "MapId": "overworldmap30",
-      "NodeConnections": "overworldmap30node_top_7a,overworldmap30node_top_extra",
-      "Uid": "overworldmap30node_top_6a"
-    },
     "overworldmap30node_top_6b": {
       "ChestType": "chestboostedgold",
       "MapId": "overworldmap30",
       "NodeConnections": "overworldmap30node_top_7b,overworldmap30node_top_extra",
       "Uid": "overworldmap30node_top_6b"
-    },
-    "overworldmap30node_top_9a": {
-      "ChestType": "chestboostedskin_maps23to33",
-      "MapId": "overworldmap30",
-      "NodeConnections": "overworldmap30node_top_boss",
-      "Uid": "overworldmap30node_top_9a"
     },
     "overworldmap30node_top_9b": {
       "ChestType": "chestboostedskin_maps23to33",
@@ -3277,23 +3145,11 @@
       "NodeConnections": "overworldmap30node_top_7a,overworldmap30node_top_7b",
       "Uid": "overworldmap30node_top_extra"
     },
-    "overworldmap31node_bot_4a": {
-      "ChestType": "chestboostedtoken",
-      "MapId": "overworldmap31",
-      "NodeConnections": "overworldmap31node_bot_5",
-      "Uid": "overworldmap31node_bot_4a"
-    },
     "overworldmap31node_bot_4b": {
       "ChestType": "chestboostedtoken",
       "MapId": "overworldmap31",
       "NodeConnections": "overworldmap31node_bot_5",
       "Uid": "overworldmap31node_bot_4b"
-    },
-    "overworldmap31node_bot_6a": {
-      "ChestType": "chestboostedskin_maps23to33",
-      "MapId": "overworldmap31",
-      "NodeConnections": "overworldmap31node_bot_extra,overworldmap31node_bot_boss",
-      "Uid": "overworldmap31node_bot_6a"
     },
     "overworldmap31node_bot_6b": {
       "ChestType": "chestboostedskin_maps23to33",
@@ -3307,23 +3163,11 @@
       "NodeConnections": "",
       "Uid": "overworldmap31node_bot_boss"
     },
-    "overworldmap31node_top_7a": {
-      "ChestType": "chestboostedskin_maps23to33",
-      "MapId": "overworldmap31",
-      "NodeConnections": "overworldmap31node_top_8",
-      "Uid": "overworldmap31node_top_7a"
-    },
     "overworldmap31node_top_7b": {
       "ChestType": "chestboostedskin_maps23to33",
       "MapId": "overworldmap31",
       "NodeConnections": "overworldmap31node_top_8",
       "Uid": "overworldmap31node_top_7b"
-    },
-    "overworldmap31node_top_9a": {
-      "ChestType": "chestboostedtoken",
-      "MapId": "overworldmap31",
-      "NodeConnections": "overworldmap31node_top_boss",
-      "Uid": "overworldmap31node_top_9a"
     },
     "overworldmap31node_top_9b": {
       "ChestType": "chestboostedtoken",
@@ -3337,23 +3181,11 @@
       "NodeConnections": "",
       "Uid": "overworldmap31node_top_boss"
     },
-    "overworldmap32node_bot_4a": {
-      "ChestType": "chestboostedgold",
-      "MapId": "overworldmap32",
-      "NodeConnections": "overworldmap32node_bot_5",
-      "Uid": "overworldmap32node_bot_4a"
-    },
     "overworldmap32node_bot_4b": {
       "ChestType": "chestboostedgold",
       "MapId": "overworldmap32",
       "NodeConnections": "overworldmap32node_bot_5",
       "Uid": "overworldmap32node_bot_4b"
-    },
-    "overworldmap32node_bot_6a": {
-      "ChestType": "chestboostedskin_maps23to33",
-      "MapId": "overworldmap32",
-      "NodeConnections": "overworldmap32node_bot_boss,overworldmap32node_bot_extra",
-      "Uid": "overworldmap32node_bot_6a"
     },
     "overworldmap32node_bot_6b": {
       "ChestType": "chestboostedskin_maps23to33",
@@ -3373,23 +3205,11 @@
       "NodeConnections": "overworldmap32node_bot_boss",
       "Uid": "overworldmap32node_bot_extra"
     },
-    "overworldmap32node_top_7a": {
-      "ChestType": "chestboostedgold",
-      "MapId": "overworldmap32",
-      "NodeConnections": "overworldmap32node_top_8",
-      "Uid": "overworldmap32node_top_7a"
-    },
     "overworldmap32node_top_7b": {
       "ChestType": "chestboostedgold",
       "MapId": "overworldmap32",
       "NodeConnections": "overworldmap32node_top_8",
       "Uid": "overworldmap32node_top_7b"
-    },
-    "overworldmap32node_top_9a": {
-      "ChestType": "chestboostedskin_maps23to33",
-      "MapId": "overworldmap32",
-      "NodeConnections": "overworldmap32node_top_boss",
-      "Uid": "overworldmap32node_top_9a"
     },
     "overworldmap32node_top_9b": {
       "ChestType": "chestboostedskin_maps23to33",
@@ -3409,12 +3229,6 @@
       "NodeConnections": "overworldmap32node_top_5",
       "Uid": "overworldmap32node_top_extra"
     },
-    "overworldmap33node_bot_4a": {
-      "ChestType": "chestboostedtoken",
-      "MapId": "overworldmap33",
-      "NodeConnections": "overworldmap33node_bot_5",
-      "Uid": "overworldmap33node_bot_4a"
-    },
     "overworldmap33node_bot_4b": {
       "ChestType": "chestboostedtoken",
       "MapId": "overworldmap33",
@@ -3426,12 +3240,6 @@
       "MapId": "overworldmap33",
       "NodeConnections": "overworldmap33node_mid_2,overworldmap33node_bot_6a,overworldmap33node_bot_6b",
       "Uid": "overworldmap33node_bot_5"
-    },
-    "overworldmap33node_bot_6a": {
-      "ChestType": "chestboostedtoken",
-      "MapId": "overworldmap33",
-      "NodeConnections": "overworldmap33node_bot_boss,overworldmap33node_bot_extra",
-      "Uid": "overworldmap33node_bot_6a"
     },
     "overworldmap33node_bot_6b": {
       "ChestType": "chestboostedgold",
@@ -3445,23 +3253,11 @@
       "NodeConnections": "",
       "Uid": "overworldmap33node_bot_boss"
     },
-    "overworldmap33node_top_4a": {
-      "ChestType": "chestboostedtoken",
-      "MapId": "overworldmap33",
-      "NodeConnections": "overworldmap33node_top_5",
-      "Uid": "overworldmap33node_top_4a"
-    },
     "overworldmap33node_top_4b": {
       "ChestType": "chestboostedtoken",
       "MapId": "overworldmap33",
       "NodeConnections": "overworldmap33node_top_5",
       "Uid": "overworldmap33node_top_4b"
-    },
-    "overworldmap33node_top_7a": {
-      "ChestType": "chestboostedskin_maps23to33",
-      "MapId": "overworldmap33",
-      "NodeConnections": "overworldmap33node_top_8",
-      "Uid": "overworldmap33node_top_7a"
     },
     "overworldmap33node_top_7b": {
       "ChestType": "chestboostedskin_maps23to33",

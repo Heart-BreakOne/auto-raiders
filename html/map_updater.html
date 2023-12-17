@@ -18,26 +18,25 @@
         <li>Right-click and select Inspect Elements</li>
         <li>Go to the Network tab</li>
         <li>Search for "data.". It will look like this: data.xxxxxxx.json</li>
+        <li>Copy the link</li>
         <li>Download the file with the link you copied</li>
         <br>
-        <li>Copy the link and insert on the box below</li>
+        <li>After downloading the file, paste the link you copied on the box below</li>
         <li>Select the downloaded json file on the button bellow</li>
         <li>It will download a new formatted file called loyalty_chests.json.</li>
-        <li>Replace the old file with the new file at /extension_folder/icons/loyalty_chests.chest</li>
+        <li>Replace the old file with the new file at /extension_folder/icons/loyalty_chests.json</li>
         <li>Your map nodes are now up to date.</li>
     </ul>
     <form id="transformForm">
-        <label for="urlInput">Insert URL you copied here:</label>
+        <label for="urlInput">Insert the URL you copied here:</label>
         <input type="text" id="urlInput" name="urlInput" required>
         <br>
-        <label for="jsonFileInput">Select JSON file you downloaded here:</label>
+        <label for="jsonFileInput">Select the JSON file you downloaded here:</label>
         <input type="file" id="jsonFileInput" name="jsonFileInput" accept=".json" required>
         <br>
         <br>
-        <button type="button" onclick="transformJson()">Download formatted JSON</button>
+        <button type="button">Download formatted JSON</button>
     </form>
-    <pre id="transformedJson"></pre>
-
 </body>
 
 </html>

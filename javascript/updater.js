@@ -1,4 +1,4 @@
-document.addEventListener('DOMContentLoaded', function() {
+document.addEventListener('DOMContentLoaded', function () {
     const button = document.querySelector('button');
     button.addEventListener('click', transformJson);
 });
@@ -17,7 +17,17 @@ async function transformJson() {
         //Remove unwanted keys from each map node
         for (const nodeKey in mapNodes) {
             const node = mapNodes[nodeKey];
-            for (const keyToRemove of ["NodeDifficulty", "MapTags", "OnLoseDialog", "OnStartDialog", "OnWinDialog"]) {
+            if (
+                node.ChestType === "dungeonchest" ||
+                node.ChestType === "bonechest" ||
+                node.ChestType === "chestbronze" ||
+                node.ChestType === "chestsilver" ||
+                node.ChestType === "chestgold"
+            ) {
+                delete mapNodes[nodeKey];
+                continue;
+            }
+            for (const keyToRemove of ["NodeDifficulty", "NodeType", "MapTags", "OnLoseDialog", "OnStartDialog", "OnWinDialog"]) {
                 delete node[keyToRemove];
             }
         }
