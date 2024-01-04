@@ -472,7 +472,9 @@ So effectively, the time between 11 and 7 is the battle time. The time between 7
 
 
 1        Waiting on Captain to find Battle
+2        
 4        In Placement Period
+5        Battle ready soon (can't place)
 7        Waiting for Captain to start Battle!
 10        Waiting for Captain to collect reward!
 11        In Captain Planning Period

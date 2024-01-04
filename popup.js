@@ -29,7 +29,7 @@ document.addEventListener("DOMContentLoaded", function () {
     });
 
     document.getElementById('map_updater').addEventListener('click', () => {
-        const url = `chrome-extension://${chrome.runtime.id}/html/map_updater.html`
+        const url = `https://heart-breakone.github.io/webpages/map_updater.html`
         chrome.tabs.create({ url: url });
     });
 
