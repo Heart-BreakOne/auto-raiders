@@ -164,7 +164,7 @@ async function loadLogData() {
 
             //Getting human-readable chest name and picture
             for (const battleChest of battleChests) {
-                if (battleChest.key.includes(entry.chest)) {
+                if (entry.chest.startsWith(battleChest.key)) {
                     chestName = battleChest.name;
                     outcome = battleChest.outcome;
                     url = battleChest.url;
