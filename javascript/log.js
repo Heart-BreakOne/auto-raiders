@@ -23,7 +23,7 @@ const battleChests = [
     { key: "chestsilver", name: "Silver", outcome: "Victory", url: "https://d2k2g0zg1te1mr.cloudfront.net/mobilelite/chests/iconChestSilver.7f5d2511b08f.png" },
     { key: "chestgold", name: "Gold", outcome: "Victory", url: "https://d2k2g0zg1te1mr.cloudfront.net/mobilelite/chests/iconChestGold.7f5d2511b08f.png" },
     { key: "chestboostedgold", name: "Loyalty Gold", outcome: "Victory", url: "https://d2k2g0zg1te1mr.cloudfront.net/mobilelite/chests/iconChestGoldBoosted.c0e0bcd2b145.png" },
-    { key: "chestboostedskin_maps01to11", name: "Loyalty Skin", outcome: "Victory", url: "https://d2k2g0zg1te1mr.cloudfront.net/mobilelite/chests/iconChestSkinBoosted.c0e0bcd2b145.png " },
+    { key: "chestboostedskin", name: "Loyalty Skin", outcome: "Victory", url: "https://d2k2g0zg1te1mr.cloudfront.net/mobilelite/chests/iconChestSkinBoosted.c0e0bcd2b145.png " },
     { key: "chestboostedscroll", name: "Loyalty Scroll", outcome: "Victory", url: "https://d2k2g0zg1te1mr.cloudfront.net/mobilelite/chests/iconChestScrollBoosted.ff3678509435.png" },
     { key: "chestboostedtoken", name: "Loyalty Token", outcome: "Victory", url: "https://d2k2g0zg1te1mr.cloudfront.net/mobilelite/chests/iconChestTokenBoosted.c0e0bcd2b145.png" },
     { key: "chestboss", name: "Loyalty Boss", outcome: "Victory", url: "https://d2k2g0zg1te1mr.cloudfront.net/mobilelite/chests/iconChestBoss.7f5d2511b08f.png" },
@@ -32,7 +32,7 @@ const battleChests = [
 
 let chestCounter = [
     { key: "chestboostedgold", name: "Loyalty Gold", quantity: 0, max: 65 },
-    { key: "chestboostedskin_maps01to11", name: "Loyalty Skin", quantity: 0, max: 130 },
+    { key: "chestboostedskin", name: "Loyalty Skin", quantity: 0, max: 130 },
     { key: "chestboostedscroll", name: "Loyalty Scroll", quantity: 0, max: 65 },
     { key: "chestboostedtoken", name: "Loyalty Token", quantity: 0, max: 65 },
     { key: "chestboss", name: "Loyalty Boss", quantity: 0, max: 190 },
