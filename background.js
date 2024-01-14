@@ -307,6 +307,7 @@ async function getRaidChest(raidId) {
   }
 }
 
+/*
 async function fetchWithCors(url) {
   const response = await fetch(url);
   const blob = await response.blob();
@@ -323,6 +324,7 @@ chrome.runtime.onInstalled.addListener(function () {
 
     });
 });
+*/
 
 //Get every unit the user has
 async function fetchUnits() {
