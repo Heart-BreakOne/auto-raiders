@@ -1,6 +1,3 @@
-//Headless operation of the extension. Set your variables on the headless.js file.
-isHeadless = false;
-
 /* This file is the heart of the extension, it performs the auto playing, invokes functions to set and get values as well as
 functions to perform tasks such as replacing idle captains or buying scrolls
 */
@@ -117,13 +114,6 @@ let isStorage = true;
 // This is the start, it selects a captain placement as well as collect any rewards to proceed
 async function start() {
 
-  //Set storage for headless operation via puppeteer
-  if (isHeadless) {
-    if (isStorage) {
-      isStorage = false;
-      await setStorage();
-    }
-  }
   //Reload tracker
   if (firstReload === undefined) {
     firstReload = new Date();
