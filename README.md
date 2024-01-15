@@ -1,7 +1,8 @@
 # AutoRaiders
 ## Click emulator for SR - Google Chrome extension.
 
-[Download at the Chrome Web Store](https://chrome.google.com/webstore/detail/srhelper/flgahoglenmjoegheodkhahipokcilal)
+Download for Chrome: [![Static Badge](https://img.shields.io/badge/Chrome%20Store-CS?logo=googlechrome&logoColor=%23d62d20&color=%230057e7)](https://chrome.google.com/webstore/detail/srhelper/flgahoglenmjoegheodkhahipokcilal)<br>
+Join the server: [![Static Badge](https://img.shields.io/badge/Discord-Discord?style=for-the-badge&logo=discord&color=%23C5CAE9)](https://discord.gg/Egu7v8V8Dz)
 
 ### Special thanks to contributor:
 Heather1209
@@ -40,7 +41,7 @@ To be added: Battle log system so you know who to sell your honor to.<br>
 
 ### General patch notes:
 1.0.0 - Unit placement, scroll dealing, quest collection<br>
-2.0.0 - Basic system to get a marker and place a reworked.<br>
+2.0.0 - Basic system to get a marker and place an unit reworked.<br>
 3.0.0 - Storage access obtained, improved and more precise marker and unit placement system, captain flagging for no available units, idling slot and loyalty. Idle captain switcher, individual slot handling, customized user handling of potions, quests, scroll shop, game modes, unit type selection.<br>
 4.0.0 - Added agent spoofing for a seamless experience on desktop browsers.<br>
 
