@@ -37,8 +37,7 @@
             "open_map_handler.js",
             "masterlist_handler.js",
             "units_handler.js",
-            "battle_message_handler.js",
-            "headless.js"
+            "battle_message_handler.js"
          ],
          "matches": [
             "https://www.streamraiders.com/*"
