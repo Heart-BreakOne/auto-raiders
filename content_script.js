@@ -124,12 +124,16 @@ async function start() {
   let battleMessages = ""
   let status = "";
 
-  chrome.storage.local.get("newMap", function(result) {
-    newMap = result.newMap;
-    if (newMap) {
-      status = "UPDATE MAP!!! "
-    }
-  });
+  let wants_loyalty = await getRadioButton("loyalty");
+  if (wants_loyalty != 0) {
+    chrome.storage.local.get("newMap", function(result) {
+      newMap = result.newMap;
+      if (newMap) {
+        status = "UPDATE MAP!!! "
+      }
+    });
+  } 
+  
   if (timeContainer && (elapsedMinutes !== null || elapsedMinutes !== undefined)) {
     battleMessages = await displayMessage();
     timeContainer.innerHTML = `${status} Refresh: ${elapsedMinutes} mins ago. <span style="color: white; font-weight: bold">${battleMessages}</span>`;
