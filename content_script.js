@@ -126,14 +126,14 @@ async function start() {
 
   let wants_loyalty = await getRadioButton("loyalty");
   if (wants_loyalty != 0) {
-    chrome.storage.local.get("newMap", function(result) {
+    chrome.storage.local.get("newMap", function (result) {
       newMap = result.newMap;
       if (newMap) {
         status = "UPDATE MAP!!! "
       }
     });
-  } 
-  
+  }
+
   if (timeContainer && (elapsedMinutes !== null || elapsedMinutes !== undefined)) {
     battleMessages = await displayMessage();
     timeContainer.innerHTML = `${status} Refresh: ${elapsedMinutes} mins ago. <span style="color: white; font-weight: bold">${battleMessages}</span>`;
@@ -221,6 +221,16 @@ async function start() {
         if (!slotState) {
           continue
         }
+        try {
+          const batClock = captainSlot.querySelector(".capSlotTimer").lastChild.innerText.replace(':', '')
+          const batTime = parseInt(batClock, 10);
+          if (batTime > 2830) {
+            continue
+          }
+        } catch (error) {
+         console.log("")
+        }
+
         //Check if the captain is the one running a game mode
         const dungeonCaptainNameFromStorage = await retrieveFromStorage('dungeonCaptain');
         const clashCaptainNameFromStorage = await retrieveFromStorage('clashCaptain');
