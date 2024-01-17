@@ -191,6 +191,7 @@ async function start() {
 
   // Collects rewards if there are any
   const rewardButton = document.querySelector(".actionButton.actionButtonPrimary.rewardsButton");
+
   if (rewardButton) {
     rewardButton.click();
   }
@@ -217,17 +218,18 @@ async function start() {
         const btn = captainSlot.querySelector(".capSlotStatus .offlineButton");
         const buttonId = btn.getAttribute('id');
         const slotState = await getIdleState(buttonId);
-		if (slotState == 2) {
-			const close = captainSlot.querySelector(".capSlotClose");
-			//Remove captains with LEAVE AFTER
-			if (captainSlot.innerHTML.includes("LEAVE AFTER") && close) {
-				close.click();
-				await delay(1000);
-				captainSlot.querySelector(".offlineButton").innerText = "ENABLED";
-				continue
-			}
+        if (slotState == 3) {
+          const close = captainSlot.querySelector(".capSlotClose");
+          //Remove captains with LEAVE BEFORE
+          if (captainSlot.innerHTML.includes("LEAVE BEFORE") && close && !button.innerText.includes("PLACE UNIT")) {
+            close.click();
+            await delay(1000);
+            //captainSlot.querySelector(".offlineButton").innerText = "ENABLED";
+            setIdleState(buttonId, 1)
+            continue
+          }
         }
-        //If slot state is enabled, move to the next slot
+        //If slot state is disabled, move to the next slot
         if (slotState == 0) {
           continue
         }
@@ -238,7 +240,7 @@ async function start() {
             continue
           }
         } catch (error) {
-         console.log("")
+          console.log("")
         }
 
         //Check if the captain is the one running a game mode
@@ -384,15 +386,15 @@ async function openBattlefield() {
       goHome();
       return;
     }
-	const lgold = await retrieveFromStorage("lgoldSwitch")
-	const lskin = await retrieveFromStorage("lskinSwitch")
-	const lscroll = await retrieveFromStorage("lscrollSwitch")
-	const ltoken = await retrieveFromStorage("ltokenSwitch")
-	const lboss = await retrieveFromStorage("lbossSwitch")
-	const lsuperboss = await retrieveFromStorage("lsuperbossSwitch")
+    const lgold = await retrieveFromStorage("lgoldSwitch")
+    const lskin = await retrieveFromStorage("lskinSwitch")
+    const lscroll = await retrieveFromStorage("lscrollSwitch")
+    const ltoken = await retrieveFromStorage("ltokenSwitch")
+    const lboss = await retrieveFromStorage("lbossSwitch")
+    const lsuperboss = await retrieveFromStorage("lsuperbossSwitch")
 
     if ((!lgold && chest.includes("Loyalty Gold")) || (!lskin && chest.includes("Loyalty Skin")) || (!lscroll && chest.includes("Loyalty Scroll")) || (!ltoken && chest.includes("Loyalty Token")) || (!lboss && chest.includes("Loyalty Boss")) || (!lsuperboss && chest.includes("Loyalty Super"))) {
-    //if (chest.includes("Loyalty")) {
+      //if (chest.includes("Loyalty")) {
       //Flag the captain loyalty since the current map is to be skipped
       await flagCaptain('captainLoyalty');
       //Close the chest info popup and return to main menu
@@ -968,12 +970,12 @@ const obsv = new MutationObserver(function (mutations) {
         if (offstate == 1) {
           btnOff.textContent = "ENABLED";
           btnOff.style.backgroundColor = "#5fa695";
-		} else if (offstate == 2) {
+        } else if (offstate == 2) {
           btnOff.textContent = "LEAVE AFTER";
           btnOff.style.backgroundColor = "green";
-		} else if (offstate == 3) {
+        } else if (offstate == 3) {
           btnOff.textContent = "LEAVE BEFORE";
-          btnOff.style.backgroundColor = "yellow";
+          btnOff.style.backgroundColor = "purple";
         } else {
           btnOff.textContent = "DISABLED";
           btnOff.style.backgroundColor = "red";
@@ -1025,7 +1027,29 @@ async function collectChests() {
         };
       }
 
+      const capSlot = button.parentElement.parentElement
+      const stBtn = capSlot.querySelector(".offlineButton").id
+      const slotState = await getIdleState(stBtn);
+      const cNm = capSlot.querySelector(".capSlotName").innerText
       button.click();
+      await delay(15000);
+
+
+      if (slotState == 2) {
+        const allCapSlots = document.querySelectorAll(".capSlot")
+        for (const i in allCapSlots) {
+          const capSlot = allCapSlots[i]
+          if (capSlot.innerText.includes(cNm)) {
+            const close = capSlot.querySelector(".capSlotClose")
+            if (close) {
+              close.click()
+            }
+            break
+          }
+        }
+        setIdleState(stBtn, 0)
+      }
+
       await delay(1000);
       await setLogResults(battleResult, captainName, chestStringAlt);
       break;

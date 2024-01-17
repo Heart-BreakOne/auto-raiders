@@ -24,6 +24,7 @@ async function switchToMasterList() {
             continue;
         }
 		
+        /* Moving this task to the content script slot managing.
         const close = slot.querySelector(".capSlotClose");
 		//Remove captains with LEAVE
 		if (slot.innerHTML.includes("LEAVE BEFORE") && close) {
@@ -39,6 +40,7 @@ async function switchToMasterList() {
 			slot.querySelector(".offlineButton").innerText = "ENABLED";
             return false;
         }
+        */
 		//Remove captains with passwords
         if (slot.innerHTML.includes("ENTER_CODE")) {
             close.click();

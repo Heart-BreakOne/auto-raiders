@@ -103,7 +103,7 @@ document.addEventListener("click", function (event) {
             //Leave button
             button.innerText = "LEAVE BEFORE";
             id = button.id;
-            button.style.backgroundColor = "yellow";
+            button.style.backgroundColor = "purple";
             setIdleState(id, 3);
 		} else {
             //Enable button
