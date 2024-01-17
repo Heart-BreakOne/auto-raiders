@@ -204,8 +204,12 @@ async function start() {
           if (confBtn.innerText.includes("CONFIRM")) {
             confBtn.click()
           }
-
-          setIdleState(btn, 1)
+          const beforeSwitch = await retrieveFromStorage('beforeSwitch');
+          if (beforeSwitch) {
+            setIdleState(btn, 1)
+          } else {
+            setIdleState(btn, 0)
+          }
           continue
         }
       }
@@ -1054,7 +1058,12 @@ async function collectChests() {
             break
           }
         }
-        setIdleState(stBtn, 0)
+        const afterSwitch = await retrieveFromStorage('afterSwitch');
+          if (afterSwitch) {
+            setIdleState(btn, 1)
+          } else {
+            setIdleState(btn, 0)
+          }
       }
 
       await delay(1000);

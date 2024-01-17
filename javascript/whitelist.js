@@ -36,6 +36,8 @@ const keysToExport = [
     "blacklist",
     "potionlist",
     "unitList",
+    "afterSwitch",
+    "beforeSwitch"
 ];
 
 //Event listener for when the page loads

@@ -27,6 +27,8 @@ document.addEventListener("DOMContentLoaded", function () {
     initializeSwitch("idleMasterSwitch");
     initializeSwitch("skipIdleMasterSwitch");
     initializeSwitch("priorityListSwitch");
+    initializeSwitch("beforeSwitch");
+    initializeSwitch("afterSwitch");
     initializeReloader("reloaderInput");
 
 });
