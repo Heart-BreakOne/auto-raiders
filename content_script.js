@@ -199,7 +199,12 @@ async function start() {
         //Remove captains with LEAVE BEFORE
         if (close && (st.innerText.includes("Battle in progress") || st.innerText.includes("start battle"))) {
           close.click();
-          await delay(1000);
+          await delay(2000);
+          const confBtn = document.querySelector(".actionButton.actionButtonPrimary")
+          if (confBtn.innerText.includes("CONFIRM")) {
+            confBtn.click()
+          }
+
           setIdleState(btn, 1)
           continue
         }
