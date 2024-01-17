@@ -3,7 +3,8 @@ document.addEventListener("DOMContentLoaded", function () {
 
     document.getElementById("instructions_button").addEventListener('click', function () {
         // Open the options page
-        chrome.tabs.create({ url: "/html/how_to_play.html" });
+        const url = `https://mobius-one.github.io/webpages/how_to_play.html`
+        chrome.tabs.create({ url: url });
     });
 
     //Event listener for a button to open the options page of the extension (log.html)
