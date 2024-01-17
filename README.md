@@ -19,12 +19,13 @@ After installation, just open the game website and stay at the main menu.
 ⚙️ Set your preferences on the extension's tab.<br>
 🛑 Switch idling captains (allows playing with offline captains) and fills open slots with your loyalty and favorite captains<br>
 ⏸️ Pause individual slots to manually manage them<br>
-💎 Skip loyalty chests if your loyalty is not gold<br>
+💎 Skip loyalty chests if your loyalty is not diamond<br>
 💰 Collects rewards, quests, battlepass, free daily rewards.<br>
 ☠️ Savages defeat chests.<br>
 📜 Buy scrolls at your own discretion<br>
 🗡️🛡️ Set what unit rarity types you would like to use<br>
-☝️ Set how many units to place on dungeons and PVP<br>
+🎯 Set priority for specific units you would like to use and not use<br>
+☝️ Set how many units to place<br>
 ⚔️ Opens battlefield.<br>
 ⚗️ Use potions at you're own discretion<br>
 ✌️ Seeks a valid marker: vibe markers, set markers and maps without markers.<br>
@@ -32,8 +33,6 @@ After installation, just open the game website and stay at the main menu.
 🚫 If the marker is invalid, outside the ally area or if there's another ally unit on the marker, it will seek another valid marker.<br>
 🛠️ Handles situations in which the loading screen or the game freeze, any warnings or errors pop-ups appear or the battle starts while trying to place a unit.<br>
 🟥🟪🟨 Visual indicators for when the captain switches modes to campaign, for when there aren't any units available to be placed and for when a loyalty chest battle is being skipped<br><br>
-
-To be added: Battle log system so you know who to sell your honor to.<br>
 
 ## Customize to your liking
 <p align="center">
