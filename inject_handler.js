@@ -92,13 +92,25 @@ document.addEventListener("click", function (event) {
             button.innerText = "DISABLED";
             id = button.id;
             button.style.backgroundColor = "red";
-            setIdleState(id, false);
-        } else {
+            setIdleState(id, 0);
+       } else if (button.innerText === "DISABLED") {
+            //Leave button
+            button.innerText = "LEAVE AFTER";
+            id = button.id;
+            button.style.backgroundColor = "green";
+            setIdleState(id, 2);
+		} else if (button.innerText === "LEAVE AFTER") {
+            //Leave button
+            button.innerText = "LEAVE BEFORE";
+            id = button.id;
+            button.style.backgroundColor = "yellow";
+            setIdleState(id, 3);
+		} else {
             //Enable button
             button.innerText = "ENABLED";
             button.style.backgroundColor = "#5fa695";
             id = button.id;
-            setIdleState(id, true);
+            setIdleState(id, 1);
         }
     }
 

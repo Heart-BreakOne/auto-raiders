@@ -90,7 +90,7 @@ async function setLogCaptain(logId, logCapName, logMode, currentTime, colorCode)
             }
 
             //If there's more than 500 entries, delete oldest.
-            if (loggedData.length > 1000) {
+            if (loggedData.length > 10000) {
                 loggedData.shift();
             }
 

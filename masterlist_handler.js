@@ -23,8 +23,23 @@ async function switchToMasterList() {
         if (slot.innerHTML.includes("DISABLED")) {
             continue;
         }
-        //Remove captains with passwords
+		
         const close = slot.querySelector(".capSlotClose");
+		//Remove captains with LEAVE
+		if (slot.innerHTML.includes("LEAVE BEFORE") && close) {
+            close.click();
+			await delay(1000);
+			const closeConfirm = document.querySelectorAll(".actionButton");
+			for (let i = 0; i <= 2; i++) {
+				let closeConfirmItem = closeConfirm[i];
+				if (closeConfirmItem.innerText == "CONFIRM") {
+					closeConfirmItem.click();
+				}
+			}
+			slot.querySelector(".offlineButton").innerText = "ENABLED";
+            return false;
+        }
+		//Remove captains with passwords
         if (slot.innerHTML.includes("ENTER_CODE")) {
             close.click();
             return false;
