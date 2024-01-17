@@ -307,6 +307,14 @@ async function start() {
           break;
         }
       } else {
+        var captainSlot = button.closest('.capSlot');
+          if (captainSlot.innerHTML.includes("LEAVE BEFORE") && close && !button.innerText.includes("PLACE UNIT")) {
+            close.click();
+            await delay(1000);
+            //captainSlot.querySelector(".offlineButton").innerText = "ENABLED";
+            setIdleState(buttonId, 1)
+            continue
+          }
         continue;
       }
     }

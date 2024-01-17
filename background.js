@@ -294,8 +294,8 @@ async function getRaidChest(raidId) {
           await new Promise((resolve) => {
             chrome.storage.local.set({ "loyaltyChests": new_chests }, resolve);
           });
-          storage_url = new_chests.loyaltyChests.url;
-          get_chests = new_chests.loyaltyChests.MapNodes;
+          storage_url = new_chests.url;
+          get_chests = new_chests.MapNodes;
         }
 
         resolve(get_chests);
