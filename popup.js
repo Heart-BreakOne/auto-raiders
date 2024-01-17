@@ -29,8 +29,9 @@ document.addEventListener("DOMContentLoaded", function () {
         chrome.tabs.create({ url: url });
     });
 
-    document.getElementById('map_updater').addEventListener('click', () => {
-        const url = `https://mobius-one.github.io/webpages/map_updater.html`
+    document.getElementById("evaluator_button").addEventListener('click', function () {
+        // Open the options page
+        const url = `chrome-extension://${chrome.runtime.id}/html/map_evaluator.html`
         chrome.tabs.create({ url: url });
     });
 

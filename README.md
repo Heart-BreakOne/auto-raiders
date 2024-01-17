@@ -1,6 +1,7 @@
 # AutoRaiders
 ## Click emulator for SR - Google Chrome extension.
 
+Disclaimer: It takes a few days for Google to approve a new extension version so sideloading from this repo will always guarantee the latest version.<br>
 Download for Chrome: [![Static Badge](https://img.shields.io/badge/Chrome%20Store-CS?logo=googlechrome&logoColor=%23d62d20&color=%230057e7)](https://chrome.google.com/webstore/detail/srhelper/flgahoglenmjoegheodkhahipokcilal)<br>
 Join the server: [![Static Badge](https://img.shields.io/badge/Discord-Discord?style=for-the-badge&logo=discord&color=%23C5CAE9)](https://discord.gg/Egu7v8V8Dz)
 

@@ -122,21 +122,10 @@ async function start() {
   const elapsedMinutes = Math.floor((new Date() - firstReload.getTime()) / (1000 * 60));
   const timeContainer = document.querySelector(".elapsedTimeContainer");
   let battleMessages = ""
-  let status = "";
-
-  let wants_loyalty = await getRadioButton("loyalty");
-  if (wants_loyalty != 0) {
-    chrome.storage.local.get("newMap", function (result) {
-      newMap = result.newMap;
-      if (newMap) {
-        status = "UPDATE MAP!!! "
-      }
-    });
-  }
 
   if (timeContainer && (elapsedMinutes !== null || elapsedMinutes !== undefined)) {
     battleMessages = await displayMessage();
-    timeContainer.innerHTML = `${status} Refresh: ${elapsedMinutes} mins ago. <span style="color: white; font-weight: bold">${battleMessages}</span>`;
+    timeContainer.innerHTML = `Refresh: ${elapsedMinutes} mins ago. <span style="color: white; font-weight: bold">${battleMessages}</span>`;
   }
 
   if (reload == 0) {

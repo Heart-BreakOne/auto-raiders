@@ -265,30 +265,47 @@ async function getRaidChest(raidId) {
       throw new Error('Network response was not ok');
     }
 
-    const chestJsonUrl = chrome.runtime.getURL('icons/loyalty_chests.json');
-    const chestJson = await fetch(chestJsonUrl);
-    if (!chestJson.ok) {
-      throw new Error('Network response was not ok');
-    }
-
     const currentRaid = await response.json();
-  
-    const chests = await chestJson.json();
     const raid_url = currentRaid.info.dataPath
-    const storage_url = chests.url
-    let newMap
-    if (raid_url !== storage_url) {
-      newMap = true;
-    } else {
-      newMap = false;
-    }
-    chrome.storage.local.set({ "newMap": newMap });
+    let chests = await new Promise((resolve) => {
+      chrome.storage.local.get("loyaltyChests", async function (lChests) {
+        let update = false;
+        let storage_url;
+        let new_chests;
+        let get_chests
+        if (!lChests.loyaltyChests) {
+          new_chests = await fetchLoyaltyChests(raid_url);
+          await new Promise((resolve) => {
+            chrome.storage.local.set({ "loyaltyChests": new_chests }, resolve);
+          });
+          update = true;
+        }
 
+        if (update) {
+          storage_url = new_chests.url;
+          get_chests = new_chests.MapNodes;
+        } else {
+          storage_url = lChests.url;
+          get_chests = lChests.MapNodes;
+        }
+
+        if (raid_url !== storage_url) {
+          new_chests = await fetchLoyaltyChests(raid_url);
+          await new Promise((resolve) => {
+            chrome.storage.local.set({ "loyaltyChests": new_chests }, resolve);
+          });
+          storage_url = new_chests.loyaltyChests.url;
+          get_chests = new_chests.loyaltyChests.MapNodes;
+        }
+
+        resolve(get_chests);
+      });
+    });
 
     const nodeKeys = [];
 
-    for (const key in chests.MapNodes) {
-      if (chests.MapNodes.hasOwnProperty(key)) {
+    for (const key in chests) {
+      if (chests.hasOwnProperty(key)) {
         nodeKeys.push(key);
       }
     }
@@ -306,25 +323,6 @@ async function getRaidChest(raidId) {
     return false;
   }
 }
-
-/*
-async function fetchWithCors(url) {
-  const response = await fetch(url);
-  const blob = await response.blob();
-  return new Response(blob, { headers: { 'Access-Control-Allow-Origin': '*' } });
-}
-
-chrome.runtime.onInstalled.addListener(function () {
-  // Use fetchWithCors to make the request with CORS headers
-  fetchWithCors('https://heart-breakone.github.io/webpages/loyalty_chests.json')
-    .then(response => response.json())
-    .then(data => {
-    })
-    .catch(error => {
-
-    });
-});
-*/
 
 //Get every unit the user has
 async function fetchUnits() {
@@ -578,7 +576,7 @@ async function logBattleStates() {
   //If new entry has placementTime and previous is set as resolved, calculate idleTime.
   //console.log(captainsArray)
 
-  chrome.storage.local.remove("battleData", function () {});
+  chrome.storage.local.remove("battleData", function () { });
 
   chrome.storage.local.get(['battleData'], function (result) {
     let battleData = result.battleData || [];
@@ -598,3 +596,38 @@ async function logBattleStates() {
   });
 }
 
+
+async function fetchLoyaltyChests(raid_url) {
+  try {
+    const response = await fetch(raid_url);
+    const blob = await response.blob();
+    const corsResponse = new Response(blob, { headers: { 'Access-Control-Allow-Origin': '*' } });
+
+    const data = await corsResponse.json();
+    const mapNodes = data["sheets"]["MapNodes"]
+    for (const nodeKey in mapNodes) {
+      const node = mapNodes[nodeKey];
+      if (
+        node.ChestType === "dungeonchest" ||
+        node.ChestType === "bonechest" ||
+        node.ChestType === "chestbronze" ||
+        node.ChestType === "chestsilver" ||
+        node.ChestType === "chestgold"
+      ) {
+        delete mapNodes[nodeKey];
+        continue;
+      }
+      for (const keyToRemove of ["NodeDifficulty", "NodeType", "MapTags", "OnLoseDialog", "OnStartDialog", "OnWinDialog"]) {
+        delete node[keyToRemove];
+      }
+    }
+    const transformedJson = {
+      url: raid_url,
+      MapNodes: mapNodes
+    };
+
+    return transformedJson
+  } catch (error) {
+    console.log("There was an error fetching the map nodes")
+  }
+}
