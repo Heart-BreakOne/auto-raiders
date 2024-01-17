@@ -186,6 +186,29 @@ async function start() {
   }
 
   captainNameFromDOM = "";
+
+  //Leave before checks
+  const capSlots = document.querySelectorAll(".capSlot")
+  for (i in capSlots) {
+    try {
+      const st = capSlots[i]
+      const btn = st.querySelector(".offlineButton").id
+      const slotState = await getIdleState(btn);
+      if (slotState == 3) {
+        const close = st.querySelector(".capSlotClose");
+        //Remove captains with LEAVE BEFORE
+        if (close && (st.innerText.includes("Battle in progress") || st.innerText.includes("start battle"))) {
+          close.click();
+          await delay(1000);
+          setIdleState(btn, 1)
+          continue
+        }
+      }
+    } catch (error) {
+      continue
+    }
+  }
+
   //Initialized a node list with placeable buttons
   const placeUnitButtons = document.querySelectorAll(".actionButton.actionButtonPrimary.capSlotButton.capSlotButtonAction");
   let placeUnit = null;
@@ -207,17 +230,7 @@ async function start() {
         const btn = captainSlot.querySelector(".capSlotStatus .offlineButton");
         const buttonId = btn.getAttribute('id');
         const slotState = await getIdleState(buttonId);
-        if (slotState == 3) {
-          const close = captainSlot.querySelector(".capSlotClose");
-          //Remove captains with LEAVE BEFORE
-          if (captainSlot.innerHTML.includes("LEAVE BEFORE") && close && !button.innerText.includes("PLACE UNIT")) {
-            close.click();
-            await delay(1000);
-            //captainSlot.querySelector(".offlineButton").innerText = "ENABLED";
-            setIdleState(buttonId, 1)
-            continue
-          }
-        }
+
         //If slot state is disabled, move to the next slot
         if (slotState == 0) {
           continue
@@ -307,14 +320,6 @@ async function start() {
           break;
         }
       } else {
-        var captainSlot = button.closest('.capSlot');
-          if (captainSlot.innerHTML.includes("LEAVE BEFORE") && close && !button.innerText.includes("PLACE UNIT")) {
-            close.click();
-            await delay(1000);
-            //captainSlot.querySelector(".offlineButton").innerText = "ENABLED";
-            setIdleState(buttonId, 1)
-            continue
-          }
         continue;
       }
     }
