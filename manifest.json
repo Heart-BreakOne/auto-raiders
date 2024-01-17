@@ -1,0 +1,67 @@
+{
+   "manifest_version": 3,
+   "name": "SRHelper",
+   "version": "4.0.35",
+   "description": "Stream Raiders Helper",
+   "action": {
+      "default_popup": "popup.html",
+      "default_icon": {
+         "48": "icons/icon-128.png",
+         "128": "icons/icon-128.png"
+      }
+   },
+   "permissions": [
+      "storage",
+      "declarativeNetRequestWithHostAccess",
+      "cookies"
+   ],
+   "options_ui": {
+      "page": "popup.html"
+   },
+   "content_scripts": [
+      {
+         "js": [
+            "content_script.js",
+            "collector.js",
+            "game_mode_manager.js",
+            "storage_manager.js",
+            "state_handler.js",
+            "switch_handler.js",
+            "captain_handler.js",
+            "inject_handler.js",
+            "idle_handler.js",
+            "rotation_handler.js",
+            "log_handler.js",
+            "iframe.js",
+            "marker_handler.js",
+            "open_map_handler.js",
+            "masterlist_handler.js",
+            "units_handler.js",
+            "battle_message_handler.js"
+         ],
+         "matches": [
+            "https://www.streamraiders.com/*"
+         ]
+      }
+   ],
+   "web_accessible_resources": [
+      {
+         "resources": [
+            "iframe.html"
+         ],
+         "matches": [
+            "https://www.streamraiders.com/*"
+         ]
+      }
+   ],
+   "host_permissions": [
+      "https://www.streamraiders.com/*"
+   ],
+   "background": {
+      "service_worker": "background.js"
+   },
+   "icons": {
+      "128": "icons/icon-128.png",
+      "48": "icons/icon-48.png"
+   }
+}

@@ -1,0 +1,94 @@
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="iframe.js"></script>
+    <link rel="stylesheet" type="text/css" href="/styles/iframe_styles.css">
+</head>
+<main class="main"></main>
+
+<body>
+    <h1 style="font-size: xx-large;">Set your preferences here</h1>
+    <table>
+        <tbody>
+            <tr>
+                <td colspan="1"></td>
+            </tr>
+            <tr>
+                <td><label for="reloaderInput">Reloader&nbsp;&nbsp;&nbsp;<input type="number"
+                            id="reloaderInput"></label></td>
+                <td><button id="reloaderButton" style="width: fit-content; height: fit-content; text-align: center; background-color: #5fa695;">Set</button></td>
+            </tr>
+            <tr>
+                <td colspan="3"></td>
+            </tr>
+            <tr>
+                <td><label for="offlineSwitch"><input type="checkbox" id="offlineSwitch"> Switch idle captain</label>
+                </td>
+                <td><label for="skipSwitch"><input type="checkbox" id="skipSwitch"> Leave blank if no loyalty</label>
+                </td>
+                <td></td>
+            </tr>
+            <tr>
+                <td><label for="scrollSwitch"><input type="checkbox" id="scrollSwitch"> Buy scrolls</label></td>
+                <td><label for="extraSwitch"><input type="checkbox" id="extraSwitch"> Buy extra $100 scrolls</label>
+                </td>
+                <td><label for="questSwitch"><input type="checkbox" id="questSwitch"> Collect quests</label></td>
+            </tr>
+            <tr>
+                <td><label for="dailySwitch"><input type="checkbox" id="dailySwitch"> Collect daily reward</label></td>
+                <td><label for="battlepassSwitch"><input type="checkbox" id="battlepassSwitch"> Collect
+                        battlepass</label></td>
+                <td><label for="equipSwitch"><input type="checkbox" id="equipSwitch"> Equip captain skins</label></td>
+            </tr>
+            <tr>
+                <td><label for="priorityListSwitch"><input type="checkbox" id="priorityListSwitch">Enable priority
+                        list</label>
+                <td><label for="commonSwitch"><input type="checkbox" id="commonSwitch"> Use common units</label></td>
+                <td><label for="uncommonSwitch"><input type="checkbox" id="uncommonSwitch"> Use uncommon units</label>
+                </td>
+            </tr>
+            <tr>
+                <td><label for="rareSwitch"><input type="checkbox" id="rareSwitch"> Use rare units</label></td>
+                <td><label for="legendarySwitch"><input type="checkbox" id="legendarySwitch"> Use legendary
+                        units</label></td>
+                <td><label for="campaignSwitch"><input type="checkbox" id="campaignSwitch"> Unlimited Campaign</label>
+                </td>
+
+            </tr>
+            <tr>
+                <td><label for="duelSwitch"><input type="checkbox" id="duelSwitch"> Unlimited duels</label></td>
+                <td><label for="clashSwitch"><input type="checkbox" id="clashSwitch"> Unlimited clashes</label></td>
+                <td><label for="dungeonSwitch"><input type="checkbox" id="dungeonSwitch"> Unlimited dungeons</label>
+                </td>
+            </tr>
+            <tr>
+                <td><label for="liveMasterSwitch"><input type="checkbox" id="liveMasterSwitch"> Force live switch to
+                        masterlist</label></td>
+                <td><label for="priorityMasterSwitch"><input type="checkbox" id="priorityMasterSwitch"> Force live
+                        switch to priority masterlist</label></td>
+                <td><label for="idleMasterSwitch"><input type="checkbox" id="idleMasterSwitch"> Prioritize masterlist on
+                        idle switch</label></td>
+                <td><label for=skipIdleMasterSwitch"><input type="checkbox" id="skipIdleMasterSwitch"> Skip idle switch
+                        if no masterlist is online</label></td>
+            </tr>
+            <tr>
+                <td><label><input type="radio" name="loyalty" value="0"> Don't preserve loyalty</label></td>
+                <td><label><input type="radio" name="loyalty" value="1"> Preserve if not bronze</label></td>
+                <td><label><input type="radio" name="loyalty" value="2"> Preserve if not silver</label></td>
+                <td><label><input type="radio" name="loyalty" value="3"> Preserve if not gold</label></td>
+                <td><label><input type="radio" name="loyalty" value="4"> Preserve if not diamond</label></td>
+            </tr>
+            <tr>
+                <td><label for="favoriteSwitch"><input type="checkbox" id="favoriteSwitch"> Potions allowlist
+                        only</label></td>
+                <td><label><input type="radio" name="potion" value="0"> No potions</label></td>
+                <td><label><input type="radio" name="potion" value="1"> Potions at 45</label></td>
+                <td><label><input type="radio" name="potion" value="2"> Potions at 100</label></td>
+            </tr>
+        </tbody>
+    </table>
+</body>
+
+</html>

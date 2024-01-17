@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Map Node updater</title>
+    <script src="/javascript/updater.js"></script>
+</head>
+
+<body>
+    <h1>Map Node Updater</h1>
+    <h2>To download the new map node follow the steps below.</h2>
+    <h2>The extension can't manipulate local user files outside the Chrome storage, so you have to do it manually.</h2>
+    <h2>Even tho the map nodes file belongs to the extension, it is still outside the Chrome storage.</h2>
+    <ul>
+        <li>Load Stream Raiders</li>
+        <li>Right-click and select Inspect Elements</li>
+        <li>Go to the Network tab</li>
+        <li>Search for "data.". It will look like this: data.xxxxxxx.json</li>
+        <li>Copy the link</li>
+        <li>Download the file with the link you copied</li>
+        <br>
+        <li>After downloading the file, paste the link you copied on the box below</li>
+        <li>Select the downloaded json file on the button bellow</li>
+        <li>It will download a new formatted file called loyalty_chests.json.</li>
+        <li>Replace the old file with the new file at /extension_folder/icons/loyalty_chests.json</li>
+        <li>Your map nodes are now up to date.</li>
+    </ul>
+    <form id="transformForm">
+        <label for="urlInput">Insert the URL you copied here:</label>
+        <input type="text" id="urlInput" name="urlInput" required>
+        <br>
+        <label for="jsonFileInput">Select the JSON file you downloaded here:</label>
+        <input type="file" id="jsonFileInput" name="jsonFileInput" accept=".json" required>
+        <br>
+        <br>
+        <button type="button">Download formatted JSON</button>
+    </form>
+</body>
+
+</html>
