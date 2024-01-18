@@ -1053,17 +1053,18 @@ async function collectChests() {
           if (capSlot.innerText.includes(cNm)) {
             const close = capSlot.querySelector(".capSlotClose")
             if (close) {
+              const afterSwitch = await retrieveFromStorage('afterSwitch');
+              if (afterSwitch) {
+                setIdleState(stBtn, 1)
+              } else {
+                setIdleState(stBtn, 0)
+              }
               close.click()
             }
             break
           }
         }
-        const afterSwitch = await retrieveFromStorage('afterSwitch');
-          if (afterSwitch) {
-            setIdleState(btn, 1)
-          } else {
-            setIdleState(btn, 0)
-          }
+
       }
 
       await delay(1000);
