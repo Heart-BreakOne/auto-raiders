@@ -20,6 +20,7 @@ document.addEventListener("DOMContentLoaded", function () {
     initializeSwitch("offlineSwitch");
     initializeSwitch("skipSwitch");
     initializeSwitch("dailySwitch");
+    initializeSwitch("eventChestSwitch");
     initializeSwitch("equipSwitch");
     initializeSwitch("favoriteSwitch");
     initializeSwitch("liveMasterSwitch");

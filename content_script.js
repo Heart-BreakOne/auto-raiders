@@ -349,6 +349,7 @@ async function start() {
 }
 
 async function performCollection() {
+  await collectEventChests();
   await collectQuests();
   await buyScrolls();
   await collectFreeDaily();

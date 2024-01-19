@@ -85,6 +85,51 @@ async function collectFreeDaily() {
     }
 }
 
+//Function to collect the event chests given during events
+async function collectEventChests() {
+    //Checks if the user wants the event chests to be collected, returns if not.
+    let eventChestSwitch = await getSwitchState("eventChestSwitch");
+    if (!eventChestSwitch) {
+        return;
+    }
+	//Get event currency strings so the string can be trimmed and converted to int for validation
+    let eventCurrency;
+    //Attempts to get event currency quantity
+    try {
+      eventCurrency = document.querySelector("img[alt='Laurel']").closest(".quantityItem");
+    } catch (error) {
+      goHome();
+      return;
+    }
+    let eventCurrencyQuantity = eventCurrency.querySelector(".quantityText").textContent;
+    number = parseInt(eventCurrencyQuantity.substring(0, 3));
+	if (number >= 100) {
+		//Initializes node list with nav bar items and open the store.
+		navItems = document.querySelectorAll(".mainNavItemText");
+		navItems.forEach((navItem) => {
+			if (navItem.innerText === "Store") {
+				navItem.click();
+			}
+		});
+		await collectDelay(4000);
+		//Initiliazes the freebie button and if it exists and is the claim button, clicks it and goes back to the main menu.
+		const storeButtons = document.querySelectorAll(".actionButton.actionButtonBones.storeCardButton.storeCardButtonBuy");
+		storeButtons.forEach((storeButton) => {
+			if (storeButton.innerText === "25") {
+				eventChestButton = storeButton;
+			}
+		});
+		if (eventChestButton && eventChestButton.innerText.includes("25")) {
+			for (let i = 0; i < 4; i++) {
+				eventChestButton.click();
+				//eventChestButton.submit();
+				await collectDelay(1000);
+			}
+			returnToMainScreen();
+		}
+	}
+}		
+
 //Function to collect quests
 async function collectQuests() {
     //Checks if user wants to collect quests, returns if not.
