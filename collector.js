@@ -103,7 +103,7 @@ async function collectEventChests() {
     }
     let eventCurrencyQuantity = eventCurrency.querySelector(".quantityText").textContent;
     number = parseInt(eventCurrencyQuantity.substring(0, 3));
-	if (number >= 100) {
+	if (number >= 500) {
 		//Initializes node list with nav bar items and open the store.
 		navItems = document.querySelectorAll(".mainNavItemText");
 		navItems.forEach((navItem) => {
@@ -120,7 +120,7 @@ async function collectEventChests() {
 			}
 		});
 		if (eventChestButton && eventChestButton.innerText.includes("25")) {
-			for (let i = 0; i < 4; i++) {
+			for (let i = 0; i < 20; i++) {
 				eventChestButton.click();
 				//eventChestButton.submit();
 				await collectDelay(1000);
