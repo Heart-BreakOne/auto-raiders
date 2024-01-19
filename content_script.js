@@ -151,6 +151,7 @@ async function start() {
   let storeButton;
   let battleButton;
   if (navItems.length === 0 || navItems === undefined) {
+    isContentRunning = false;
     return;
   } else {
     //If navItem exists, open main menu
@@ -352,6 +353,7 @@ async function start() {
 
   // Change captains using a different device without the script freezing trying to select a captain.
   closeAll();
+  isContentRunning = false;
 }
 
 async function performCollection() {
