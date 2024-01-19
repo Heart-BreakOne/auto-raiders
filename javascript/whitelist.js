@@ -27,6 +27,7 @@ const keysToExport = [
     "favoriteSwitch",
     "liveMasterSwitch",
     "priorityMasterSwitch",
+    "eventChestSwitch",
     "idleMasterSwitch",
     "skipIdleMasterSwitch",
     "priorityListSwitch",

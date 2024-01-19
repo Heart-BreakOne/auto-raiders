@@ -20,6 +20,7 @@ let firstReload;
 let captainNameFromDOM;
 let arrayOfSkinUnits;
 let reload = 0;
+let isContentRunning = false;
 const blue = 'rgb(185, 242, 255)';
 const red = 'rgb(255, 204, 203)';
 const purple = 'rgb(203, 195, 227)';
@@ -142,6 +143,10 @@ async function start() {
   }
 
   //Initialized nav items, if they don't exist it means the extension is already executing.
+  if (isContentRunning) {
+    return
+  }
+  isContentRunning = true;
   const navItems = document.querySelectorAll('.mainNavItemText');
   let storeButton;
   let battleButton;
@@ -217,6 +222,7 @@ async function start() {
       continue
     }
   }
+  isContentRunning = false;
 
   //Initialized a node list with placeable buttons
   const placeUnitButtons = document.querySelectorAll(".actionButton.actionButtonPrimary.capSlotButton.capSlotButtonAction");
