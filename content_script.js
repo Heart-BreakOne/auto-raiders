@@ -25,7 +25,7 @@ const red = 'rgb(255, 204, 203)';
 const purple = 'rgb(203, 195, 227)';
 const gameBlue = 'rgb(42, 96, 132)';
 const cancelButtonSelector = ".actionButton.actionButtonNegative.placerButton";
-let delay = ms => new Promise(res => setTimeout(res, ms));
+const delay = ms => new Promise(res => setTimeout(res, ms));
 
 //Battlefield markers.
 const arrayOfBattleFieldMarkers = [
