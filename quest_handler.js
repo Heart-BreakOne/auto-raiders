@@ -73,7 +73,7 @@ function completeQuests(unitDrawer, unfinishedQuests) {
     // Assisting quests have "assist"
     // Put the unit capable of performing the assist on front.
     //If no units match it's a generic assist quest, flag bearer is the best at getting assists.
-    
+
 
 
     console.log("cry")
@@ -107,6 +107,40 @@ Get X Assist with Armored Units
 
 
 */
+const arrayUnitsQuest = [
+    { key: "AMAZON", type: "MELEE", icon: "8AAAAASUVORK5CYII=", easyKill: false, killType: "armored", killType2: null, easyAssist: false, assistType: null, assistType2: null },
+    { key: "ARCHER", type: "RANGED", icon: "FBPKAZY", easyKill: true, killType: "melee", killType2: "support", killType3: "flying", easyAssist: false, assistType: null, assistType2: null },
+    { key: "ARTILLERY", type: "RANGED", icon: "3GY1DLAQ", easyKill: true, killType: "melee", killType2: "support", killType3: "flying", easyAssist: false, assistType: null, assistType2: null },
+    { key: "BALLOON", type: "ASSASSIN", icon: "FOPPA6G", easyKill: false, killType: "melee", killType2: "support", easyAssist: false, assistType: null, assistType2: null },
+    { key: "BARBARIAN", type: "MELEE", icon: "Y2AZRA3G", easyKill: true, killType: "armored", killType2: "support", easyAssist: false, assistType: null, assistType2: null },
+    { key: "BERSERKER", type: "MELEE", icon: "BCIAAA", easyKill: true, killType: "armored", killType2: "support", easyAssist: false, assistType: null, assistType2: null },
+    { key: "BLOB", type: "ARMORED", icon: "LXTAAA", easyKill: false, killType: "ranged", killType2: null, easyAssist: false, assistType: "tanking", assistType2: null },
+    { key: "BOMBER", type: "RANGED", icon: "QWP8WBK", easyKill: true, killType: "melee", killType2: "support", killType3: "flying", easyAssist: false, assistType: null, assistType2: null },
+    { key: "BUSTER", type: "ASSASSIN", icon: "PCCPYIHW", easyKill: false, killType: "melee", killType2: "armored", easyAssist: false, assistType: null, assistType2: null },
+    { key: "CENTURION", type: "ARMORED", icon: "DUWAAA", easyKill: false, killType: "armored", killType2: null, easyAssist: false, assistType: "tanking", assistType2: null },
+    { key: "FAIRY", type: "SUPPORT", icon: "FNJQA", easyKill: false, killType: null, killType2: null, easyAssist: true, assistType: "healing", assistType2: null },
+    { key: "FLAG", type: "SUPPORT", icon: "KF7A", easyKill: false, killType: null, killType2: null, easyAssist: true, assistType: "buffing", assistType2: null },
+    { key: "FLYING", type: "ASSASSIN", icon: "GSGE2MI", easyKill: true, killType: "flying", killType2: "melee", killType3: "support", easyAssist: false, assistType: null, assistType2: null },
+    { key: "GLADIATOR", type: "MELEE", icon: "EMWA84U", easyKill: true, killType: "armored", killType2: "support", easyAssist: false, assistType: null, assistType2: null },
+    { key: "HEALER", type: "SUPPORT", icon: "UY3N8", easyKill: false, killType: null, killType2: null, easyAssist: true, assistType: "healing", assistType2: null },
+    { key: "LANCER", type: "MELEE", icon: "PU+OGW", easyKill: true, killType: "armored", killType2: "melee", killType3: "flying", easyAssist: false, assistType: null, assistType2: null },
+    { key: "MAGE", type: "RANGED", icon: "4Q+BQML8", easyKill: true, killType: "melee", killType2: "support", killType3: "flying", easyAssist: false, assistType: null, assistType2: null },
+    { key: "MONK", type: "SUPPORT", icon: "D46EKXW", easyKill: false, killType: null, killType2: null, easyAssist: false, assistType: "healing", assistType2: null },
+    { key: "MUSKETEER", type: "RANGED", icon: "DL9SBC7G", easyKill: true, killType: "melee", killType2: "support", killType3: "flying", easyAssist: false, assistType: null, assistType2: null },
+    { key: "NECROMANCER", type: "SUPPORT", icon: "85VI", easyKill: false, killType: "", killType2: null, easyAssist: false, assistType: null, assistType2: null },
+    { key: "ORC", type: "ARMORED", icon: "VPAASGY8", easyKill: false, killType: "ranged", killType2: null, easyAssist: false, assistType: "tanking", assistType2: null },
+    { key: "PALADIN", type: "ARMORED", icon: "IYUEO", easyKill: false, killType: "armored", killType2: null, easyAssist: false, assistType: "tanking", assistType2: null },
+    { key: "ROGUE", type: "ASSASSIN", icon: "GRJLD", easyKill: false, killType: "melee", killType2: "support", easyAssist: false, assistType: null, assistType2: null },
+    { key: "SAINT", type: "SUPPORT", icon: "PBUHPCG", easyKill: false, killType: null, killType2: null, easyAssist: true, assistType: "buffing", assistType2: null },
+    { key: "SHINOBI", type: "ASSASSIN", icon: "XSCZQ", easyKill: false, killType: "", killType2: null, easyAssist: false, assistType: null, assistType2: null },
+    { key: "SPY", type: "ASSASSIN", icon: "FJBDFFQ", easyKill: false, killType: null, killType2: null, easyAssist: false, assistType: null, assistType2: null },
+    { key: "TANK", type: "ARMORED", icon: "XEK7HQU", easyKill: false, killType: "ranged", killType2: null, easyAssist: null, assistType: "tanking", assistType2: null },
+    { key: "TEMPLAR", type: "SUPPORT", icon: "CYNUL", easyKill: false, killType: "", killType2: null, easyAssist: false, assistType: "buffing", assistType2: null },
+    { key: "VAMPIRE", type: "ARMORED", icon: "BL5378", easyKill: false, killType: "ranged", killType2: "flying", easyAssist: false, assistType: "tanking", assistType2: null },
+    { key: "WARBEAST", type: "MELEE", icon: "SRJSYO", easyKill: true, killType: "armored", killType2: "support", killType3: "assassin", easyAssist: false, assistType: "tanking", assistType2: null },
+    { key: "WARRIOR", type: "MELEE", icon: "YTUUAHQ", easyKill: true, killType: "armored", killType2: "support", killType2: "assassin", easyAssist: false, assistType: null, assistType2: null },
+  ];  
+
 // Assassins will kill anything, but they will prioritize specific unit types over the units that are closer.
 can_kill_easily = ["assassins", "ranged", "melee"]
 can_assist_easily = ["flag_bearer", "support"]
