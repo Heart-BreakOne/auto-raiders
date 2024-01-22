@@ -19,6 +19,7 @@ document.addEventListener("DOMContentLoaded", function () {
     initializeSwitch("battlepassSwitch");
     initializeSwitch("offlineSwitch");
     initializeSwitch("skipSwitch");
+    initializeSwitch("completeQuests");
     initializeSwitch("dailySwitch");
     initializeSwitch("eventChestSwitch");
     initializeSwitch("equipSwitch");

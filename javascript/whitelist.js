@@ -22,6 +22,7 @@ const keysToExport = [
     "scrollSwitch",
     "selectedOption",
     "skipSwitch",
+    "completeQuests",
     "uncommonSwitch",
     "loyalty",
     "favoriteSwitch",
