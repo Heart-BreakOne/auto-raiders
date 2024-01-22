@@ -111,7 +111,6 @@ const loyaltyArray = [{ key: 1, value: "Wood" },
 { key: 3, value: "Gold" },
 { key: 4, value: "Diamond" }]
 
-let isStorage = true;
 // This is the start, it selects a captain placement as well as collect any rewards to proceed
 async function start() {
 

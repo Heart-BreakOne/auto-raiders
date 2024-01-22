@@ -138,10 +138,11 @@ async function collectEventChests() {
         for (var i = 0; i < storeButtons.length; i++) {
             stButton = storeButtons[i]
             stButtonImg = stButton.querySelector("img")
-            
             if (stButtonImg != null && stButtonImg.src == eventCurrencyImg) {
-                stButton.click();
-                stButton.submit();
+                for (var y = 0; y < 10; y ++) {
+                    stButton.click();
+                }     
+                //stButton.submit();
                 returnToMainScreen();
                 break;
             }
