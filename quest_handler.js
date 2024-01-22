@@ -25,11 +25,11 @@ Get X assists from healing
 Get X assists from tanking
 
 */
-
+// Assassins will kill anything, but they will prioritize specific unit types over the units that are closer.
 can_kill_easily = ["assassins", "ranged", "melee"]
-can_assist_easily = ["support"]
+can_assist_easily = ["flag_bearer", "support"]
 can_kill_epic = ["epic_units", "buster", "epic_balloon_buster"] // Epic rogue? This is mostly a gamble as it depends on the enemy epic unit class, but certain units will actively hunt epic units.
-can_kill_flying = ["flying_rogue", "ranged", "vampire", "lancer", "balloon_buster"]
+can_kill_flying = ["epic_units", "flying_rogue", "ranged", "vampire", "lancer", "balloon_buster"]
 can_kill_armored = ["buster", "melee"]
 can_kill_ranged = ["assassins", "armored"] //Armored doesn't necessarily kill, but is capable of tanking the damage and if close enough get the kill.
 can_kill_support = ["assassins"]
