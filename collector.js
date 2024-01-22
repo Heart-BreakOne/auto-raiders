@@ -1,7 +1,7 @@
 //This file handles shopping and collection of scrolls, quests and rewards.
 
 //Declare variables for initialization later
-const collectDelay = (ms) => new Promise((res) => setTimeout(res, ms));;
+const collectDelay = (ms) => new Promise((res) => setTimeout(res, ms));
 let navItems;
 
 //Function to buy scrolls

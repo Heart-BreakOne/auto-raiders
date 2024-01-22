@@ -21,6 +21,7 @@ let captainNameFromDOM;
 let arrayOfSkinUnits;
 let reload = 0;
 let isContentRunning = false;
+let unfinishedQuests = null;
 const blue = 'rgb(185, 242, 255)';
 const red = 'rgb(255, 204, 203)';
 const purple = 'rgb(203, 195, 227)';
@@ -164,6 +165,16 @@ async function start() {
         navItem.click();
         await delay(2000);
       }
+    }
+  }
+
+  unfinishedQuests = null
+  if (await retrieveFromStorage("completeQuests")) {
+    try {
+      isContentRunning = true
+      unfinishedQuests = await getUnfinishedQuests()
+    } catch (error) {
+      unfinishedQuests = undefined
     }
   }
 
@@ -718,7 +729,8 @@ async function selectUnit() {
   let unitDrawer = [...document.querySelectorAll(".unitSelectionCont")];
 
   //Sort units based on their priority
-  if (await retrieveFromStorage("priorityListSwitch")) {
+  canCompleteQuests = retrieveStateFromStorage("completeQuests")
+  if (await retrieveFromStorage("priorityListSwitch") && !canCompleteQuests) {
     unitDrawer = await sortPriorityUnits(unitDrawer);
   }
 
@@ -747,11 +759,21 @@ async function selectUnit() {
     }
   }
 
-  if (await retrieveFromStorage("equipSwitch")) {
+  //Put skinned units at the front if quest completer is not enabled.
+  if (await retrieveFromStorage("equipSwitch") && !canCompleteQuests) {
     try {
       await shiftUnits();
     } catch (error) {
       console.log("log" + error);
+    }
+  }
+
+  let uDBkp = unitDrawer
+  if (canCompleteQuests) {
+    try {
+      unitDrawer = completeQuests(unitDrawer, unfinishedQuests)
+    } catch (error) {
+      unitDrawer = uDBkp
     }
   }
 

@@ -1,53 +1,109 @@
+const questDelay = (ms) => new Promise((res) => setTimeout(res, ms));;
+async function getUnfinishedQuests() {
+    navItems = document.querySelectorAll(".mainNavItemText");
 
-// Big things will happen here.
+    //Clicks the Quests button on the nav bar
+    navItems.forEach((navItem) => {
+        if (navItem.innerText === "Quests") {
+            navItem.click();
+        }
+    });
+    await questDelay(4000);
+
+    const quests = document.querySelectorAll(".questItem")
+    const questsDescriptionsArray = []
+    quests.forEach(quest => {
+        const disabledElement = quest.querySelector(".questItemDisabled");
+
+        if (disabledElement) {
+            disabledElement.parentElement.remove();
+        } else {
+            const questDescriptionElement = quest.querySelector(".questItemDesc");
+            const questDescription = questDescriptionElement ? questDescriptionElement.innerText : '';
+            const lowerCaseDescription = questDescription.toLowerCase();
+
+            // Filter quests that are unrelated to campaign
+            if (!lowerCaseDescription.includes("pvp") && !lowerCaseDescription.includes("duels") && !lowerCaseDescription.includes("clash")) {
+                questsDescriptionsArray.push(questDescription);
+            }
+        }
+    });
+    returnToMainScreen()
+    if (questsDescriptionsArray.length == 0) {
+        return undefined
+    } else {
+        return questsDescriptionsArray
+    }
+}
+
+
+function completeQuests(unitDrawer, unfinishedQuests) {
+    if (unfinishedQuests == null || unfinishedQuests == undefined) {
+        return unitDrawer
+    }
+
+    const arrayOfValidQuests = ["kill", "assist", "place", "get", "earn", "earning", "Take down", "destroy"];
+
+    // Assuming unfinishedQuests is an array of quest strings
+    const validQuests = unfinishedQuests.filter((quest) => {
+        const lowerCaseQuest = quest.toLowerCase();
+        return arrayOfValidQuests.some((validQuest) => lowerCaseQuest.includes(validQuest.toLowerCase()));
+    });
+
+    // Replace "Help take down" "Destroy" "Take down" and "Get X kills" full strings with "generic kill"
+
+    // Replace word 'Earn', "Earning" with "Get"
+
+    // Replace "Get X assists" full strings with "assists generic"
+
+    // Remove the S from the word assists and kills.
+
+    // Remove the number using regex as it doesn't matter.
+
+
+
+    // Placing quests have "place", a number and the unit name
+    //Put the placeable unit on the front.
+    //If no unit matches it means that it's a generic Place X units in battle
+
+    // Killing quests have "kill"
+    // Put the unit capable of performing the kill on front.
+    //If not units match it's either a generic kill quest or event specific quest (melee units are good at getting generic kills)
+
+    // Assisting quests have "assist"
+    // Put the unit capable of performing the assist on front.
+    //If no units match it's a generic assist quest, flag bearer is the best at getting assists.
+    
+
+
+    console.log("cry")
+    //Activate common, uncommon and rare units. 
+    //If there is a legendary unit quest activate as well, otherwise keep as is.
+
+
+
+    return unitDrawer
+}
+
 
 /*  List of possible quests
 
-Generic:
-
-Get X kills
-Get X assists
-Purchase X Scrolls in the Store
-Earn X currency
-Place X Units
-Win X battles (no duels, no dungeons)
-"Earn X Epic Potions"
-Earn X Event Tokens
-Follow X Captain Battle Plans
-Fulfill X Battle Commands
-Place the correct Units over your Captain's Battle commands
-
-Specific:
-
 Place X unit_name
 
+generic kill
 Kill X flying units
 Kill X armored units
 Kill X support units
-Kil X ranged units
+Kill X ranged units
 Kill X epic units
+Kill X event Unit
 
-Get X assists from buffing
-Earn X Assists from Buffing
-Earning X Assists from Buffing
+generic assist
+Get X assist from buffing
+Get X assist from healing
+Get X assist from tanking
+Get X Assist with Armored Units
 
-Get X assists from healing
-Earn X Assists from Healing
-Earning X Assists from Healing
-
-Get X assists from tanking
-Earn X Assists from Tanking
-
-Get X Assists with Armored Units
-
-
-Others
-Equip a Skin to one of your Units
-Help take down X Tabletop Units
-Kill 1 event Unit
-Destroy X something
-Take down X something
-Follow battle plans
 
 
 */
