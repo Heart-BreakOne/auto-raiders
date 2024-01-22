@@ -92,43 +92,62 @@ async function collectEventChests() {
     if (!eventChestSwitch) {
         return;
     }
-	//Get event currency strings so the string can be trimmed and converted to int for validation
-    let eventCurrency;
-    //Attempts to get event currency quantity
-    try {
-      eventCurrency = document.querySelector("img[alt='Laurel']").closest(".quantityItem");
-    } catch (error) {
-      goHome();
-      return;
+    //Get event currency strings so the string can be trimmed and converted to int for validation
+    let eventCurrency = null;
+    let eventCurrencyImg = null;
+    let eventCurrencyAlt = null;
+
+    //Check if an event currency exists
+    currencies = document.querySelectorAll(".quantityItem");
+    for (var i = 0; i < currencies.length; i++) {
+        var currentCurrency = currencies[i];
+        var imgElement = currentCurrency.querySelector("img[alt='Gold'], img[alt='Meat'], img[alt='Keys'], img[alt='Potion'], img[alt='Bones']");
+        if (imgElement) {
+            continue;
+        } else {
+            eventCurrency = currentCurrency;
+            evImg = currentCurrency.querySelector(".quantityImage")
+            eventCurrencyImg = evImg.src
+            eventCurrencyAlt = evImg.alt
+            break;
+        }
     }
+    if (eventCurrency == null || eventCurrency == undefined || eventCurrencyImg == null || eventCurrencyImg == undefined  || eventCurrencyAlt == null || eventCurrencyAlt == undefined) {
+        returnToMainScreen()
+    }
+
     let eventCurrencyQuantity = eventCurrency.querySelector(".quantityText").textContent;
-    number = parseInt(eventCurrencyQuantity.substring(0, 3));
-	if (number >= 500) {
-		//Initializes node list with nav bar items and open the store.
-		navItems = document.querySelectorAll(".mainNavItemText");
-		navItems.forEach((navItem) => {
-			if (navItem.innerText === "Store") {
-				navItem.click();
-			}
-		});
-		await collectDelay(4000);
-		//Initiliazes the freebie button and if it exists and is the claim button, clicks it and goes back to the main menu.
-		const storeButtons = document.querySelectorAll(".actionButton.actionButtonBones.storeCardButton.storeCardButtonBuy");
-		storeButtons.forEach((storeButton) => {
-			if (storeButton.innerText === "25") {
-				eventChestButton = storeButton;
-			}
-		});
-		if (eventChestButton && eventChestButton.innerText.includes("25")) {
-			for (let i = 0; i < 20; i++) {
-				eventChestButton.click();
-				//eventChestButton.submit();
-				await collectDelay(1000);
-			}
-			returnToMainScreen();
-		}
-	}
-}		
+    // Always error check when converting a string to an integer because the chances of failing is very high since the string might have letters and symbols.
+    try {
+        number = parseInt(eventCurrencyQuantity.substring(0, 3));
+    } catch (error) {
+        returnToMainScreen()
+    }
+    // Increased the number to make it less aggressive and to fit the casual player
+    if (number >= 1500) {
+        //Initializes node list with nav bar items and open the store.
+        navItems = document.querySelectorAll(".mainNavItemText");
+        navItems.forEach((navItem) => {
+            if (navItem.innerText === "Store") {
+                navItem.click();
+            }
+        });
+        await collectDelay(4000);
+        //Initiliazes the freebie button and if it exists and is the claim button, clicks it and goes back to the main menu.
+        const storeButtons = document.querySelectorAll(".actionButton.actionButtonBones.storeCardButton.storeCardButtonBuy");
+        for (var i = 0; i < storeButtons.length; i++) {
+            stButton = storeButtons[i]
+            stButtonImg = stButton.querySelector("img")
+            
+            if (stButtonImg != null && stButtonImg.src == eventCurrencyImg) {
+                stButton.click();
+                stButton.submit();
+                returnToMainScreen();
+                break;
+            }
+        }
+    }
+}
 
 //Function to collect quests
 async function collectQuests() {

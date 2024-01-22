@@ -168,37 +168,37 @@ async function start() {
     }
   }
 
-    //Leave before checks
-    const capSlots = document.querySelectorAll(".capSlot")
-    for (i in capSlots) {
-      try {
-        const st = capSlots[i]
-        const btn = st.querySelector(".offlineButton").id
-        const slotState = await getIdleState(btn);
-        if (slotState == 3) {
-          const close = st.querySelector(".capSlotClose");
-          //Remove captains with LEAVE BEFORE
-          if (close && (st.innerText.includes("Battle in progress") || st.innerText.includes("start battle"))) {
-            close.click();
-            await delay(2000);
-            const confBtn = document.querySelector(".actionButton.actionButtonPrimary")
-            if (confBtn.innerText.includes("CONFIRM")) {
-              confBtn.click()
-            }
-            const beforeSwitch = await retrieveFromStorage('beforeSwitch');
-            if (beforeSwitch) {
-              setIdleState(btn, 1)
-            } else {
-              setIdleState(btn, 0)
-            }
-            continue
+  //Leave before checks
+  const capSlots = document.querySelectorAll(".capSlot")
+  for (i in capSlots) {
+    try {
+      const st = capSlots[i]
+      const btn = st.querySelector(".offlineButton").id
+      const slotState = await getIdleState(btn);
+      if (slotState == 3) {
+        const close = st.querySelector(".capSlotClose");
+        //Remove captains with LEAVE BEFORE
+        if (close && (st.innerText.includes("Battle in progress") || st.innerText.includes("start battle"))) {
+          close.click();
+          await delay(2000);
+          const confBtn = document.querySelector(".actionButton.actionButtonPrimary")
+          if (confBtn.innerText.includes("CONFIRM")) {
+            confBtn.click()
           }
+          const beforeSwitch = await retrieveFromStorage('beforeSwitch');
+          if (beforeSwitch) {
+            setIdleState(btn, 1)
+          } else {
+            setIdleState(btn, 0)
+          }
+          continue
         }
-      } catch (error) {
-        continue
       }
+    } catch (error) {
+      continue
     }
-    isContentRunning = false;
+  }
+  isContentRunning = false;
 
   //Checks masterlist to switch
   await switchToMasterList();
