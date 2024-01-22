@@ -7,8 +7,15 @@ Generic:
 
 Get X kills
 Get X assists
-
-
+Purchase X Scrolls in the Store
+Earn X currency
+Place X Units
+Win X battles (no duels, no dungeons)
+"Earn X Epic Potions"
+Earn X Event Tokens
+Follow X Captain Battle Plans
+Fulfill X Battle Commands
+Place the correct Units over your Captain's Battle commands
 
 Specific:
 
@@ -21,8 +28,27 @@ Kil X ranged units
 Kill X epic units
 
 Get X assists from buffing
+Earn X Assists from Buffing
+Earning X Assists from Buffing
+
 Get X assists from healing
+Earn X Assists from Healing
+Earning X Assists from Healing
+
 Get X assists from tanking
+Earn X Assists from Tanking
+
+Get X Assists with Armored Units
+
+
+Others
+Equip a Skin to one of your Units
+Help take down X Tabletop Units
+Kill 1 event Unit
+Destroy X something
+Take down X something
+Follow battle plans
+
 
 */
 // Assassins will kill anything, but they will prioritize specific unit types over the units that are closer.
