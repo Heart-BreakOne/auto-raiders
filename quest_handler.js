@@ -209,10 +209,11 @@ async function completeQuests(unitDrawer, unfinishedQuests) {
         await setSwitchState("priorityListSwitch", false);
         for (var i = 0; i < unitDrawer[0].children.length; i++) {
             const child = unitDrawer[0].children[i];
-            const rCom = child.querySelector(".unitRarityCommon")
-            const rUnc = child.querySelector(".unitRarityUncommon")
-            const rRar = child.querySelector(".unitRarityRare")
-            const rLen = child.querySelector(".legendarySwitch")
+                let rCom = child.querySelector(".unitRarityCommon")
+                let rUnc = child.querySelector(".unitRarityUncommon")
+                let rRar = child.querySelector(".unitRarityRare")
+                let rLen = child.querySelector(".unitRarityLegendary")
+
             if (rCom) {
                 await setSwitchState("commonSwitch", true);
             } else if (rUnc) {
