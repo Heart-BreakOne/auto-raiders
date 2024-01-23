@@ -729,7 +729,7 @@ async function selectUnit() {
   let unitDrawer = [...document.querySelectorAll(".unitSelectionCont")];
 
   //Sort units based on their priority
-  canCompleteQuests = retrieveStateFromStorage("completeQuests")
+  canCompleteQuests = await retrieveFromStorage("completeQuests")
   if (await retrieveFromStorage("priorityListSwitch") && !canCompleteQuests) {
     unitDrawer = await sortPriorityUnits(unitDrawer);
   }
@@ -768,14 +768,15 @@ async function selectUnit() {
     }
   }
 
-  let uDBkp = unitDrawer
   if (canCompleteQuests) {
     try {
-      unitDrawer = completeQuests(unitDrawer, unfinishedQuests)
+      completeQuests(unitDrawer, unfinishedQuests)
     } catch (error) {
-      unitDrawer = uDBkp
+      
     }
   }
+
+  unitDrawer = [...document.querySelectorAll(".unitSelectionCont")];
 
   for (let i = 1; i <= unitsQuantity; i++) {
     //Iterates through every unit
