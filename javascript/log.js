@@ -29,8 +29,8 @@ const battleChests = [
     { key: "chestboostedskin_maps12to22", name: "Loyalty Skin", outcome: "Victory", url: "https://d2k2g0zg1te1mr.cloudfront.net/mobilelite/chests/iconChestSkinBoosted.c0e0bcd2b145.png " },
     { key: "chestboostedscroll", name: "Loyalty Scroll", outcome: "Victory", url: "https://d2k2g0zg1te1mr.cloudfront.net/mobilelite/chests/iconChestScrollBoosted.ff3678509435.png" },
     { key: "chestboostedtoken", name: "Loyalty Token", outcome: "Victory", url: "https://d2k2g0zg1te1mr.cloudfront.net/mobilelite/chests/iconChestTokenBoosted.c0e0bcd2b145.png" },
-    { key: "chestboss", name: "Loyalty Boss", outcome: "Victory", url: "https://d2k2g0zg1te1mr.cloudfront.net/mobilelite/chests/iconChestBoss.7f5d2511b08f.png" },
     { key: "chestbosssuper", name: "Loyalty Super Boss", outcome: "Victory", url: "https://d2k2g0zg1te1mr.cloudfront.net/mobilelite/chests/iconChestBossSuper.c0e0bcd2b145.png" },
+    { key: "chestboss", name: "Loyalty Boss", outcome: "Victory", url: "https://d2k2g0zg1te1mr.cloudfront.net/mobilelite/chests/iconChestBoss.7f5d2511b08f.png" },
 ];
 
 let chestCounter = [
