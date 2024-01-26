@@ -29,6 +29,12 @@ document.addEventListener("DOMContentLoaded", function () {
     initializeSwitch("idleMasterSwitch");
     initializeSwitch("skipIdleMasterSwitch");
     initializeSwitch("priorityListSwitch");
+    initializeSwitch("lgoldSwitch");
+    initializeSwitch("lskinSwitch");
+    initializeSwitch("lscrollSwitch");
+    initializeSwitch("ltokenSwitch");
+    initializeSwitch("lbossSwitch");
+    initializeSwitch("lsuperbossSwitch");
     initializeSwitch("beforeSwitch");
     initializeSwitch("afterSwitch");
     initializeReloader("reloaderInput");

@@ -296,7 +296,20 @@ async function start() {
           try {
             captainLoyalty = await getCaptainFlag(captainNameFromDOM, 'captainLoyalty');
             if (!captainLoyalty || captainLoyalty == undefined) {
-              captainLoyalty = await requestLoyalty(captainNameFromDOM);
+				chestType = await requestLoyalty(captainNameFromDOM);
+			  
+				const lgold = await retrieveFromStorage("lgoldSwitch")
+				const lskin = await retrieveFromStorage("lskinSwitch")
+				const lscroll = await retrieveFromStorage("lscrollSwitch")
+				const ltoken = await retrieveFromStorage("ltokenSwitch")
+				const lboss = await retrieveFromStorage("lbossSwitch")
+				const lsuperboss = await retrieveFromStorage("lsuperbossSwitch")
+
+				if ((!lgold && chestType.includes("chestboostedgold")) || (!lskin && chestType.includes("chestboostedskin")) || (!lscroll && chestType.includes("chestboostedscroll")) || (!ltoken && chestType.includes("chestboostedtoken")) || (!lboss && chestType.includes("chestboss") && !chestType.includes("chestbosssuper")) || (!lsuperboss && chestType.includes("chestbosssuper"))) {
+					captainLoyalty = true;
+				} else {
+					captainLoyalty = false;
+				}
             }
           } catch (error) {
             captainLoyalty = false;
