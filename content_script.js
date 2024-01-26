@@ -296,26 +296,53 @@ async function start() {
           try {
             captainLoyalty = await getCaptainFlag(captainNameFromDOM, 'captainLoyalty');
             if (!captainLoyalty || captainLoyalty == undefined) {
-				chestType = await requestLoyalty(captainNameFromDOM);
-			  
-				const lgold = await retrieveFromStorage("lgoldSwitch")
-				const lskin = await retrieveFromStorage("lskinSwitch")
-				const lscroll = await retrieveFromStorage("lscrollSwitch")
-				const ltoken = await retrieveFromStorage("ltokenSwitch")
-				const lboss = await retrieveFromStorage("lbossSwitch")
-				const lsuperboss = await retrieveFromStorage("lsuperbossSwitch")
-
-				if ((!lgold && chestType.includes("chestboostedgold")) || (!lskin && chestType.includes("chestboostedskin")) || (!lscroll && chestType.includes("chestboostedscroll")) || (!ltoken && chestType.includes("chestboostedtoken")) || (!lboss && chestType.includes("chestboss") && !chestType.includes("chestbosssuper")) || (!lsuperboss && chestType.includes("chestbosssuper"))) {
-					captainLoyalty = true;
-				} else {
-					captainLoyalty = false;
-				}
+              captainLoyalty = await requestLoyalty(captainNameFromDOM);
+              if (captainLoyalty) {
+                let lBadge = null
+                try {
+                  lBadge = captainSlot.querySelector('.capSlotLoyalty img').getAttribute('src');
+                  if (lBadge == null || lBadge == undefined) {
+                    captainLoyalty = true;
+                    captainFlag = true;
+                  }
+                  if (lBadge.includes("Wood") && loyaltyRadio == 1) {
+                    // Bronze check
+                    captainLoyalty = false;
+                    captainFlag = false;
+                  }
+                  else if (lBadge.includes("Wood") && loyaltyRadio == 2) {
+                    // Silver Check
+                    captainLoyalty = true;
+                    captainFlag = true;
+                  }
+                  else if (lBadge.includes("Wood") || (lBadge.includes("Blue")) && loyaltyRadio == 3) {
+                    // Gold check
+                    captainLoyalty = true;
+                    captainFlag = true;
+                  }
+                  else if (lBadge.includes("Diamond") && loyaltyRadio == 4) {
+                    // Diamond check
+                    captainLoyalty = false;
+                    captainFlag = false;
+                  }
+                  else {
+                    captainLoyalty = false;
+                    captainFlag = false;
+                  }
+                } catch (error) {
+                  captainLoyalty = true;
+                  captainFlag = true;
+                }
+              }
             }
           } catch (error) {
             captainLoyalty = false;
+            captainFlag = false;
+
           }
         } else {
           captainLoyalty = false;
+          captainFlag = false;
         }
         //If captain has any flags, change color and move to the next slot
         if (captainLoyalty || captainFlag) {
@@ -785,7 +812,7 @@ async function selectUnit() {
     try {
       completeQuests(unitDrawer, unfinishedQuests)
     } catch (error) {
-      
+      // Nothing to actually do here because it's modifying the dom elements, it just prevents the script from crashing.
     }
   }
 
