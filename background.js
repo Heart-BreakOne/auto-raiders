@@ -203,8 +203,7 @@ async function getCookies() {
   });
 }
 
-//TRUE IF LOYALTY IS LOW AND LOYALTY CHEST
-// FALSE IF LOYALTY IS HIGH OR NON LOYALTY CHEST
+//RETURNS CHESTTYPE (returns "chestbronze" if not found or if error)
 async function getCaptainLoyalty(captainName) {
   try {
     await getCookies();
@@ -233,7 +232,7 @@ async function getCaptainLoyalty(captainName) {
 
       if (cptName === captainName) {
         if (loyalty === 4) {
-          return false;
+          return "chestbronze";
         }
 
         const mapLoyalty = await getRaidChest(raidId);
@@ -242,11 +241,11 @@ async function getCaptainLoyalty(captainName) {
     }
 
     //No match found
-    return false;
+    return "chestbronze";
 
   } catch (error) {
     console.error('Error in getCaptainLoyalty:', error);
-    return false;
+    return "chestbronze";
   }
 }
 
@@ -311,16 +310,12 @@ async function getRaidChest(raidId) {
     }
 
     const nodeId = currentRaid.data.nodeId;
-    if (nodeKeys.includes(nodeId)) {
-      return true;
-    }
-    else {
-      return false;
-    }
+	const chestType = chests[nodeId].ChestType;
+	return chestType;
 
   } catch (error) {
     console.error('Error in getRaidChest:', error);
-    return false;
+    return "chestbronze";
   }
 }
 
