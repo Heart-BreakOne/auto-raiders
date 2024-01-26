@@ -119,7 +119,7 @@ async function collectEventChests() {
     let eventCurrencyQuantity = eventCurrency.querySelector(".quantityText").textContent;
     // Always error check when converting a string to an integer because the chances of failing is very high since the string might have letters and symbols.
     try {
-        number = parseInt(eventCurrencyQuantity.substring(0, 3));
+        number = parseInt(eventCurrencyQuantity.substring(0, 4));
     } catch (error) {
         returnToMainScreen()
     }
@@ -141,6 +141,7 @@ async function collectEventChests() {
             if (stButtonImg != null && stButtonImg.src == eventCurrencyImg) {
                 for (var y = 0; y < 10; y ++) {
                     stButton.click();
+					await collectDelay(1000);
                 }     
                 //stButton.submit();
                 returnToMainScreen();
