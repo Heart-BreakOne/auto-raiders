@@ -1,37 +1,37 @@
 const questDelay = (ms) => new Promise((res) => setTimeout(res, ms));
 
 let arrayOfUnitsQuest = [
-    { key: "amazon", rarity: 3, icon: "8AAAAASUVORK5CYII=", mustPlace: false, points: 0, easyKill: false, bestKill: false, killEpic: false, killType: "armored", easyAssist: false, bestAssist: false, assistType: "" },
-    { key: "archer", rarity: 0, icon: "FBPKAZY", mustPlace: false, points: 0, easyKill: true, bestKill: false, killEpic: false, killType: "melee,suppport,flying", easyAssist: false, bestAssist: false, assistType: "" },
-    { key: "artillery", rarity: 3, icon: "3GY1DLAQ", mustPlace: false, points: 0, easyKill: true, bestKill: false, killEpic: true, killType: "melee,suppport,flying", easyAssist: false, bestAssist: false, assistType: "" },
-    { key: "balloon", rarity: 3, icon: "FOPPA6G", mustPlace: false, points: 0, easyKill: false, bestKill: false, killEpic: true, killType: "melee", easyAssist: false, bestAssist: false, assistType: "" },
-    { key: "barbarian", rarity: 1, icon: "Y2AZRA3G", mustPlace: false, points: 0, easyKill: true, bestKill: false, killEpic: false, killType: "armored,support", easyAssist: false, bestAssist: false, assistType: "" },
+    { key: "amazon", rarity: 3, icon: "8AAAAASUVORK5CYII=", mustPlace: false, points: 0, easyKill: false, bestKill: false, killEpic: false, killType: "armored", easyAssist: false, bestAssist: false, assistType: null },
+    { key: "archer", rarity: 0, icon: "FBPKAZY", mustPlace: false, points: 0, easyKill: true, bestKill: false, killEpic: false, killType: "melee,suppport,flying", easyAssist: false, bestAssist: false, assistType: null },
+    { key: "artillery", rarity: 3, icon: "3GY1DLAQ", mustPlace: false, points: 0, easyKill: true, bestKill: false, killEpic: true, killType: "melee,suppport,flying", easyAssist: false, bestAssist: false, assistType: null },
+    { key: "balloon", rarity: 3, icon: "FOPPA6G", mustPlace: false, points: 0, easyKill: false, bestKill: false, killEpic: true, killType: "melee", easyAssist: false, bestAssist: false, assistType: null },
+    { key: "barbarian", rarity: 1, icon: "Y2AZRA3G", mustPlace: false, points: 0, easyKill: true, bestKill: false, killEpic: false, killType: "armored,support", easyAssist: false, bestAssist: false, assistType: null },
     { key: "berserker", rarity: 2, icon: "BCIAAA", mustPlace: false, points: 0, easyKill: true, bestKill: false, killEpic: false, killType: "armored", easyAssist: false, bestAssist: false, assistType: "buffing" },
     { key: "blob", rarity: 3, icon: "LXTAAA", mustPlace: false, points: 0, easyKill: false, bestKill: false, killEpic: false, killType: "ranged", easyAssist: false, bestAssist: false, assistType: "tanking" },
-    { key: "bomber", rarity: 1, icon: "QWP8WBK", mustPlace: false, points: 0, easyKill: true, bestKill: false, killEpic: false, killType: "melee,suppport,flying", easyAssist: false, bestAssist: false, assistType: "" },
-    { key: "buster", rarity: 1, icon: "PCCPYIHW", mustPlace: false, points: 0, easyKill: false, bestKill: false, killEpic: false, killType: "melee,armored", easyAssist: false, bestAssist: false, assistType: "" },
+    { key: "bomber", rarity: 1, icon: "QWP8WBK", mustPlace: false, points: 0, easyKill: true, bestKill: false, killEpic: false, killType: "melee,suppport,flying", easyAssist: false, bestAssist: false, assistType: null },
+    { key: "buster", rarity: 1, icon: "PCCPYIHW", mustPlace: false, points: 0, easyKill: false, bestKill: false, killEpic: false, killType: "melee,armored", easyAssist: false, bestAssist: false, assistType: null },
     { key: "centurion", rarity: 2, icon: "DUWAAA", mustPlace: false, points: 0, easyKill: false, bestKill: false, killEpic: false, killType: "armored", easyAssist: false, bestAssist: false, assistType: "tanking,buffing" },
-    { key: "fairy", rarity: 2, icon: "FNJQA", mustPlace: false, points: 0, easyKill: false, bestKill: false, killEpic: false, killType: "", easyAssist: true, bestAssist: true, assistType: "healing" },
-    { key: "flag", rarity: 0, icon: "KF7A", mustPlace: false, points: 0, easyKill: false, bestKill: false, killEpic: false, killType: "", easyAssist: true, bestAssist: false, assistType: "buffing" },
-    { key: "flying", rarity: 2, icon: "GSGE2MI", mustPlace: false, points: 0, easyKill: true, bestKill: false, killEpic: false, killType: "flying", easyAssist: false, bestAssist: false, assistType: "" },
-    { key: "gladiator", rarity: 2, icon: "EMWA84U", mustPlace: false, points: 0, easyKill: true, bestKill: false, killEpic: false, killType: "armored,support", easyAssist: false, bestAssist: false, assistType: "" },
-    { key: "healer", rarity: 1, icon: "UY3N8", mustPlace: false, points: 0, easyKill: false, bestKill: false, killEpic: false, killType: "", easyAssist: true, bestAssist: false, assistType: "healing" },
-    { key: "lancer", rarity: 1, icon: "PU+OGW", mustPlace: false, points: 0, easyKill: true, bestKill: false, killEpic: false, killType: "armored,melee,flying", easyAssist: false, bestAssist: false, assistType: "" },
-    { key: "mage", rarity: 3, icon: "4Q+BQML8", mustPlace: false, points: 0, easyKill: true, bestKill: false, killEpic: false, killType: "melee,suppport,flying", easyAssist: false, bestAssist: false, assistType: "" },
+    { key: "fairy", rarity: 2, icon: "FNJQA", mustPlace: false, points: 0, easyKill: false, bestKill: false, killEpic: false, killType: null, easyAssist: true, bestAssist: true, assistType: "healing" },
+    { key: "flag", rarity: 0, icon: "KF7A", mustPlace: false, points: 0, easyKill: false, bestKill: false, killEpic: false, killType: null, easyAssist: true, bestAssist: false, assistType: "buffing" },
+    { key: "flying", rarity: 2, icon: "GSGE2MI", mustPlace: false, points: 0, easyKill: true, bestKill: false, killEpic: false, killType: "flying", easyAssist: false, bestAssist: false, assistType: null },
+    { key: "gladiator", rarity: 2, icon: "EMWA84U", mustPlace: false, points: 0, easyKill: true, bestKill: false, killEpic: false, killType: "armored,support", easyAssist: false, bestAssist: false, assistType: null },
+    { key: "healer", rarity: 1, icon: "UY3N8", mustPlace: false, points: 0, easyKill: false, bestKill: false, killEpic: false, killType: null, easyAssist: true, bestAssist: false, assistType: "healing" },
+    { key: "lancer", rarity: 1, icon: "PU+OGW", mustPlace: false, points: 0, easyKill: true, bestKill: false, killEpic: false, killType: "armored,melee,flying", easyAssist: false, bestAssist: false, assistType: null },
+    { key: "mage", rarity: 3, icon: "4Q+BQML8", mustPlace: false, points: 0, easyKill: true, bestKill: false, killEpic: false, killType: "melee,suppport,flying", easyAssist: false, bestAssist: false, assistType: null },
     { key: "monk", rarity: 2, icon: "D46EKXW", mustPlace: false, points: 0, easyKill: false, bestKill: false, killEpic: false, killType: "armored", easyAssist: false, bestAssist: false, assistType: "healing" },
     { key: "musketeer", rarity: 2, icon: "DL9SBC7G", mustPlace: false, points: 0, easyKill: true, bestKill: false, killEpic: false, killType: "ranged,melee,suppport,flying", easyAssist: false, bestAssist: false, assistType: "buffing" },
-    { key: "necromancer", rarity: 3, icon: "85VI", mustPlace: false, points: 0, easyKill: false, bestKill: false, killEpic: false, killType: "", easyAssist: false, bestAssist: false, assistType: "generic" },
-    { key: "orc", rarity: 3, icon: "VPAASGY8", mustPlace: false, points: 0, easyKill: false, bestKill: false, killEpic: false, killType: "", easyAssist: false, bestAssist: false, assistType: "tanking" },
+    { key: "necromancer", rarity: 3, icon: "85VI", mustPlace: false, points: 0, easyKill: false, bestKill: false, killEpic: false, killType: null, easyAssist: false, bestAssist: false, assistType: "generic" },
+    { key: "orc", rarity: 3, icon: "VPAASGY8", mustPlace: false, points: 0, easyKill: false, bestKill: false, killEpic: false, killType: null, easyAssist: false, bestAssist: false, assistType: "tanking" },
     { key: "paladin", rarity: 1, icon: "IYUEO", mustPlace: false, points: 0, easyKill: false, bestKill: false, killEpic: false, killType: "armored", easyAssist: false, bestAssist: false, assistType: "tanking" },
-    { key: "rogue", rarity: 0, icon: "GRJLD", mustPlace: false, points: 0, easyKill: false, bestKill: false, killEpic: false, killType: "melee,support,ranged", easyAssist: false, bestAssist: false, assistType: "" },
-    { key: "saint", rarity: 1, icon: "PBUHPCG", mustPlace: false, points: 0, easyKill: false, bestKill: false, killEpic: false, killType: "", easyAssist: true, bestAssist: false, assistType: "generic" },
-    { key: "shinobi", rarity: 2, icon: "XSCZQ", mustPlace: false, points: 0, easyKill: false, bestKill: false, killEpic: false, killType: "ranged,support", easyAssist: false, bestAssist: false, assistType: "" },
-    { key: "spy", rarity: 3, icon: "FJBDFFQ", mustPlace: false, points: 0, easyKill: false, bestKill: false, killEpic: false, killType: "", easyAssist: false, bestAssist: false, assistType: "" },
-    { key: "tank", rarity: 0, icon: "XEK7HQU", mustPlace: false, points: 0, easyKill: false, bestKill: false, killEpic: false, killType: "", easyAssist: false, bestAssist: false, assistType: "tanking" },
-    { key: "templar", rarity: 3, icon: "CYNUL", mustPlace: false, points: 0, easyKill: false, bestKill: false, killEpic: false, killType: "", easyAssist: false, bestAssist: false, assistType: "buffing" },
+    { key: "rogue", rarity: 0, icon: "GRJLD", mustPlace: false, points: 0, easyKill: false, bestKill: false, killEpic: false, killType: "melee,support,ranged", easyAssist: false, bestAssist: false, assistType: null },
+    { key: "saint", rarity: 1, icon: "PBUHPCG", mustPlace: false, points: 0, easyKill: false, bestKill: false, killEpic: false, killType: null, easyAssist: true, bestAssist: false, assistType: "generic" },
+    { key: "shinobi", rarity: 2, icon: "XSCZQ", mustPlace: false, points: 0, easyKill: false, bestKill: false, killEpic: false, killType: "ranged,support", easyAssist: false, bestAssist: false, assistType: null },
+    { key: "spy", rarity: 3, icon: "FJBDFFQ", mustPlace: false, points: 0, easyKill: false, bestKill: false, killEpic: false, killType: null, easyAssist: false, bestAssist: false, assistType: null },
+    { key: "tank", rarity: 0, icon: "XEK7HQU", mustPlace: false, points: 0, easyKill: false, bestKill: false, killEpic: false, killType: null, easyAssist: false, bestAssist: false, assistType: "tanking" },
+    { key: "templar", rarity: 3, icon: "CYNUL", mustPlace: false, points: 0, easyKill: false, bestKill: false, killEpic: false, killType: null, easyAssist: false, bestAssist: false, assistType: "buffing" },
     { key: "vampire", rarity: 1, icon: "BL5378", mustPlace: false, points: 0, easyKill: false, bestKill: false, killEpic: false, killType: "flying", easyAssist: false, bestAssist: false, assistType: "tanking" },
     { key: "warbeast", rarity: 3, icon: "SRJSYO", mustPlace: false, points: 0, easyKill: true, bestKill: false, killEpic: false, killType: "armored,support,assassin", easyAssist: false, bestAssist: false, assistType: "tanking" },
-    { key: "warrior", rarity: 0, icon: "YTUUAHQ", mustPlace: false, points: 0, easyKill: true, bestKill: false, killEpic: false, killType: "armored,support,assassin", easyAssist: false, bestAssist: false, assistType: "" },
+    { key: "warrior", rarity: 0, icon: "YTUUAHQ", mustPlace: false, points: 0, easyKill: true, bestKill: false, killEpic: false, killType: "armored,support,assassin", easyAssist: false, bestAssist: false, assistType: null },
 ];
 
 
@@ -82,28 +82,25 @@ async function completeQuests(unitDrawer, unfinishedQuests) {
     const validQuests = ["kill", "assist", "place", "get", "earn", "earning", "Take down", "destroy"];
 
     let filteredQuests = unfinishedQuests
-        .filter((quest) => validQuests.some((keyword) => quest.toLowerCase().includes(keyword.toLowerCase())))
+        .filter((quest) =>
+            validQuests.some((keyword) => quest.toLowerCase().includes(keyword.toLowerCase())) &&
+            !(quest.toLowerCase().includes("level") && quest.toLowerCase().includes("unit")) &&
+            !(quest.toLowerCase().includes("purchase") && quest.toLowerCase().includes("scroll"))
+        )
         .map((quest) => {
-            //Replace "Help take down" "Destroy" "Take down" and "Get X kills" full strings with "generic kill"
-            quest = quest.replace(/Help take down|Destroy|Take down|Get \d+ kills/gi, 'generic kill');
+            // Replace specific quest patterns
+            let modifiedQuest = quest
+                .replace(/Help take down|Destroy|Take down|Get \d+ kills/gi, 'generic kill')
+                .replace(/Earn|Earning/gi, '')
+                .replace(/Flying Rogue/gi, 'flying')
+                .replace(/Balloon Buster/gi, 'balloon')
+                .replace(/Get \d+ assists/gi, 'generic assist')
+                .replace(/\bassists\b/g, 'assist')
+                .replace(/\bkills\b/g, 'kill')
+                .replace(/\d+/g, '')
+                .trim();
 
-            //Replace words 'Earn' and "Earning" with "Get"
-            quest = quest.replace(/Earn|Earning/gi, 'Get');
-
-            //Normalize some of the units names
-            quest = quest.replace(/Flying Rogue/gi, 'flying');
-            quest = quest.replace(/Balloon Buster/gi, 'balloon');
-
-            //Replace "Get X assists" with "generic assist"
-            quest = quest.replace(/Get \d+ assists/gi, 'generic assist');
-
-            //Remove the S from the words assists and kills.
-            quest = quest.replace(/\bassists\b/g, 'assist').replace(/\bkills\b/g, 'kill');
-
-            //Remove any numbers
-            quest = quest.replace(/\d+/g, '');
-
-            return quest.trim(); // Trim any leading or trailing spaces
+            return modifiedQuest;
         });
 
     //Give points to units
@@ -115,37 +112,53 @@ async function completeQuests(unitDrawer, unfinishedQuests) {
             const lowerCaseKey = unit.key.toLowerCase();
             const pLowerCaseKey = unit.key.toLowerCase() + "s";
 
+            // Must place units
             if (lowerCaseQuest.includes("place") && (lowerCaseQuest.includes(lowerCaseKey) || lowerCaseQuest.includes(pLowerCaseKey))) {
                 unit.mustPlace = true;
+                unit.points = 20;
             }
-            if (lowerCaseQuest.includes("kill") && unit.easyKill) {
+            if (lowerCaseQuest.includes("kill") && lowerCaseQuest.includes("epic") && unit.killEpic) {
+                unit.mustPlace = true;
+                unit.points = 20
+            }
+
+            // Kill quests
+            if (unit.killType != null) {
+                const killTypes = unit.killType.split(',');
+
+                if (lowerCaseQuest.includes("kill") && killTypes.some(type => lowerCaseQuest.includes(type.trim()))) {
+                    unit.points += 2;
+                }
+            }
+            if (lowerCaseQuest.includes("kill") && unit.easyKill && unit.points != 0) {
                 unit.points += 1;
             }
-            if (lowerCaseQuest.includes("kill") && unit.bestKill) {
+            if (lowerCaseQuest.includes("kill") && unit.bestKill && unit.points != 0) {
                 unit.points += 1;
             }
 
-            if (lowerCaseQuest.includes("kill") && lowerCaseQuest.includes("epic") && unit.killEpic) {
-                unit.mustPlace = true;
+            // Assist quests
+            if (unit.assistType != null) {
+                // Split unit.assistType into an array of values
+                const assistTypes = unit.assistType.split(',');
+
+                // Check if any of the assistTypes are present in lowerCaseQuest
+                if (lowerCaseQuest.includes("assist") && assistTypes.some(type => lowerCaseQuest.includes(type.trim()))) {
+                    unit.points += 2;
+                }
             }
-            if (lowerCaseQuest.includes("assist") && unit.easyAssist) {
+            if (lowerCaseQuest.includes("assist") && unit.easyAssist && unit.points != 0) {
                 unit.points += 1;
             }
-            if (lowerCaseQuest.includes("assist") && unit.bestAssist) {
+            if (lowerCaseQuest.includes("assist") && unit.bestAssist && unit.points != 0) {
                 unit.points += 1;
             }
-            if (lowerCaseQuest.includes("assist") && unit.easyAssist) {
-                unit.points += 1;
-            }
+
+            // Extra point for common units.
             if (unit.points !== 0 && unit.rarity === 0) {
                 unit.points += 1;
             }
-            if (lowerCaseQuest.includes("kill") && unit.killType !== "" && lowerCaseQuest.includes(unit.killType.toLowerCase())) {
-                unit.points += 2;
-            }
-            if (lowerCaseQuest.includes("assist") && unit.assistType !== "" && lowerCaseQuest.includes(unit.assistType.toLowerCase())) {
-                unit.points += 3;
-            }
+
         });
     });
 
@@ -209,10 +222,10 @@ async function completeQuests(unitDrawer, unfinishedQuests) {
         await setSwitchState("priorityListSwitch", false);
         for (var i = 0; i < unitDrawer[0].children.length; i++) {
             const child = unitDrawer[0].children[i];
-                let rCom = child.querySelector(".unitRarityCommon")
-                let rUnc = child.querySelector(".unitRarityUncommon")
-                let rRar = child.querySelector(".unitRarityRare")
-                let rLen = child.querySelector(".unitRarityLegendary")
+            let rCom = child.querySelector(".unitRarityCommon")
+            let rUnc = child.querySelector(".unitRarityUncommon")
+            let rRar = child.querySelector(".unitRarityRare")
+            let rLen = child.querySelector(".unitRarityLegendary")
 
             if (rCom) {
                 await setSwitchState("commonSwitch", true);
