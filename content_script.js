@@ -328,7 +328,7 @@ async function start() {
                     captainLoyalty = true;
                     captainFlag = true;
                   }
-                  else if (lBadge.includes("Wood") || (lBadge.includes("Blue")) && loyaltyRadio == 3) {
+                  else if ((lBadge.includes("Wood") || (lBadge.includes("Blue"))) && loyaltyRadio == 3) {
                     // Gold check
                     captainLoyalty = true;
                     captainFlag = true;
