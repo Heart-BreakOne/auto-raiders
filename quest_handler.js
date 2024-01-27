@@ -7,30 +7,30 @@ let arrayOfUnitsQuest = [
     { key: "balloon", rarity: 3, icon: "FOPPA6G", mustPlace: false, points: 0, easyKill: false, bestKill: false, killEpic: true, killType: "melee", easyAssist: false, bestAssist: false, assistType: null },
     { key: "barbarian", rarity: 1, icon: "Y2AZRA3G", mustPlace: false, points: 0, easyKill: true, bestKill: false, killEpic: false, killType: "armored,support", easyAssist: false, bestAssist: false, assistType: null },
     { key: "berserker", rarity: 2, icon: "BCIAAA", mustPlace: false, points: 0, easyKill: true, bestKill: false, killEpic: false, killType: "armored", easyAssist: false, bestAssist: false, assistType: "buffing" },
-    { key: "blob", rarity: 3, icon: "LXTAAA", mustPlace: false, points: 0, easyKill: false, bestKill: false, killEpic: false, killType: "ranged", easyAssist: false, bestAssist: false, assistType: "tanking" },
+    { key: "blob", rarity: 3, icon: "LXTAAA", mustPlace: false, points: 0, easyKill: false, bestKill: false, killEpic: false, killType: "ranged", easyAssist: false, bestAssist: false, assistType: "armored,tanking" },
     { key: "bomber", rarity: 1, icon: "QWP8WBK", mustPlace: false, points: 0, easyKill: true, bestKill: false, killEpic: false, killType: "melee,suppport,flying", easyAssist: false, bestAssist: false, assistType: null },
     { key: "buster", rarity: 1, icon: "PCCPYIHW", mustPlace: false, points: 0, easyKill: false, bestKill: false, killEpic: false, killType: "melee,armored", easyAssist: false, bestAssist: false, assistType: null },
-    { key: "centurion", rarity: 2, icon: "DUWAAA", mustPlace: false, points: 0, easyKill: false, bestKill: false, killEpic: false, killType: "armored", easyAssist: false, bestAssist: false, assistType: "tanking,buffing" },
-    { key: "fairy", rarity: 2, icon: "FNJQA", mustPlace: false, points: 0, easyKill: false, bestKill: false, killEpic: false, killType: null, easyAssist: true, bestAssist: true, assistType: "healing" },
-    { key: "flag", rarity: 0, icon: "KF7A", mustPlace: false, points: 0, easyKill: false, bestKill: false, killEpic: false, killType: null, easyAssist: true, bestAssist: false, assistType: "buffing" },
+    { key: "centurion", rarity: 2, icon: "DUWAAA", mustPlace: false, points: 0, easyKill: false, bestKill: false, killEpic: false, killType: "armored", easyAssist: false, bestAssist: false, assistType: "armored,tanking,buffing" },
+    { key: "fairy", rarity: 2, icon: "FNJQA", mustPlace: false, points: 0, easyKill: false, bestKill: false, killEpic: false, killType: null, easyAssist: true, bestAssist: true, assistType: "generic,healing" },
+    { key: "flag", rarity: 0, icon: "KF7A", mustPlace: false, points: 0, easyKill: false, bestKill: false, killEpic: false, killType: null, easyAssist: true, bestAssist: false, assistType: "generic,buffing" },
     { key: "flying", rarity: 2, icon: "GSGE2MI", mustPlace: false, points: 0, easyKill: true, bestKill: false, killEpic: false, killType: "flying", easyAssist: false, bestAssist: false, assistType: null },
     { key: "gladiator", rarity: 2, icon: "EMWA84U", mustPlace: false, points: 0, easyKill: true, bestKill: false, killEpic: false, killType: "armored,support", easyAssist: false, bestAssist: false, assistType: null },
-    { key: "healer", rarity: 1, icon: "UY3N8", mustPlace: false, points: 0, easyKill: false, bestKill: false, killEpic: false, killType: null, easyAssist: true, bestAssist: false, assistType: "healing" },
+    { key: "healer", rarity: 1, icon: "UY3N8", mustPlace: false, points: 0, easyKill: false, bestKill: false, killEpic: false, killType: null, easyAssist: true, bestAssist: false, assistType: "generic,healing" },
     { key: "lancer", rarity: 1, icon: "PU+OGW", mustPlace: false, points: 0, easyKill: true, bestKill: false, killEpic: false, killType: "armored,melee,flying", easyAssist: false, bestAssist: false, assistType: null },
     { key: "mage", rarity: 3, icon: "4Q+BQML8", mustPlace: false, points: 0, easyKill: true, bestKill: false, killEpic: false, killType: "melee,suppport,flying", easyAssist: false, bestAssist: false, assistType: null },
-    { key: "monk", rarity: 2, icon: "D46EKXW", mustPlace: false, points: 0, easyKill: false, bestKill: false, killEpic: false, killType: "armored", easyAssist: false, bestAssist: false, assistType: "healing" },
+    { key: "monk", rarity: 2, icon: "D46EKXW", mustPlace: false, points: 0, easyKill: false, bestKill: false, killEpic: false, killType: "armored", easyAssist: false, bestAssist: false, assistType: "generic,healing" },
     { key: "musketeer", rarity: 2, icon: "DL9SBC7G", mustPlace: false, points: 0, easyKill: true, bestKill: false, killEpic: false, killType: "ranged,melee,suppport,flying", easyAssist: false, bestAssist: false, assistType: "buffing" },
     { key: "necromancer", rarity: 3, icon: "85VI", mustPlace: false, points: 0, easyKill: false, bestKill: false, killEpic: false, killType: null, easyAssist: false, bestAssist: false, assistType: "generic" },
-    { key: "orc", rarity: 3, icon: "VPAASGY8", mustPlace: false, points: 0, easyKill: false, bestKill: false, killEpic: false, killType: null, easyAssist: false, bestAssist: false, assistType: "tanking" },
-    { key: "paladin", rarity: 1, icon: "IYUEO", mustPlace: false, points: 0, easyKill: false, bestKill: false, killEpic: false, killType: "armored", easyAssist: false, bestAssist: false, assistType: "tanking" },
+    { key: "orc", rarity: 3, icon: "VPAASGY8", mustPlace: false, points: 0, easyKill: false, bestKill: false, killEpic: false, killType: null, easyAssist: false, bestAssist: false, assistType: "armored,tanking" },
+    { key: "paladin", rarity: 1, icon: "IYUEO", mustPlace: false, points: 0, easyKill: false, bestKill: false, killEpic: false, killType: "armored", easyAssist: false, bestAssist: false, assistType: "armored,tanking" },
     { key: "rogue", rarity: 0, icon: "GRJLD", mustPlace: false, points: 0, easyKill: false, bestKill: false, killEpic: false, killType: "melee,support,ranged", easyAssist: false, bestAssist: false, assistType: null },
     { key: "saint", rarity: 1, icon: "PBUHPCG", mustPlace: false, points: 0, easyKill: false, bestKill: false, killEpic: false, killType: null, easyAssist: true, bestAssist: false, assistType: "generic" },
     { key: "shinobi", rarity: 2, icon: "XSCZQ", mustPlace: false, points: 0, easyKill: false, bestKill: false, killEpic: false, killType: "ranged,support", easyAssist: false, bestAssist: false, assistType: null },
     { key: "spy", rarity: 3, icon: "FJBDFFQ", mustPlace: false, points: 0, easyKill: false, bestKill: false, killEpic: false, killType: null, easyAssist: false, bestAssist: false, assistType: null },
-    { key: "tank", rarity: 0, icon: "XEK7HQU", mustPlace: false, points: 0, easyKill: false, bestKill: false, killEpic: false, killType: null, easyAssist: false, bestAssist: false, assistType: "tanking" },
-    { key: "templar", rarity: 3, icon: "CYNUL", mustPlace: false, points: 0, easyKill: false, bestKill: false, killEpic: false, killType: null, easyAssist: false, bestAssist: false, assistType: "buffing" },
-    { key: "vampire", rarity: 1, icon: "BL5378", mustPlace: false, points: 0, easyKill: false, bestKill: false, killEpic: false, killType: "flying", easyAssist: false, bestAssist: false, assistType: "tanking" },
-    { key: "warbeast", rarity: 3, icon: "SRJSYO", mustPlace: false, points: 0, easyKill: true, bestKill: false, killEpic: false, killType: "armored,support,assassin", easyAssist: false, bestAssist: false, assistType: "tanking" },
+    { key: "tank", rarity: 0, icon: "XEK7HQU", mustPlace: false, points: 0, easyKill: false, bestKill: false, killEpic: false, killType: null, easyAssist: false, bestAssist: false, assistType: "armored,tanking" },
+    { key: "templar", rarity: 3, icon: "CYNUL", mustPlace: false, points: 0, easyKill: false, bestKill: false, killEpic: false, killType: null, easyAssist: false, bestAssist: false, assistType: "generic,buffing" },
+    { key: "vampire", rarity: 1, icon: "BL5378", mustPlace: false, points: 0, easyKill: false, bestKill: false, killEpic: false, killType: "flying", easyAssist: false, bestAssist: false, assistType: "armored,tanking" },
+    { key: "warbeast", rarity: 3, icon: "SRJSYO", mustPlace: false, points: 0, easyKill: true, bestKill: false, killEpic: false, killType: "armored,support,assassin", easyAssist: false, bestAssist: false, assistType: "armored,tanking" },
     { key: "warrior", rarity: 0, icon: "YTUUAHQ", mustPlace: false, points: 0, easyKill: true, bestKill: false, killEpic: false, killType: "armored,support,assassin", easyAssist: false, bestAssist: false, assistType: null },
 ];
 
@@ -75,7 +75,6 @@ async function getUnfinishedQuests() {
 
 async function completeQuests(unitDrawer, unfinishedQuests) {
     if (unfinishedQuests == null || unfinishedQuests == undefined) {
-
         return unitDrawer
     }
 
@@ -162,9 +161,11 @@ async function completeQuests(unitDrawer, unfinishedQuests) {
         });
     });
 
-
     //Remove units that aren't useful
     arrayOfUnitsQuest = arrayOfUnitsQuest.filter(unit => unit.mustPlace || unit.points !== 0);
+
+    //Remove legendary units that aren't useful
+    arrayOfUnitsQuest = arrayOfUnitsQuest.filter(unit => !(unit.rarity === 3 && (!unit.mustPlace || unit.points === 0)));
 
     // Sort units based on mustPlace and points
     arrayOfUnitsQuest.sort((a, b) => {
