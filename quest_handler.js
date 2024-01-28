@@ -220,10 +220,12 @@ async function completeQuests(unitDrawer, unfinishedQuests) {
     if (usableUnits.length == 0) {
         return bkpD
     } else {
-        unitDrawer[0].innerHTML = '';
-        for (var i = 0; i < usableUnits.length; i++) {
-            unitDrawer[0].appendChild(usableUnits[i].cloneNode(true));
+        while (unitDrawer[0].children.length > 0) {
+            unitDrawer[0].children[0].remove();
         }
+        usableUnits.forEach((item) => {
+            unitDrawer[0].appendChild(item);
+        });
     }
 
     if (unitDrawer[0].children.length == 0 || unitDrawer[0].children == null || unitDrawer[0].children == undefined) {

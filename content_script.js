@@ -830,7 +830,13 @@ async function selectUnit() {
   }
 
   unitDrawer = [...document.querySelectorAll(".unitSelectionCont")];
-
+  //Update units quantity
+  try {
+    unitsQuantity = unitDrawer[0].children.length;
+  } catch (error) {
+    goHome();
+    return;
+  }
   for (let i = 1; i <= unitsQuantity; i++) {
     //Iterates through every unit
     const unit = unitDrawer[0].querySelector(".unitSelectionItemCont:nth-child(" + i + ") .unitItem:nth-child(1)");
