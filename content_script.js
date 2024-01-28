@@ -823,13 +823,12 @@ async function selectUnit() {
 
   if (canCompleteQuests) {
     try {
-      completeQuests(unitDrawer, unfinishedQuests)
+      unitDrawer = completeQuests(unitDrawer, unfinishedQuests)
     } catch (error) {
-      // Nothing to actually do here because it's modifying the dom elements, it just prevents the script from crashing.
+      unitDrawer = [...document.querySelectorAll(".unitSelectionCont")];
     }
   }
 
-  unitDrawer = [...document.querySelectorAll(".unitSelectionCont")];
   //Update units quantity
   try {
     unitsQuantity = unitDrawer[0].children.length;
