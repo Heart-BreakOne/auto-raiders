@@ -823,7 +823,7 @@ async function selectUnit() {
 
   if (canCompleteQuests) {
     try {
-      unitDrawer = completeQuests(unitDrawer, unfinishedQuests)
+      unitDrawer = await completeQuests(unitDrawer, unfinishedQuests)
     } catch (error) {
       unitDrawer = [...document.querySelectorAll(".unitSelectionCont")];
     }
