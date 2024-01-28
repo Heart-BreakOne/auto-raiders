@@ -137,20 +137,22 @@ async function collectEventChests() {
         });
         await collectDelay(4000);
         //Initiliazes the freebie button and if it exists and is the claim button, clicks it and goes back to the main menu.
+
         const storeButtons = document.querySelectorAll(".actionButton.actionButtonBones.storeCardButton.storeCardButtonBuy");
         for (var i = 0; i < storeButtons.length; i++) {
             stButton = storeButtons[i]
             stButtonImg = stButton.querySelector("img")
             if (stButtonImg != null && stButtonImg.src == eventCurrencyImg) {
-                for (var y = 0; y < 10; y++) {
+                for (var y = 0; y < 5; y++) {
                     stButton.click();
                     await collectDelay(1000);
                 }
                 //stButton.submit();
-                returnToMainScreen();
-                break;
+                //returnToMainScreen();
+                //break;
             }
         }
+        returnToMainScreen();
     }
 }
 
