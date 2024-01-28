@@ -239,8 +239,8 @@ function returnToMainScreen() {
 function getMinimumCurrency() {
     return new Promise(resolve => {
         chrome.storage.local.get(['minimumCurrencyInput'], function (result) {
-            const reloaderInputValue = result.minimumCurrencyInput;
-            if (reloaderInputValue !== undefined && Number.isInteger(reloaderInputValue)) {
+            const reloaderInputValue = parseInt(result.minimumCurrencyInput);
+            if (!isNaN(reloaderInputValue)) {
                 resolve(reloaderInputValue);
             } else {
                 resolve(1500);
