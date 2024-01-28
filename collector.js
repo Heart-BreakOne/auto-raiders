@@ -112,7 +112,7 @@ async function collectEventChests() {
             break;
         }
     }
-    if (eventCurrency == null || eventCurrency == undefined || eventCurrencyImg == null || eventCurrencyImg == undefined  || eventCurrencyAlt == null || eventCurrencyAlt == undefined) {
+    if (eventCurrency == null || eventCurrency == undefined || eventCurrencyImg == null || eventCurrencyImg == undefined || eventCurrencyAlt == null || eventCurrencyAlt == undefined) {
         returnToMainScreen()
     }
 
@@ -123,8 +123,11 @@ async function collectEventChests() {
     } catch (error) {
         returnToMainScreen()
     }
-    // Increased the number to make it less aggressive and to fit the casual player
-    if (number >= 1500) {
+
+    // Get minimum value set by the user or default to 1500.
+    const minimumCurrency = await getMinimumCurrency();
+
+    if (number >= minimumCurrency) {
         //Initializes node list with nav bar items and open the store.
         navItems = document.querySelectorAll(".mainNavItemText");
         navItems.forEach((navItem) => {
@@ -139,10 +142,10 @@ async function collectEventChests() {
             stButton = storeButtons[i]
             stButtonImg = stButton.querySelector("img")
             if (stButtonImg != null && stButtonImg.src == eventCurrencyImg) {
-                for (var y = 0; y < 10; y ++) {
+                for (var y = 0; y < 10; y++) {
                     stButton.click();
-					await collectDelay(1000);
-                }     
+                    await collectDelay(1000);
+                }
                 //stButton.submit();
                 returnToMainScreen();
                 break;
@@ -229,4 +232,17 @@ function returnToMainScreen() {
             navItem.click();
         }
     })
+}
+
+function getMinimumCurrency() {
+    return new Promise(resolve => {
+        chrome.storage.local.get(['minimumCurrencyInput'], function (result) {
+            const reloaderInputValue = result.minimumCurrencyInput;
+            if (reloaderInputValue !== undefined && Number.isInteger(reloaderInputValue)) {
+                resolve(reloaderInputValue);
+            } else {
+                resolve(1500);
+            }
+        });
+    });
 }

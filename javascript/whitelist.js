@@ -39,6 +39,7 @@ const keysToExport = [
     "lbossSwitch",
     "lsuperbossSwitch",
     "reloaderInput",
+    "minimumCurrencyInput",
     "masterlist",
     "whitelist",
     "blacklist",

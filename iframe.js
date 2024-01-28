@@ -38,6 +38,7 @@ document.addEventListener("DOMContentLoaded", function () {
     initializeSwitch("beforeSwitch");
     initializeSwitch("afterSwitch");
     initializeReloader("reloaderInput");
+    initializeReloader("minimumCurrencyInput");
 
 });
 
@@ -77,7 +78,7 @@ document.addEventListener("DOMContentLoaded", async function () {
         });
     }
 
-    //TIme in minutes to reload
+    //Time in minutes to reload
     document.getElementById('reloaderButton').addEventListener('click', function () {
 
         const inputValue = document.getElementById('reloaderInput').value;
@@ -91,6 +92,22 @@ document.addEventListener("DOMContentLoaded", async function () {
             });
         }
     });
+
+    // Minimum currency amount to buy
+    document.getElementById('minimumCurrencyButton').addEventListener('click', function () {
+
+        const inputValue = document.getElementById('minimumCurrencyInput').value;
+        if (inputValue != undefined || inputValue != null) {
+            chrome.storage.local.set({ minimumCurrencyInput: inputValue }, function () {
+                if (chrome.runtime.lastError) {
+                    loadBanner(failureMessage, redColor);
+                } else {
+                    loadBanner(successMessage, greenColor);
+                }
+            });
+        }
+    });
+
 
     //Event listener for when the potion radio button is changed by the user
     let potionRadioButtons = document.querySelectorAll('input[name="potion"]');
@@ -180,13 +197,16 @@ function loadBanner(message, color) {
         banner.remove();
     }, 400);
 }
-async function initializeReloader() {
 
-    chrome.storage.local.get(['reloaderInput'], function (result) {
-    
-        const reloaderInput = result.reloaderInput;
-        if (reloaderInput !== undefined) {
-            document.getElementById('reloaderInput').value = reloaderInput;
-        }
+async function initializeReloader(key) {
+    const result = await new Promise((resolve) => {
+        chrome.storage.local.get([key], function (result) {
+            resolve(result);
+        });
     });
+
+    const reloaderInput = result[key];
+    if (reloaderInput !== undefined) {
+        document.getElementById(key).value = reloaderInput;
+    }
 }
