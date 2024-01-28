@@ -167,52 +167,62 @@ async function completeQuests(unitDrawer, unfinishedQuests) {
     //Remove legendary units that aren't useful
     arrayOfUnitsQuest = arrayOfUnitsQuest.filter(unit => !(unit.rarity === 3 && (!unit.mustPlace || unit.points === 0)));
 
-    // Sort units based on mustPlace and points
-    arrayOfUnitsQuest.sort((a, b) => {
-        if (a.mustPlace !== b.mustPlace) {
-            return b.mustPlace - a.mustPlace;
-        }
-        return b.points - a.points;
-    });
+    // Sort units based on points
+    arrayOfUnitsQuest.sort((a, b) => b.points - a.points);
+
+    // Sort units based on mustPlace = true
+    arrayOfUnitsQuest.sort((a, b) => (b.mustPlace ? 1 : 0) - (a.mustPlace ? 1 : 0));
 
     if (arrayOfUnitsQuest.length == 0 || arrayOfUnitsQuest == null || arrayOfUnitsQuest == undefined) {
         return unitDrawer
     }
 
 
-    // Filter and sort the unitDrawer
+    // Filter the unit drawer
     const bkpD = unitDrawer
     let usableUnits = []
+
     for (var i = 0; i < unitDrawer[0].children.length; i++) {
-        child = unitDrawer[0].children[i]
+        let child = unitDrawer[0].children[i];
         let coolDownCheck = child.querySelector('.unitItemCooldown');
         let defeatedCheck = child.querySelector('.defeatedVeil');
         let unitDisabled = child.querySelector('.unitItemDisabledOff');
 
         if (coolDownCheck || defeatedCheck || !unitDisabled) {
-            i -= 1
-            child.remove()
+            i -= 1;
+            child.remove();
             continue;
         } else {
-            //Check if img.src includes the icon in arrayOfUnitsQuest
+            // Check if img.src includes the icon in arrayOfUnitsQuest
             for (var y = 0; y < arrayOfUnitsQuest.length; y++) {
                 let icon = arrayOfUnitsQuest[y].icon;
                 let unitClassImg = child.querySelector('.unitClass img');
-                let uSrc = unitClassImg.src.toUpperCase()
+                let uSrc = unitClassImg.src.toUpperCase();
                 if (unitClassImg && uSrc.includes(icon)) {
-                    usableUnits.push(child)
+                    usableUnits.push(child);
                 }
             }
         }
     }
 
+    // Sort the unit drawer
+    usableUnits.sort((a, b) => {
+        const iconA = arrayOfUnitsQuest.find(unit => a.querySelector('.unitClass img').src.toUpperCase().includes(unit.icon));
+        const iconB = arrayOfUnitsQuest.find(unit => b.querySelector('.unitClass img').src.toUpperCase().includes(unit.icon));
+
+        if (iconA && iconB) {
+            return arrayOfUnitsQuest.indexOf(iconA) - arrayOfUnitsQuest.indexOf(iconB);
+        } else {
+            return 0;
+        }
+    });
+
     if (usableUnits.length == 0) {
         return bkpD
     } else {
-        for (var i = unitDrawer[0].children.length - 1; i >= 0; i--) {
-            if (!usableUnits.includes(unitDrawer[0].children[i])) {
-                unitDrawer[0].children[i].remove();
-            }
+        unitDrawer[0].innerHTML = '';
+        for (var i = 0; i < usableUnits.length; i++) {
+            unitDrawer[0].appendChild(usableUnits[i].cloneNode(true));
         }
     }
 
