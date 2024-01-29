@@ -133,7 +133,7 @@ async function loadLogData() {
 
         //Create table header row
         const headerRow = document.createElement('tr');
-        headerRow.innerHTML = '<th>#</th><th>Slot</th><th>Captain Name</th><th>Mode</th><th>Color Code</th><th>Start time</th><th>End time</th><th>Duration</th><th>Result</th><th>Chest</th><th>Initial Chest</th>';
+        headerRow.innerHTML = '<th>#</th><th>Slot</th><th>Captain Name</th><th>Mode</th><th>Color Code</th><th>Start time</th><th>End time</th><th>Duration</th><th>Result</th><th>Awarded Chest</th><th>Initial Chest</th>';
 
         //Append header row to the table
         tableElement.appendChild(headerRow);
