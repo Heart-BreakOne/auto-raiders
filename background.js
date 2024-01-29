@@ -231,9 +231,9 @@ async function getCaptainLoyalty(captainName) {
       const cptName = position.twitchDisplayName;
 
       if (cptName === captainName) {
-        if (loyalty === 4) {
+/*         if (loyalty === 4) {
           return "chestbronze";
-        }
+        } */
 
         const mapLoyalty = await getRaidChest(raidId);
         return mapLoyalty;
@@ -602,7 +602,7 @@ async function fetchLoyaltyChests(raid_url) {
     const mapNodes = data["sheets"]["MapNodes"]
     for (const nodeKey in mapNodes) {
       const node = mapNodes[nodeKey];
-      if (
+/*       if (
         node.ChestType === "dungeonchest" ||
         node.ChestType === "bonechest" ||
         node.ChestType === "chestbronze" ||
@@ -611,7 +611,7 @@ async function fetchLoyaltyChests(raid_url) {
       ) {
         delete mapNodes[nodeKey];
         continue;
-      }
+      } */
       for (const keyToRemove of ["NodeDifficulty", "NodeType", "MapTags", "OnLoseDialog", "OnStartDialog", "OnWinDialog"]) {
         delete node[keyToRemove];
       }

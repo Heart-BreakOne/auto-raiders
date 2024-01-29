@@ -17,7 +17,9 @@ const battleChests = [
     { key: "Unknown", name: "Unknown", outcome: "Unknown", url: "/icons/unknown.png" },
     { key: "abandoned", name: "abandoned", outcome: "Abandoned", url: "/icons/block.png" },
     { key: "bones", name: "PvP", outcome: "Victory", url: "https://d2k2g0zg1te1mr.cloudfront.net/env/prod1/mobile-lite/static/media/iconBones.56e87204.png" },
+    { key: "bonechest", name: "PvP", outcome: "Victory", url: "https://d2k2g0zg1te1mr.cloudfront.net/env/prod1/mobile-lite/static/media/iconBones.56e87204.png" },
     { key: "keys", name: "Dungeons", outcome: "Victory", url: "/icons/keys.png" },
+    { key: "dungeonchest", name: "Dungeons", outcome: "Victory", url: "/icons/keys.png" },
     { key: "chestsalvage", name: "Defeat", outcome: "Defeat", url: "https://d2k2g0zg1te1mr.cloudfront.net/mobilelite/chests/iconChestSalvage.7f5d2511b08f.png" },
     { key: "chestbronze", name: "Bronze", outcome: "Victory", url: "https://d2k2g0zg1te1mr.cloudfront.net/mobilelite/chests/iconChestBronze.7f5d2511b08f.png" },
     { key: "chestsilver", name: "Silver", outcome: "Victory", url: "https://d2k2g0zg1te1mr.cloudfront.net/mobilelite/chests/iconChestSilver.7f5d2511b08f.png" },
@@ -131,7 +133,7 @@ async function loadLogData() {
 
         //Create table header row
         const headerRow = document.createElement('tr');
-        headerRow.innerHTML = '<th>#</th><th>Slot</th><th>Captain Name</th><th>Mode</th><th>Color Code</th><th>Start time</th><th>End time</th><th>Duration</th><th>Result</th><th>Chest</th>';
+        headerRow.innerHTML = '<th>#</th><th>Slot</th><th>Captain Name</th><th>Mode</th><th>Color Code</th><th>Start time</th><th>End time</th><th>Duration</th><th>Result</th><th>Chest</th><th>Initial Chest</th>';
 
         //Append header row to the table
         tableElement.appendChild(headerRow);
@@ -144,6 +146,8 @@ async function loadLogData() {
             let chestName;
             let url;
             let outcome;
+			let initialChestName;
+            let initialUrl;
 
             //Convert the string to a Date object and get hour and minutes.
             const startingTime = getTimeString(new Date(entry.currentTime));
@@ -188,6 +192,18 @@ async function loadLogData() {
                 }
             }
 
+            //Getting human-readable initial chest name and picture
+            if (entry.initialchest !== undefined)
+			{
+				for (const battleChest of battleChests) {
+					if (entry.initialchest.startsWith(battleChest.key)) {
+						initialChestName = battleChest.name;
+						initialUrl = battleChest.url;
+						break;
+					}
+				}
+			}
+			
             if (color !== "Normal" && outcome === "Unknown") {
                 outcome = "Possible color status";
             } else {
@@ -211,23 +227,52 @@ async function loadLogData() {
             // Create a table row
             const row = document.createElement('tr');
             row.id = `${i}`;
-            row.innerHTML = `<td>${counter}</td>
-                <td>${entry.logId}</td>
-                <td>${entry.logCapName}</td>
-                <td>${entry.logMode}</td>
-                <td style="border: 1px solid #ddd; padding: 8px; color: ${color};">${color}</td>
-                <td>${startingTime}</td>
-                <td>${endingTime}</td>
-                <td>${elapsed}</td>
-                <td>${outcome}</td>
-                <td style="text-align: center; vertical-align: middle;">
-                    <div style="display: flex; flex-direction: column; align-items: center;">
-                        ${chestName}
-                        <img src="${url}" alt="Chest Image" style="height: 30px; width: auto">
-                    </div>
-                </td>
-                <td style="text-align: center; vertical-align: middle;"><button id="btn_${i}">DEL</button></td>`;
-
+			if (entry.initialchest !== undefined)
+			{
+				row.innerHTML = `<td>${counter}</td>
+					<td>${entry.logId}</td>
+					<td>${entry.logCapName}</td>
+					<td>${entry.logMode}</td>
+					<td style="border: 1px solid #ddd; padding: 8px; color: ${color};">${color}</td>
+					<td>${startingTime}</td>
+					<td>${endingTime}</td>
+					<td>${elapsed}</td>
+					<td>${outcome}</td>
+					<td style="text-align: center; vertical-align: middle;">
+						<div style="display: flex; flex-direction: column; align-items: center;">
+							${chestName}
+							<img src="${url}" alt="Chest Image" style="height: 30px; width: auto">
+						</div>
+					</td>
+					<td style="text-align: center; vertical-align: middle;">
+						<div style="display: flex; flex-direction: column; align-items: center;">
+							${initialChestName}
+							<img src="${initialUrl}" alt="Initial Chest Image" style="height: 30px; width: auto">
+						</div>
+					</td>
+					<td style="text-align: center; vertical-align: middle;"><button id="btn_${i}">DEL</button></td>`;
+			} else {
+				row.innerHTML = `<td>${counter}</td>
+					<td>${entry.logId}</td>
+					<td>${entry.logCapName}</td>
+					<td>${entry.logMode}</td>
+					<td style="border: 1px solid #ddd; padding: 8px; color: ${color};">${color}</td>
+					<td>${startingTime}</td>
+					<td>${endingTime}</td>
+					<td>${elapsed}</td>
+					<td>${outcome}</td>
+					<td style="text-align: center; vertical-align: middle;">
+						<div style="display: flex; flex-direction: column; align-items: center;">
+							${chestName}
+							<img src="${url}" alt="Chest Image" style="height: 30px; width: auto">
+						</div>
+					</td>
+					<td style="text-align: center; vertical-align: middle;">
+						<div style="display: flex; flex-direction: column; align-items: center;">
+						</div>
+					</td>
+					<td style="text-align: center; vertical-align: middle;"><button id="btn_${i}">DEL</button></td>`;
+			}
             // Append the row to the table
             tableElement.appendChild(row);
 

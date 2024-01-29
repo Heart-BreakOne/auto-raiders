@@ -252,6 +252,8 @@ async function start() {
         //Get captain name from the slot
         var captainSlot = button.closest('.capSlot');
         captainNameFromDOM = captainSlot.querySelector('.capSlotName').innerText;
+		chestType = await requestLoyalty(captainNameFromDOM);
+		await setLogInitialChest(captainNameFromDOM, chestType);
         //Retrieve the slot pause state
         const btn = captainSlot.querySelector(".capSlotStatus .offlineButton");
         const buttonId = btn.getAttribute('id');
@@ -296,8 +298,7 @@ async function start() {
           try {
             captainLoyalty = await getCaptainFlag(captainNameFromDOM, 'captainLoyalty');
             if (!captainLoyalty || captainLoyalty == undefined) {
-				chestType = await requestLoyalty(captainNameFromDOM);
-			  
+				
 				const lgold = await retrieveFromStorage("lgoldSwitch")
 				const lskin = await retrieveFromStorage("lskinSwitch")
 				const lscroll = await retrieveFromStorage("lscrollSwitch")
@@ -1127,13 +1128,15 @@ async function collectChests() {
         };
       }
 
+      await delay(1000);
+      await setLogResults(battleResult, captainName, chestStringAlt);
+
       const capSlot = button.parentElement.parentElement
       const stBtn = capSlot.querySelector(".offlineButton").id
       const slotState = await getIdleState(stBtn);
       const cNm = capSlot.querySelector(".capSlotName").innerText
       button.click();
       await delay(15000);
-
 
       if (slotState == 2) {
         const allCapSlots = document.querySelectorAll(".capSlot")
@@ -1156,8 +1159,6 @@ async function collectChests() {
 
       }
 
-      await delay(1000);
-      await setLogResults(battleResult, captainName, chestStringAlt);
       break;
     }
   }
