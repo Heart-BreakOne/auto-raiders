@@ -78,7 +78,7 @@ async function setLogCaptain(logId, logCapName, logMode, currentTime, colorCode)
                     result: undefined,
                     colorCode: colorCode,
                     chest: undefined,
-					initialchest: undefined
+                    initialchest: undefined
                 });
             } else {
                 //If no battle data exists, check if the color needs to be updated on existing slots.
@@ -105,9 +105,6 @@ async function setLogCaptain(logId, logCapName, logMode, currentTime, colorCode)
 
 //Saves initial chest information on storage
 async function setLogInitialChest(logCapName, initialchest) {
-
-    const unknown = "Unknown";
-    let now = new Date();
 
     return new Promise((resolve, reject) => {
         // Retrieve existing data from local storage
