@@ -71,7 +71,7 @@ const arrayOfBattleFieldMarkers = [
   { key: "WARRIOR", type: "MELEE", icon: "GXC5CPDJVY5YIAAAAASUVORK5CYII=" },
 ];
 
-//Unit icons markers (the icon on the top left corner of the unit square)
+//Unit icons from the unit drawer (the icon on the top left corner of the unit square)
 const arrayOfUnits = [
   { key: "", type: "", icon: "" },
   { key: "VIBE", type: "VIBE", icon: "VIBE" },

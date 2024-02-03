@@ -1,5 +1,6 @@
 const questDelay = (ms) => new Promise((res) => setTimeout(res, ms));
 
+//Unit icons from the unit drawer (the icon on the top left corner of the unit square)
 let arrayOfUnitsQuest = [
     { key: "amazon", rarity: 3, icon: "5GHK8AAAAASUVORK5CYII=", mustPlace: false, points: 0, easyKill: false, bestKill: false, killEpic: false, killType: "armored", easyAssist: false, bestAssist: false, assistType: null },
     { key: "archer", rarity: 0, icon: "FBPKAZY", mustPlace: false, points: 0, easyKill: true, bestKill: false, killEpic: false, killType: "melee,suppport,flying", easyAssist: false, bestAssist: false, assistType: null },

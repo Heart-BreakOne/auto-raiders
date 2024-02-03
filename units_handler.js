@@ -1,4 +1,4 @@
-//Unit icons markers (the icon on the top left corner of the unit square)
+//Unit icons from the unit drawer (the icon on the top left corner of the unit square)
 const arrUnitNms = [
     { key: "amazon", icon: "5GHK8AAAAASUVORK5CYII=" },
     { key: "archer", icon: "FBPKAZY" },
