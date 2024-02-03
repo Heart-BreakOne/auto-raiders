@@ -1,7 +1,7 @@
 const questDelay = (ms) => new Promise((res) => setTimeout(res, ms));
 
 let arrayOfUnitsQuest = [
-    { key: "amazon", rarity: 3, icon: "8AAAAASUVORK5CYII=", mustPlace: false, points: 0, easyKill: false, bestKill: false, killEpic: false, killType: "armored", easyAssist: false, bestAssist: false, assistType: null },
+    { key: "amazon", rarity: 3, icon: "5GHK8AAAAASUVORK5CYII=", mustPlace: false, points: 0, easyKill: false, bestKill: false, killEpic: false, killType: "armored", easyAssist: false, bestAssist: false, assistType: null },
     { key: "archer", rarity: 0, icon: "FBPKAZY", mustPlace: false, points: 0, easyKill: true, bestKill: false, killEpic: false, killType: "melee,suppport,flying", easyAssist: false, bestAssist: false, assistType: null },
     { key: "artillery", rarity: 3, icon: "3GY1DLAQ", mustPlace: false, points: 0, easyKill: true, bestKill: false, killEpic: true, killType: "melee,suppport,flying", easyAssist: false, bestAssist: false, assistType: null },
     { key: "balloon", rarity: 3, icon: "FOPPA6G", mustPlace: false, points: 0, easyKill: false, bestKill: false, killEpic: true, killType: "melee", easyAssist: false, bestAssist: false, assistType: null },

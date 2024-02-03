@@ -13,6 +13,7 @@ document.addEventListener("DOMContentLoaded", function () {
     initializeSwitch("rareSwitch");
     initializeSwitch("legendarySwitch");
     initializeSwitch("dungeonSwitch");
+    initializeSwitch("dungeonLevelSwitch");
     initializeSwitch("duelSwitch");
     initializeSwitch("clashSwitch");
     initializeSwitch("campaignSwitch");
@@ -23,6 +24,7 @@ document.addEventListener("DOMContentLoaded", function () {
     initializeSwitch("dailySwitch");
     initializeSwitch("eventChestSwitch");
     initializeSwitch("equipSwitch");
+    initializeSwitch("equipNoDiamondSwitch");
     initializeSwitch("favoriteSwitch");
     initializeSwitch("liveMasterSwitch");
     initializeSwitch("priorityMasterSwitch");

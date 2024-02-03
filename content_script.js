@@ -75,7 +75,7 @@ const arrayOfBattleFieldMarkers = [
 const arrayOfUnits = [
   { key: "", type: "", icon: "" },
   { key: "VIBE", type: "VIBE", icon: "VIBE" },
-  { key: "AMAZON", type: "MELEE", icon: "5GhK8AAAAASUVORK5CYII=" },
+  { key: "AMAZON", type: "MELEE", icon: "5GHK8AAAAASUVORK5CYII=" },
   { key: "ARCHER", type: "RANGED", icon: "FBPKAZY" },
   { key: "ARTILLERY", type: "RANGED", icon: "3GY1DLAQ" },
   { key: "BALLOON", type: "ASSASSIN", icon: "FOPPA6G" },
@@ -815,10 +815,20 @@ async function selectUnit() {
 
   //Put skinned units at the front if quest completer is not enabled.
   if (await retrieveFromStorage("equipSwitch") && !canCompleteQuests) {
-    try {
-      await shiftUnits();
-    } catch (error) {
-      console.log("log" + error);
+    if (await retrieveFromStorage("equipNoDiamondSwitch")) {
+      if (diamondLoyalty.indexOf("LoyaltyDiamond") === -1) {
+        try {
+          await shiftUnits();
+        } catch (error) {
+          console.log("log" + error);
+        }
+      }
+    } else {
+      try {
+        await shiftUnits();
+      } catch (error) {
+        console.log("log" + error);
+      }
     }
   }
 
@@ -837,6 +847,7 @@ async function selectUnit() {
     goHome();
     return;
   }
+  const dungeonLevelSwitch = await retrieveFromStorage("dungeonLevelSwitch");
   for (let i = 1; i <= unitsQuantity; i++) {
     //Iterates through every unit
     const unit = unitDrawer[0].querySelector(".unitSelectionItemCont:nth-child(" + i + ") .unitItem:nth-child(1)");
@@ -851,10 +862,31 @@ async function selectUnit() {
     let coolDownCheck = unit.querySelector('.unitItemCooldown');
     let defeatedCheck = unit.querySelector('.defeatedVeil');
     let unitDisabled = unit.querySelector('.unitItemDisabledOff');
+    let unitLevel = parseInt(unit.querySelector('.unitLevel').innerText);
 
     //Get unit type and unit name so it can be compared with the marker and determine if the placement is valid.
     let unitType = unit.querySelector('.unitClass img').getAttribute('alt').toUpperCase();
     unitName = unit.querySelector('.unitClass img').getAttribute('src').slice(-50).toUpperCase();
+    //Get human readable unitName
+    const unit1 = arrayOfUnits.filter(unit1 => unitName.includes(unit1.icon))[1];
+    if (unit1) {
+      unitName = unit1.key;
+    }
+    if (dungeonLevelSwitch) {
+      let battleInfo
+      try {
+        battleInfo = document.querySelector(".battleInfo").innerText;
+      } catch (error) {
+        return;
+      }
+      let dungeonLevel
+      if (battleInfo.includes("Level")) {
+        dungeonLevel = parseInt(battleInfo.substr(battleInfo.length - 2));
+          if (dungeonLevel <= 30 && unitLevel > 10 && unitName != "FLAG") {
+            continue;
+        }
+      }
+    }
     let commonSwitch;
     let uncommonSwitch;
     let rareSwitch;
@@ -871,11 +903,6 @@ async function selectUnit() {
       commonSwitch = await getSwitchState("commonSwitch");
     }
 
-    //Get human readable unitName
-    const unit1 = arrayOfUnits.filter(unit1 => unitName.includes(unit1.icon))[1];
-    if (unit1) {
-      unitName = unit1.key;
-    }
     //Check if the unit can be used.
     if ((commonCheck && !commonSwitch) ||
       (legendaryCheck && !legendarySwitch) ||
