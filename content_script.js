@@ -252,8 +252,8 @@ async function start() {
         //Get captain name from the slot
         var captainSlot = button.closest('.capSlot');
         captainNameFromDOM = captainSlot.querySelector('.capSlotName').innerText;
-		chestType = await requestLoyalty(captainNameFromDOM);
-		await setLogInitialChest(captainNameFromDOM, chestType);
+        chestType = await requestLoyalty(captainNameFromDOM);
+        await setLogInitialChest(captainNameFromDOM, chestType);
         //Retrieve the slot pause state
         const btn = captainSlot.querySelector(".capSlotStatus .offlineButton");
         const buttonId = btn.getAttribute('id');
@@ -298,20 +298,20 @@ async function start() {
           try {
             captainLoyalty = await getCaptainFlag(captainNameFromDOM, 'captainLoyalty');
             if (!captainLoyalty || captainLoyalty == undefined) {
-				
-				const lgold = await retrieveFromStorage("lgoldSwitch")
-				const lskin = await retrieveFromStorage("lskinSwitch")
-				const lscroll = await retrieveFromStorage("lscrollSwitch")
-				const ltoken = await retrieveFromStorage("ltokenSwitch")
-				const lboss = await retrieveFromStorage("lbossSwitch")
-				const lsuperboss = await retrieveFromStorage("lsuperbossSwitch")
 
-				if ((!lgold && chestType.includes("chestboostedgold")) || (!lskin && chestType.includes("chestboostedskin")) || (!lscroll && chestType.includes("chestboostedscroll")) || (!ltoken && chestType.includes("chestboostedtoken")) || (!lboss && chestType.includes("chestboss") && !chestType.includes("chestbosssuper")) || (!lsuperboss && chestType.includes("chestbosssuper"))) {
-					captainLoyalty = true;
-				} else {
-					captainLoyalty = false;
-				}
-				if (captainLoyalty) {
+              const lgold = await retrieveFromStorage("lgoldSwitch")
+              const lskin = await retrieveFromStorage("lskinSwitch")
+              const lscroll = await retrieveFromStorage("lscrollSwitch")
+              const ltoken = await retrieveFromStorage("ltokenSwitch")
+              const lboss = await retrieveFromStorage("lbossSwitch")
+              const lsuperboss = await retrieveFromStorage("lsuperbossSwitch")
+
+              if ((!lgold && chestType.includes("chestboostedgold")) || (!lskin && chestType.includes("chestboostedskin")) || (!lscroll && chestType.includes("chestboostedscroll")) || (!ltoken && chestType.includes("chestboostedtoken")) || (!lboss && chestType.includes("chestboss") && !chestType.includes("chestbosssuper")) || (!lsuperboss && chestType.includes("chestbosssuper"))) {
+                captainLoyalty = true;
+              } else {
+                captainLoyalty = false;
+              }
+              if (captainLoyalty) {
                 let lBadge = null
                 try {
                   lBadge = captainSlot.querySelector('.capSlotLoyalty img').getAttribute('src');
@@ -1128,7 +1128,7 @@ async function collectChests() {
         };
       }
 
-      await delay(1000);
+      
       await setLogResults(battleResult, captainName, chestStringAlt);
 
       const capSlot = button.parentElement.parentElement
@@ -1156,7 +1156,7 @@ async function collectChests() {
             break
           }
         }
-
+        await delay(1000);
       }
 
       break;

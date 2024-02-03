@@ -133,7 +133,7 @@ async function loadLogData() {
 
         //Create table header row
         const headerRow = document.createElement('tr');
-        headerRow.innerHTML = '<th>#</th><th>Slot</th><th>Captain Name</th><th>Mode</th><th>Color Code</th><th>Start time</th><th>End time</th><th>Duration</th><th>Result</th><th>Chest</th><th>Initial Chest</th>';
+        headerRow.innerHTML = '<th>#</th><th>Slot</th><th>Captain Name</th><th>Mode</th><th>Color Code</th><th>Start time</th><th>End time</th><th>Duration</th><th>Result</th><th>Awarded Chest</th><th>Initial Chest</th>';
 
         //Append header row to the table
         tableElement.appendChild(headerRow);
@@ -146,7 +146,7 @@ async function loadLogData() {
             let chestName;
             let url;
             let outcome;
-			let initialChestName;
+            let initialChestName;
             let initialUrl;
 
             //Convert the string to a Date object and get hour and minutes.
@@ -193,17 +193,16 @@ async function loadLogData() {
             }
 
             //Getting human-readable initial chest name and picture
-            if (entry.initialchest !== undefined)
-			{
-				for (const battleChest of battleChests) {
-					if (entry.initialchest.startsWith(battleChest.key)) {
-						initialChestName = battleChest.name;
-						initialUrl = battleChest.url;
-						break;
-					}
-				}
-			}
-			
+            if (entry.initialchest !== undefined) {
+                for (const battleChest of battleChests) {
+                    if (entry.initialchest.startsWith(battleChest.key)) {
+                        initialChestName = battleChest.name;
+                        initialUrl = battleChest.url;
+                        break;
+                    }
+                }
+            }
+
             if (color !== "Normal" && outcome === "Unknown") {
                 outcome = "Possible color status";
             } else {
@@ -227,9 +226,8 @@ async function loadLogData() {
             // Create a table row
             const row = document.createElement('tr');
             row.id = `${i}`;
-			if (entry.initialchest !== undefined)
-			{
-				row.innerHTML = `<td>${counter}</td>
+            if (entry.initialchest !== undefined) {
+                row.innerHTML = `<td>${counter}</td>
 					<td>${entry.logId}</td>
 					<td>${entry.logCapName}</td>
 					<td>${entry.logMode}</td>
@@ -251,8 +249,8 @@ async function loadLogData() {
 						</div>
 					</td>
 					<td style="text-align: center; vertical-align: middle;"><button id="btn_${i}">DEL</button></td>`;
-			} else {
-				row.innerHTML = `<td>${counter}</td>
+            } else {
+                row.innerHTML = `<td>${counter}</td>
 					<td>${entry.logId}</td>
 					<td>${entry.logCapName}</td>
 					<td>${entry.logMode}</td>
@@ -272,7 +270,7 @@ async function loadLogData() {
 						</div>
 					</td>
 					<td style="text-align: center; vertical-align: middle;"><button id="btn_${i}">DEL</button></td>`;
-			}
+            }
             // Append the row to the table
             tableElement.appendChild(row);
 

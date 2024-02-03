@@ -227,7 +227,7 @@ async function getCaptainLoyalty(captainName) {
     for (let i = 0; i < activeRaids.data.length; i++) {
       const position = activeRaids.data[i];
       const raidId = position.raidId;
-      const loyalty = position.pveLoyaltyLevel;
+	  const loyalty = position.pveLoyaltyLevel;
       const cptName = position.twitchDisplayName;
 
       if (cptName === captainName) {
