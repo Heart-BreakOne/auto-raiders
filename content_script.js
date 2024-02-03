@@ -862,7 +862,12 @@ async function selectUnit() {
     let coolDownCheck = unit.querySelector('.unitItemCooldown');
     let defeatedCheck = unit.querySelector('.defeatedVeil');
     let unitDisabled = unit.querySelector('.unitItemDisabledOff');
-    let unitLevel = parseInt(unit.querySelector('.unitLevel').innerText);
+    let unitLevel;
+    try {
+      unitLevel = parseInt(unit.querySelector('.unitLevel').innerText);
+    } catch (error) {
+      return;
+    }
 
     //Get unit type and unit name so it can be compared with the marker and determine if the placement is valid.
     let unitType = unit.querySelector('.unitClass img').getAttribute('alt').toUpperCase();
@@ -873,13 +878,13 @@ async function selectUnit() {
       unitName = unit1.key;
     }
     if (dungeonLevelSwitch) {
-      let battleInfo
+      let battleInfo;
       try {
         battleInfo = document.querySelector(".battleInfo").innerText;
       } catch (error) {
         return;
       }
-      let dungeonLevel
+      let dungeonLevel;
       if (battleInfo.includes("Level")) {
         dungeonLevel = parseInt(battleInfo.substr(battleInfo.length - 2));
           if (dungeonLevel <= 30 && unitLevel > 10 && unitName != "FLAG") {
