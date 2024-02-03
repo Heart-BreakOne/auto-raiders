@@ -868,7 +868,7 @@ async function selectUnit() {
     let unitType = unit.querySelector('.unitClass img').getAttribute('alt').toUpperCase();
     unitName = unit.querySelector('.unitClass img').getAttribute('src').slice(-50).toUpperCase();
     //Get human readable unitName
-    const unit1 = arrayOfUnits.filter(unit1 => unitName.includes(unit1.icon))[1];
+    const unit1 = arrayOfUnits.filter(unit1 => unitName.includes(unit1.icon.toUpperCase()))[1];
     if (unit1) {
       unitName = unit1.key;
     }
