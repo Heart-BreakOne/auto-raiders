@@ -816,7 +816,7 @@ async function selectUnit() {
   //Put skinned units at the front if quest completer is not enabled.
   if (await retrieveFromStorage("equipSwitch") && !canCompleteQuests) {
     if (await retrieveFromStorage("equipNoDiamondSwitch")) {
-      if (diamondLoyalty.indexOf("LoyaltyDiamond") === -1) {
+      if (diamondLoyalty.toString().includes("LoyaltyDiamond")) {
         try {
           await shiftUnits();
         } catch (error) {
@@ -1204,25 +1204,24 @@ function goHome() {
   }
 }
 
-const contentPort = chrome.runtime.connect({ name: "content-script" });
-
 async function requestLoyalty(captainNameFromDOM) {
+  let contentPort = chrome.runtime.connect({ name: "content-script" });
   return new Promise((resolve, reject) => {
-    const timeout = setTimeout(() => {
-      reject(new Error('Timeout while waiting for response'));
-      contentPort.onMessage.removeListener(responseListener);
-    }, 8000);
-
     const responseListener = (response) => {
       clearTimeout(timeout);
       // Handle the response (true/false)
       if (response !== undefined) {
         resolve(response.response);
       } else {
-        reject(new Error('Invalid response format from background script'));
+        reject(new Error('Invalid response format from the background script'));
       }
       contentPort.onMessage.removeListener(responseListener);
     };
+
+    const timeout = setTimeout(() => {
+      reject(new Error('Timeout while waiting for response'));
+      contentPort.onMessage.removeListener(responseListener);
+    }, 8000);
 
     contentPort.onMessage.addListener(responseListener);
 
