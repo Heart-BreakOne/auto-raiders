@@ -53,10 +53,45 @@ function injectIntoDOM() {
         }
     });
 
+
+    const existingBeforeButton = document.querySelector(".beforeButton");
+
+    if (!existingBeforeButton) {
+        newButton = document.createElement("button");
+        newButton.className = "beforeButton";
+        newButton.innerHTML = "Before <br>all";
+        newButton.style.cssText = wipeStyles;
+        let quantityItemsCont = document.querySelector(".quantityItemsCont");
+        quantityItemsCont.insertBefore(newButton, quantityItemsCont.firstChild);
+    }
+
+    const existingAfterButton = document.querySelector(".afterButton");
+
+    if (!existingAfterButton) {
+        newButton = document.createElement("button");
+        newButton.className = "afterButton";
+        newButton.innerHTML = "After <br>all";
+        newButton.style.cssText = wipeStyles;
+        let quantityItemsCont = document.querySelector(".quantityItemsCont");
+        quantityItemsCont.insertBefore(newButton, quantityItemsCont.firstChild);
+    }
+
+    const existingDisableButton = document.querySelector(".disableButton");
+
+    if (!existingDisableButton) {
+        newButton = document.createElement("button");
+        newButton.className = "disableButton";
+        newButton.innerHTML = "Disable <br>all";
+        newButton.style.cssText = wipeStyles;
+        let quantityItemsCont = document.querySelector(".quantityItemsCont");
+        quantityItemsCont.insertBefore(newButton, quantityItemsCont.firstChild);
+    }
+
     // Checks if wipe button already exists
-    existingButton = document.querySelector(".wipeButton");
+    const existingWipeButton = document.querySelector(".wipeButton");
+
     //If button doesn't exist one is created and injected.
-    if (!existingButton) {
+    if (!existingWipeButton) {
         newButton = document.createElement("button");
         newButton.className = "wipeButton";
         newButton.innerHTML = "Wipe<br>states";
@@ -77,59 +112,108 @@ function injectIntoDOM() {
     }
 }
 
-//Event listened for user clicks on the injected buttons
 document.addEventListener("click", function (event) {
 
-    /* User clicked on the offline slot button.
-    The offline button prevents the idle switcher from replacing
-    captains on this slot even if the captains are idling or the slot is empty */
-    if (event.target.classList.contains("offlineButton")) {
-        let button = event.target;
-        let id;
-        //Checks button current state, updates it and save the slot id and state on the storage
-        if (button.innerText === "ENABLED") {
-            //Disable button
-            button.innerText = "DISABLED";
-            id = button.id;
-            button.style.backgroundColor = "red";
-            setIdleState(id, 0);
-       } else if (button.innerText === "DISABLED") {
-            //Leave button
-            button.innerText = "LEAVE AFTER";
-            id = button.id;
-            button.style.backgroundColor = "green";
-            setIdleState(id, 2);
-		} else if (button.innerText === "LEAVE AFTER") {
-            //Leave button
-            button.innerText = "LEAVE BEFORE";
-            id = button.id;
-            button.style.backgroundColor = "purple";
-            setIdleState(id, 3);
-		} else {
-            //Enable button
-            button.innerText = "ENABLED";
-            button.style.backgroundColor = "#5fa695";
-            id = button.id;
-            setIdleState(id, 1);
+    (async () => {
+        /* User clicked on the offline slot button.
+        The offline button prevents the idle switcher from replacing
+        captains on this slot even if the captains are idling or the slot is empty */
+        if (event.target.classList.contains("offlineButton")) {
+            let button = event.target;
+            let id;
+            //Checks button current state, updates it and save the slot id and state on the storage
+            if (button.innerText === "ENABLED") {
+                //Disable button
+                button.innerText = "DISABLED";
+                id = button.id;
+                button.style.backgroundColor = "red";
+                await setIdleState(id, 0);
+            } else if (button.innerText === "DISABLED") {
+                //Leave button
+                button.innerText = "LEAVE AFTER";
+                id = button.id;
+                button.style.backgroundColor = "green";
+                await setIdleState(id, 2);
+            } else if (button.innerText === "LEAVE AFTER") {
+                //Leave button
+                button.innerText = "LEAVE BEFORE";
+                id = button.id;
+                button.style.backgroundColor = "purple";
+                await setIdleState(id, 3);
+            } else {
+                //Enable button
+                button.innerText = "ENABLED";
+                button.style.backgroundColor = "#5fa695";
+                id = button.id;
+                await setIdleState(id, 1);
+            }
         }
-    }
 
-    //User clicked the wipe button.
-    if (event.target.classList.contains("wipeButton")) {
-        //Using the unique key idenfiers all data is removed from storage
-        chrome.storage.local.remove(["dungeonCaptain", "clashCaptain", "duelCaptain", 'flaggedCaptains', 'captainLoyalty', 'idleData', 'dataArray', 'offlinePermission'], function () {
+        //User clicked the wipe button.
+        if (event.target.classList.contains("wipeButton")) {
+            //Using the unique key identifiers all data is removed from storage
+            chrome.storage.local.remove(["dungeonCaptain", "clashCaptain", "duelCaptain", 'flaggedCaptains', 'captainLoyalty', 'idleData', 'dataArray', 'offlinePermission'], function () {
+                //Resets dataArray to prevent data from being added from the array back to the storage.
+                dataArray = [];
+                loadBanner("Settings updated successfully", "#5fa695");
+                //Resets button properties on the user interface.
+                let captainPauseSlots = document.querySelectorAll(".capSlot");
+                captainPauseSlots.forEach(function (slot) {
+                    slot.querySelector(".offlineButton").innerText = "ENABLED";
+                    slot.querySelector(".offlineButton").style.backgroundColor = "#5fa695";
+                });
+            });
+        }
+
+        if (event.target.classList.contains("disableButton")) {
             //Resets dataArray to prevent data from being added from the array back to the storage.
             dataArray = [];
-            loadBanner("Settings updated sucessfully", "#5fa695");
             //Resets button properties on the user interface.
             let captainPauseSlots = document.querySelectorAll(".capSlot");
-            captainPauseSlots.forEach(function (slot) {
-                slot.querySelector(".offlineButton").innerText = "ENABLED";
-                slot.querySelector(".offlineButton").style.backgroundColor = "#5fa695";
+            await setIdleState("offlineButton_1", 0)
+            await setIdleState("offlineButton_2", 0)
+            await setIdleState("offlineButton_3", 0)
+            await setIdleState("offlineButton_4", 0)
+            captainPauseSlots.forEach(async function (slot) {
+                slot.querySelector(".offlineButton").innerText = "DISABLED";
+                slot.querySelector(".offlineButton").style.backgroundColor = "red";
             });
-        });
-    }
+            loadBanner("Settings updated successfully", "#5fa695");
+        }
 
+        if (event.target.classList.contains("afterButton")) {
+            //Resets dataArray to prevent data from being added from the array back to the storage.
+            dataArray = [];
+            //Resets button properties on the user interface.
+            let captainPauseSlots = document.querySelectorAll(".capSlot");
+            await setIdleState("offlineButton_1", 2)
+            await setIdleState("offlineButton_2", 2)
+            await setIdleState("offlineButton_3", 2)
+            await setIdleState("offlineButton_4", 2)
+            captainPauseSlots.forEach(async function (slot) {
+                slot.querySelector(".offlineButton").innerText = "LEAVE AFTER";
+                slot.querySelector(".offlineButton").style.backgroundColor = "green";
+            });
+            loadBanner("Settings updated successfully", "#5fa695");
+        }
+
+        if (event.target.classList.contains("beforeButton")) {
+            //Resets dataArray to prevent data from being added from the array back to the storage.
+            dataArray = [];
+            //Resets button properties on the user interface.
+            let captainPauseSlots = document.querySelectorAll(".capSlot");
+            await setIdleState("offlineButton_1", 3)
+            await setIdleState("offlineButton_2", 3)
+            await setIdleState("offlineButton_3", 3)
+            await setIdleState("offlineButton_4", 3)
+            captainPauseSlots.forEach(async function (slot) {
+                slot.querySelector(".offlineButton").innerText = "LEAVE BEFORE";
+                slot.querySelector(".offlineButton").style.backgroundColor = "purple";
+            });
+            loadBanner("Settings updated successfully", "#5fa695");
+        }
+
+    })();
 });
 
 /* This function is invoked when user clicks on a pause button.
@@ -198,28 +282,29 @@ function retrieveStateFromStorage(captainName) {
 It updates the state of whether or not a captain replacement should be selected for individual slots
 It the slot id and the new switch state to save on storage */
 
-function setIdleState(id, booleanValue) {
-    //Gets values currently in storage
-    chrome.storage.local.get(['offlinePermission'], function (result) {
+async function setIdleState(id, booleanValue) {
+    try {
+        const result = await new Promise(resolve =>
+            chrome.storage.local.get(['offlinePermission'], resolve)
+        );
+
         let ids = result.offlinePermission || {};
 
-        if (ids.hasOwnProperty(id)) {
-            // id already exists, update state
+        if (ids.hasOwnProperty(id) || Object.keys(ids).length < 4) {
+            // id already exists or there are less than 4 in storage, update or save state
             ids[id] = booleanValue;
-        } else if (Object.keys(ids).length < 4) {
-            // id does not exist and there are less than 4 on storage, save state
-            ids[id] = booleanValue;
-        }
 
-        //Sets the new or update values into the storage and shows a banner to the user
-        chrome.storage.local.set({ offlinePermission: ids }, function () {
-            if (chrome.runtime.lastError) {
-                loadBanner("Failed to update settings", "red");
-            } else {
-                loadBanner("Settings updated successfully", "#5fa695");
-            }
-        });
-    });
+            await new Promise(resolve =>
+                chrome.storage.local.set({ offlinePermission: ids }, resolve)
+            );
+
+            loadBanner("Settings updated successfully", "#5fa695");
+        } else {
+            loadBanner("Failed to update settings", "red");
+        }
+    } catch (error) {
+        loadBanner("Failed to update settings", "red");
+    }
 }
 
 
