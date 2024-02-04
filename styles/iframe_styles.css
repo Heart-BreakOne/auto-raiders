@@ -49,3 +49,8 @@ td {
     padding: 16px 20px;
     background-color: #5fa695;
 }
+
+.x {
+    color: rgba(128, 128, 128, 0.0);
+    display: none;
+}

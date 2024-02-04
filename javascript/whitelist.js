@@ -50,7 +50,13 @@ const keysToExport = [
     "potionlist",
     "unitList",
     "afterSwitch",
-    "beforeSwitch"
+    "beforeSwitch",
+    "dungeonSlotSwitch",
+    "skipDungeonSlotSwitch",
+    "duelsSlotSwitch",
+    "skipDuelsSlotSwitch",
+    "clashSlotSwitch",
+    "skipClashSlotSwitch"
 ];
 
 //Event listener for when the page loads

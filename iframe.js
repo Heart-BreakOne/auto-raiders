@@ -39,10 +39,16 @@ document.addEventListener("DOMContentLoaded", function () {
     initializeSwitch("lsuperbossSwitch");
     initializeSwitch("beforeSwitch");
     initializeSwitch("afterSwitch");
+    initializeSwitch("dungeonSlotSwitch");
+    initializeSwitch("skipDungeonSlotSwitch");
+    initializeSwitch("duelsSlotSwitch");
+    initializeSwitch("skipDuelsSlotSwitch");
+    initializeSwitch("clashSlotSwitch");
+    initializeSwitch("skipClashSlotSwitch")
     initializeReloader("reloaderInput");
     initializeReloader("minimumCurrencyInput");
     initializeReloader("minUnitLvlDungInput");
-    initializeReloader("minDungeonLvlInput")
+    initializeReloader("minDungeonLvlInput");
 });
 
 //When the user interacts with the toggle switches, it gets the current stored value and update them with the value.
