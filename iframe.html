@@ -18,14 +18,28 @@
             <tr>
                 <td><label for="reloaderInput">Reloader&nbsp;&nbsp;&nbsp;<input type="number"
                             id="reloaderInput"></label></td>
-                <td><button id="reloaderButton" style="width: fit-content; height: fit-content; text-align: center; background-color: #5fa695;">Set</button></td>
-                    <td><label for="minimumCurrencyInput">Minimum event currency to buy event chests &nbsp;&nbsp;&nbsp;<input type="number"
-                                id="minimumCurrencyInput"></label></td>
-                    <td><button id="minimumCurrencyButton" style="width: fit-content; height: fit-content; text-align: center; background-color: #5fa695;">Set</button></td>
-            </tr
-            
+                <td><button id="reloaderButton"
+                        style="width: fit-content; height: fit-content; text-align: center; background-color: #5fa695;">Set</button>
+                </td>
+                <td><label for="minimumCurrencyInput">Minimum event currency to buy event chests
+                        &nbsp;&nbsp;&nbsp;<input type="number" id="minimumCurrencyInput"></label></td>
+                <td><button id="minimumCurrencyButton"
+                        style="width: fit-content; height: fit-content; text-align: center; background-color: #5fa695;">Set</button>
+                </td>
+            </tr>
             <tr>
-                <td colspan="3"></td>
+                <td><label for="minUnitLvlDungInput">Minimum unit level for dungeons&nbsp;&nbsp;&nbsp;<input type="number"
+                            id="minUnitLvlDungInput"></label></td>
+                <td><button id="minUnitLvlButton"
+                        style="width: fit-content; height: fit-content; text-align: center; background-color: #5fa695;">Set</button>
+                </td>
+                <td><label for="minDungeonLvlInput">Minimum dungeon level for custom unit level
+                        &nbsp;&nbsp;&nbsp;<input type="number" id="minDungeonLvlInput"></label></td>
+                <td><button id="minDungeonLvlButton"
+                        style="width: fit-content; height: fit-content; text-align: center; background-color: #5fa695;">Set</button>
+                </td>
+            </tr>
+            <td colspan="3"></td>
             </tr>
             <tr>
                 <td><label for="offlineSwitch"><input type="checkbox" id="offlineSwitch"> Switch idle captain</label>
@@ -42,18 +56,24 @@
             </tr>
             <tr>
                 <td><label for="dailySwitch"><input type="checkbox" id="dailySwitch"> Collect daily reward</label></td>
-				<td><label for="eventChestSwitch"><input type="checkbox" id="eventChestSwitch"> Buy event chests</label></td>
+                <td><label for="eventChestSwitch"><input type="checkbox" id="eventChestSwitch"> Buy event chests</label>
+                </td>
                 <td><label for="battlepassSwitch"><input type="checkbox" id="battlepassSwitch"> Collect
                         battlepass</label></td>
             </tr>
-			<tr>
-				<td><label for="equipSwitch"><input type="checkbox" id="equipSwitch"> Equip captain skins</label></td>
-				<td><label for="equipNoDiamondSwitch"><input type="checkbox" id="equipNoDiamondSwitch"> Only equip if not diamond</label></td>
+            <tr>
+                <td><label for="equipSwitch"><input type="checkbox" id="equipSwitch"> Equip captain skins</label></td>
+                <td><label for="equipNoDiamondSwitch"><input type="checkbox" id="equipNoDiamondSwitch"> Only equip skin
+                        if not diamond</label></td>
             </tr>
             <tr>
-                <td title="Not efficient on set markers. This will disable priority lists and enable all unit rarity classes so the auto quester has authority."><label for="completeQuests"><input type="checkbox" id="completeQuests">Complete campaign related quests (Hover for info)</label>
+                <td
+                    title="Not efficient on set markers. This will disable priority lists and enable all unit rarity classes so the auto quester has authority.">
+                    <label for="completeQuests"><input type="checkbox" id="completeQuests">Complete campaign related
+                        quests (Hover for info)</label>
                 </td>
-                <td><label for="priorityListSwitch"><input type="checkbox" id="priorityListSwitch">Enable unit priority list
+                <td><label for="priorityListSwitch"><input type="checkbox" id="priorityListSwitch">Enable unit priority
+                        list
                 <td><label for="commonSwitch"><input type="checkbox" id="commonSwitch"> Use common units</label></td>
                 <td><label for="uncommonSwitch"><input type="checkbox" id="uncommonSwitch"> Use uncommon units</label>
                 </td>
@@ -72,9 +92,10 @@
                 <td><label for="dungeonSwitch"><input type="checkbox" id="dungeonSwitch"> Unlimited dungeons</label>
                 </td>
             </tr>
-			<tr>
-                <td><label for="dungeonLevelSwitch"><input type="checkbox" id="dungeonLevelSwitch"> Place level 10 or lower (or any level flag) on dungeon levels 30 or lower</label></td>
-			</tr>
+            <tr>
+                <td><label for="dungeonLevelSwitch"><input type="checkbox" id="dungeonLevelSwitch"> Place units (or any
+                        flag bearer) with a minimum custom level on dungeons</label></td>
+            </tr>
             <tr>
                 <td><label for="liveMasterSwitch"><input type="checkbox" id="liveMasterSwitch"> Force live switch to
                         masterlist</label></td>
@@ -86,8 +107,10 @@
                         if no masterlist is online</label></td>
             </tr>
             <tr>
-                <td><label for="afterSwitch"><input type="checkbox" id="afterSwitch"> Enable slot on leave after</label></td>
-                <td><label for="beforeSwitch"><input type="checkbox" id="beforeSwitch"> Enable slot on leave before</label></td>
+                <td><label for="afterSwitch"><input type="checkbox" id="afterSwitch"> Enable slot on leave after</label>
+                </td>
+                <td><label for="beforeSwitch"><input type="checkbox" id="beforeSwitch"> Enable slot on leave
+                        before</label></td>
             </tr>
             <tr>
                 <td><label><input type="radio" name="loyalty" value="0"> Don't preserve loyalty</label></td>
@@ -97,14 +120,20 @@
                 <td><label><input type="radio" name="loyalty" value="4"> Preserve if not diamond</label></td>
             </tr>
             <tr>
-                <td><label for="lgoldSwitch"><input type="checkbox" id="lgoldSwitch"> Bypass and allow LGold</label></td>
-                <td><label for="lskinSwitch"><input type="checkbox" id="lskinSwitch"> Bypass and allow LSkin</label></td>
-                <td><label for="lscrollSwitch"><input type="checkbox" id="lscrollSwitch"> Bypass and allow LScroll</label></td>
+                <td><label for="lgoldSwitch"><input type="checkbox" id="lgoldSwitch"> Bypass and allow LGold</label>
+                </td>
+                <td><label for="lskinSwitch"><input type="checkbox" id="lskinSwitch"> Bypass and allow LSkin</label>
+                </td>
+                <td><label for="lscrollSwitch"><input type="checkbox" id="lscrollSwitch"> Bypass and allow
+                        LScroll</label></td>
             </tr>
             <tr>
-				<td><label for="ltokenSwitch"><input type="checkbox" id="ltokenSwitch"> Bypass and allow LToken</label></td>
-                <td><label for="lbossSwitch"><input type="checkbox" id="lbossSwitch"> Bypass and allow LBoss</label></td>
-				<td><label for="lsuperbossSwitch"><input type="checkbox" id="lsuperbossSwitch"> Bypass and allow LSuperBoss</label></td>
+                <td><label for="ltokenSwitch"><input type="checkbox" id="ltokenSwitch"> Bypass and allow LToken</label>
+                </td>
+                <td><label for="lbossSwitch"><input type="checkbox" id="lbossSwitch"> Bypass and allow LBoss</label>
+                </td>
+                <td><label for="lsuperbossSwitch"><input type="checkbox" id="lsuperbossSwitch"> Bypass and allow
+                        LSuperBoss</label></td>
             </tr>
             <tr>
                 <td><label for="favoriteSwitch"><input type="checkbox" id="favoriteSwitch"> Potions allowlist

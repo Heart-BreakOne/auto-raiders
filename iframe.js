@@ -41,7 +41,8 @@ document.addEventListener("DOMContentLoaded", function () {
     initializeSwitch("afterSwitch");
     initializeReloader("reloaderInput");
     initializeReloader("minimumCurrencyInput");
-
+    initializeReloader("minUnitLvlDungInput");
+    initializeReloader("minDungeonLvlInput")
 });
 
 //When the user interacts with the toggle switches, it gets the current stored value and update them with the value.
@@ -80,35 +81,10 @@ document.addEventListener("DOMContentLoaded", async function () {
         });
     }
 
-    //Time in minutes to reload
-    document.getElementById('reloaderButton').addEventListener('click', function () {
-
-        const inputValue = document.getElementById('reloaderInput').value;
-        if (inputValue != undefined || inputValue != null) {
-            chrome.storage.local.set({ reloaderInput: inputValue }, function () {
-                if (chrome.runtime.lastError) {
-                    loadBanner(failureMessage, redColor);
-                } else {
-                    loadBanner(successMessage, greenColor);
-                }
-            });
-        }
-    });
-
-    // Minimum currency amount to buy
-    document.getElementById('minimumCurrencyButton').addEventListener('click', function () {
-
-        const inputValue = document.getElementById('minimumCurrencyInput').value;
-        if (inputValue != undefined || inputValue != null) {
-            chrome.storage.local.set({ minimumCurrencyInput: inputValue }, function () {
-                if (chrome.runtime.lastError) {
-                    loadBanner(failureMessage, redColor);
-                } else {
-                    loadBanner(successMessage, greenColor);
-                }
-            });
-        }
-    });
+    setInputButtonListener('reloaderButton', 'reloaderInput');
+    setInputButtonListener('minimumCurrencyButton', 'minimumCurrencyInput');
+    setInputButtonListener('minUnitLvlButton', 'minUnitLvlDungInput');
+    setInputButtonListener('minDungeonLvlButton', 'minDungeonLvlInput');
 
 
     //Event listener for when the potion radio button is changed by the user
@@ -158,6 +134,25 @@ document.addEventListener("DOMContentLoaded", async function () {
     });
 
 });
+
+function setInputButtonListener(buttonId, inputId) {
+    document.getElementById(buttonId).addEventListener('click', function () {
+        const inputValue = document.getElementById(inputId).value;
+        if (inputValue != undefined || inputValue != null) {
+            const storageObject = {};
+            storageObject[inputId] = inputValue;
+
+            chrome.storage.local.set(storageObject, function () {
+                if (chrome.runtime.lastError) {
+                    loadBanner(failureMessage, redColor);
+                } else {
+                    loadBanner(successMessage, greenColor);
+                }
+            });
+        }
+    });
+}
+
 
 const successMessage = "Settings updated sucessfully";
 const failureMessage = "Failed to update settings";

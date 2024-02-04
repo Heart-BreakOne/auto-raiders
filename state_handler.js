@@ -108,7 +108,7 @@ function closeAll() {
 
 //Mutator observer to remove stuck modals, frozen states and update recently loaded elements.
 const observer = new MutationObserver(async function (mutations) {
-
+  let contentPort = chrome.runtime.connect({ name: "content-script" });
   //If desktop mode loads, reload with mobile mode
   if (document.querySelector("#\\#canvas")) {
     contentPort.postMessage({ action: "reloadCleanCache", });

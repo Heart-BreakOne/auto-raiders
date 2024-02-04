@@ -41,6 +41,8 @@ const keysToExport = [
     "lbossSwitch",
     "lsuperbossSwitch",
     "reloaderInput",
+    "minDungeonLvlInput",
+    "minUnitLvlDungInput",
     "minimumCurrencyInput",
     "masterlist",
     "whitelist",

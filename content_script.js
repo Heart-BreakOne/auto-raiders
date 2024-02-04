@@ -252,7 +252,7 @@ async function start() {
         //Get captain name from the slot
         var captainSlot = button.closest('.capSlot');
         captainNameFromDOM = captainSlot.querySelector('.capSlotName').innerText;
-        chestType = await requestLoyalty(captainNameFromDOM);
+        let chestType = await requestLoyalty(captainNameFromDOM);
         await setLogInitialChest(captainNameFromDOM, chestType);
         //Retrieve the slot pause state
         const btn = captainSlot.querySelector(".capSlotStatus .offlineButton");
@@ -394,7 +394,7 @@ async function start() {
         //If all is clear, it checks if the captain is diamond loyalty for future comparison.
         //Assigns the placeUnit button and breaks.
         else {
-          diamondLoyalty = false;
+          diamondLoyalty = null;
           diamondLoyalty = captainSlot.outerHTML;
           placeUnit = button
           break;
@@ -490,7 +490,7 @@ async function openBattlefield() {
       closeAll();
       zoom();
     }
-    diamondLoyalty = false;
+    diamondLoyalty = null;
   } else {
     //User doesn't want to preserve diamond loyalty
     zoom();
@@ -815,15 +815,14 @@ async function selectUnit() {
 
   //Put skinned units at the front if quest completer is not enabled.
   if (await retrieveFromStorage("equipSwitch") && !canCompleteQuests) {
-    if (await retrieveFromStorage("equipNoDiamondSwitch")) {
-      if (diamondLoyalty.toString().includes("LoyaltyDiamond")) {
-        try {
-          await shiftUnits();
-        } catch (error) {
-          console.log("log" + error);
-        }
+    //Only equip if not diamond
+    if (await retrieveFromStorage("equipNoDiamondSwitch") && !diamondLoyalty.toString().includes("LoyaltyDiamond")) {
+      try {
+        await shiftUnits();
+      } catch (error) {
+        console.log("log" + error);
       }
-    } else {
+    } else if (!await retrieveFromStorage("equipNoDiamondSwitch")) {
       try {
         await shiftUnits();
       } catch (error) {
@@ -866,7 +865,7 @@ async function selectUnit() {
     try {
       unitLevel = parseInt(unit.querySelector('.unitLevel').innerText);
     } catch (error) {
-      return;
+      continue;
     }
 
     //Get unit type and unit name so it can be compared with the marker and determine if the placement is valid.
@@ -882,13 +881,18 @@ async function selectUnit() {
       try {
         battleInfo = document.querySelector(".battleInfo").innerText;
       } catch (error) {
-        return;
+        continue;
       }
       let dungeonLevel;
       if (battleInfo.includes("Level")) {
         dungeonLevel = parseInt(battleInfo.substr(battleInfo.length - 2));
-          if (dungeonLevel <= 30 && unitLevel > 10 && unitName != "FLAG") {
-            continue;
+        //If it fails replace   retrieveFromStorage with   ->    retrieveNumberFromStorage
+        const userDunLevel = await retrieveFromStorage("minDungeonLvlInput")
+        const userUnitLevel = await retrieveFromStorage("minUnitLvlDungInput")  
+        if (userDunLevel == null || userDunLevel == undefined || userUnitLevel == null || userUnitLevel == undefined) {
+          continue;
+        } else if (dungeonLevel <= userDunLevel && unitLevel >= userUnitLevel && unitName != "FLAG") {
+          continue;
         }
       }
     }
@@ -1160,7 +1164,7 @@ async function collectChests() {
         };
       }
 
-      
+
       await setLogResults(battleResult, captainName, chestStringAlt);
 
       const capSlot = button.parentElement.parentElement
@@ -1226,5 +1230,17 @@ async function requestLoyalty(captainNameFromDOM) {
     contentPort.onMessage.addListener(responseListener);
 
     contentPort.postMessage({ action: "getLoyalty", captainNameFromDOM });
+  });
+}
+
+function retrieveNumberFromStorage(key) {
+  return new Promise((resolve, reject) => {
+      chrome.storage.local.get(key, (result) => {
+          if (chrome.runtime.lastError) {
+              reject(chrome.runtime.lastError);
+          } else {
+              resolve(result[key]);
+          }
+      });
   });
 }

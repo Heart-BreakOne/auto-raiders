@@ -240,7 +240,7 @@ async function sortPriorityUnits(unitDrawer) {
             let tempArray = [];
 
             for (let i = 0; i < arrayFromStorage.length; i++) {
-                const level = arrayFromStorage[i].level;
+                let level = arrayFromStorage[i].level;
                 let unitType = arrayFromStorage[i].unitType;
 
                 for (let j = 0; j < arrUnitNms.length; j++) {
@@ -253,9 +253,18 @@ async function sortPriorityUnits(unitDrawer) {
                 for (let j = unitSize - 1; j >= 0; j--) {
                     const unit = unitArray[0].children[j];
                     const u = unit.querySelector(".unitItem:nth-child(1)");
-                    const levelFromDOM = u.querySelector(".unitNormalLevel").innerText;
+                    let levelFromDOM
+                    try {
+                        levelFromDOM = u.querySelector(".unitNormalLevel").innerText;
+                    } catch {
+                        levelFromDOM = 0
+                        level = 0
+                    }
+                    if (levelFromDOM == null || levelFromDOM == undefined) {
+                        levelFromDOM = 0
+                        level = 0
+                    }
                     const unitTypeFromDOM = u.querySelector('.unitClass img').getAttribute('src').slice(-50).toUpperCase();
-
                     if (unitTypeFromDOM.includes(unitType) && level === levelFromDOM) {
                         tempArray.push(unitArray[0].children[j]);
                     }
