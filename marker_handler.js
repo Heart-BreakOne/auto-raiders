@@ -12,6 +12,7 @@ function getMapMatrix(arrayOfMarkers) {
 
     //Open leaderboard
     document.querySelector(".leaderboardCont").click();
+    //Look for skinned units here
 
     const allPlacers = document.querySelectorAll(".battlefieldLeaderboardRowCont");
     for (let i = 0; i < allPlacers.length; i++) {

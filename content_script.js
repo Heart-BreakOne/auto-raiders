@@ -561,6 +561,11 @@ async function getValidMarkers() {
       //Captain is using a mix of block markers and open zones.
       //Place imaginary markers to use instead
       arrayOfMarkers = setImaginaryMarkers(document.querySelectorAll(".placementAlly"))
+      //Check if user wants to avoid skins
+      //Open the leaderboard
+      //Look for skinned units
+      //Set equipSkins
+      //Close the leaderboard
       getValidMarkers();
       return;
 
@@ -568,6 +573,7 @@ async function getValidMarkers() {
       //There are vibe or set markers that can be used.
       try {
         //Attempt to sort the markers based on how close they are to the captain
+        //Set equipSkins
         sortedArrayOfMarkers = getMapMatrix(arrayOfMarkers);
         arrayOfMarkers = sortedArrayOfMarkers;
       } catch (error) {
@@ -820,12 +826,14 @@ async function selectUnit() {
       try {
         await shiftUnits();
       } catch (error) {
+        unitDrawer = [...document.querySelectorAll(".unitSelectionCont")];
         console.log("log" + error);
       }
     } else if (!await retrieveFromStorage("equipNoDiamondSwitch")) {
       try {
         await shiftUnits();
       } catch (error) {
+        unitDrawer = [...document.querySelectorAll(".unitSelectionCont")];
         console.log("log" + error);
       }
     }
