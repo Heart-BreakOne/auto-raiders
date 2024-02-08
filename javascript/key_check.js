@@ -6,7 +6,7 @@ document.addEventListener('DOMContentLoaded', function() {
         chrome.storage.local.get(key, function(result) {
             var dataContainer = document.getElementById('data_container');
             if (result && Object.keys(result).length > 0) {
-                dataContainer.innerHTML = JSON.stringify(result[key]);
+                dataContainer.innerHTML = JSON.stringify(result[key], null, 2);
             } else {
                 dataContainer.innerHTML = 'Key not found in local storage.';
             }
