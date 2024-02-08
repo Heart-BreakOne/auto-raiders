@@ -20,8 +20,8 @@ document.addEventListener("DOMContentLoaded", function () {
         const url = `chrome-extension://${chrome.runtime.id}/html/units.html`
         chrome.tabs.create({ url: url });
     });
-    document.getElementById('iframe_button').addEventListener('click', () => {
-        const url = `chrome-extension://${chrome.runtime.id}/iframe.html`
+    document.getElementById('settings_button').addEventListener('click', () => {
+        const url = `chrome-extension://${chrome.runtime.id}/settings.html`
         chrome.tabs.create({ url: url });
     });
 

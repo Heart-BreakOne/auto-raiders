@@ -28,6 +28,8 @@ document.addEventListener("DOMContentLoaded", async function () {
     //Set the presets
     document.getElementById("setBtn").addEventListener("click", async function () {
         setPresets()
+        const popup = document.getElementById('popup');
+        popup.style.display = 'none';
     });
 
     //Load presets from a file

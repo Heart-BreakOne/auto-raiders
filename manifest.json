@@ -32,7 +32,7 @@
             "idle_handler.js",
             "rotation_handler.js",
             "log_handler.js",
-            "iframe.js",
+            "settings.js",
             "marker_handler.js",
             "open_map_handler.js",
             "masterlist_handler.js",
@@ -48,7 +48,7 @@
    "web_accessible_resources": [
       {
          "resources": [
-            "iframe.html"
+            "settings.html"
          ],
          "matches": [
             "https://www.streamraiders.com/*"
