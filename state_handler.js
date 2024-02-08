@@ -124,6 +124,11 @@ const observer = new MutationObserver(async function (mutations) {
     return;
   };
 
+  const salesTag = document.querySelector(".saleTagCont")
+  if (salesTag) {
+    salesTag.style.display = "none";
+  }
+
   //If there too many attemps to place a unit, go home.
 
   if (isBattlefield == null || isBattlefield === undefined) {
