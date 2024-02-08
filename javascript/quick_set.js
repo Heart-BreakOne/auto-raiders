@@ -37,6 +37,49 @@ document.addEventListener("DOMContentLoaded", async function () {
         loadPresetFromFile(file);
     });
 
+    //Clear all inputs
+    document.getElementById('clearPresetBtn').addEventListener('click', function () {
+        const a = document.querySelectorAll(".quick_set_input")
+        a.forEach(input => {
+            input.value = ""
+        });
+    });
+
+    //Quick sets.
+    //Save
+    document.getElementById('savePreset1Btn').addEventListener('click', function () {
+        saveQuickSet("quickSetOne")
+    });
+
+    document.getElementById('savePreset2Btn').addEventListener('click', function () {
+        saveQuickSet("quickSetTwo")
+    });
+
+    document.getElementById('savePreset3Btn').addEventListener('click', function () {
+        saveQuickSet("quickSetThree")
+    });
+
+    document.getElementById('savePreset4Btn').addEventListener('click', function () {
+        saveQuickSet("quickSetFour")
+    });
+
+
+    //Load
+    document.getElementById('loadPreset1Btn').addEventListener('click', function () {
+        loadQuickSet("quickSetOne")
+    });
+
+    document.getElementById('loadPreset2Btn').addEventListener('click', function () {
+        loadQuickSet("quickSetTwo")
+    });
+
+    document.getElementById('loadPreset3Btn').addEventListener('click', function () {
+        loadQuickSet("quickSetThree")
+    });
+
+    document.getElementById('loadPreset4Btn').addEventListener('click', function () {
+        loadQuickSet("quickSetFour")
+    });
 });
 
 //Set presets to the unit list
@@ -147,4 +190,59 @@ function loadPresetFromFile(file) {
     };
 
     reader.readAsText(file);
+}
+
+function saveQuickSet(quickSetKey) {
+    const presetsToSave = [];
+    const all_inputs = document.querySelectorAll(".quick_set_input");
+
+    all_inputs.forEach(input => {
+        const id = input.id;
+        const value = parseInt(input.value);
+        presetsToSave.push({ [id]: value });
+    });
+
+    chrome.storage.local.set({ [quickSetKey]: presetsToSave }, function () {
+        if (chrome.runtime.lastError) {
+            console.error("Error saving presets:", chrome.runtime.lastError);
+        } else {
+            alert("Presets were saved successfully!");
+        }
+    });
+}
+
+
+function loadQuickSet(quickSetKey) {
+    const a_i = document.querySelectorAll(".quick_set_input");
+    a_i.forEach(input => {
+        input.value = ""
+    });
+    
+    chrome.storage.local.get(quickSetKey, function (storedData) {
+        if (storedData.hasOwnProperty(quickSetKey)) {
+            const array = storedData[quickSetKey]
+            for (let i = 0; i < array.length; i++) {
+                let id = null
+                let value = null
+                try {
+                    const obj = array[i];
+                    id = Object.keys(obj)[0];
+                    value = obj[id];
+                } catch (error) {
+                    continue
+                }
+
+                if (id !== null && value !== null && value >= 0) {
+                    const a_i = document.querySelectorAll(".quick_set_input");
+                    a_i.forEach(input => {
+                        if (input.id === id) {
+                            input.value = value;
+                            
+                        }
+                    });
+                }
+
+            }
+        }
+    });
 }

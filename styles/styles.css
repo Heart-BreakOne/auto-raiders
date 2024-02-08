@@ -132,8 +132,13 @@ textarea {
     z-index: 1000;
     max-height: 80%;
     overflow-y: auto;
+    width: 60%;
 }
 
 .quick_set_input {
     width: 40px;
+}
+
+.quick_save_btn {
+    padding: 5px;
 }
