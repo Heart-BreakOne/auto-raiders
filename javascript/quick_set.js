@@ -1,11 +1,17 @@
 document.addEventListener("DOMContentLoaded", async function () {
 
-    const savePreset = document.getElementById("savePreSetBtn");
-
     //Opens the popup
     document.getElementById("quickSet_button").addEventListener("click", async function () {
         const popup = document.getElementById('popup');
+        const all_inputs = document.querySelectorAll(".quick_set_input");
+        all_inputs.forEach((input, index) => {
+            input.value = ""
+            if (index < 4) {
+                input.value = "-1";
+            }
+        });
         popup.style.display = 'block';
+
     });
 
     //Closes the popup
@@ -14,12 +20,15 @@ document.addEventListener("DOMContentLoaded", async function () {
         popup.style.display = 'none';
     });
 
-
     //Save the presets to a file
-    savePreset.addEventListener('click', function () {
+    document.getElementById("savePreSetBtn").addEventListener("click", async function () {
         savePresetToFile()
     });
 
+    //Set the presets
+    document.getElementById("setBtn").addEventListener("click", async function () {
+        setPresets()
+    });
 
     //Load presets from a file
     document.getElementById('loadPreSetBtn').addEventListener('change', function () {
@@ -28,9 +37,70 @@ document.addEventListener("DOMContentLoaded", async function () {
         loadPresetFromFile(file);
     });
 
-
 });
 
+//Set presets to the unit list
+function setPresets() {
+    const preSets = [];
+    const all_inputs = document.querySelectorAll(".quick_set_input");
+    const tableOfUnits = document.getElementById("tableOfUnits");
+
+    all_inputs.forEach(input => {
+        const id = input.id;
+        const value = parseInt(input.value);
+        preSets.push({ [id]: value });
+    });
+
+    //General Units
+    for (let i = 0; i < preSets.length; i++) {
+        const key = Object.keys(preSets[i])[0];
+        const sliceKey = key.slice(0, -5);
+        const value = preSets[i][key]
+        if (value < 0 || isNaN(value)) {
+            continue
+        }
+        let minLevel = parseInt(key.slice(-5).substring(0, 2));
+        let maxLevel = parseInt(key.slice(-2));
+
+        for (let i = 0; i < tableOfUnits.rows.length; i++) {
+            let row = tableOfUnits.rows[i];
+            // Extracting values from the row
+            let unitName = row.cells[1].innerText;
+            let unitLevel = parseInt(row.cells[2].innerText);
+            let inputElement = row.querySelector('input');
+            if (unitName.toLowerCase() == sliceKey.toLowerCase()) {
+                if (unitLevel >= minLevel && unitLevel <= maxLevel) {
+                    inputElement.value = value
+                }
+            }
+        }
+    }
+
+    //All units quick set
+    const a05 = parseInt(document.getElementById("a_u00_05").value);
+    const a610 = parseInt(document.getElementById("a_u06_10").value);
+    const a1120 = parseInt(document.getElementById("a_u11_20").value);
+    const a2130 = parseInt(document.getElementById("a_u21_30").value);
+    const ar = [{ value: a05, min: 0, max: 5 },
+    { value: a610, min: 6, max: 10 },
+    { value: a1120, min: 11, max: 20 },
+    { value: a2130, min: 21, max: 30 }]
+    for (let i = 0; i < ar.length; i++) {
+        const v = ar[i].value;
+        const minV = ar[i].min;
+        const maxV = ar[i].max;
+        for (let i = 0; i < tableOfUnits.rows.length; i++) {
+            let row = tableOfUnits.rows[i];
+            let unitLevel = parseInt(row.cells[2].innerText);
+            let inputElement = row.querySelector('input');
+            if (v >= 0 && unitLevel >= minV && unitLevel <= maxV) {
+                inputElement.value = v
+            }
+        }
+    }
+}
+
+//Save the presets to a file
 function savePresetToFile() {
     const presetsToSave = [];
     const all_inputs = document.querySelectorAll(".quick_set_input");
@@ -52,6 +122,7 @@ function savePresetToFile() {
     document.body.removeChild(a);
 }
 
+//Load presets from a file
 function loadPresetFromFile(file) {
     const reader = new FileReader();
 
