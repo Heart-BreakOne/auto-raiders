@@ -183,6 +183,30 @@ async function start() {
   for (i in capSlots) {
     try {
       const st = capSlots[i]
+      //Check if captain has a code
+      if (st.innerHTML.includes("ENTER_CODE")) {
+        const cpId = parseInt(i, 10) + 1;
+        const cpNmSt = st.querySelector(".capSlotName").innerText
+        const curTime = new Date().toISOString();
+        const cB = st.querySelector(".fal.fa-times-square")
+        if (cB) {
+          cB.click();
+        }
+        //Flag captain into memory
+        chrome.storage.local.get("flaggedCaptains", function (data) {
+          let flaggedCpts = data.flaggedCaptains || [];
+
+          flaggedCpts.push({
+            captainId: cpId,
+            captainName: cpNmSt,
+            currentTime: curTime,
+          });
+
+          chrome.storage.local.set({ "flaggedCaptains": flaggedCpts }, function () {
+          });
+        });
+        continue;
+      }
       const btn = st.querySelector(".offlineButton").id
       const slotState = await getIdleState(btn);
       if (slotState == 3) {
@@ -896,7 +920,7 @@ async function selectUnit() {
         dungeonLevel = parseInt(battleInfo.substr(battleInfo.length - 2));
         //If it fails replace   retrieveFromStorage with   ->    retrieveNumberFromStorage
         const userDunLevel = await retrieveFromStorage("minDungeonLvlInput")
-        const userUnitLevel = await retrieveFromStorage("minUnitLvlDungInput")  
+        const userUnitLevel = await retrieveFromStorage("minUnitLvlDungInput")
         if (userDunLevel == null || userDunLevel == undefined || userUnitLevel == null || userUnitLevel == undefined) {
           continue;
         } else if (dungeonLevel <= userDunLevel && unitLevel >= userUnitLevel && unitName != "FLAG") {
@@ -1243,12 +1267,12 @@ async function requestLoyalty(captainNameFromDOM) {
 
 function retrieveNumberFromStorage(key) {
   return new Promise((resolve, reject) => {
-      chrome.storage.local.get(key, (result) => {
-          if (chrome.runtime.lastError) {
-              reject(chrome.runtime.lastError);
-          } else {
-              resolve(result[key]);
-          }
-      });
+    chrome.storage.local.get(key, (result) => {
+      if (chrome.runtime.lastError) {
+        reject(chrome.runtime.lastError);
+      } else {
+        resolve(result[key]);
+      }
+    });
   });
 }

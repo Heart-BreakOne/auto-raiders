@@ -11,21 +11,273 @@
 </head>
 
 <body>
+
+    <!-- Quick set popup -->
+    <div class="popup" id="popup">
+        <h1>NOT IMPLEMENTED YET - Quick unit preset based on unit type</h1>
+        <b>
+            <p>Load the units from the server before using this menu, otherwise there will be no units to preset.</p>
+            <p>Make sure to save after closing this popup so your prerefences are set.</p>
+            <p>"All units" will overwrite the other values, set it to -1 to ignore it.</p>
+        </b>
+
+        <button id="closePopupBtn" class="green_button" style="background-color: red;">Close</button>
+        <button id="quickSetUnitsPriorityBtn" class="green_button">Set</button>
+        <button id="savePreSetBtn" class="green_button">Load Preset</button>
+        <button id="savePreSetBtn" class="green_button">Save Preset (Fill the numbers below, then click Save
+            Preset)</button>
+        <!-- Table with units and input fields -->
+        <table>
+            <tr>
+                <td></td>
+                <td></td>
+                <td>Name</td>
+                <td>From 0 to 5</td>
+                <td>From 6 to 10</td>
+                <td>From 11 to 20</td>
+                <td>From 21 to 30</td>
+            </tr>
+            <tr>
+                <td>All units</td>
+                <td><input id="a_u" type="number" class="quick_set_input" min="0" value="-1"></td>
+                <td>Amazon</td>
+                <td><input id="ama0_5" type="number" class="quick_set_input" min="0" value="0"></td>
+                <td><input id="ama6_10" type="number" class="quick_set_input" min="0" value="0"></td>
+                <td><input id="ama11_20" type="number" class="quick_set_input" min="0" value="0"></td>
+                <td><input id="ama21_30" type="number" class="quick_set_input" min="0" value="0"></td>
+            </tr>
+            <tr>
+                <td>Archer</td>
+                <td><input id="arc0_5" type="number" class="quick_set_input" min="0" value="0"></td>
+                <td><input id="arc6_10" type="number" class="quick_set_input" min="0" value="0"></td>
+                <td><input id="arc11_20" type="number" class="quick_set_input" min="0" value="0"></td>
+                <td><input id="arc21_30" type="number" class="quick_set_input" min="0" value="0"></td>
+            </tr>
+            <tr>
+                <td>Artillery</td>
+                <td><input id="art0_5" type="number" class="quick_set_input" min="0" value="0"></td>
+                <td><input id="art6_10" type="number" class="quick_set_input" min="0" value="0"></td>
+                <td><input id="art11_20" type="number" class="quick_set_input" min="0" value="0"></td>
+                <td><input id="art21_30" type="number" class="quick_set_input" min="0" value="0"></td>
+            </tr>
+            <tr>
+                <td>BalloonBuster</td>
+                <td><input id="bab0_5" type="number" class="quick_set_input" min="0" value="0"></td>
+                <td><input id="bab6_10" type="number" class="quick_set_input" min="0" value="0"></td>
+                <td><input id="bab11_20" type="number" class="quick_set_input" min="0" value="0"></td>
+                <td><input id="bab21_30" type="number" class="quick_set_input" min="0" value="0"></td>
+            </tr>
+            <tr>
+                <td>Barbarian</td>
+                <td><input id="bar0_5" type="number" class="quick_set_input" min="0" value="0"></td>
+                <td><input id="bar6_10" type="number" class="quick_set_input" min="0" value="0"></td>
+                <td><input id="bab11_20" type="number" class="quick_set_input" min="0" value="0"></td>
+                <td><input id="bab21_30" type="number" class="quick_set_input" min="0" value="0"></td>
+            </tr>
+            <tr>
+                <td>Berserker</td>
+                <td><input id="ber0_5" type="number" class="quick_set_input" min="0" value="0"></td>
+                <td><input id="ber6_10" type="number" class="quick_set_input" min="0" value="0"></td>
+                <td><input id="ber11_20" type="number" class="quick_set_input" min="0" value="0"></td>
+                <td><input id="ber21_30" type="number" class="quick_set_input" min="0" value="0"></td>
+            </tr>
+            <tr>
+                <td>Blob</td>
+                <td><input id="blo0_5" type="number" class="quick_set_input" min="0" value="0"></td>
+                <td><input id="blo6_10" type="number" class="quick_set_input" min="0" value="0"></td>
+                <td><input id="blo11_20" type="number" class="quick_set_input" min="0" value="0"></td>
+                <td><input id="blo21_30" type="number" class="quick_set_input" min="0" value="0"></td>
+            </tr>
+            <tr>
+                <td>Bomber</td>
+                <td><input id="bom0_5" type="number" class="quick_set_input" min="0" value="0"></td>
+                <td><input id="bom6_10" type="number" class="quick_set_input" min="0" value="0"></td>
+                <td><input id="bom11_20" type="number" class="quick_set_input" min="0" value="0"></td>
+                <td><input id="bom21_30" type="number" class="quick_set_input" min="0" value="0"></td>
+            </tr>
+            <tr>
+                <td>Buster</td>
+                <td><input id="bus0_5" type="number" class="quick_set_input" min="0" value="0"></td>
+                <td><input id="bus6_10" type="number" class="quick_set_input" min="0" value="0"></td>
+                <td><input id="bus11_20" type="number" class="quick_set_input" min="0" value="0"></td>
+                <td><input id="bus21_30" type="number" class="quick_set_input" min="0" value="0"></td>
+            </tr>
+            <tr>
+                <td>Centurion</td>
+                <td><input id="cen0_5" type="number" class="quick_set_input" min="0" value="0"></td>
+                <td><input id="cen6_10" type="number" class="quick_set_input" min="0" value="0"></td>
+                <td><input id="cen11_20" type="number" class="quick_set_input" min="0" value="0"></td>
+                <td><input id="cen21_30" type="number" class="quick_set_input" min="0" value="0"></td>
+            </tr>
+            <tr>
+                <td>Fairy</td>
+                <td><input id="fai0_5" type="number" class="quick_set_input" min="0" value="0"></td>
+                <td><input id="fai6_10" type="number" class="quick_set_input" min="0" value="0"></td>
+                <td><input id="fai11_20" type="number" class="quick_set_input" min="0" value="0"></td>
+                <td><input id="fai21_30" type="number" class="quick_set_input" min="0" value="0"></td>
+            </tr>
+            <tr>
+                <td>FlagBearer</td>
+                <td><input id="flb0_5" type="number" class="quick_set_input" min="0" value="0"></td>
+                <td><input id="flb6_10" type="number" class="quick_set_input" min="0" value="0"></td>
+                <td><input id="flb11_20" type="number" class="quick_set_input" min="0" value="0"></td>
+                <td><input id="flb21_30" type="number" class="quick_set_input" min="0" value="0"></td>
+            </tr>
+            <tr>
+                <td>FlyingRogue</td>
+                <td><input id="flr0_5" type="number" class="quick_set_input" min="0" value="0"></td>
+                <td><input id="flr6_10" type="number" class="quick_set_input" min="0" value="0"></td>
+                <td><input id="flr11_20" type="number" class="quick_set_input" min="0" value="0"></td>
+                <td><input id="flr21_30" type="number" class="quick_set_input" min="0" value="0"></td>
+            </tr>
+            <tr>
+                <td>Gladiator</td>
+                <td><input id="gla0_5" type="number" class="quick_set_input" min="0" value="0"></td>
+                <td><input id="gla6_10" type="number" class="quick_set_input" min="0" value="0"></td>
+                <td><input id="gla11_20" type="number" class="quick_set_input" min="0" value="0"></td>
+                <td><input id="gla21_30" type="number" class="quick_set_input" min="0" value="0"></td>
+            </tr>
+            <tr>
+                <td>Healer</td>
+                <td><input id="hea0_5" type="number" class="quick_set_input" min="0" value="0"></td>
+                <td><input id="hea6_10" type="number" class="quick_set_input" min="0" value="0"></td>
+                <td><input id="hea11_20" type="number" class="quick_set_input" min="0" value="0"></td>
+                <td><input id="hea21_30" type="number" class="quick_set_input" min="0" value="0"></td>
+            </tr>
+            <tr>
+                <td>Lancer</td>
+                <td><input id="lan0_5" type="number" class="quick_set_input" min="0" value="0"></td>
+                <td><input id="lan6_10" type="number" class="quick_set_input" min="0" value="0"></td>
+                <td><input id="lan11_20" type="number" class="quick_set_input" min="0" value="0"></td>
+                <td><input id="lan21_30" type="number" class="quick_set_input" min="0" value="0"></td>
+            </tr>
+            <tr>
+                <td>Mage</td>
+                <td><input id="mag0_5" type="number" class="quick_set_input" min="0" value="0"></td>
+                <td><input id="mag6_10" type="number" class="quick_set_input" min="0" value="0"></td>
+                <td><input id="mag11_20" type="number" class="quick_set_input" min="0" value="0"></td>
+                <td><input id="mag21_30" type="number" class="quick_set_input" min="0" value="0"></td>
+            </tr>
+            <tr>
+                <td>Monk</td>
+                <td><input id="mon0_5" type="number" class="quick_set_input" min="0" value="0"></td>
+                <td><input id="mon6_10" type="number" class="quick_set_input" min="0" value="0"></td>
+                <td><input id="mon11_20" type="number" class="quick_set_input" min="0" value="0"></td>
+                <td><input id="mon21_30" type="number" class="quick_set_input" min="0" value="0"></td>
+            </tr>
+            <tr>
+                <td>Musketeer</td>
+                <td><input id="mus0_5" type="number" class="quick_set_input" min="0" value="0"></td>
+                <td><input id="mus6_10" type="number" class="quick_set_input" min="0" value="0"></td>
+                <td><input id="mus11_20" type="number" class="quick_set_input" min="0" value="0"></td>
+                <td><input id="mus21_30" type="number" class="quick_set_input" min="0" value="0"></td>
+            </tr>
+            <tr>
+                <td>Necromancer</td>
+                <td><input id="nec0_5" type="number" class="quick_set_input" min="0" value="0"></td>
+                <td><input id="nec6_10" type="number" class="quick_set_input" min="0" value="0"></td>
+                <td><input id="nec11_20" type="number" class="quick_set_input" min="0" value="0"></td>
+                <td><input id="nec21_30" type="number" class="quick_set_input" min="0" value="0"></td>
+            </tr>
+            <tr>
+                <td>OrcSlayer</td>
+                <td><input id="ors0_5" type="number" class="quick_set_input" min="0" value="0"></td>
+                <td><input id="ors6_10" type="number" class="quick_set_input" min="0" value="0"></td>
+                <td><input id="ors11_20" type="number" class="quick_set_input" min="0" value="0"></td>
+                <td><input id="ors21_30" type="number" class="quick_set_input" min="0" value="0"></td>
+            </tr>
+            <tr>
+                <td>Paladin</td>
+                <td><input id="pal0_5" type="number" class="quick_set_input" min="0" value="0"></td>
+                <td><input id="pal6_10" type="number" class="quick_set_input" min="0" value="0"></td>
+                <td><input id="pal11_20" type="number" class="quick_set_input" min="0" value="0"></td>
+                <td><input id="pal21_30" type="number" class="quick_set_input" min="0" value="0"></td>
+            </tr>
+            <tr>
+                <td>Rogue</td>
+                <td><input id="rog0_5" type="number" class="quick_set_input" min="0" value="0"></td>
+                <td><input id="rog6_10" type="number" class="quick_set_input" min="0" value="0"></td>
+                <td><input id="rog11_20" type="number" class="quick_set_input" min="0" value="0"></td>
+                <td><input id="rog21_30" type="number" class="quick_set_input" min="0" value="0"></td>
+            </tr>
+            <tr>
+                <td>Saint</td>
+                <td><input id="sai0_5" type="number" class="quick_set_input" min="0" value="0"></td>
+                <td><input id="sai6_10" type="number" class="quick_set_input" min="0" value="0"></td>
+                <td><input id="sai11_20" type="number" class="quick_set_input" min="0" value="0"></td>
+                <td><input id="sai21_30" type="number" class="quick_set_input" min="0" value="0"></td>
+            </tr>
+            <tr>
+                <td>Shinobi</td>
+                <td><input id="shi0_5" type="number" class="quick_set_input" min="0" value="0"></td>
+                <td><input id="shi6_10" type="number" class="quick_set_input" min="0" value="0"></td>
+                <td><input id="shi11_20" type="number" class="quick_set_input" min="0" value="0"></td>
+                <td><input id="shi21_30" type="number" class="quick_set_input" min="0" value="0"></td>
+            </tr>
+            <tr>
+                <td>Spy</td>
+                <td><input id="spy0_5" type="number" class="quick_set_input" min="0" value="0"></td>
+                <td><input id="spy6_10" type="number" class="quick_set_input" min="0" value="0"></td>
+                <td><input id="spy11_20" type="number" class="quick_set_input" min="0" value="0"></td>
+                <td><input id="spy21_30" type="number" class="quick_set_input" min="0" value="0"></td>
+            </tr>
+            <tr>
+                <td>Tank</td>
+                <td><input id="tan0_5" type="number" class="quick_set_input" min="0" value="0"></td>
+                <td><input id="tan6_10" type="number" class="quick_set_input" min="0" value="0"></td>
+                <td><input id="tan11_20" type="number" class="quick_set_input" min="0" value="0"></td>
+                <td><input id="tan21_30" type="number" class="quick_set_input" min="0" value="0"></td>
+            </tr>
+            <tr>
+                <td>Templar</td>
+                <td><input id="tem0_5" type="number" class="quick_set_input" min="0" value="0"></td>
+                <td><input id="tem6_10" type="number" class="quick_set_input" min="0" value="0"></td>
+                <td><input id="tem11_20" type="number" class="quick_set_input" min="0" value="0"></td>
+                <td><input id="tem21_30" type="number" class="quick_set_input" min="0" value="0"></td>
+            </tr>
+            <tr>
+                <td>Vampire</td>
+                <td><input id="vam0_5" type="number" class="quick_set_input" min="0" value="0"></td>
+                <td><input id="vam6_10" type="number" class="quick_set_input" min="0" value="0"></td>
+                <td><input id="vam11_20" type="number" class="quick_set_input" min="0" value="0"></td>
+                <td><input id="vam21_30" type="number" class="quick_set_input" min="0" value="0"></td>
+            </tr>
+            <tr>
+                <td>Warbeast</td>
+                <td><input id="wab0_5" type="number" class="quick_set_input" min="0" value="0"></td>
+                <td><input id="wab6_10" type="number" class="quick_set_input" min="0" value="0"></td>
+                <td><input id="wab11_20" type="number" class="quick_set_input" min="0" value="0"></td>
+                <td><input id="wab21_30" type="number" class="quick_set_input" min="0" value="0"></td>
+            </tr>
+            <tr>
+                <td>Warrior</td>
+                <td><input id="war0_5" type="number" class="quick_set_input" min="0" value="0"></td>
+                <td><input id="war6_10" type="number" class="quick_set_input" min="0" value="0"></td>
+                <td><input id="war11_20" type="number" class="quick_set_input" min="0" value="0"></td>
+                <td><input id="war21_30" type="number" class="quick_set_input" min="0" value="0"></td>
+            </tr>
+        </table>
+    </div>
+
     <div style="text-align: center; padding-top: 50px; align-items: center;">
 
         <h1>Prioritize your units here</h1>
 
-        <div style="text-align: left; align-items: center; padding-left: 20%; padding-right: 10%; font-size: medium; font-weight: bold">
+        <div
+            style="text-align: left; align-items: center; padding-left: 20%; padding-right: 10%; font-size: medium; font-weight: bold">
             <ul>
                 <li>Enable priority list on the settings</li>
-                <li>Make sure the unit selectors (common, uncommon, rare and legendary) are enabled accordingly otherwise the priority unit will be ignored</li>
+                <li>Make sure the unit selectors (common, uncommon, rare and legendary) are enabled accordingly
+                    otherwise the priority unit will be ignored</li>
                 <li>Placement of a priority unit will depend on marker and cooldown availability</li>
                 <li>Priority 0: Completely ignores the unit, even if there are no other units available.</li>
                 <li>Priority 1: Highest priority.</li>
-                <li>The higher the number, the lower the priority and the lower the unit will show at the list.</li>
+                <li>The higher the number, the lower the priority and the lower the unit will show at the list.
+                </li>
             </ul>
         </div>
         <button id="setUnits_button" class="green_button">SAVE/UPDATE</button>
+        <button id="quickSet_button" class="green_button">NOT IMPLEMENTED -Quick set</button>
         <div id="unitTableContainer"></div><br>
         <h1>THIS OPTION RESETS YOUR CHANGES</h1>
         <h1>Only use this button:</h1>
@@ -34,7 +286,8 @@
         <h2>When you level up your units, specialize or respecialize them</h2>
         <h2>To reset everything back to default priority 0</h2>
         <h2>It takes a few seconds to load the units from the server, don't spam click the button</h2>
-        <button id="getUnits_button" class="green_button" style="background-color: red;">Reload your units</button>
+        <button id="getUnits_button" class="green_button" style="background-color: red;">Reload your
+            units</button>
     </div>
     <button id="scrollBtn" title="Go to top">Up</button>
 </body>

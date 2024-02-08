@@ -2,7 +2,7 @@
 
 /* When invoked this function receives a flag value (loyaltyCaptain and flaggedCaptains)
 It then checks if any captains match the criteria to be flagged.
-If they match, they are send to storage.
+If they match, they are sent to storage.
 //This function is invoked while the battlefield is active.
 */
 async function flagCaptain(flag) {

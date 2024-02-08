@@ -5,7 +5,6 @@
 
 const findBattle = "Waiting for Captain to find battle!";
 const readyToPlace = "Unit ready to place!";
-const password = "ENTER_CODE";
 let masterPort;
 
 async function switchToMasterList() {

@@ -35,6 +35,9 @@ const arrUnitNms = [
 document.addEventListener("DOMContentLoaded", async function () {
 
     const scrollToTopBtn = document.getElementById("scrollBtn");
+    const closeButton = document.getElementById('closePopupBtn');
+    const quickSetUnitsPriorityBtn = document.getElementById('quickSetUnitsPriorityBtn');
+
 
     // Show or hide the button based on scroll position
     window.onscroll = function () {
@@ -61,12 +64,23 @@ document.addEventListener("DOMContentLoaded", async function () {
         }
 
     });
+    
 
     document.getElementById("setUnits_button").addEventListener("click", async function () {
         await saveUnits();
         location.reload();
     });
 
+    document.getElementById("quickSet_button").addEventListener("click", async function () {
+        const popup = document.getElementById('popup');
+        popup.style.display = 'block';
+        //location.reload();
+    });
+
+    closeButton.addEventListener('click', function() {
+        popup.style.display = 'none';
+    });
+    
 });
 
 
