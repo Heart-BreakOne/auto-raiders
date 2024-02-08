@@ -389,7 +389,9 @@ async function abandonBattle(status, slot, status1) {
     const c = close.offsetParent;
     const closeOffset = c.offsetParent;
     const idleCapName = closeOffset.querySelector(".capSlotName").innerText;
-    close.click();
+    if (close) {
+        close.click();
+    }
     await delay(1000);
     //Store battle result as abandoned on storage log
     await setLogResults(status, idleCapName, status1);
@@ -398,10 +400,15 @@ async function abandonBattle(status, slot, status1) {
     if (modal) {
         await delay(2000);
         close = modal.querySelector(".actionButton.actionButtonPrimary");
-        close.click();
+        if (close) {
+            close.click();
+        }
+
     }
     await idleDelay(2000);
     //Clicks the select button to open captain selection list
     const selectButton = slot.querySelector(".actionButton.actionButtonPrimary.capSlotButton.capSlotButtonAction");
-    selectButton.click();
+    if (selectButton) {
+        selectButton.click();
+    }
 } 

@@ -230,9 +230,9 @@ async function getCaptainLoyalty(captainName) {
       const cptName = position.twitchDisplayName;
 
       if (cptName === captainName) {
-/*         if (loyalty === 4) {
-          return "chestbronze";
-        } */
+        /*         if (loyalty === 4) {
+                  return "chestbronze";
+                } */
 
         const mapLoyalty = await getRaidChest(raidId);
         return mapLoyalty;
@@ -309,8 +309,8 @@ async function getRaidChest(raidId) {
     }
 
     const nodeId = currentRaid.data.nodeId;
-	const chestType = chests[nodeId].ChestType;
-	return chestType;
+    const chestType = chests[nodeId].ChestType;
+    return chestType;
 
   } catch (error) {
     console.error('Error in getRaidChest:', error);
@@ -601,16 +601,16 @@ async function fetchLoyaltyChests(raid_url) {
     const mapNodes = data["sheets"]["MapNodes"]
     for (const nodeKey in mapNodes) {
       const node = mapNodes[nodeKey];
-/*       if (
-        node.ChestType === "dungeonchest" ||
-        node.ChestType === "bonechest" ||
-        node.ChestType === "chestbronze" ||
-        node.ChestType === "chestsilver" ||
-        node.ChestType === "chestgold"
-      ) {
-        delete mapNodes[nodeKey];
-        continue;
-      } */
+      /*       if (
+              node.ChestType === "dungeonchest" ||
+              node.ChestType === "bonechest" ||
+              node.ChestType === "chestbronze" ||
+              node.ChestType === "chestsilver" ||
+              node.ChestType === "chestgold"
+            ) {
+              delete mapNodes[nodeKey];
+              continue;
+            } */
       for (const keyToRemove of ["NodeDifficulty", "NodeType", "MapTags", "OnLoseDialog", "OnStartDialog", "OnWinDialog"]) {
         delete node[keyToRemove];
       }
@@ -625,3 +625,43 @@ async function fetchLoyaltyChests(raid_url) {
     console.log("There was an error fetching the map nodes")
   }
 }
+
+
+// Reloader for when the game data changes
+async function checkGameData() {
+  const response = await fetch('https://www.streamraiders.com/api/game/?cn=getUser&command=getUser');
+  const data = await response.json();
+  if (data.info.dataPath) {
+    const dataPath = data.info.dataPath;
+
+    chrome.storage.local.get("gameDataPath", function (result) {
+      if (chrome.runtime.lastError) {
+        console.error(chrome.runtime.lastError);
+        return;
+      }
+
+      const gameDataPath = result.gameDataPath;
+
+      if (!gameDataPath) {
+        chrome.storage.local.set({ "gameDataPath": dataPath }, function () {
+          if (chrome.runtime.lastError) {
+            console.error(chrome.runtime.lastError);
+            return;
+          }
+          console.log("New game data path set successfully.");
+        });
+      } else if (gameDataPath !== dataPath) {
+        chrome.storage.local.set({ "gameDataPath": dataPath }, function () {
+          if (chrome.runtime.lastError) {
+            console.error(chrome.runtime.lastError);
+            return;
+          }
+          console.log("New game data path set successfully.");
+          location.reload();
+        });
+      }
+    });
+  }
+}
+
+setInterval(checkGameData, 60000);
