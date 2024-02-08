@@ -8,7 +8,9 @@ The files that need to be edited with the new substring are:
 unit_icons.txt
 content_script.js
 quest_handler.js
-units_handler.js 
+units_handler.js
+quick_set.js
+units.html
 
 Battlefield markers:
 

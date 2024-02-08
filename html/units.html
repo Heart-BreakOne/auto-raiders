@@ -7,6 +7,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Unit priority</title>
     <script src="/units_handler.js"></script>
+    <script src="/javascript/quick_set.js"></script>
     <link rel="stylesheet" type="text/css" href="/styles/styles.css">
 </head>
 
@@ -15,22 +16,25 @@
     <!-- Quick set popup -->
     <div class="popup" id="popup">
         <h1>NOT IMPLEMENTED YET - Quick unit preset based on unit type</h1>
+        <h1><b>Save Preset</b> will save the presets to a file, it will not set the priotiries to the units. Make sure
+            to click <b>Set</b> to do it.</h1>
         <b>
             <p>Load the units from the server before using this menu, otherwise there will be no units to preset.</p>
             <p>Make sure to save after closing this popup so your prerefences are set.</p>
             <p>"All units" will overwrite the other values, set it to -1 to ignore it.</p>
         </b>
 
-        <button id="closePopupBtn" class="green_button" style="background-color: red;">Close</button>
-        <button id="quickSetUnitsPriorityBtn" class="green_button">Set</button>
-        <button id="savePreSetBtn" class="green_button">Load Preset</button>
+        <button id="closeBtn" class="green_button" style="background-color: red;">Close</button>
+        <button id="setBtn" class="green_button">Set</button>
+        <div class="file-input-container">
+            <label for="loadPreSetBtn" class="green_button">Load Preset</label>
+            <input type="file" id="loadPreSetBtn">
+        </div>
         <button id="savePreSetBtn" class="green_button">Save Preset (Fill the numbers below, then click Save
             Preset)</button>
         <!-- Table with units and input fields -->
         <table>
             <tr>
-                <td></td>
-                <td></td>
                 <td>Name</td>
                 <td>From 0 to 5</td>
                 <td>From 6 to 10</td>
@@ -39,7 +43,12 @@
             </tr>
             <tr>
                 <td>All units</td>
-                <td><input id="a_u" type="number" class="quick_set_input" min="0" value="-1"></td>
+                <td><input id="a_u0_5" type="number" class="quick_set_input" min="0" value="-1"></td>
+                <td><input id="a_u6_10" type="number" class="quick_set_input" min="0" value="-1"></td>
+                <td><input id="a_u11_20" type="number" class="quick_set_input" min="0" value="-1"></td>
+                <td><input id="a_u21_30" type="number" class="quick_set_input" min="0" value="-1"></td>
+            </tr>
+            <tr>
                 <td>Amazon</td>
                 <td><input id="ama0_5" type="number" class="quick_set_input" min="0" value="0"></td>
                 <td><input id="ama6_10" type="number" class="quick_set_input" min="0" value="0"></td>
@@ -277,7 +286,7 @@
             </ul>
         </div>
         <button id="setUnits_button" class="green_button">SAVE/UPDATE</button>
-        <button id="quickSet_button" class="green_button">NOT IMPLEMENTED -Quick set</button>
+        <button id="quickSet_button" class="green_button">Quick set</button>
         <div id="unitTableContainer"></div><br>
         <h1>THIS OPTION RESETS YOUR CHANGES</h1>
         <h1>Only use this button:</h1>
