@@ -25,11 +25,6 @@ document.addEventListener("DOMContentLoaded", function () {
         chrome.tabs.create({ url: url });
     });
 
-    document.getElementById("evaluator_button").addEventListener('click', function () {
-        const url = `chrome-extension://${chrome.runtime.id}/html/map_evaluator.html`
-        chrome.tabs.create({ url: url });
-    });
-
     document.getElementById("key_check_button").addEventListener('click', function () {
         // Open the options page
         const url = `chrome-extension://${chrome.runtime.id}/html/check_keys.html`
