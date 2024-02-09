@@ -657,7 +657,9 @@ async function checkGameData() {
             return;
           }
           console.log("New game data path set successfully.");
-          location.reload();
+          chrome.tabs.reload(tab.id, {
+            bypassCache: true
+          });
         });
       }
     });
