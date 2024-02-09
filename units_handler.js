@@ -64,7 +64,8 @@ document.addEventListener("DOMContentLoaded", async function () {
 
     document.getElementById("setUnits_button").addEventListener("click", async function () {
         await saveUnits();
-        location.reload();
+        locationReload();
+        return;
     });
 });
 

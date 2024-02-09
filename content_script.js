@@ -139,7 +139,8 @@ async function start() {
     })
   }
   if ((reload != undefined && elapsedMinutes >= reload && reload >= 5) || ((reload != undefined || reload != 0) && elapsedMinutes >= 60)) {
-    location.reload();
+    locationReload();
+    return;
   }
 
   //Initialized nav items, if they don't exist it means the extension is already executing.
@@ -1241,7 +1242,7 @@ function goHome() {
 }
 
 async function requestLoyalty(captainNameFromDOM) {
-  let contentPort = chrome.runtime.connect({ name: "content-script" });
+  let contentScriptPort = chrome.runtime.connect({ name: "content-script" });
   return new Promise((resolve, reject) => {
     const responseListener = (response) => {
       clearTimeout(timeout);
@@ -1251,17 +1252,17 @@ async function requestLoyalty(captainNameFromDOM) {
       } else {
         reject(new Error('Invalid response format from the background script'));
       }
-      contentPort.onMessage.removeListener(responseListener);
+      contentScriptPort.onMessage.removeListener(responseListener);
     };
 
     const timeout = setTimeout(() => {
       reject(new Error('Timeout while waiting for response'));
-      contentPort.onMessage.removeListener(responseListener);
+      contentScriptPort.onMessage.removeListener(responseListener);
     }, 8000);
 
-    contentPort.onMessage.addListener(responseListener);
+    contentScriptPort.onMessage.addListener(responseListener);
 
-    contentPort.postMessage({ action: "getLoyalty", captainNameFromDOM });
+    contentScriptPort.postMessage({ action: "getLoyalty", captainNameFromDOM });
   });
 }
 
@@ -1276,3 +1277,6 @@ function retrieveNumberFromStorage(key) {
     });
   });
 }
+
+//Place anyway button
+//<button class="actionButton actionButtonSecondary"><div>PLACE ANYWAY</div></button>

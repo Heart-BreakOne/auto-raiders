@@ -103,10 +103,13 @@ chrome.runtime.onConnect.addListener((port) => {
     //Force a reload if the game doesn't load with mobile mode
     if (msg.action === "reloadCleanCache") {
       processedTabs = new Set();
-      chrome.tabs.query({ active: true, currentWindow: true }, function (tabs) {
-        if (tabs && tabs.length > 0) {
-          const currentTab = tabs[0];
-          updateUserAgent(currentTab);
+      chrome.tabs.query({}, function (tabs) {
+        for (let i = 0; i < tabs.length; i++) {
+          const tab = tabs[i];
+          if (tab.url && tab.url.startsWith("https://www.streamraiders.com")) {
+            updateUserAgent(tab);
+            break;
+          }
         }
       });
     }
@@ -657,8 +660,16 @@ async function checkGameData() {
             return;
           }
           console.log("New game data path set successfully.");
-          chrome.tabs.reload(tab.id, {
-            bypassCache: true
+          chrome.tabs.query({}, function (tabs) {
+            for (let i = 0; i < tabs.length; i++) {
+              const tab = tabs[i];
+              if (tab.url && tab.url.startsWith("https://www.streamraiders.com")) {
+                chrome.tabs.reload(tab.id, {
+                  bypassCache: true
+                });
+                break;
+              }
+            }
           });
         });
       }

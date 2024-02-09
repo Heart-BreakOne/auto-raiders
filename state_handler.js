@@ -19,6 +19,12 @@ let initialConfirmButton = null;
 //Runs checkBattle() every 15 seconds
 setInterval(checkBattle, 15000);
 
+//Send a message to the background to reload the streamraiders tab.
+function locationReload() {
+  let reloadPort = chrome.runtime.connect({ name: "content-script" });
+  reloadPort.postMessage({ action: "reloadCleanCache", });
+  return
+}
 //Handles some conditions in which the battle has started.
 async function checkBattle() {
   //Attemps to check if it's stuck on battlefield
@@ -48,7 +54,8 @@ async function checkBattlefield(selector, battleDelayTimer) {
     await battleDelay(3000);
     const menuView = document.querySelector(".battleView");
     if (!menuView) {
-      location.reload();
+      locationReload();
+      return;
     }
   }
 
@@ -83,7 +90,8 @@ async function checkAndReload(selector, battleDelayTimer) {
     await battleDelay(battleDelayTimer);
     element = document.querySelector(selector);
     if (element && !domChanged) {
-      location.reload();
+      locationReload();
+      return;
     }
   }
 }
@@ -92,7 +100,8 @@ async function checkAndReload(selector, battleDelayTimer) {
 function reloadRoot() {
   const rootElement = document.getElementById('root');
   if (rootElement && rootElement.childElementCount === 0) {
-    location.reload();
+    locationReload();
+    return;
   }
 }
 
@@ -112,6 +121,7 @@ const observer = new MutationObserver(async function (mutations) {
   //If desktop mode loads, reload with mobile mode
   if (document.querySelector("#\\#canvas")) {
     contentPort.postMessage({ action: "reloadCleanCache", });
+    return;
   }
 
   domChanged = true;
