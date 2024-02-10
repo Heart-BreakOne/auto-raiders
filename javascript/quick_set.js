@@ -6,7 +6,7 @@ document.addEventListener("DOMContentLoaded", async function () {
         const all_inputs = document.querySelectorAll(".quick_set_input");
         all_inputs.forEach((input, index) => {
             input.value = ""
-            if (index < 4) {
+            if (index < 5) {
                 input.value = "-1";
             }
         });
