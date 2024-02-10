@@ -1,13 +1,17 @@
-Battlefield markers and unit drawer markers reference list.
+Battlefield markers and unit drawer markers reference list
 
-When a new unit is added, make sure to update this list and use as a reference 
-to add the new unit strings to the script files while ensuring the substring remains unique.
+When a new unit is added, make sure to update this list and use it as a reference.
 
-The files that need to be edited with the new substring are:
+Make the unit name is unique, the internal name is unique, the string fragment is unique and that possible conflicts are avoided (e.g. Rogue/Flying Rogue) a
+
+In some cases the internal name must be used, such as alliespaladin instead of paladin, observe the pattern on each file to figure out which name is being used
+The API request getUserUnits on the Network tab of devtools can provide the internal name.
+
+The files that need to be edited with the new units information are:
 
 unit_icons.txt
 content_script.js
-quest_handler.js
+quest_handler.js (Apart from the array, if the unit name is not unique [e.g Rogue/Flying Rogue] the ruleset must be edited as well to avoid conflicts)
 units_handler.js
 quick_set.js
 units.html
