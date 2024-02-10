@@ -122,14 +122,16 @@ function setPresets() {
     }
 
     //All units quick set
-    const a05 = parseInt(document.getElementById("a_u00_05").value);
-    const a610 = parseInt(document.getElementById("a_u06_10").value);
-    const a1120 = parseInt(document.getElementById("a_u11_20").value);
-    const a2130 = parseInt(document.getElementById("a_u21_30").value);
-    const ar = [{ value: a05, min: 0, max: 5 },
-    { value: a610, min: 6, max: 10 },
-    { value: a1120, min: 11, max: 20 },
-    { value: a2130, min: 21, max: 30 }]
+    const a04 = parseInt(document.getElementById("a_u00_04").value);
+    const a59 = parseInt(document.getElementById("a_u05_09").value);
+    const a1019 = parseInt(document.getElementById("a_u10_19").value);
+    const a2029 = parseInt(document.getElementById("a_u20_29").value);
+    const a3030 = parseInt(document.getElementById("a_u30_30").value);
+    const ar = [{ value: a04, min: 0, max: 4 },
+    { value: a59, min: 5, max: 9 },
+    { value: a1019, min: 10, max: 19 },
+    { value: a2029, min: 20, max: 29 },
+    { value: a3030, min: 30, max: 30 }]
     for (let i = 0; i < ar.length; i++) {
         const v = ar[i].value;
         const minV = ar[i].min;
