@@ -14,6 +14,7 @@ document.addEventListener("DOMContentLoaded", function () {
     initializeSwitch("legendarySwitch");
     initializeSwitch("dungeonSwitch");
     initializeSwitch("dungeonLevelSwitch");
+    initializeSwitch("dungeonPlaceAnywaySwitch");
     initializeSwitch("duelSwitch");
     initializeSwitch("clashSwitch");
     initializeSwitch("campaignSwitch");
@@ -47,8 +48,8 @@ document.addEventListener("DOMContentLoaded", function () {
     initializeSwitch("skipClashSlotSwitch")
     initializeReloader("reloaderInput");
     initializeReloader("minimumCurrencyInput");
-    initializeReloader("minUnitLvlDungInput");
-    initializeReloader("minDungeonLvlInput");
+    initializeReloader("maxUnitLvlDungInput");
+    initializeReloader("maxDungeonLvlInput");
 });
 
 //When the user interacts with the toggle switches, it gets the current stored value and update them with the value.
@@ -89,8 +90,8 @@ document.addEventListener("DOMContentLoaded", async function () {
 
     setInputButtonListener('reloaderButton', 'reloaderInput');
     setInputButtonListener('minimumCurrencyButton', 'minimumCurrencyInput');
-    setInputButtonListener('minUnitLvlButton', 'minUnitLvlDungInput');
-    setInputButtonListener('minDungeonLvlButton', 'minDungeonLvlInput');
+    setInputButtonListener('minUnitLvlButton', 'maxUnitLvlDungInput');
+    setInputButtonListener('minDungeonLvlButton', 'maxDungeonLvlInput');
 
 
     //Event listener for when the potion radio button is changed by the user

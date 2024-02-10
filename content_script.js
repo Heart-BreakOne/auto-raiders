@@ -28,6 +28,7 @@ const purple = 'rgb(203, 195, 227)';
 const gameBlue = 'rgb(42, 96, 132)';
 const cancelButtonSelector = ".actionButton.actionButtonNegative.placerButton";
 const delay = ms => new Promise(res => setTimeout(res, ms));
+let isDungeon = false;
 
 //Battlefield markers.
 const arrayOfBattleFieldMarkers = [
@@ -880,6 +881,8 @@ async function selectUnit() {
     return;
   }
   const dungeonLevelSwitch = await retrieveFromStorage("dungeonLevelSwitch");
+  const userDunLevel = await retrieveFromStorage("maxDungeonLvlInput")
+  const userUnitLevel = await retrieveFromStorage("maxUnitLvlDungInput")
   for (let i = 1; i <= unitsQuantity; i++) {
     //Iterates through every unit
     const unit = unitDrawer[0].querySelector(".unitSelectionItemCont:nth-child(" + i + ") .unitItem:nth-child(1)");
@@ -909,6 +912,7 @@ async function selectUnit() {
     if (unit1) {
       unitName = unit1.key;
     }
+    let dungeonLevel;
     if (dungeonLevelSwitch) {
       let battleInfo;
       try {
@@ -916,15 +920,13 @@ async function selectUnit() {
       } catch (error) {
         continue;
       }
-      let dungeonLevel;
       if (battleInfo.includes("Level")) {
+		isDungeon = true;
         dungeonLevel = parseInt(battleInfo.substr(battleInfo.length - 2));
         //If it fails replace   retrieveFromStorage with   ->    retrieveNumberFromStorage
-        const userDunLevel = await retrieveFromStorage("minDungeonLvlInput")
-        const userUnitLevel = await retrieveFromStorage("minUnitLvlDungInput")
         if (userDunLevel == null || userDunLevel == undefined || userUnitLevel == null || userUnitLevel == undefined) {
           continue;
-        } else if (dungeonLevel <= userDunLevel && unitLevel >= userUnitLevel && unitName != "FLAG") {
+        } else if (dungeonLevel <= userDunLevel && unitLevel >= userUnitLevel) {// && unitName != "FLAG") {
           continue;
         }
       }
@@ -972,6 +974,14 @@ async function selectUnit() {
       tapping it forces the game to check if the placement can be performed */
       tapUnit();
       return;
+    } else if (isDungeon == true && currentMarkerKey == "FLAG" && unitLevel <= userUnitLevel && dungeonLevel <= userDunLevel) {
+      //Select the unit
+      unit.click();
+      await delay(1000);
+      /* If the unit is placed on an invalid marker or area or if the unit is on top of another ally unit,
+      tapping it forces the game to check if the placement can be performed */
+      tapUnit();
+
     } else {
       //Else get the next unit
       continue;
@@ -997,7 +1007,8 @@ function tapUnit() {
 }
 
 //Places unit or asks for a new valid marker
-function placeTheUnit() {
+async function placeTheUnit() {
+  const dungeonPlaceAnywaySwitch = await retrieveFromStorage("dungeonPlaceAnywaySwitch");
   //Gets timer, if it doesn't exist return to main menu.
   let clockText
   //Attempts to get the clock text
@@ -1039,6 +1050,18 @@ function placeTheUnit() {
     } else {
       if (confirmPlacement) {
         confirmPlacement.click();
+        if (dungeonPlaceAnywaySwitch) {
+          let allPlaceAnywayButtons = document.querySelectorAll('.actionButton.actionButtonSecondary')
+          let placeAnywayButton;
+          allPlaceAnywayButtons.forEach(button => {
+            if (button.innerText === "PLACE ANYWAY") {
+              placeAnywayButton = button;
+            }
+          });
+          if (placeAnywayButton) {
+            placeAnywayButton.click();
+          }
+        }
       }
     }
   }
