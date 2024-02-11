@@ -62,8 +62,11 @@ chrome.tabs.onUpdated.addListener((tabId, changeInfo, tab) => {
 
 // Run the logic when a new tab is created
 chrome.tabs.onCreated.addListener(tab => {
-  updateUserAgent(tab);
+  if (tab.url && tab.url.startsWith("https://streamraiders.com/")) {
+    updateUserAgent(tab);
+  }
 });
+
 
 // Remove session rules when a tab is removed
 chrome.tabs.onRemoved.addListener(tabId => {

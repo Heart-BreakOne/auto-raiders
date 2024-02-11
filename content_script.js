@@ -921,12 +921,12 @@ async function selectUnit() {
         continue;
       }
       if (battleInfo.includes("Level")) {
-		isDungeon = true;
+        isDungeon = true;
         dungeonLevel = parseInt(battleInfo.substr(battleInfo.length - 2));
         //If it fails replace   retrieveFromStorage with   ->    retrieveNumberFromStorage
         if (userDunLevel == null || userDunLevel == undefined || userUnitLevel == null || userUnitLevel == undefined) {
           continue;
-        } else if (dungeonLevel <= userDunLevel && unitLevel >= userUnitLevel) {// && unitName != "FLAG") {
+        } else if (dungeonLevel > userDunLevel || unitLevel > userUnitLevel) {// && unitName != "FLAG") {
           continue;
         }
       }
