@@ -17,7 +17,7 @@ async function saveToStorage(key, value) {
     });
 }
 
-//Receives the game mode key and returns the name of the captain currently running it.
+//Receives a string key and retrieves the data from the chrome storage.
 async function retrieveFromStorage(key) {
     return new Promise((resolve, reject) => {
         chrome.storage.local.get([key], function (result) {
@@ -26,6 +26,7 @@ async function retrieveFromStorage(key) {
     });
 }
 
+//Receives a string key and retrieves numbers from the chrome storage.
 async function retrieveNumberFromStorage(key) {
     return new Promise((resolve, reject) => {
         chrome.storage.local.get(key, (result) => {
