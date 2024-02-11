@@ -191,9 +191,9 @@ const observer = new MutationObserver(async function (mutations) {
       hideElementsFromView(toast);
 
       let questModal = document.querySelector(".modalScrim.modalOn");
-      if (questModal && !questModal.innerText.includes("Leave battle")) {
+      if (questModal && !questModal.innerText.includes("Leave battle") && !questModal.innerText.includes("PLACE ANYWAY")) {
         try {
-          questModal.remove();
+          questModal.style.display = "none";
         } catch (error) { }
 
       }

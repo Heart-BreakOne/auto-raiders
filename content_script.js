@@ -1032,7 +1032,8 @@ async function placeTheUnit() {
   }
 
   //Attemps to place the selected unit and go back to menu, if the marker is valid, but in use, get a new marker.
-  const confirmPlacement = document.querySelector(".actionButton.actionButtonPrimary.placerButton");
+  const placeModal = document.querySelector(".placerConfirmButtonsCont")
+  const confirmPlacement = placeModal.querySelector(".actionButton.actionButtonPrimary.placerButton");
   if (confirmPlacement) {
     //Placement is blocked by invalid unit location.
     const blockedMarker = document.querySelector(".placerRangeIsBlocked");
@@ -1050,6 +1051,7 @@ async function placeTheUnit() {
     } else {
       if (confirmPlacement) {
         confirmPlacement.click();
+        await delay(2000)
         if (dungeonPlaceAnywaySwitch) {
           let allPlaceAnywayButtons = document.querySelectorAll('.actionButton.actionButtonSecondary')
           let placeAnywayButton;

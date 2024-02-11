@@ -397,7 +397,13 @@ async function abandonBattle(status, slot, status1) {
     await setLogResults(status, idleCapName, status1);
     //Checks if modal that appears on certain conditions exists and clicks to close it.
     const modal = document.querySelector(".modalScrim.modalOn");
-    if (modal) {
+    let placeAnyway = modal.querySelector(".actionButton.actionButtonSecondary").innerText
+    // If placeAnyways is undefined assign an empty value otherwise the placeAnyway != "PLACE ANYWAY" will crash the script.
+    // The check can't be done there because actionButtonSecondary doesn't always exist, this a failsafe for that scenario.
+    if (!placeAnyway) {
+        placeAnyway = ""
+    }
+    if (placeAnyway != "PLACE ANYWAY" && modal) {
         await delay(2000);
         close = modal.querySelector(".actionButton.actionButtonPrimary");
         if (close) {
