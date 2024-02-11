@@ -5,9 +5,9 @@
 
 //This function receives a key which is a string with their game mode and a value which is the captain's name.
 //The key is unique so only one captain can exist running that mode.
-function saveToStorage(key, value) {
+async function saveToStorage(key, value) {
     return new Promise((resolve, reject) => {
-        chrome.storage.local.set({[key]: value}, function() {
+        chrome.storage.local.set({ [key]: value }, function () {
             if (chrome.runtime.lastError) {
                 reject(chrome.runtime.lastError);
             } else {
@@ -18,10 +18,27 @@ function saveToStorage(key, value) {
 }
 
 //Receives the game mode key and returns the name of the captain currently running it.
-function retrieveFromStorage(key){
+async function retrieveFromStorage(key) {
     return new Promise((resolve, reject) => {
-        chrome.storage.local.get([key], function(result) {
+        chrome.storage.local.get([key], function (result) {
             resolve(result[key]);
+        });
+    });
+}
+
+async function retrieveNumberFromStorage(key) {
+    return new Promise((resolve, reject) => {
+        chrome.storage.local.get(key, (result) => {
+            if (chrome.runtime.lastError) {
+                resolve(-100);
+            } else {
+                const parsedNumber = parseInt(result[key], 10);
+                if (!isNaN(parsedNumber)) {
+                    resolve(parsedNumber);
+                } else {
+                    resolve(-100);
+                }
+            }
         });
     });
 }

@@ -1288,18 +1288,3 @@ async function requestLoyalty(captainNameFromDOM) {
     contentScriptPort.postMessage({ action: "getLoyalty", captainNameFromDOM });
   });
 }
-
-function retrieveNumberFromStorage(key) {
-  return new Promise((resolve, reject) => {
-    chrome.storage.local.get(key, (result) => {
-      if (chrome.runtime.lastError) {
-        reject(chrome.runtime.lastError);
-      } else {
-        resolve(result[key]);
-      }
-    });
-  });
-}
-
-//Place anyway button
-//<button class="actionButton actionButtonSecondary"><div>PLACE ANYWAY</div></button>
