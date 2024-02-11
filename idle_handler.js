@@ -138,7 +138,7 @@ async function setBattleStatus(captainName) {
 async function getBattleStatus(captainName) {
     return new Promise((resolve, reject) => {
         //Gets the idle data from storage
-        chrome.storage.local.get(['idleData'], function (result) {
+        chrome.storage.local.get(['idleData'], async function (result) {
             let idleData = result.idleData || [];
             //Gets current time for comparison with the stored time data
             const currentTime = new Date().getTime();
@@ -152,7 +152,8 @@ async function getBattleStatus(captainName) {
                 const lastUpdateTime = new Date(existingCaptain.currentTime).getTime();
                 const elapsedTime = currentTime - lastUpdateTime;
                 //If the elapsed idle time is bigger than 15 minutes it returns true
-                if (elapsedTime >= 900000) { // 900000 = 15 minutes
+                const uITi = await getUserIdleTime()
+                if (elapsedTime >= uITi) {
                     resolve(true);
                 } else {
                     resolve(false);
@@ -175,9 +176,9 @@ async function switchIdleCaptain() {
 
     if (idlers) {
         const presentTime = Date.now();
-        const fifteenMinutes = 15 * 60 * 1000;
+        const uIT = await getUserIdleTime()
         idlersList = idlers
-            .filter(entry => presentTime - entry.presentTime < fifteenMinutes)
+            .filter(entry => presentTime - entry.presentTime < uIT)
             .map(entry => entry.captainName.toUpperCase());
     } else {
         idlersList = []
@@ -417,4 +418,17 @@ async function abandonBattle(status, slot, status1) {
     if (selectButton) {
         selectButton.click();
     }
-} 
+}
+
+async function getUserIdleTime(){
+    try {
+        let userIdleTime = await retrieveNumberFromStorage("userIdleTimeInput")
+        if (userIdleTime == -100) {
+            return 900000
+        } else {
+            return userIdleTime * 60000
+        }
+    } catch (error) {
+        return 900000
+    }
+}
