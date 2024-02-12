@@ -29,6 +29,7 @@ const gameBlue = 'rgb(42, 96, 132)';
 const cancelButtonSelector = ".actionButton.actionButtonNegative.placerButton";
 const delay = ms => new Promise(res => setTimeout(res, ms));
 let isDungeon = false;
+let dungeonPlaceAnywaySwitch;
 
 //Battlefield markers.
 const arrayOfBattleFieldMarkers = [
@@ -710,10 +711,11 @@ async function moveScreen(position) {
   }
   await delay(1000);
   //Invokes unit selection
-  selectUnit();
+  await selectUnit();
   await delay(1000);
   //Invokes selected unit placement.
-  placeTheUnit();
+  await placeTheUnit();
+  await delay(1000);
   //Checks for frozen state
   reloadRoot();
 }
@@ -881,8 +883,19 @@ async function selectUnit() {
     return;
   }
   const dungeonLevelSwitch = await retrieveFromStorage("dungeonLevelSwitch");
-  const userDunLevel = await retrieveFromStorage("maxDungeonLvlInput")
-  const userUnitLevel = await retrieveFromStorage("maxUnitLvlDungInput")
+  const dungeonPlaceAnywaySwitch = await retrieveFromStorage("dungeonPlaceAnywaySwitch");
+  let userDunLevel = 0;
+  try {
+    userDunLevel = await retrieveNumberFromStorage ("maxDungeonLvlInput")
+  } catch (error) {
+    return;
+  }
+  let userUnitLevel = 0;
+  try {
+    userUnitLevel = await retrieveNumberFromStorage ("maxUnitLvlDungInput")
+  } catch (error) {
+    return;
+  }
   for (let i = 1; i <= unitsQuantity; i++) {
     //Iterates through every unit
     const unit = unitDrawer[0].querySelector(".unitSelectionItemCont:nth-child(" + i + ") .unitItem:nth-child(1)");
@@ -912,6 +925,7 @@ async function selectUnit() {
     if (unit1) {
       unitName = unit1.key;
     }
+	isDungeon = false;
     let dungeonLevel;
     if (dungeonLevelSwitch) {
       let battleInfo;
@@ -924,9 +938,10 @@ async function selectUnit() {
         isDungeon = true;
         dungeonLevel = parseInt(battleInfo.substr(battleInfo.length - 2));
         //If it fails replace   retrieveFromStorage with   ->    retrieveNumberFromStorage
-        if (userDunLevel == null || userDunLevel == undefined || userUnitLevel == null || userUnitLevel == undefined) {
+		//Added unitName == "AMAZON" because most dungeon captains use Amazon marker for Epic Huntress Amazon so it's easier to just not allow Amazon units to be placed at all
+        if (userDunLevel == null || userDunLevel == undefined || userUnitLevel == null || userUnitLevel == undefined || unitName == "AMAZON") {
           continue;
-        } else if (dungeonLevel > userDunLevel || unitLevel > userUnitLevel) {// && unitName != "FLAG") {
+        } else if (dungeonLevel <= userDunLevel && unitLevel > userUnitLevel) {// && unitName != "FLAG") {
           continue;
         }
       }
@@ -974,14 +989,14 @@ async function selectUnit() {
       tapping it forces the game to check if the placement can be performed */
       tapUnit();
       return;
-    } else if (isDungeon == true && currentMarkerKey == "FLAG" && unitLevel <= userUnitLevel && dungeonLevel <= userDunLevel) {
+    } else if (isDungeon == true && dungeonPlaceAnywaySwitch && currentMarkerKey == "FLAG" && unitLevel <= userUnitLevel && dungeonLevel <= userDunLevel) {
       //Select the unit
       unit.click();
       await delay(1000);
       /* If the unit is placed on an invalid marker or area or if the unit is on top of another ally unit,
       tapping it forces the game to check if the placement can be performed */
       tapUnit();
-
+      return;
     } else {
       //Else get the next unit
       continue;
@@ -1051,8 +1066,8 @@ async function placeTheUnit() {
     } else {
       if (confirmPlacement) {
         confirmPlacement.click();
-        await delay(2000)
-        if (dungeonPlaceAnywaySwitch) {
+        await delay(2000);
+        if (isDungeon == true && currentMarkerKey == "FLAG") {
           let allPlaceAnywayButtons = document.querySelectorAll('.actionButton.actionButtonSecondary')
           let placeAnywayButton;
           allPlaceAnywayButtons.forEach(button => {
@@ -1060,8 +1075,22 @@ async function placeTheUnit() {
               placeAnywayButton = button;
             }
           });
+          let allPlaceAnywayBackButtons = document.querySelectorAll('.actionButton.actionButtonPrimary')
+          let placeAnywayBackButton;
+          allPlaceAnywayBackButtons.forEach(button => {
+            if (button.innerText === "BACK") {
+              placeAnywayBackButton = button;
+            }
+          });
           if (placeAnywayButton) {
-            placeAnywayButton.click();
+            if (dungeonPlaceAnywaySwitch) {
+              placeAnywayButton.click();
+			  await delay(1000);
+              goHome();
+              return;
+            } else {
+              placeAnywayBackButton.click();
+            }
           }
         }
       }
@@ -1263,6 +1292,13 @@ function goHome() {
   const backHome = document.querySelector(".selectorBack");
   if (backHome) {
     backHome.click();
+	//await delay(1000);
+    const menuElements = document.querySelectorAll(".slideMenuCont.slideLeft.slideLeftOpen");
+    const leaderboard = Array.from(menuElements).find(element => element.innerText.includes('Leaderboard'));
+    if (leaderboard) {
+      leaderboard.classList.remove('slideLeftOpen');
+      leaderboard.classList.add('slideLeftClosed');
+    }
   }
 }
 
