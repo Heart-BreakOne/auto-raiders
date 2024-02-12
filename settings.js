@@ -50,6 +50,7 @@ document.addEventListener("DOMContentLoaded", function () {
     initializeReloader("minimumCurrencyInput");
     initializeReloader("maxUnitLvlDungInput");
     initializeReloader("maxDungeonLvlInput");
+    initializeReloader("userIdleTimeInput");
 });
 
 //When the user interacts with the toggle switches, it gets the current stored value and update them with the value.
@@ -92,6 +93,7 @@ document.addEventListener("DOMContentLoaded", async function () {
     setInputButtonListener('minimumCurrencyButton', 'minimumCurrencyInput');
     setInputButtonListener('minUnitLvlButton', 'maxUnitLvlDungInput');
     setInputButtonListener('minDungeonLvlButton', 'maxDungeonLvlInput');
+    setInputButtonListener('idleTimeButton', 'userIdleTimeInput');
 
 
     //Event listener for when the potion radio button is changed by the user

@@ -39,6 +39,13 @@
                         style="width: fit-content; height: fit-content; text-align: center; background-color: #5fa695;">Set</button>
                 </td>
             </tr>
+            <tr>
+                <td><label for="userIdleTimeInput">Maximum idle time in minutes (Default is 15 minutes)<input type="number"
+                            id="userIdleTimeInput"></label></td>
+                <td><button id="idleTimeButton"
+                        style="width: fit-content; height: fit-content; text-align: center; background-color: #5fa695;">Set</button>
+                </td>
+            </tr>
             <td colspan="3"></td>
             </tr>
             <tr>
@@ -93,8 +100,11 @@
                 </td>
             </tr>
             <tr>
-                <td><label for="dungeonLevelSwitch"><input type="checkbox" id="dungeonLevelSwitch"> Place units with a maximum custom level on dungeons</label></td>
-                <td><label for="dungeonPlaceAnywaySwitch"><input type="checkbox" id="dungeonPlaceAnywaySwitch"> Allow Place Anyway on flag markers in Dungeons (must turn on custom level on dungeons) - BE CAREFUL - Place Anyway can get you banned</label></td>
+                <td><label for="dungeonLevelSwitch"><input type="checkbox" id="dungeonLevelSwitch"> Place units with a
+                        maximum custom level on dungeons</label></td>
+                <td><label for="dungeonPlaceAnywaySwitch"><input type="checkbox" id="dungeonPlaceAnywaySwitch"> Allow
+                        Place Anyway on flag markers in Dungeons (must turn on custom level on dungeons) - BE CAREFUL -
+                        Place Anyway can get you banned</label></td>
             </tr>
             <tr>
                 <td><label for="liveMasterSwitch"><input type="checkbox" id="liveMasterSwitch"> Force live switch to
@@ -143,16 +153,22 @@
                 <td><label><input type="radio" name="potion" value="2"> Potions at 100</label></td>
             </tr>
             <tr>
-                <td><label for="dungeonSlotSwitch" class="x"><input type="checkbox" id="dungeonSlotSwitch" class="x" Use slot 0 for dungeons</label></td>
-                <td><label for="skipDungeonSlotSwitch" class="x"><input type="checkbox" id="skipDungeonSlotSwitch" class="x"> Leave slot 0 empty if there are no dungeons</label></td>
+                <td><label for="dungeonSlotSwitch" class="x"><input type="checkbox" id="dungeonSlotSwitch" class="x" Use
+                            slot 0 for dungeons</label></td>
+                <td><label for="skipDungeonSlotSwitch" class="x"><input type="checkbox" id="skipDungeonSlotSwitch"
+                            class="x"> Leave slot 0 empty if there are no dungeons</label></td>
             </tr>
             <tr>
-                <td><label for="duelsSlotSwitch" class="x"><input type="checkbox" id="duelsSlotSwitch" class="x"> Use slot 1 for duels</label></td>
-                <td><label for="skipDuelsSlotSwitch" class="x"><input type="checkbox" id="skipDuelsSlotSwitch" class="x"> Leave slot 1 empty if there are no duels</label></td>
+                <td><label for="duelsSlotSwitch" class="x"><input type="checkbox" id="duelsSlotSwitch" class="x"> Use
+                        slot 1 for duels</label></td>
+                <td><label for="skipDuelsSlotSwitch" class="x"><input type="checkbox" id="skipDuelsSlotSwitch"
+                            class="x"> Leave slot 1 empty if there are no duels</label></td>
             </tr>
             <tr>
-                <td><label for="clashSlotSwitch" class="x"><input type="checkbox" id="clashSlotSwitch" class="x"> Use slot 2 for Clash</label></td>
-                <td><label for="skipClashSlotSwitch" class="x"><input type="checkbox" id="skipClashSlotSwitch" class="x"> Leave slot 2 empty if there are no clashes</label></td>
+                <td><label for="clashSlotSwitch" class="x"><input type="checkbox" id="clashSlotSwitch" class="x"> Use
+                        slot 2 for Clash</label></td>
+                <td><label for="skipClashSlotSwitch" class="x"><input type="checkbox" id="skipClashSlotSwitch"
+                            class="x"> Leave slot 2 empty if there are no clashes</label></td>
             </tr>
 
         </tbody>

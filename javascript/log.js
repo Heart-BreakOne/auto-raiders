@@ -97,8 +97,8 @@ document.addEventListener('DOMContentLoaded', async function () {
     });
 
     //Export all settings to a file.
-    document.getElementById("exportLogButton").addEventListener("click", function () {
-        exportData(["logData"]);
+    document.getElementById("exportLogButton").addEventListener("click", async function () {
+       await exportData(["logData"]);
     });
 
     //Import all settings to a file.
@@ -345,7 +345,7 @@ function loadChestCounter() {
 
 //Export data from chrome local storage into a file
 async function exportData(arrayOfKeys) {
-    chrome.storage.local.get(arrayOfKeys, function (result) {
+    chrome.storage.local.get(arrayOfKeys, async function (result) {
 
         //JSON
         const jsonData = JSON.stringify(result);
@@ -367,7 +367,7 @@ async function exportData(arrayOfKeys) {
         URL.revokeObjectURL(jsonUrl);
 
         //CSV
-        const csvData = convertJsonToCsv(result);
+        const csvData = await convertJsonToCsv(result);
         const csvBlob = new Blob([csvData], { type: 'text/csv' });
         const csvUrl = URL.createObjectURL(csvBlob);
 
@@ -423,8 +423,27 @@ function getTimeString(startTime) {
 }
 
 //Convert json to csv
-function convertJsonToCsv(jsonData) {
+async function convertJsonToCsv(jsonData) {
     const logData = jsonData.logData;
+    //If the initial chest is missing for the first entry it will fail to properly generate the key headers. This ensure the key exists with a null value.
+    logData.forEach(element => {
+        if (!element.hasOwnProperty('initialchest')) {
+            const elapsedTimeIndex = Object.keys(element).indexOf('elapsedTime');
+            const logCapNameIndex = Object.keys(element).indexOf('logCapName');
+            const initialchestValue = null
+
+            if (elapsedTimeIndex !== -1 && logCapNameIndex !== -1) {
+                const updatedElement = {};
+                Object.keys(element).forEach((key, index) => {
+                    updatedElement[key] = element[key];
+                    if (index === elapsedTimeIndex + 1) {
+                        updatedElement['initialchest'] = initialchestValue;
+                    }
+                });
+                logData[logData.indexOf(element)] = updatedElement;
+            }
+        }
+    });
     const keys = Object.keys(logData[0]);
     const csvArray = [keys.map(key => `logData/${key}`).join(',')];
 
