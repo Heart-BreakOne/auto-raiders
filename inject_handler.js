@@ -101,6 +101,19 @@ function injectIntoDOM() {
     }
 
     // Checks if wipe button already exists
+    const extSettingsBtn = document.querySelector(".extSettingsButton");
+
+    //If button doesn't exist one is created and injected.
+    if (!extSettingsBtn) {
+        newButton = document.createElement("button");
+        newButton.className = "extSettingsButton";
+        newButton.innerHTML = "Settings";
+        newButton.style.cssText = wipeStyles;
+        let quantityItemsCont = document.querySelector(".quantityItemsCont");
+        quantityItemsCont.insertBefore(newButton, quantityItemsCont.firstChild);
+    }
+
+    // Checks if label container already exists
     let elapsedTimeContainer = document.querySelector(".elapsedTimeContainer");
     //If button doesn't exist one is created and injected.
     if (!elapsedTimeContainer) {
@@ -147,6 +160,14 @@ document.addEventListener("click", function (event) {
                 id = button.id;
                 await setIdleState(id, 1);
             }
+        }
+
+        //User clicked settings
+        if (event.target.classList.contains("extSettingsButton")) {
+            //Using the unique key identifiers all data is removed from storage
+            const extensionId = chrome.runtime.id;
+            const url = "chrome-extension://" + extensionId + "/settings.html"
+            window.open(url, '_blank').focus();
         }
 
         //User clicked the wipe button.
