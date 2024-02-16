@@ -352,17 +352,17 @@ async function start() {
                     captainLoyalty = false;
                     captainFlag = false;
                   }
-                  else if (lBadge.includes("Wood") && loyaltyRadio == 2) {
+                  else if (lBadge.includes("Blue") && loyaltyRadio <= 2) {
                     // Silver Check
-                    captainLoyalty = true;
-                    captainFlag = true;
+                    captainLoyalty = false;
+                    captainFlag = false;
                   }
-                  else if ((lBadge.includes("Wood") || (lBadge.includes("Blue"))) && loyaltyRadio == 3) {
+                  else if (lBadge.includes("Gold") && loyaltyRadio <= 3) {
                     // Gold check
-                    captainLoyalty = true;
-                    captainFlag = true;
+                    captainLoyalty = false;
+                    captainFlag = false;
                   }
-                  else if (lBadge.includes("Diamond") && loyaltyRadio == 4) {
+                  else if (lBadge.includes("Diamond") && loyaltyRadio <= 4) {
                     // Diamond check
                     captainLoyalty = false;
                     captainFlag = false;
