@@ -309,7 +309,8 @@ async function start() {
         const dungeonSwitch = await retrieveFromStorage('dungeonSwitch');
         const duelSwitch = await retrieveFromStorage('duelSwitch');
         const campaignSwitch = await retrieveFromStorage('campaignSwitch');
-        let captainFlag
+        diamondLoyalty = null;
+		let captainFlag
         let captainLoyalty
 
         //Pass captain name and check if the captain is flagged
@@ -367,8 +368,8 @@ async function start() {
                     captainFlag = false;
                   }
                   else {
-                    captainLoyalty = false;
-                    captainFlag = false;
+                    captainLoyalty = true;
+                    captainFlag = true;
                   }
                 } catch (error) {
                   captainLoyalty = true;
@@ -377,13 +378,13 @@ async function start() {
               }
             }
           } catch (error) {
-            captainLoyalty = false;
-            captainFlag = false;
+            captainLoyalty = true;
+            captainFlag = true;
 
           }
         } else {
-          captainLoyalty = false;
-          captainFlag = false;
+          captainLoyalty = true;
+          captainFlag = true;
         }
         //If captain has any flags, change color and move to the next slot
         if (captainLoyalty || captainFlag) {
@@ -517,7 +518,7 @@ async function openBattlefield() {
       closeAll();
       zoom();
     }
-    diamondLoyalty = null;
+    //diamondLoyalty = null;
   } else {
     //User doesn't want to preserve diamond loyalty
     zoom();
