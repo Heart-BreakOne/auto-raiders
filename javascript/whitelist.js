@@ -57,7 +57,19 @@ const keysToExport = [
     "duelsSlotSwitch",
     "skipDuelsSlotSwitch",
     "clashSlotSwitch",
-    "skipClashSlotSwitch"
+    "skipClashSlotSwitch",
+    "quickSetOne",
+    "quickSetTwo",
+    "quickSetThree",
+    "quickSetFour",
+    "slotQuickSetOne",
+    "slotQuickSetTwo",
+    "slotQuickSetThree",
+    "slotQuickSetFour",
+    "enableQuickSetSlotOne",
+    "enableQuickSetSlotTwo",
+    "enableQuickSetSlotThree",
+    "enableQuickSetSlotFour",
 ];
 
 //Event listener for when the page loads

@@ -8,11 +8,19 @@
     <title>Unit priority</title>
     <script src="/units_handler.js"></script>
     <script src="/javascript/quick_set.js"></script>
+    <script src="/popup.js"></script>
     <link rel="stylesheet" type="text/css" href="/styles/styles.css">
 </head>
 
 <body>
-
+    <div class="button_container">
+        <button id="settings_button" class="green_button">Open settings</button>
+        <button id="whitelist_button" class="green_button">Filter lists</button>
+        <button id="log_button" class="green_button">Log</button>
+        <button id="unit_button" class="green_button">Units</button>
+        <button id="instructions_button" class="green_button">Instructions</button>
+        <button id="key_check_button" class="green_button">Key check</button>
+    </div>
     <!-- Quick set popup -->
     <div class="popup" id="popup">
         <h1>Quick unit preset based on unit type</h1>
@@ -34,10 +42,27 @@
             Preset)</button>
         <br>
         <h4>Save presets on the chrome memory for quicker setting</h4>
+        <button id="saveSlot1Btn" class="green_button quick_save_btn">Set Slot 1</button>
+        <button id="saveSlot2Btn" class="green_button quick_save_btn">Set Slot 2</button>
+        <button id="saveSlot3Btn" class="green_button quick_save_btn">Set Slot 3</button>
+        <button id="saveSlot4Btn" class="green_button quick_save_btn">Set Slot 4</button>
+        <br>
+        <button id="loadSlot1Btn" class="green_button quick_save_btn">Load Slot 1</button>
+        <button id="loadSlot2Btn" class="green_button quick_save_btn">Load Slot 2</button>
+        <button id="loadSlot3Btn" class="green_button quick_save_btn">Load Slot 3</button>
+        <button id="loadSlot4Btn" class="green_button quick_save_btn">Load Slot 4</button>
+        <br>
+        <label for="enableQuickSetSlot1"><input type="checkbox" id="enableQuickSetSlot1">COMING SOON Slot 1</label>
+        <label for="enableQuickSetSlot2"><input type="checkbox" id="enableQuickSetSlot2">COMING SOON Slot 2</label>
+        <label for="enableQuickSetSlot3"><input type="checkbox" id="enableQuickSetSlot3">COMING SOON Slot 3</label>
+        <label for="enableQuickSetSlot4"><input type="checkbox" id="enableQuickSetSlot4">COMING SOON Slot 4</label>
+        <br>
+        <br>
         <button id="savePreset1Btn" class="green_button quick_save_btn">Save 1</button>
         <button id="savePreset2Btn" class="green_button quick_save_btn">Save 2</button>
         <button id="savePreset3Btn" class="green_button quick_save_btn">Save 3</button>
         <button id="savePreset4Btn" class="green_button quick_save_btn">Save 4</button>
+        <br>
         <button id="loadPreset1Btn" class="green_button quick_save_btn">Load 1</button>
         <button id="loadPreset2Btn" class="green_button quick_save_btn">Load 2</button>
         <button id="loadPreset3Btn" class="green_button quick_save_btn">Load 3</button>
@@ -61,6 +86,38 @@
                 <td><input id="a_u10_19" type="number" class="quick_set_input" min="0" value="-1"></td>
                 <td><input id="a_u20_29" type="number" class="quick_set_input" min="0" value="-1"></td>
                 <td><input id="a_u30_30" type="number" class="quick_set_input" min="0" value="-1"></td>
+            </tr>
+            <tr>
+                <td>Common units</td>
+                <td><input id="com00_04" type="number" class="quick_set_input" min="0" value="-1"></td>
+                <td><input id="com05_09" type="number" class="quick_set_input" min="0" value="-1"></td>
+                <td><input id="com10_19" type="number" class="quick_set_input" min="0" value="-1"></td>
+                <td><input id="com20_29" type="number" class="quick_set_input" min="0" value="-1"></td>
+                <td><input id="com30_30" type="number" class="quick_set_input" min="0" value="-1"></td>
+            </tr>
+            <tr>
+                <td>Uncommon units</td>
+                <td><input id="unc00_04" type="number" class="quick_set_input" min="0" value="-1"></td>
+                <td><input id="unc05_09" type="number" class="quick_set_input" min="0" value="-1"></td>
+                <td><input id="unc10_19" type="number" class="quick_set_input" min="0" value="-1"></td>
+                <td><input id="unc20_29" type="number" class="quick_set_input" min="0" value="-1"></td>
+                <td><input id="unc30_30" type="number" class="quick_set_input" min="0" value="-1"></td>
+            </tr>
+            <tr>
+                <td>Rare units</td>
+                <td><input id="rar00_04" type="number" class="quick_set_input" min="0" value="-1"></td>
+                <td><input id="rar05_09" type="number" class="quick_set_input" min="0" value="-1"></td>
+                <td><input id="rar10_19" type="number" class="quick_set_input" min="0" value="-1"></td>
+                <td><input id="rar20_29" type="number" class="quick_set_input" min="0" value="-1"></td>
+                <td><input id="rar30_30" type="number" class="quick_set_input" min="0" value="-1"></td>
+            </tr>
+            <tr>
+                <td>Legendary units</td>
+                <td><input id="len00_04" type="number" class="quick_set_input" min="0" value="-1"></td>
+                <td><input id="len05_09" type="number" class="quick_set_input" min="0" value="-1"></td>
+                <td><input id="len10_19" type="number" class="quick_set_input" min="0" value="-1"></td>
+                <td><input id="len20_29" type="number" class="quick_set_input" min="0" value="-1"></td>
+                <td><input id="len30_30" type="number" class="quick_set_input" min="0" value="-1"></td>
             </tr>
             <tr>
                 <td>amazon</td>

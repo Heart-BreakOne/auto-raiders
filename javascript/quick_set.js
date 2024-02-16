@@ -1,5 +1,10 @@
 document.addEventListener("DOMContentLoaded", async function () {
 
+    initializeSwitch("enableQuickSetSlot1")
+    initializeSwitch("enableQuickSetSlot2")
+    initializeSwitch("enableQuickSetSlot3")
+    initializeSwitch("enableQuickSetSlot4")
+
     //Opens the popup
     document.getElementById("quickSet_button").addEventListener("click", async function () {
         const popup = document.getElementById('popup');
@@ -65,7 +70,6 @@ document.addEventListener("DOMContentLoaded", async function () {
         saveQuickSet("quickSetFour")
     });
 
-
     //Load
     document.getElementById('loadPreset1Btn').addEventListener('click', function () {
         loadQuickSet("quickSetOne")
@@ -81,6 +85,43 @@ document.addEventListener("DOMContentLoaded", async function () {
 
     document.getElementById('loadPreset4Btn').addEventListener('click', function () {
         loadQuickSet("quickSetFour")
+    });
+
+
+    //Slots 
+
+    //Slots quick set
+    document.getElementById('saveSlot1Btn').addEventListener('click', function () {
+        saveQuickSet("slotQuickSetOne")
+    });
+
+    document.getElementById('saveSlot2Btn').addEventListener('click', function () {
+        saveQuickSet("slotQuickSetTwo")
+    });
+
+    document.getElementById('saveSlot3Btn').addEventListener('click', function () {
+        saveQuickSet("slotQuickSetThree")
+    });
+
+    document.getElementById('saveSlot4Btn').addEventListener('click', function () {
+        saveQuickSet("slotQuickSetFour")
+    });
+
+    //Slots quick load
+    document.getElementById('loadSlot1Btn').addEventListener('click', function () {
+        loadQuickSet("slotQuickSetOne")
+    });
+
+    document.getElementById('loadSlot2Btn').addEventListener('click', function () {
+        loadQuickSet("slotQuickSetTwo")
+    });
+
+    document.getElementById('loadSlot3Btn').addEventListener('click', function () {
+        loadQuickSet("slotQuickSetThree")
+    });
+
+    document.getElementById('loadSlot4Btn').addEventListener('click', function () {
+        loadQuickSet("slotQuickSetFour")
     });
 });
 
@@ -221,7 +262,7 @@ function loadQuickSet(quickSetKey) {
     a_i.forEach(input => {
         input.value = ""
     });
-    
+
     chrome.storage.local.get(quickSetKey, function (storedData) {
         if (storedData.hasOwnProperty(quickSetKey)) {
             const array = storedData[quickSetKey]
@@ -241,12 +282,28 @@ function loadQuickSet(quickSetKey) {
                     a_i.forEach(input => {
                         if (input.id === id) {
                             input.value = value;
-                            
+
                         }
                     });
                 }
 
             }
         }
+    });
+}
+
+function initializeSwitch(switchId) {
+    const switchElement = document.getElementById(switchId);
+
+    // Load switch state from storage
+    chrome.storage.local.get([switchId], function (result) {
+        switchElement.checked = result[switchId] || false;
+    });
+
+    //Listen to changes on the switch states and set the new value.
+    switchElement.addEventListener("change", function () {
+        const switchState = this.checked;
+        chrome.storage.local.set({ [switchId]: switchState }, function () {
+        });
     });
 }
