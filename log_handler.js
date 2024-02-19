@@ -78,7 +78,8 @@ async function setLogCaptain(logId, logCapName, logMode, currentTime, colorCode)
                     result: undefined,
                     colorCode: colorCode,
                     chest: undefined,
-                    initialchest: undefined
+                    initialchest: undefined,
+                    mapName: undefined
                 });
             } else {
                 //If no battle data exists, check if the color needs to be updated on existing slots.
@@ -117,6 +118,31 @@ async function setLogInitialChest(logCapName, initialchest) {
                     (entry.currentTime !== null && entry.currentTime !== undefined) &&
                     entry.elapsedTime === undefined && entry.initialchest === undefined) {
                     entry.initialchest = initialchest;
+                }
+            });
+
+            // Update the loggedData object in storage
+            chrome.storage.local.set({ "logData": loggedData }, function () {
+                resolve(loggedData);
+            });
+        });
+    });
+}
+
+//Saves map name on storage
+async function setLogMapName(logCapName, mapName) {
+
+    return new Promise((resolve, reject) => {
+        // Retrieve existing data from local storage
+        chrome.storage.local.get(["logData"], async function (result) {
+            let loggedData = result["logData"] || [];
+
+            // Add final battle time, result, and chest type
+            loggedData.forEach((entry) => {
+                if (entry.logCapName === logCapName &&
+                    (entry.currentTime !== null && entry.currentTime !== undefined) &&
+                    entry.elapsedTime === undefined && entry.mapName === undefined) {
+                    entry.mapName = mapName;
                 }
             });
 

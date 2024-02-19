@@ -279,8 +279,12 @@ async function start() {
         //Get captain name from the slot
         var captainSlot = button.closest('.capSlot');
         captainNameFromDOM = captainSlot.querySelector('.capSlotName').innerText;
-        let chestType = await requestLoyalty(captainNameFromDOM);
+        let chestType;
+        chestType = await requestLoyalty(captainNameFromDOM);
+        let mapName;
+        mapName = await requestMapName(captainNameFromDOM);
         await setLogInitialChest(captainNameFromDOM, chestType);
+        await setLogMapName(captainNameFromDOM, mapName);
         //Retrieve the slot pause state
         const btn = captainSlot.querySelector(".capSlotStatus .offlineButton");
         const buttonId = btn.getAttribute('id');
@@ -1325,5 +1329,30 @@ async function requestLoyalty(captainNameFromDOM) {
     contentScriptPort.onMessage.addListener(responseListener);
 
     contentScriptPort.postMessage({ action: "getLoyalty", captainNameFromDOM });
+  });
+}
+
+async function requestMapName(captainNameFromDOM) {
+  let contentScriptPort = chrome.runtime.connect({ name: "content-script" });
+  return new Promise((resolve, reject) => {
+    const responseListener = (response) => {
+      clearTimeout(timeout);
+      // Handle the response (true/false)
+      if (response !== undefined) {
+        resolve(response.response);
+      } else {
+        reject(new Error('Invalid response format from the background script'));
+      }
+      contentScriptPort.onMessage.removeListener(responseListener);
+    };
+
+    const timeout = setTimeout(() => {
+      reject(new Error('Timeout while waiting for response'));
+      contentScriptPort.onMessage.removeListener(responseListener);
+    }, 8000);
+
+    contentScriptPort.onMessage.addListener(responseListener);
+
+    contentScriptPort.postMessage({ action: "getMapName", captainNameFromDOM });
   });
 }
