@@ -103,6 +103,15 @@ chrome.runtime.onConnect.addListener((port) => {
       port.postMessage({ response });
     }
 
+    //Get map name for log
+    if (msg.action === "getMapName") {
+      // Handle the message, access payload with msg.payload
+      // Do something with the payload
+      //Might need async handling
+      const response = await getMapName(msg.captainNameFromDOM);
+      port.postMessage({ response });
+    }
+	
     //Force a reload if the game doesn't load with mobile mode
     if (msg.action === "reloadCleanCache") {
       processedTabs = new Set();
@@ -323,6 +332,72 @@ async function getRaidChest(raidId) {
     return "chestbronze";
   }
 }
+
+async function getMapName(captainName) {
+  try {
+    await getCookies();
+
+    // Post request to get all units
+    const response = await fetch(`https://www.streamraiders.com/api/game/?cn=getActiveRaids&clientVersion=${clientVersion}&clientPlatform=MobileLite&gameDataVersion=${gameDataVersion}&command=getActiveRaidsLite&isCaptain=0`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/x-www-form-urlencoded',
+        'Cookie': cookieString,
+      },
+    });
+
+    if (!response.ok) {
+      throw new Error('Network response was not ok');
+    }
+
+    // Get unit id and name.
+    const activeRaids = await response.json();
+
+    for (let i = 0; i < activeRaids.data.length; i++) {
+      const position = activeRaids.data[i];
+      const raidId = position.raidId;
+      const cptName = position.twitchDisplayName;
+
+      if (cptName === captainName) {
+        const mapNode = await getMapNode(raidId);
+        return mapNode;
+      }
+    }
+
+    //No match found
+    return "";
+
+  } catch (error) {
+    console.error('Error in getMapName:', error);
+    return "";
+  }
+}
+
+async function getMapNode(raidId) {
+  try {
+    const response = await fetch(`https://www.streamraiders.com/api/game/?cn=getRaid&raidId=${raidId}&placementStartIndex=0&maybeSendNotifs=false&clientVersion=${clientVersion}&clientPlatform=WebLite&gameDataVersion=${gameDataVersion}&command=getRaid&isCaptain=0`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/x-www-form-urlencoded',
+        'Cookie': cookieString,
+      },
+    });
+
+    if (!response.ok) {
+      throw new Error('Network response was not ok');
+    }
+
+    const currentRaid = await response.json();
+    const raid_url = currentRaid.info.dataPath
+    const nodeId = currentRaid.data.nodeId;
+    return nodeId;
+
+  } catch (error) {
+    console.error('Error in getMapNode:', error);
+    return "";
+  }
+}
+
 
 //Get every unit the user has
 async function fetchUnits() {

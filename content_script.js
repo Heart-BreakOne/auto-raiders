@@ -279,8 +279,12 @@ async function start() {
         //Get captain name from the slot
         var captainSlot = button.closest('.capSlot');
         captainNameFromDOM = captainSlot.querySelector('.capSlotName').innerText;
-        let chestType = await requestLoyalty(captainNameFromDOM);
+        let chestType;
+        chestType = await requestLoyalty(captainNameFromDOM);
+        let mapName;
+        mapName = await requestMapName(captainNameFromDOM);
         await setLogInitialChest(captainNameFromDOM, chestType);
+        await setLogMapName(captainNameFromDOM, mapName);
         //Retrieve the slot pause state
         const btn = captainSlot.querySelector(".capSlotStatus .offlineButton");
         const buttonId = btn.getAttribute('id');
@@ -309,7 +313,8 @@ async function start() {
         const dungeonSwitch = await retrieveFromStorage('dungeonSwitch');
         const duelSwitch = await retrieveFromStorage('duelSwitch');
         const campaignSwitch = await retrieveFromStorage('campaignSwitch');
-        let captainFlag
+        diamondLoyalty = null;
+		let captainFlag
         let captainLoyalty
 
         //Pass captain name and check if the captain is flagged
@@ -351,24 +356,24 @@ async function start() {
                     captainLoyalty = false;
                     captainFlag = false;
                   }
-                  else if (lBadge.includes("Wood") && loyaltyRadio == 2) {
+                  else if (lBadge.includes("Blue") && loyaltyRadio <= 2) {
                     // Silver Check
-                    captainLoyalty = true;
-                    captainFlag = true;
+                    captainLoyalty = false;
+                    captainFlag = false;
                   }
-                  else if ((lBadge.includes("Wood") || (lBadge.includes("Blue"))) && loyaltyRadio == 3) {
+                  else if (lBadge.includes("Gold") && loyaltyRadio <= 3) {
                     // Gold check
-                    captainLoyalty = true;
-                    captainFlag = true;
+                    captainLoyalty = false;
+                    captainFlag = false;
                   }
-                  else if (lBadge.includes("Diamond") && loyaltyRadio == 4) {
+                  else if (lBadge.includes("Diamond") && loyaltyRadio <= 4) {
                     // Diamond check
                     captainLoyalty = false;
                     captainFlag = false;
                   }
                   else {
-                    captainLoyalty = false;
-                    captainFlag = false;
+                    captainLoyalty = true;
+                    captainFlag = true;
                   }
                 } catch (error) {
                   captainLoyalty = true;
@@ -377,13 +382,13 @@ async function start() {
               }
             }
           } catch (error) {
-            captainLoyalty = false;
-            captainFlag = false;
+            captainLoyalty = true;
+            captainFlag = true;
 
           }
         } else {
-          captainLoyalty = false;
-          captainFlag = false;
+          captainLoyalty = true;
+          captainFlag = true;
         }
         //If captain has any flags, change color and move to the next slot
         if (captainLoyalty || captainFlag) {
@@ -517,7 +522,7 @@ async function openBattlefield() {
       closeAll();
       zoom();
     }
-    diamondLoyalty = null;
+    //diamondLoyalty = null;
   } else {
     //User doesn't want to preserve diamond loyalty
     zoom();
@@ -1324,5 +1329,30 @@ async function requestLoyalty(captainNameFromDOM) {
     contentScriptPort.onMessage.addListener(responseListener);
 
     contentScriptPort.postMessage({ action: "getLoyalty", captainNameFromDOM });
+  });
+}
+
+async function requestMapName(captainNameFromDOM) {
+  let contentScriptPort = chrome.runtime.connect({ name: "content-script" });
+  return new Promise((resolve, reject) => {
+    const responseListener = (response) => {
+      clearTimeout(timeout);
+      // Handle the response (true/false)
+      if (response !== undefined) {
+        resolve(response.response);
+      } else {
+        reject(new Error('Invalid response format from the background script'));
+      }
+      contentScriptPort.onMessage.removeListener(responseListener);
+    };
+
+    const timeout = setTimeout(() => {
+      reject(new Error('Timeout while waiting for response'));
+      contentScriptPort.onMessage.removeListener(responseListener);
+    }, 8000);
+
+    contentScriptPort.onMessage.addListener(responseListener);
+
+    contentScriptPort.postMessage({ action: "getMapName", captainNameFromDOM });
   });
 }
