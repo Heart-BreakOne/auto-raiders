@@ -332,7 +332,7 @@ async function start() {
         } catch(error){
           loyaltyRadioInt = 0
         }
-        if (loyaltyRadio != 0 && loyaltyRadio != undefined) {
+        if (loyaltyRadioInt != 0 && loyaltyRadio != undefined) {
           try {
             captainLoyalty = await getCaptainFlag(captainNameFromDOM, 'captainLoyalty');
             if (!captainLoyalty || captainLoyalty == undefined) {
@@ -344,35 +344,40 @@ async function start() {
               const lboss = await retrieveFromStorage("lbossSwitch")
               const lsuperboss = await retrieveFromStorage("lsuperbossSwitch")
 
-              if ((!lgold && chestType.includes("chestboostedgold")) || (!lskin && chestType.includes("chestboostedskin")) || (!lscroll && chestType.includes("chestboostedscroll")) || (!ltoken && chestType.includes("chestboostedtoken")) || (!lboss && chestType.includes("chestboss") && !chestType.includes("chestbosssuper")) || (!lsuperboss && chestType.includes("chestbosssuper"))) {
-                captainLoyalty = true;
-              } else {
+              if ((lgold && chestType.includes("chestboostedgold")) || (lskin && chestType.includes("chestboostedskin")) || (lscroll && chestType.includes("chestboostedscroll")) || (ltoken && chestType.includes("chestboostedtoken")) || (lboss && chestType.includes("chestboss") && !chestType.includes("chestbosssuper")) || (lsuperboss && chestType.includes("chestbosssuper"))) {
                 captainLoyalty = false;
+              } else {
+                captainLoyalty = true;
               }
               if (captainLoyalty) {
-                let lBadge = null
+                let lBadgeElement = null
+                let lBadge
                 try {
-                  lBadge = captainSlot.querySelector('.capSlotLoyalty img').getAttribute('src');
-                  if (lBadge == null || lBadge == undefined || loyaltyRadio == 0) {
+                  lBadgeElement = captainSlot.querySelector('.capSlotLoyalty img');
+                  if (lBadgeElement != null) {
+                    lBadge = lBadgeElement.getAttribute('src')
+                  }
+                  if ((lBadge == null || lBadge == undefined) && loyaltyRadioInt == 0) {
                     captainLoyalty = false;
                     captainFlag = false;
-                  }
-                  else if (lBadge.includes("Wood") && loyaltyRadio == 1) {
+                    lBadge = ""
+                  } 
+                  else if (lBadge.includes("Wood") && loyaltyRadioInt == 1) {
                     // Bronze check
                     captainLoyalty = false;
                     captainFlag = false;
                   }
-                  else if (lBadge.includes("Blue") && loyaltyRadio <= 2) {
+                  else if (lBadge.includes("Blue") && loyaltyRadioInt <= 2) {
                     // Silver Check
                     captainLoyalty = false;
                     captainFlag = false;
                   }
-                  else if (lBadge.includes("Gold") && loyaltyRadio <= 3) {
+                  else if (lBadge.includes("Gold") && loyaltyRadioInt <= 3) {
                     // Gold check
                     captainLoyalty = false;
                     captainFlag = false;
                   }
-                  else if (lBadge.includes("Diamond") && loyaltyRadio == 4) {
+                  else if (lBadge.includes("Diamond") && loyaltyRadioInt <= 4) {
                     // Diamond check
                     captainLoyalty = false;
                     captainFlag = false;
@@ -382,12 +387,14 @@ async function start() {
                     captainFlag = true;
                   }
                 } catch (error) {
+                  console.log(error)
                   captainLoyalty = true;
                   captainFlag = true;
                 }
               }
             }
           } catch (error) {
+            console.log(error)
             captainLoyalty = true;
             captainFlag = true;
 
