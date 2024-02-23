@@ -346,7 +346,7 @@ async function start() {
 
               if ((lgold && chestType.includes("chestboostedgold")) || (lskin && chestType.includes("chestboostedskin")) || (lscroll && chestType.includes("chestboostedscroll")) || (ltoken && chestType.includes("chestboostedtoken")) || (lboss && chestType.includes("chestboss") && !chestType.includes("chestbosssuper")) || (lsuperboss && chestType.includes("chestbosssuper"))) {
                 captainLoyalty = false;
-              } else if (chestType.includes("bronzechest") || chestType.includes("silverchest") || chestType.includes("goldchest")){
+              } else if (chestType.includes("bonechest") || chestType.includes("dungeonchest") || chestType.includes("bronzechest") || chestType.includes("silverchest") || chestType.includes("goldchest")){
                 captainLoyalty = false;
               } else {
                 captainLoyalty = true;
