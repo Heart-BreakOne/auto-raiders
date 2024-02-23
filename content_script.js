@@ -351,7 +351,7 @@ async function start() {
               }
               if (captainLoyalty) {
                 let lBadgeElement = null
-                let lBadge
+                let lBadge = ""
                 try {
                   lBadgeElement = captainSlot.querySelector('.capSlotLoyalty img');
                   if (lBadgeElement != null) {
@@ -361,7 +361,10 @@ async function start() {
                     captainLoyalty = false;
                     captainFlag = false;
                     lBadge = ""
-                  } 
+                  }
+                  if (lBadge == null || lBadge == undefined) {
+                    lBadge = ""
+                  }
                   else if (lBadge.includes("Wood") && loyaltyRadioInt == 1) {
                     // Bronze check
                     captainLoyalty = false;
