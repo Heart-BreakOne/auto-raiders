@@ -314,7 +314,7 @@ async function start() {
         const duelSwitch = await retrieveFromStorage('duelSwitch');
         const campaignSwitch = await retrieveFromStorage('campaignSwitch');
         diamondLoyalty = null;
-		let captainFlag
+        let captainFlag
         let captainLoyalty
 
         //Pass captain name and check if the captain is flagged
@@ -326,6 +326,12 @@ async function start() {
         }
         //Pass captain name and check if the captain has a loyalty flag.
         const loyaltyRadio = await getRadioButton("loyalty");
+        let loyaltyRadioInt = 0
+        try {
+          loyaltyRadioInt = parseInt(loyaltyRadio)
+        } catch(error){
+          loyaltyRadioInt = 0
+        }
         if (loyaltyRadio != 0 && loyaltyRadio != undefined) {
           try {
             captainLoyalty = await getCaptainFlag(captainNameFromDOM, 'captainLoyalty');
@@ -347,11 +353,11 @@ async function start() {
                 let lBadge = null
                 try {
                   lBadge = captainSlot.querySelector('.capSlotLoyalty img').getAttribute('src');
-                  if (lBadge == null || lBadge == undefined) {
-                    captainLoyalty = true;
-                    captainFlag = true;
+                  if (lBadge == null || lBadge == undefined || loyaltyRadio == 0) {
+                    captainLoyalty = false;
+                    captainFlag = false;
                   }
-                  if (lBadge.includes("Wood") && loyaltyRadio == 1) {
+                  else if (lBadge.includes("Wood") && loyaltyRadio == 1) {
                     // Bronze check
                     captainLoyalty = false;
                     captainFlag = false;
@@ -366,7 +372,7 @@ async function start() {
                     captainLoyalty = false;
                     captainFlag = false;
                   }
-                  else if (lBadge.includes("Diamond") && loyaltyRadio <= 4) {
+                  else if (lBadge.includes("Diamond") && loyaltyRadio == 4) {
                     // Diamond check
                     captainLoyalty = false;
                     captainFlag = false;
@@ -387,8 +393,8 @@ async function start() {
 
           }
         } else {
-          captainLoyalty = true;
-          captainFlag = true;
+          captainLoyalty = false;
+          captainFlag = false;
         }
         //If captain has any flags, change color and move to the next slot
         if (captainLoyalty || captainFlag) {
@@ -891,13 +897,13 @@ async function selectUnit() {
   const dungeonPlaceAnywaySwitch = await retrieveFromStorage("dungeonPlaceAnywaySwitch");
   let userDunLevel = 0;
   try {
-    userDunLevel = await retrieveNumberFromStorage ("maxDungeonLvlInput")
+    userDunLevel = await retrieveNumberFromStorage("maxDungeonLvlInput")
   } catch (error) {
     return;
   }
   let userUnitLevel = 0;
   try {
-    userUnitLevel = await retrieveNumberFromStorage ("maxUnitLvlDungInput")
+    userUnitLevel = await retrieveNumberFromStorage("maxUnitLvlDungInput")
   } catch (error) {
     return;
   }
@@ -930,7 +936,7 @@ async function selectUnit() {
     if (unit1) {
       unitName = unit1.key;
     }
-	isDungeon = false;
+    isDungeon = false;
     let dungeonLevel;
     if (dungeonLevelSwitch) {
       let battleInfo;
@@ -943,7 +949,7 @@ async function selectUnit() {
         isDungeon = true;
         dungeonLevel = parseInt(battleInfo.substr(battleInfo.length - 2));
         //If it fails replace   retrieveFromStorage with   ->    retrieveNumberFromStorage
-		//Added unitName == "AMAZON" because most dungeon captains use Amazon marker for Epic Huntress Amazon so it's easier to just not allow Amazon units to be placed at all
+        //Added unitName == "AMAZON" because most dungeon captains use Amazon marker for Epic Huntress Amazon so it's easier to just not allow Amazon units to be placed at all
         if (userDunLevel == null || userDunLevel == undefined || userUnitLevel == null || userUnitLevel == undefined || unitName == "AMAZON") {
           continue;
         } else if (dungeonLevel <= userDunLevel && unitLevel > userUnitLevel) {// && unitName != "FLAG") {
@@ -1090,7 +1096,7 @@ async function placeTheUnit() {
           if (placeAnywayButton) {
             if (dungeonPlaceAnywaySwitch) {
               placeAnywayButton.click();
-			  await delay(1000);
+              await delay(1000);
               goHome();
               return;
             } else {
@@ -1297,7 +1303,7 @@ function goHome() {
   const backHome = document.querySelector(".selectorBack");
   if (backHome) {
     backHome.click();
-	//await delay(1000);
+    //await delay(1000);
     const menuElements = document.querySelectorAll(".slideMenuCont.slideLeft.slideLeftOpen");
     const leaderboard = Array.from(menuElements).find(element => element.innerText.includes('Leaderboard'));
     if (leaderboard) {
