@@ -79,7 +79,13 @@ async function setLogCaptain(logId, logCapName, logMode, currentTime, colorCode)
                     colorCode: colorCode,
                     chest: undefined,
                     initialchest: undefined,
-                    mapName: undefined
+                    mapName: undefined,
+                    initialchest2: undefined,
+                    rewards: undefined,
+                    leaderboardRank: undefined,
+                    kills: undefined,
+                    assists: undefined,
+                    units: undefined
                 });
             } else {
                 //If no battle data exists, check if the color needs to be updated on existing slots.
@@ -129,6 +135,31 @@ async function setLogInitialChest(logCapName, initialchest) {
     });
 }
 
+//Saves initial chest information on storage
+async function setLogInitialChest2(logCapName, initialchest2) {
+
+    return new Promise((resolve, reject) => {
+        // Retrieve existing data from local storage
+        chrome.storage.local.get(["logData"], async function (result) {
+            let loggedData = result["logData"] || [];
+
+            // Add final battle time, result, and chest type
+            loggedData.forEach((entry) => {
+                if (entry.logCapName === logCapName &&
+                    (entry.currentTime !== null && entry.currentTime !== undefined) &&
+                    entry.elapsedTime === undefined && entry.initialchest2 === undefined) {
+                    entry.initialchest2 = initialchest2;
+                }
+            });
+
+            // Update the loggedData object in storage
+            chrome.storage.local.set({ "logData": loggedData }, function () {
+                resolve(loggedData);
+            });
+        });
+    });
+}
+
 //Saves map name on storage
 async function setLogMapName(logCapName, mapName) {
 
@@ -153,6 +184,60 @@ async function setLogMapName(logCapName, mapName) {
         });
     });
 }
+
+//Saves rewards on storage
+async function setLogRewards(logCapName, rewards) {
+
+    return new Promise((resolve, reject) => {
+        // Retrieve existing data from local storage
+        chrome.storage.local.get(["logData"], async function (result) {
+            let loggedData = result["logData"] || [];
+
+            // Add final battle time, result, and chest type
+            loggedData.forEach((entry) => {
+                if (entry.logCapName === logCapName &&
+                    (entry.currentTime !== null && entry.currentTime !== undefined) &&
+                    entry.rewards === undefined) {
+                    entry.rewards = rewards;
+                }
+            });
+
+            // Update the loggedData object in storage
+            chrome.storage.local.set({ "logData": loggedData }, function () {
+                resolve(loggedData);
+            });
+        });
+    });
+}
+
+//Saves leaderboard info on storage
+async function setLogLeaderboard(logCapName, leaderboardRank, kills, assists, units) {
+
+    return new Promise((resolve, reject) => {
+        // Retrieve existing data from local storage
+        chrome.storage.local.get(["logData"], async function (result) {
+            let loggedData = result["logData"] || [];
+
+            // Add final battle time, result, and chest type
+            loggedData.forEach((entry) => {
+                if (entry.logCapName === logCapName &&
+                    (entry.currentTime !== null && entry.currentTime !== undefined) &&
+                    entry.leaderboardRank === undefined) {
+                    entry.leaderboardRank = leaderboardRank;
+                    entry.kills = kills;
+                    entry.assists = assists;
+                    entry.units = units;
+                }
+            });
+
+            // Update the loggedData object in storage
+            chrome.storage.local.set({ "logData": loggedData }, function () {
+                resolve(loggedData);
+            });
+        });
+    });
+}
+
 
 //Saves final battle information on storage
 async function setLogResults(conclusion, logCapName, chest) {

@@ -106,7 +106,7 @@ function reloadRoot() {
 }
 
 //When invoked, this function clicks on all close buttons to close any popup that may exist
-function closeAll() {
+async function closeAll() {
   const closeButton = document.querySelectorAll(".far.fa-times");
   if (closeButton.length > 0) {
     closeButton.forEach(button => {
@@ -187,7 +187,7 @@ const observer = new MutationObserver(async function (mutations) {
           element.style.height = '0';
         }
       }
-      hideElementsFromView(rewardsScrim);
+      //hideElementsFromView(rewardsScrim);
       hideElementsFromView(toast);
 
       let questModal = document.querySelector(".modalScrim.modalOn");

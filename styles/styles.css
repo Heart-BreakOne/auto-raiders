@@ -142,3 +142,17 @@ textarea {
 .quick_save_btn {
     padding: 5px;
 }
+
+.crop {
+    width: 30px;
+    height: 30px;
+    background-position: center;
+    overflow: hidden;
+	display: inline-block;
+}
+	
+.crop img {
+    width: 70px;
+    height: 70px;
+    margin: -17px 0px 0px -20px;
+}

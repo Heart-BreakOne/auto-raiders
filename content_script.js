@@ -508,7 +508,7 @@ async function openBattlefield() {
   }
 
   //User wants to preserve diamond loyalty and current captain is not diamond and current mode is campaign
-  if (!acceptableLoyalty && mode == false) {
+  if (mode == false) { //!acceptableLoyalty && ) {
     //Opens battle info and checks chest type.
     battleInfo = document.querySelector(".battleInfoMapTitle")
     battleInfo.click();
@@ -528,7 +528,9 @@ async function openBattlefield() {
     const lboss = await retrieveFromStorage("lbossSwitch")
     const lsuperboss = await retrieveFromStorage("lsuperbossSwitch")
 
-    if ((!lgold && chest.includes("Loyalty Gold")) || (!lskin && chest.includes("Loyalty Skin")) || (!lscroll && chest.includes("Loyalty Scroll")) || (!ltoken && chest.includes("Loyalty Token")) || (!lboss && chest.includes("Loyalty Boss")) || (!lsuperboss && chest.includes("Loyalty Super"))) {
+    await setLogInitialChest2(captainNameFromDOM, chest);
+
+    if (!acceptableLoyalty && ((!lgold && chest.includes("Loyalty Gold")) || (!lskin && chest.includes("Loyalty Skin")) || (!lscroll && chest.includes("Loyalty Scroll")) || (!ltoken && chest.includes("Loyalty Token")) || (!lboss && chest.includes("Loyalty Boss")) || (!lsuperboss && chest.includes("Loyalty Super")))) {
       //if (chest.includes("Loyalty")) {
       //Flag the captain loyalty since the current map is to be skipped
       await flagCaptain('captainLoyalty');
@@ -1283,8 +1285,67 @@ async function collectChests() {
       const slotState = await getIdleState(stBtn);
       const cNm = capSlot.querySelector(".capSlotName").innerText
       button.click();
-      await delay(15000);
-
+      //await delay(5000);
+      await delay(2000);
+      let userName = document.querySelector(".userInfoImage").alt;
+      let rewards = "";
+      let leaderboardRank;
+      let kills;
+      let assists;
+      let rewardAmt;
+      let rewardScrim = document.querySelectorAll(".rewardsScrim");
+      if (rewardScrim.length > 0) {
+        let rewardsTab = document.querySelector(".rewardsTab");
+        rewardsTab.click();
+        await delay(250);
+        let allRewards;
+        allRewards = rewardScrim[0].querySelectorAll(".rewardMainImage");
+        let allRewardAmts = rewardScrim[0].querySelectorAll(".rewardListItemAmt");
+        for (let i = 0; i < allRewards.length; i++) {
+          const reward = allRewards[i];
+          if (i < allRewardAmts.length) {
+            rewardAmt = allRewardAmts[i].innerText;
+          } else {
+            rewardAmt = "";
+          }
+          rewards = reward.src + " " + reward.alt + rewardAmt + "," + rewards;
+        }
+        await setLogRewards(captainName, rewards);
+        let leaderboardTab = document.querySelector(".rewardsLeaderboardTab");
+        leaderboardTab.click();
+        await delay(500);
+        let leaderboardAllRows = document.querySelector(".rewardsLeaderboardAllRowsCont");
+        let leaderboardRows = leaderboardAllRows.querySelectorAll(".rewardsLeaderboardRowCont")
+        //Initialized the scrollable element
+        const scroll = document.querySelector('.rewardsScrim');
+        //Scrolls to the bottom with a delay so the new dynamically elements can be loaded
+        for (let i = 0; i < 10; i++) {
+          for (let i = 0; i < leaderboardRows.length; i++) {
+            const leaderboardRow = leaderboardRows[i];
+            const leaderboardRowUser = leaderboardRow.querySelector(".rewardsLeaderboardRowText.rewardsLeaderboardRowDisplayName");
+	    	  console.log("LOG-" + leaderboardRowUser.innerText);
+            if (leaderboardRowUser.innerText == userName) {
+              leaderboardRank = leaderboardRow.querySelector(".rewardsLeaderboardRowText.rewardsLeaderboardRowRank").innerText;
+              kills = leaderboardRow.querySelector(".rewardsLeaderboardRowText.rewardsLeaderboardRowKills").innerText;
+              assists = leaderboardRow.querySelector(".rewardsLeaderboardRowText.rewardsLeaderboardRowAssists").innerText;
+              let unitIconsAll = leaderboardRow.querySelector(".rewardsLeaderboardRowUnitIconsCont");
+              let unitIcons = unitIconsAll.querySelectorAll(".rewardsLeaderboardRowUnitIconWrapper");
+              let unitIconList = "";
+              for (let j = 0; j < unitIcons.length; j++) {
+                const unitIconWrapper = unitIcons[j];
+                let unitIcon = unitIconWrapper.querySelector(".rewardsLeaderboardRowUnitIcon");
+                unitIconList = unitIcon.src + " " + unitIcon.alt + ","+ unitIconList
+              }
+              await setLogLeaderboard(captainName, leaderboardRank, kills, assists, unitIconList);
+              break;
+            }
+          }
+          scroll.scrollTop = scroll.scrollHeight;
+          await delay(250);
+        }
+      }
+      await delay(250);
+	  
       if (slotState == 2) {
         const allCapSlots = document.querySelectorAll(".capSlot")
         for (const i in allCapSlots) {
