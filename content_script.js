@@ -30,6 +30,9 @@ const cancelButtonSelector = ".actionButton.actionButtonNegative.placerButton";
 const delay = ms => new Promise(res => setTimeout(res, ms));
 let isDungeon = false;
 let dungeonPlaceAnywaySwitch;
+let battleResult;
+let captainName
+let chestStringAlt;
 
 //Battlefield markers.
 const arrayOfBattleFieldMarkers = [
@@ -1251,10 +1254,10 @@ async function collectChests() {
     const buttonText = button.innerText;
     if (buttonLabels.includes(buttonText)) {
       const offSetSlot = button.offsetParent;
-      const captainName = offSetSlot.querySelector(".capSlotName").innerText;
+      let captainName = offSetSlot.querySelector(".capSlotName").innerText;
 
       //Get battle result and chest type to add to storage log
-      const battleResult = offSetSlot.querySelector(".capSlotStatus").innerText;
+      let battleResult = offSetSlot.querySelector(".capSlotStatus").innerText;
       let chestString;
       let chestStringAlt;
       if (battleResult.includes("Defeat")) {
@@ -1277,27 +1280,24 @@ async function collectChests() {
         };
       }
 
-
-      await setLogResults(battleResult, captainName, chestStringAlt);
-
       const capSlot = button.parentElement.parentElement
       const stBtn = capSlot.querySelector(".offlineButton").id
       const slotState = await getIdleState(stBtn);
       const cNm = capSlot.querySelector(".capSlotName").innerText
       button.click();
-      //await delay(5000);
       await delay(2000);
       let userName = document.querySelector(".userInfoImage").alt;
       let rewards = "";
       let leaderboardRank;
       let kills;
       let assists;
+      let unitIconList;
       let rewardAmt;
       let rewardScrim = document.querySelectorAll(".rewardsScrim");
       if (rewardScrim.length > 0) {
         let rewardsTab = document.querySelector(".rewardsTab");
         rewardsTab.click();
-        await delay(250);
+        await delay(500);
         let allRewards;
         allRewards = rewardScrim[0].querySelectorAll(".rewardMainImage");
         let allRewardAmts = rewardScrim[0].querySelectorAll(".rewardListItemAmt");
@@ -1310,42 +1310,61 @@ async function collectChests() {
           }
           rewards = reward.src + " " + reward.alt + rewardAmt + "," + rewards;
         }
-        await setLogRewards(captainName, rewards);
         let leaderboardTab = document.querySelector(".rewardsLeaderboardTab");
         leaderboardTab.click();
         await delay(500);
-        let leaderboardAllRows = document.querySelector(".rewardsLeaderboardAllRowsCont");
-        let leaderboardRows = leaderboardAllRows.querySelectorAll(".rewardsLeaderboardRowCont")
-        //Initialized the scrollable element
-        const scroll = document.querySelector('.rewardsScrim');
-        //Scrolls to the bottom with a delay so the new dynamically elements can be loaded
-        for (let i = 0; i < 10; i++) {
-          for (let i = 0; i < leaderboardRows.length; i++) {
-            const leaderboardRow = leaderboardRows[i];
-            const leaderboardRowUser = leaderboardRow.querySelector(".rewardsLeaderboardRowText.rewardsLeaderboardRowDisplayName");
-	    	  console.log("LOG-" + leaderboardRowUser.innerText);
-            if (leaderboardRowUser.innerText == userName) {
+
+        let rows2 = document.querySelectorAll(".rewardsLeaderboardRowCont")
+        let lastRow2 = rows2[rows2.length - 1];
+
+        let leaderboardRows;
+        for (let k = 0; k < 30; k++) {
+            leaderboardRows = document.querySelectorAll(".rewardsLeaderboardRowCont");
+
+            for (let i = 0; i < leaderboardRows.length; i++) {
+              const leaderboardRow = leaderboardRows[i];
+              const leaderboardRowUser = leaderboardRow.querySelector(".rewardsLeaderboardRowText.rewardsLeaderboardRowDisplayName");
               leaderboardRank = leaderboardRow.querySelector(".rewardsLeaderboardRowText.rewardsLeaderboardRowRank").innerText;
-              kills = leaderboardRow.querySelector(".rewardsLeaderboardRowText.rewardsLeaderboardRowKills").innerText;
-              assists = leaderboardRow.querySelector(".rewardsLeaderboardRowText.rewardsLeaderboardRowAssists").innerText;
-              let unitIconsAll = leaderboardRow.querySelector(".rewardsLeaderboardRowUnitIconsCont");
-              let unitIcons = unitIconsAll.querySelectorAll(".rewardsLeaderboardRowUnitIconWrapper");
-              let unitIconList = "";
-              for (let j = 0; j < unitIcons.length; j++) {
-                const unitIconWrapper = unitIcons[j];
-                let unitIcon = unitIconWrapper.querySelector(".rewardsLeaderboardRowUnitIcon");
-                unitIconList = unitIcon.src + " " + unitIcon.alt + ","+ unitIconList
+              if (leaderboardRowUser.innerText == userName) {
+                leaderboardRank = leaderboardRow.querySelector(".rewardsLeaderboardRowText.rewardsLeaderboardRowRank").innerText;
+                kills = leaderboardRow.querySelector(".rewardsLeaderboardRowText.rewardsLeaderboardRowKills").innerText;
+                assists = leaderboardRow.querySelector(".rewardsLeaderboardRowText.rewardsLeaderboardRowAssists").innerText;
+                let unitIconsAll = leaderboardRow.querySelector(".rewardsLeaderboardRowUnitIconsCont");
+                let unitIcons = unitIconsAll.querySelectorAll(".rewardsLeaderboardRowUnitIconWrapper");
+                unitIconList = "";
+                for (let j = 0; j < unitIcons.length; j++) {
+                  const unitIconWrapper = unitIcons[j];
+                  let unitIcon = unitIconWrapper.querySelector(".rewardsLeaderboardRowUnitIcon");
+                  unitIconList = unitIcon.src + " " + unitIcon.alt + ","+ unitIconList
+                }
+                if (kills !== undefined) {
+                  await delay(500);//+(500*k));
+                }
+                break;
               }
-              await setLogLeaderboard(captainName, leaderboardRank, kills, assists, unitIconList);
+            }
+            if (kills !== undefined && kills !== null) {
               break;
             }
-          }
-          scroll.scrollTop = scroll.scrollHeight;
-          await delay(250);
+            clickHoldAndScroll(lastRow2, -1000, 100);
+            await delay(500);
+            rows2 = document.querySelectorAll(".rewardsLeaderboardRowCont");
+            lastRow2 = rows2[rows2.length - 1];
         }
+
       }
+      await delay(500);
+      await setLogResults(battleResult, captainName, chestStringAlt, leaderboardRank, kills, assists, unitIconList, rewards);
+      battleResult = null;
+      captainName = null;
+      chestStringAlt = null;
+      leaderboardRank = null;
+      kills = null;
+      assists = null;
+      unitIconList = null;
+      rewards = null;
       await delay(250);
-	  
+      
       if (slotState == 2) {
         const allCapSlots = document.querySelectorAll(".capSlot")
         for (const i in allCapSlots) {
@@ -1435,4 +1454,38 @@ async function requestMapName(captainNameFromDOM) {
 
     contentScriptPort.postMessage({ action: "getMapName", captainNameFromDOM });
   });
+}
+
+function simulateMouseEvent(element, eventName, clientX, clientY) {
+    const event = new MouseEvent(eventName, {
+        bubbles: true,
+        cancelable: true,
+        clientX: clientX,
+        clientY: clientY
+    });
+    element.dispatchEvent(event);
+}
+
+function clickHoldAndScroll(element, deltaY, duration) {
+    const rect = element.getBoundingClientRect();
+    const clientX = rect.left + rect.width / 2;
+    const clientY = rect.top + rect.height / 2;
+
+    simulateMouseEvent(element, "mousedown", clientX, clientY);
+
+    const interval = 10;
+    const steps = Math.ceil(duration / interval);
+    const stepSize = deltaY / steps;
+    let cumulativeDeltaY = 0;
+    let step = 0;
+    const scrollInterval = setInterval(() => {
+        if (step < steps) {
+            cumulativeDeltaY += stepSize;
+            simulateMouseEvent(element, "mousemove", clientX, clientY + cumulativeDeltaY);
+            step++;
+        } else {
+            clearInterval(scrollInterval);
+            simulateMouseEvent(element, "mouseup", clientX, clientY + cumulativeDeltaY);
+        }
+    }, interval);
 }
