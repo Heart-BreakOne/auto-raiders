@@ -69,3 +69,26 @@ async function displayMessage() {
         return "Something went wrong.";
     }
 }
+
+async function getUpdate() {
+    try {
+        const result = await new Promise((resolve) => {
+
+            chrome.storage.local.get({ ['hasUpdate']: [] }, function (result) {
+                if (chrome.runtime.lastError) {
+                    resolve(null);
+                } else {
+                    resolve(result['hasUpdate']);
+                }
+            });
+        });
+
+        if (result) {
+            return "Update. ";
+        } else {
+            return "";
+        }
+    } catch (error) {
+        return "";
+    }
+}

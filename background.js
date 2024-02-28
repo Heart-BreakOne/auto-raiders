@@ -755,4 +755,31 @@ async function checkGameData() {
   }
 }
 
+
+chrome.runtime.onInstalled.addListener(function() {
+  fetchVersion();
+});
+
+function fetchVersion() {
+  fetch('https://mobius-one.github.io/webpages/config.json')
+    .then(response => response.json())
+    .then(data => {
+      const version = data["version"]
+      const extensionVersion = chrome.runtime.getManifest().version;
+      if (version === extensionVersion) {
+        new Promise((resolve) => {
+          chrome.storage.local.set({ "hasUpdate": false }, resolve);
+        });
+      } else {
+        new Promise((resolve) => {
+          chrome.storage.local.set({ "hasUpdate": true }, resolve);
+        });
+      }
+    })
+    .catch(error => {
+      console.error('Error fetching config:', error);
+    });
+}
+
 setInterval(checkGameData, 60000);
+setInterval(fetchVersion, 1800000)
