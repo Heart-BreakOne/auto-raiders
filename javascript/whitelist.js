@@ -2,6 +2,7 @@
 //Declaring/Initializing variables
 const keysToExport = [
     "battlepassSwitch",
+    "logSwitch",
     "clashCaptain",
     "clashSwitch",
     "campaignSwitch",
