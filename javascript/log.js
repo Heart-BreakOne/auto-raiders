@@ -362,6 +362,7 @@ async function loadLogData() {
                     //Remove the row from the table
                     const row = document.getElementById(index);
                     row.remove();
+                    loadLogData();
                 }
             });
         });
