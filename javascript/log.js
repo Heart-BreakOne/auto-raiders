@@ -1,4 +1,11 @@
-
+//Receives a string key and retrieves the data from the chrome storage.
+async function retrieveFromStorage(key) {
+    return new Promise((resolve, reject) => {
+        chrome.storage.local.get([key], function (result) {
+            resolve(result[key]);
+        });
+    });
+}
 //Declaring/Initializing variables
 let chestName;
 let isSuccess = [];
@@ -110,6 +117,7 @@ document.addEventListener('DOMContentLoaded', async function () {
 });
 
 async function loadLogData() {
+    const logSwitch = await retrieveFromStorage("logSwitch");
 
     //If table already exists, remove it so a new one can be injected
     const isTable = document.getElementById("logTable");
@@ -133,7 +141,11 @@ async function loadLogData() {
 
         //Create table header row
         const headerRow = document.createElement('tr');
-        headerRow.innerHTML = '<th>#</th><th>Slot</th><th>Captain Name</th><th>Mode</th><th>Color Code</th><th>Start time</th><th>End time</th><th>Duration</th><th>Result</th><th>Awarded Chest</th><th>Initial Chest</th><th>Rewards</th><th>Leaderboard Rank</th><th>Kills</th><th>Assists</th><th>Units Placed</th>';
+        if (logSwitch) {
+          headerRow.innerHTML = '<th>#</th><th>Slot</th><th>Captain Name</th><th>Mode</th><th>Color Code</th><th>Start time</th><th>End time</th><th>Duration</th><th>Result</th><th>Awarded Chest</th><th>Initial Chest</th><th>Rewards</th><th>Leaderboard Rank</th><th>Kills</th><th>Assists</th><th>Units Placed</th>';
+        } else {
+          headerRow.innerHTML = '<th>#</th><th>Slot</th><th>Captain Name</th><th>Mode</th><th>Color Code</th><th>Start time</th><th>End time</th><th>Duration</th><th>Result</th><th>Awarded Chest</th><th>Initial Chest</th>';
+        }
 
         //Append header row to the table
         tableElement.appendChild(headerRow);
@@ -220,11 +232,11 @@ async function loadLogData() {
                 for (let i = 0; i < rewardsList.length; i++) {
                   const reward = rewardsList[i].split(" ");
                   if (reward[1] !== undefined) {
-					if (reward[1].includes("scroll")) {
-                      rewards = '<div class="crop"><img src="' + reward[0] + '" title="' + reward[1] + '"></div>' + rewards;
-					} else {
-                      rewards = '<img src="' + reward[0] + '" title="' + reward[1] + '" style="height: 30px; width: auto">' + rewards;
-					}
+                    if (reward[1].includes("scroll")) {
+                                rewards = '<div class="crop"><img src="' + reward[0] + '" title="' + reward[1] + '"></div>' + rewards;
+                    } else {
+                                rewards = '<img src="' + reward[0] + '" title="' + reward[1] + '" style="height: 30px; width: auto">' + rewards;
+                    }
                   }
                 }
             }
@@ -281,61 +293,49 @@ async function loadLogData() {
             // Create a table row
             const row = document.createElement('tr');
             row.id = `${i}`;
+            let initialchestHTML;
             if (entry.initialchest !== undefined) {
-                row.innerHTML = `<td>${counter}</td>
-                    <td>${entry.logId}</td>
-                    <td>${entry.logCapName}</td>
-                    <td>${entry.logMode}</td>
-                    <td style="border: 1px solid #ddd; padding: 8px; color: ${color};">${color}</td>
-                    <td>${startingTime}</td>
-                    <td>${endingTime}</td>
-                    <td>${elapsed}</td>
-                    <td>${outcome}</td>
-                    <td style="text-align: center; vertical-align: middle;">
-                        <div style="display: flex; flex-direction: column; align-items: center;">
-                            ${chestName}
-                            <img src="${url}" alt="Chest Image" style="height: 30px; width: auto">
-                        </div>
-                    </td>
-                    <td style="text-align: center; vertical-align: middle;">
+              initialchestHTML = `<td style="text-align: center; vertical-align: middle;">
                         <div style="display: flex; flex-direction: column; align-items: center;">
                             ${initialChestName}
                             <img src="${initialUrl}" alt="Initial Chest Image" style="height: 30px; width: auto">
                         </div>
-                    </td>
-                    <td>${rewards}</td>
-                    <td>${leaderboardRank}</td>
-                    <td>${kills}</td>
-                    <td>${assists}</td>
-                    <td>${units}</td>
-                    <td style="text-align: center; vertical-align: middle;"><button id="btn_${i}">DEL</button></td>`;
+                    </td>`
             } else {
-                row.innerHTML = `<td>${counter}</td>
-                    <td>${entry.logId}</td>
-                    <td>${entry.logCapName}</td>
-                    <td>${entry.logMode}</td>
-                    <td style="border: 1px solid #ddd; padding: 8px; color: ${color};">${color}</td>
-                    <td>${startingTime}</td>
-                    <td>${endingTime}</td>
-                    <td>${elapsed}</td>
-                    <td>${outcome}</td>
-                    <td style="text-align: center; vertical-align: middle;">
-                        <div style="display: flex; flex-direction: column; align-items: center;">
-                            ${chestName}
-                            <img src="${url}" alt="Chest Image" style="height: 30px; width: auto">
-                        </div>
-                    </td>
-                    <td style="text-align: center; vertical-align: middle;">
+              initialchestHTML = `<td style="text-align: center; vertical-align: middle;">
                         <div style="display: flex; flex-direction: column; align-items: center;">
                         </div>
-                    </td>
-                    <td>${rewards}</td>
+                    </td>`
+            }
+            let logRewards;
+            if (logSwitch) {
+              logRewards = `<td>${rewards}</td>
                     <td>${leaderboardRank}</td>
                     <td>${kills}</td>
                     <td>${assists}</td>
-                    <td>${units}</td>
-                    <td style="text-align: center; vertical-align: middle;"><button id="btn_${i}">DEL</button></td>`;
+                    <td>${units}</td>`
+            } else {
+              logRewards = ``
             }
+            row.innerHTML = `<td>${counter}</td>
+                <td>${entry.logId}</td>
+                <td>${entry.logCapName}</td>
+                <td>${entry.logMode}</td>
+                <td style="border: 1px solid #ddd; padding: 8px; color: ${color};">${color}</td>
+                <td>${startingTime}</td>
+                <td>${endingTime}</td>
+                <td>${elapsed}</td>
+                <td>${outcome}</td>
+                <td style="text-align: center; vertical-align: middle;">
+                    <div style="display: flex; flex-direction: column; align-items: center;">
+                        ${chestName}
+                        <img src="${url}" alt="Chest Image" style="height: 30px; width: auto">
+                    </div>
+                </td>
+                ` + initialchestHTML + `
+                ` + logRewards + `
+                <td style="text-align: center; vertical-align: middle;"><button id="btn_${i}">DEL</button></td>`;
+
             // Append the row to the table
             tableElement.appendChild(row);
 
@@ -362,6 +362,7 @@ async function loadLogData() {
                     //Remove the row from the table
                     const row = document.getElementById(index);
                     row.remove();
+                    loadLogData();
                 }
             });
         });
