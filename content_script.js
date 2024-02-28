@@ -30,6 +30,9 @@ const cancelButtonSelector = ".actionButton.actionButtonNegative.placerButton";
 const delay = ms => new Promise(res => setTimeout(res, ms));
 let isDungeon = false;
 let dungeonPlaceAnywaySwitch;
+let battleResult;
+let captainName
+let chestStringAlt;
 
 //Battlefield markers.
 const arrayOfBattleFieldMarkers = [
@@ -508,7 +511,7 @@ async function openBattlefield() {
   }
 
   //User wants to preserve diamond loyalty and current captain is not diamond and current mode is campaign
-  if (!acceptableLoyalty && mode == false) {
+  if (mode == false) { //!acceptableLoyalty && ) {
     //Opens battle info and checks chest type.
     battleInfo = document.querySelector(".battleInfoMapTitle")
     battleInfo.click();
@@ -528,7 +531,9 @@ async function openBattlefield() {
     const lboss = await retrieveFromStorage("lbossSwitch")
     const lsuperboss = await retrieveFromStorage("lsuperbossSwitch")
 
-    if ((!lgold && chest.includes("Loyalty Gold")) || (!lskin && chest.includes("Loyalty Skin")) || (!lscroll && chest.includes("Loyalty Scroll")) || (!ltoken && chest.includes("Loyalty Token")) || (!lboss && chest.includes("Loyalty Boss")) || (!lsuperboss && chest.includes("Loyalty Super"))) {
+    await setLogInitialChest2(captainNameFromDOM, chest);
+
+    if (!acceptableLoyalty && ((!lgold && chest.includes("Loyalty Gold")) || (!lskin && chest.includes("Loyalty Skin")) || (!lscroll && chest.includes("Loyalty Scroll")) || (!ltoken && chest.includes("Loyalty Token")) || (!lboss && chest.includes("Loyalty Boss")) || (!lsuperboss && chest.includes("Loyalty Super")))) {
       //if (chest.includes("Loyalty")) {
       //Flag the captain loyalty since the current map is to be skipped
       await flagCaptain('captainLoyalty');
@@ -1249,10 +1254,10 @@ async function collectChests() {
     const buttonText = button.innerText;
     if (buttonLabels.includes(buttonText)) {
       const offSetSlot = button.offsetParent;
-      const captainName = offSetSlot.querySelector(".capSlotName").innerText;
+      let captainName = offSetSlot.querySelector(".capSlotName").innerText;
 
       //Get battle result and chest type to add to storage log
-      const battleResult = offSetSlot.querySelector(".capSlotStatus").innerText;
+      let battleResult = offSetSlot.querySelector(".capSlotStatus").innerText;
       let chestString;
       let chestStringAlt;
       if (battleResult.includes("Defeat")) {
@@ -1275,16 +1280,91 @@ async function collectChests() {
         };
       }
 
-
-      await setLogResults(battleResult, captainName, chestStringAlt);
-
       const capSlot = button.parentElement.parentElement
       const stBtn = capSlot.querySelector(".offlineButton").id
       const slotState = await getIdleState(stBtn);
       const cNm = capSlot.querySelector(".capSlotName").innerText
       button.click();
-      await delay(15000);
+      await delay(2000);
+      let userName = document.querySelector(".userInfoImage").alt;
+      let rewards = "";
+      let leaderboardRank;
+      let kills;
+      let assists;
+      let unitIconList;
+      let rewardAmt;
+      let rewardScrim = document.querySelectorAll(".rewardsScrim");
+      if (rewardScrim.length > 0) {
+        let rewardsTab = document.querySelector(".rewardsTab");
+        rewardsTab.click();
+        await delay(500);
+        let allRewards;
+        allRewards = rewardScrim[0].querySelectorAll(".rewardMainImage");
+        let allRewardAmts = rewardScrim[0].querySelectorAll(".rewardListItemAmt");
+        for (let i = 0; i < allRewards.length; i++) {
+          const reward = allRewards[i];
+          if (i < allRewardAmts.length) {
+            rewardAmt = allRewardAmts[i].innerText;
+          } else {
+            rewardAmt = "";
+          }
+          rewards = reward.src + " " + reward.alt + rewardAmt + "," + rewards;
+        }
+        let leaderboardTab = document.querySelector(".rewardsLeaderboardTab");
+        leaderboardTab.click();
+        await delay(500);
 
+        let rows2 = document.querySelectorAll(".rewardsLeaderboardRowCont")
+        let lastRow2 = rows2[rows2.length - 1];
+
+        let leaderboardRows;
+        for (let k = 0; k < 30; k++) {
+            leaderboardRows = document.querySelectorAll(".rewardsLeaderboardRowCont");
+
+            for (let i = 0; i < leaderboardRows.length; i++) {
+              const leaderboardRow = leaderboardRows[i];
+              const leaderboardRowUser = leaderboardRow.querySelector(".rewardsLeaderboardRowText.rewardsLeaderboardRowDisplayName");
+              leaderboardRank = leaderboardRow.querySelector(".rewardsLeaderboardRowText.rewardsLeaderboardRowRank").innerText;
+              if (leaderboardRowUser.innerText == userName) {
+                leaderboardRank = leaderboardRow.querySelector(".rewardsLeaderboardRowText.rewardsLeaderboardRowRank").innerText;
+                kills = leaderboardRow.querySelector(".rewardsLeaderboardRowText.rewardsLeaderboardRowKills").innerText;
+                assists = leaderboardRow.querySelector(".rewardsLeaderboardRowText.rewardsLeaderboardRowAssists").innerText;
+                let unitIconsAll = leaderboardRow.querySelector(".rewardsLeaderboardRowUnitIconsCont");
+                let unitIcons = unitIconsAll.querySelectorAll(".rewardsLeaderboardRowUnitIconWrapper");
+                unitIconList = "";
+                for (let j = 0; j < unitIcons.length; j++) {
+                  const unitIconWrapper = unitIcons[j];
+                  let unitIcon = unitIconWrapper.querySelector(".rewardsLeaderboardRowUnitIcon");
+                  unitIconList = unitIcon.src + " " + unitIcon.alt + ","+ unitIconList
+                }
+                if (kills !== undefined) {
+                  await delay(500);//+(500*k));
+                }
+                break;
+              }
+            }
+            if (kills !== undefined && kills !== null) {
+              break;
+            }
+            clickHoldAndScroll(lastRow2, -1000, 100);
+            await delay(500);
+            rows2 = document.querySelectorAll(".rewardsLeaderboardRowCont");
+            lastRow2 = rows2[rows2.length - 1];
+        }
+
+      }
+      await delay(500);
+      await setLogResults(battleResult, captainName, chestStringAlt, leaderboardRank, kills, assists, unitIconList, rewards);
+      battleResult = null;
+      captainName = null;
+      chestStringAlt = null;
+      leaderboardRank = null;
+      kills = null;
+      assists = null;
+      unitIconList = null;
+      rewards = null;
+      await delay(250);
+      
       if (slotState == 2) {
         const allCapSlots = document.querySelectorAll(".capSlot")
         for (const i in allCapSlots) {
@@ -1374,4 +1454,38 @@ async function requestMapName(captainNameFromDOM) {
 
     contentScriptPort.postMessage({ action: "getMapName", captainNameFromDOM });
   });
+}
+
+function simulateMouseEvent(element, eventName, clientX, clientY) {
+    const event = new MouseEvent(eventName, {
+        bubbles: true,
+        cancelable: true,
+        clientX: clientX,
+        clientY: clientY
+    });
+    element.dispatchEvent(event);
+}
+
+function clickHoldAndScroll(element, deltaY, duration) {
+    const rect = element.getBoundingClientRect();
+    const clientX = rect.left + rect.width / 2;
+    const clientY = rect.top + rect.height / 2;
+
+    simulateMouseEvent(element, "mousedown", clientX, clientY);
+
+    const interval = 10;
+    const steps = Math.ceil(duration / interval);
+    const stepSize = deltaY / steps;
+    let cumulativeDeltaY = 0;
+    let step = 0;
+    const scrollInterval = setInterval(() => {
+        if (step < steps) {
+            cumulativeDeltaY += stepSize;
+            simulateMouseEvent(element, "mousemove", clientX, clientY + cumulativeDeltaY);
+            step++;
+        } else {
+            clearInterval(scrollInterval);
+            simulateMouseEvent(element, "mouseup", clientX, clientY + cumulativeDeltaY);
+        }
+    }, interval);
 }

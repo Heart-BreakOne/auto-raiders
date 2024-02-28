@@ -133,7 +133,7 @@ async function loadLogData() {
 
         //Create table header row
         const headerRow = document.createElement('tr');
-        headerRow.innerHTML = '<th>#</th><th>Slot</th><th>Captain Name</th><th>Mode</th><th>Color Code</th><th>Start time</th><th>End time</th><th>Duration</th><th>Result</th><th>Awarded Chest</th><th>Initial Chest</th>';
+        headerRow.innerHTML = '<th>#</th><th>Slot</th><th>Captain Name</th><th>Mode</th><th>Color Code</th><th>Start time</th><th>End time</th><th>Duration</th><th>Result</th><th>Awarded Chest</th><th>Initial Chest</th><th>Rewards</th><th>Leaderboard Rank</th><th>Kills</th><th>Assists</th><th>Units Placed</th>';
 
         //Append header row to the table
         tableElement.appendChild(headerRow);
@@ -148,6 +148,13 @@ async function loadLogData() {
             let outcome;
             let initialChestName;
             let initialUrl;
+            let leaderboardRank;
+            let kills;
+            let assists;
+            let units;
+            let unitsList;
+            let rewards;
+            let rewardsList;
 
             //Convert the string to a Date object and get hour and minutes.
             const startingTime = getTimeString(new Date(entry.currentTime));
@@ -172,6 +179,54 @@ async function loadLogData() {
 
             if (entry.currentTime === entry.elapsedTime) {
                 elapsed = "Unknown";
+            }
+            
+            if (entry.leaderboardRank === undefined) {
+                leaderboardRank = "Unknown";
+            } else {
+                leaderboardRank = entry.leaderboardRank;
+            }
+
+            if (entry.kills === undefined) {
+                kills = "Unknown";
+            } else {
+                kills = entry.kills;
+            }
+
+            if (entry.assists === undefined) {
+                assists = "Unknown";
+            } else {
+                assists = entry.assists;
+            }
+            
+            if (entry.units === undefined) {
+                units = "Unknown";
+            } else {
+                unitsList = entry.units.split(",");
+                units = "";
+                for (let i = 0; i < unitsList.length; i++) {
+                  const unit = unitsList[i].split(" ");
+                  if (unit[1] !== undefined) {
+                    units = '<div class="crop"><img src="' + unit[0] + '" title="' + unit[1] + '"></div>' + units;
+                  }
+                }
+            }
+
+            if (entry.rewards === undefined) {
+                rewards = "Unknown";
+            } else {
+                rewardsList = entry.rewards.split(",");
+                rewards = "";
+                for (let i = 0; i < rewardsList.length; i++) {
+                  const reward = rewardsList[i].split(" ");
+                  if (reward[1] !== undefined) {
+					if (reward[1].includes("scroll")) {
+                      rewards = '<div class="crop"><img src="' + reward[0] + '" title="' + reward[1] + '"></div>' + rewards;
+					} else {
+                      rewards = '<img src="' + reward[0] + '" title="' + reward[1] + '" style="height: 30px; width: auto">' + rewards;
+					}
+                  }
+                }
             }
 
             //Getting human-readable chest name and picture
@@ -228,48 +283,58 @@ async function loadLogData() {
             row.id = `${i}`;
             if (entry.initialchest !== undefined) {
                 row.innerHTML = `<td>${counter}</td>
-					<td>${entry.logId}</td>
-					<td>${entry.logCapName}</td>
-					<td>${entry.logMode}</td>
-					<td style="border: 1px solid #ddd; padding: 8px; color: ${color};">${color}</td>
-					<td>${startingTime}</td>
-					<td>${endingTime}</td>
-					<td>${elapsed}</td>
-					<td>${outcome}</td>
-					<td style="text-align: center; vertical-align: middle;">
-						<div style="display: flex; flex-direction: column; align-items: center;">
-							${chestName}
-							<img src="${url}" alt="Chest Image" style="height: 30px; width: auto">
-						</div>
-					</td>
-					<td style="text-align: center; vertical-align: middle;">
-						<div style="display: flex; flex-direction: column; align-items: center;">
-							${initialChestName}
-							<img src="${initialUrl}" alt="Initial Chest Image" style="height: 30px; width: auto">
-						</div>
-					</td>
-					<td style="text-align: center; vertical-align: middle;"><button id="btn_${i}">DEL</button></td>`;
+                    <td>${entry.logId}</td>
+                    <td>${entry.logCapName}</td>
+                    <td>${entry.logMode}</td>
+                    <td style="border: 1px solid #ddd; padding: 8px; color: ${color};">${color}</td>
+                    <td>${startingTime}</td>
+                    <td>${endingTime}</td>
+                    <td>${elapsed}</td>
+                    <td>${outcome}</td>
+                    <td style="text-align: center; vertical-align: middle;">
+                        <div style="display: flex; flex-direction: column; align-items: center;">
+                            ${chestName}
+                            <img src="${url}" alt="Chest Image" style="height: 30px; width: auto">
+                        </div>
+                    </td>
+                    <td style="text-align: center; vertical-align: middle;">
+                        <div style="display: flex; flex-direction: column; align-items: center;">
+                            ${initialChestName}
+                            <img src="${initialUrl}" alt="Initial Chest Image" style="height: 30px; width: auto">
+                        </div>
+                    </td>
+                    <td>${rewards}</td>
+                    <td>${leaderboardRank}</td>
+                    <td>${kills}</td>
+                    <td>${assists}</td>
+                    <td>${units}</td>
+                    <td style="text-align: center; vertical-align: middle;"><button id="btn_${i}">DEL</button></td>`;
             } else {
                 row.innerHTML = `<td>${counter}</td>
-					<td>${entry.logId}</td>
-					<td>${entry.logCapName}</td>
-					<td>${entry.logMode}</td>
-					<td style="border: 1px solid #ddd; padding: 8px; color: ${color};">${color}</td>
-					<td>${startingTime}</td>
-					<td>${endingTime}</td>
-					<td>${elapsed}</td>
-					<td>${outcome}</td>
-					<td style="text-align: center; vertical-align: middle;">
-						<div style="display: flex; flex-direction: column; align-items: center;">
-							${chestName}
-							<img src="${url}" alt="Chest Image" style="height: 30px; width: auto">
-						</div>
-					</td>
-					<td style="text-align: center; vertical-align: middle;">
-						<div style="display: flex; flex-direction: column; align-items: center;">
-						</div>
-					</td>
-					<td style="text-align: center; vertical-align: middle;"><button id="btn_${i}">DEL</button></td>`;
+                    <td>${entry.logId}</td>
+                    <td>${entry.logCapName}</td>
+                    <td>${entry.logMode}</td>
+                    <td style="border: 1px solid #ddd; padding: 8px; color: ${color};">${color}</td>
+                    <td>${startingTime}</td>
+                    <td>${endingTime}</td>
+                    <td>${elapsed}</td>
+                    <td>${outcome}</td>
+                    <td style="text-align: center; vertical-align: middle;">
+                        <div style="display: flex; flex-direction: column; align-items: center;">
+                            ${chestName}
+                            <img src="${url}" alt="Chest Image" style="height: 30px; width: auto">
+                        </div>
+                    </td>
+                    <td style="text-align: center; vertical-align: middle;">
+                        <div style="display: flex; flex-direction: column; align-items: center;">
+                        </div>
+                    </td>
+                    <td>${rewards}</td>
+                    <td>${leaderboardRank}</td>
+                    <td>${kills}</td>
+                    <td>${assists}</td>
+                    <td>${units}</td>
+                    <td style="text-align: center; vertical-align: middle;"><button id="btn_${i}">DEL</button></td>`;
             }
             // Append the row to the table
             tableElement.appendChild(row);

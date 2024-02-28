@@ -79,7 +79,13 @@ async function setLogCaptain(logId, logCapName, logMode, currentTime, colorCode)
                     colorCode: colorCode,
                     chest: undefined,
                     initialchest: undefined,
-                    mapName: undefined
+                    mapName: undefined,
+                    initialchest2: undefined,
+                    rewards: undefined,
+                    leaderboardRank: undefined,
+                    kills: undefined,
+                    assists: undefined,
+                    units: undefined
                 });
             } else {
                 //If no battle data exists, check if the color needs to be updated on existing slots.
@@ -129,6 +135,31 @@ async function setLogInitialChest(logCapName, initialchest) {
     });
 }
 
+//Saves initial chest information on storage
+async function setLogInitialChest2(logCapName, initialchest2) {
+
+    return new Promise((resolve, reject) => {
+        // Retrieve existing data from local storage
+        chrome.storage.local.get(["logData"], async function (result) {
+            let loggedData = result["logData"] || [];
+
+            // Add final battle time, result, and chest type
+            loggedData.forEach((entry) => {
+                if (entry.logCapName === logCapName &&
+                    (entry.currentTime !== null && entry.currentTime !== undefined) &&
+                    entry.elapsedTime === undefined && entry.initialchest2 === undefined) {
+                    entry.initialchest2 = initialchest2;
+                }
+            });
+
+            // Update the loggedData object in storage
+            chrome.storage.local.set({ "logData": loggedData }, function () {
+                resolve(loggedData);
+            });
+        });
+    });
+}
+
 //Saves map name on storage
 async function setLogMapName(logCapName, mapName) {
 
@@ -155,8 +186,7 @@ async function setLogMapName(logCapName, mapName) {
 }
 
 //Saves final battle information on storage
-async function setLogResults(conclusion, logCapName, chest) {
-
+async function setLogResults(conclusion, logCapName, chest, leaderboardRank, kills, assists, units, rewards) {
     const unknown = "Unknown";
     let now = new Date();
 
@@ -178,15 +208,23 @@ async function setLogResults(conclusion, logCapName, chest) {
             let loggedData = result["logData"] || [];
 
             // Add final battle time, result, and chest type
-            loggedData.forEach((entry) => {
+			for (let i = loggedData.length - 1; i >= 0; i--) {
+				let entry = loggedData[i];
                 if (entry.logCapName === logCapName &&
                     (entry.currentTime !== null && entry.currentTime !== undefined) &&
-                    entry.elapsedTime === undefined && entry.chest === undefined) {
+                    entry.elapsedTime === undefined && entry.chest === undefined &&
+					entry.leaderboardRank === undefined && entry.rewards === undefined) {
                     entry.elapsedTime = Math.floor((now - new Date(entry.currentTime)) / (1000 * 60)).toString();
                     entry.result = resolution;
                     entry.chest = chest;
+                    entry.leaderboardRank = leaderboardRank;
+                    entry.kills = kills;
+                    entry.assists = assists;
+                    entry.units = units;
+                    entry.rewards = rewards;
+					break;
                 }
-            });
+            };
 
             // If the entry on the array is older than 1 hour, update it for battle result closure
             loggedData = loggedData.map((entry) => {
