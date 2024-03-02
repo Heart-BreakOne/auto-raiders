@@ -1335,6 +1335,7 @@ async function collectChests() {
       if (logSwitch) {
         let userName = document.querySelector(".userInfoImage").alt;
         let rewardAmt;
+        rewards = "";
         let rewardScrim = document.querySelectorAll(".rewardsScrim");
         if (rewardScrim.length > 0) {
           let rewardsTab = document.querySelector(".rewardsTab");
@@ -1351,6 +1352,12 @@ async function collectChests() {
               rewardAmt = "";
             }
             rewards = reward.src + " " + reward.alt + rewardAmt + "," + rewards;
+          }
+          if (rewards === "") {
+            let rewardGridFooter = rewardScrim[0].querySelector(".rewardGridFooter");
+            if (rewardGridFooter.innerText.includes("alvage")) {
+              rewards = "None";
+            }
           }
           let leaderboardTab = document.querySelector(".rewardsLeaderboardTab");
           leaderboardTab.click();
@@ -1407,6 +1414,18 @@ async function collectChests() {
       unitIconList = null;
       rewards = null;
       await delay(250);
+<<<<<<< HEAD
+=======
+      
+      const rewardContinueButton = document.querySelector(".actionButton.actionButtonPrimary.rewardsButton");
+
+      if (rewardContinueButton) {
+        if (rewardContinueButton.innerText === "CONTINUE") {
+          rewardContinueButton.click();
+        }
+      }
+      await delay(250);
+>>>>>>> ce30615be50ba15c4cdc811554f915ca5dd1822b
 
       if (slotState == 2) {
         const allCapSlots = document.querySelectorAll(".capSlot")

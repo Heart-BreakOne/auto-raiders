@@ -1,3 +1,13 @@
+/* Add permanent scrollbar to prevent shifting of content */
+html {
+  overflow-y: scroll;
+}
+
+/* Spacing for buttons */
+button {
+    margin-bottom: 20px;
+}
+
 input[type="checkbox"],
 input[type="radio"] {
     box-sizing: border-box;
@@ -40,7 +50,6 @@ td {
 }
 
 .green_button {
-    font-size: large;
     color: white;
     font-weight: bold;
     margin-right: 50px;

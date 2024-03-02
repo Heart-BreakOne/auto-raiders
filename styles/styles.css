@@ -1,3 +1,8 @@
+/* Add permanent scrollbar to prevent shifting of content */
+html {
+  overflow-y: scroll;
+}
+
 /* Spacing for heading 1, heading 2, and buttons */
 h1,
 h2,
@@ -59,9 +64,9 @@ th,
 }
 
 /* Styling for instructions button */
-#instructions_button, #log_button {
-    margin-right: 10px;
-}
+/* #instructions_button, #log_button { */
+    /* margin-right: 10px; */
+/* } */
 
 /* Styling for bulleted list */
 .bulleted-list {
@@ -107,6 +112,32 @@ textarea {
 }
 
 #scrollBtn {
+    display: none;
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    background-color: red;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    padding: 10px 20px;
+    cursor: pointer;
+}
+
+#scrollBtnUp {
+    display: none;
+    position: fixed;
+    bottom: 20px;
+    right: 70px;
+    background-color: red;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    padding: 10px 20px;
+    cursor: pointer;
+}
+
+#scrollBtnDown {
     display: none;
     position: fixed;
     bottom: 20px;
