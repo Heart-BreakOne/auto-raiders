@@ -660,6 +660,8 @@ async function getValidUnits() {
     }
   }
 
+  const captainUnit = getCaptainUnit()
+
   // Open unit drawer and set the filter to ALL units
   const placeUnitBtn = document.querySelector(".actionButton.actionButtonPrimary.placeUnitButton")
   if (placeUnitBtn) {
@@ -838,56 +840,144 @@ async function getValidUnits() {
   }
 
   // This sorts the markers and adds imaginary markers if there aren't any
-  let arrayOfMarkers = await prepareMarkers()
+  let arrayOfMarkers = await prepareMarkers(captainUnit)
+  if (arrayOfMarkers.length == 0) {
+    // Map full of block markers, flag the captain.
+    goHome()
+    return
+  }
+  // Add unit type and name in the marker
+  for (let i = 0; i < arrayOfMarkers.length; i++) {
+    let mrkr = arrayOfMarkers[i];
+    computedStyle = getComputedStyle(mrkr);
+    let backgroundImageValue = computedStyle.getPropertyValue('background-image').toUpperCase();
+
+    arrayOfBattleFieldMarkers.some(marker => {
+      // If the current marker matches the items on the array of markers, it's a valid marker
+      if (backgroundImageValue.includes(marker.icon)) {
+        let currentMarkerKey = marker.key;
+        let associatedUnits = [];
+
+        for (let j = 0; j < arrayOfUnits.length; j++) {
+          const element = arrayOfUnits[j];
+          if (currentMarkerKey === element.type) {
+            associatedUnits.push(element.type);
+            if (!mrkr.id) {
+              mrkr.id = associatedUnits;
+              continue
+            }
+          }
+          if (currentMarkerKey === element.key) {
+            associatedUnits.push(element.key);
+            if (!mrkr.id) {
+              mrkr.id = associatedUnits;
+              continue
+            }
+          }
+        }
+      }
+    });
+  }
+
+  //Add unit name and type to unit itself
   for (let i = 0; i < unitDrawer[0].children.length; i++) {
     let unit = unitDrawer[0].children[i];
     let unitType = unit.querySelector('.unitClass img').getAttribute('alt').toUpperCase();
     let unitName = unit.querySelector('.unitClass img').getAttribute('src').slice(-50).toUpperCase();
     const unit1 = arrayOfUnits.filter(unit1 => unitName.includes(unit1.icon.toUpperCase()))[1];
     if (unit1) {
-      unitName = unit1.key;
-    }
-    for (let j = 0; arrayOfMarkers.length; j++) {
-      let currentMarker = arrayOfMarkers[j]
-      let currentMarkerKey;
-      computedStyle = getComputedStyle(currentMarker);
-      let backgroundImageValue = computedStyle.getPropertyValue('background-image').toUpperCase();
-      //Checks if the marker is a valid placement marker and also get its type
-      arrayOfBattleFieldMarkers.some(marker => {
-        //If the current marker matches the items on the array of markers, it's a valid marker
-        if (backgroundImageValue.includes(marker.icon)) {
-          currentMarkerKey = marker.key
-          for (let i = 0; i <= arrayOfUnits.length; i++) {
-            const element = arrayOfUnits[i];
-            if (currentMarkerKey === element.key || currentMarkerKey === element.type) {
-
-            }
-          }
-        }
-      });
-      console.log()
+      unit.id = unit1.key + "#" + unitType
+      continue
     }
   }
 
-  //END OF UNIT DRAWER
+  for (let i = 0; i < unitDrawer[0].children.length; i++) {
+    let unit = unitDrawer[0].children[i];
+    let unitId = unit.id
+    for (let j = 0; j < arrayOfMarkers.length; j++) {
+      let marker = arrayOfMarkers[j]
+      let markerId = marker.id
+      let hasPlaced;
+      if (markerId == "VIBE") {
+        hasPlaced = await attempPlacement(unit, marker)
+        if (hasPlaced) {
+          return
+        }
+        else {
+          await cancelPlacement()
+        }
+
+      } else if (unitId.includes(markerId)) {
+        hasPlaced = await attempPlacement(unit, marker)
+        if (hasPlaced) {
+          return
+        } else {
+          await cancelPlacement()
+        }
+      }
+    }
+  }
+
+}
+
+async function cancelPlacement() {
+  //Close unit, recalculate drawer, recalculate markers
+  const cancelBtn = document.querySelector(".actionButton.actionButtonNegative.placerButton")
+  if (cancelBtn) {
+    cancelBtn.click()
+  }
+  await delay(1000)
+  const unitDrawer = document.querySelector(".actionButton.actionButtonPrimary.placeUnitButton")
+  if (unitDrawer) {
+    unitDrawer.click()
+  }
 }
 
 
+async function attempPlacement(unit, marker) {
+
+  moveScreenCenter(marker)
+  await delay(2000);
+  let unitItem = unit.querySelector(".unitItem")
+  unitItem.click();
+  await delay(1000);
+  tapUnit();
+  await delay(500);
+  placeTheUnit();
+  await delay(1000);
+  reloadRoot();
+  await delay(1000);
+  if (checkPlacement()) {
+    return true
+  } else {
+    return false
+  }
+}
+
+function checkPlacement() {
+  const hasPlaced = document.querySelector(".actionButton.actionButtonDisabled.placeUnitButton");
+  const menu = document.querySelector(".captainSlots")
+  if (menu || hasPlaced.innerText.includes("UNIT READY TO PLACE IN")) {
+    return true
+  } else {
+    return false
+  }
+}
+
 //Looks and selects a valid marker for placement
-async function prepareMarkers() {
+async function prepareMarkers(captainUnit) {
 
   //Initializes a node list with placement markers
   let arrMrks = Array.from(document.querySelectorAll(".planIcon"));
-  const bkpArray = arrMrks
 
-  function sort() {
+  async function sort() {
+    arrMrks = Array.from(document.querySelectorAll(".planIcon"));
     try {
       //Attempt to sort the markers based on how close they are to the captain
-      arrMrks = Array.from(document.querySelectorAll(".planIcon"));
-      sortedArrMrks = getMapMatrix(arrMrks);
+      sortedArrMrks = getMapMatrix(captainUnit, arrMrks);
       return sortedArrMrks
     } catch (error) {
-      return bkpArray
+      return arrMrks
     }
   }
 
@@ -895,7 +985,7 @@ async function prepareMarkers() {
   if (arrMrks.length == 0) {
     //Place imaginary markers to use instead and restart the function to get valid markers
     setImaginaryMarkers(document.querySelectorAll(".placementAlly"));
-    sort()
+    return await sort()
   } else {
     //Treat the markers to remove block markers
     for (let i = arrMrks.length - 1; i >= 0; i--) {
@@ -911,108 +1001,27 @@ async function prepareMarkers() {
       //Captain is using a mix of block markers and open zones.
       //Place imaginary markers to use instead
       arrMrks = setImaginaryMarkers(document.querySelectorAll(".placementAlly"))
-      //Check if user wants to avoid skins
-      //Open the leaderboard
-      //Look for skinned units
-      //Set equipSkins
-      //Close the leaderboard
-      sort()
+      return await sort()
     } else {
       //There are vibe or set markers that can be used.
-      sort()
+      return await sort()
     }
   }
-}
-
-async function getSetMarker() {
-  let matchingMarker;
-  //This indicates that an attempt to place at the current marker has been made
-  if (markerAttempt >= 1) {
-    //Attemps to get a matching marker
-    try {
-      matchingMarker = arrayOfBattleFieldMarkers.find(marker => marker.key === currentMarkerKey).icon;
-    } catch (error) {
-      goHome();
-      return;
-    }
-    //Removes current marker from the page as they can't be used
-    for (let i = arrayOfMarkers.length - 1; i >= 0; i--) {
-      let planIcon = arrayOfMarkers[i];
-      let backgroundImageValue = getComputedStyle(planIcon).getPropertyValue('background-image').toUpperCase();
-
-      // Define the condition to match elements you want to remove
-      if (backgroundImageValue.includes(matchingMarker)) {
-        try {
-          // Remove the element from the array using splice
-          arrayOfMarkers.splice(i, 1);
-        } catch (error) {
-          continue;
-        }
-      }
-    }
-  }
-  if (arrayOfMarkers.length == 0) {
-    //there are no units to match any of the available markers
-    await flagCaptain('flaggedCaptains');
-    goHome();
-    return;
-  } else {
-    currentMarkerKey = ""
-    // The randomization of the index increased the chances of getting a valid placement.
-    if (sortedArrMrks != null) {
-      currentMarker = arrayOfMarkers[0];
-    } else {
-      currentMarker = arrayOfMarkers[Math.floor(Math.random() * (arrayOfMarkers.length - 1))];
-    }
-
-    // This bit gets the marker type for comparison later
-    computedStyle = getComputedStyle(currentMarker);
-    backgroundImageValue = computedStyle.getPropertyValue('background-image').toUpperCase();
-    //Checks if the marker is a valid placement marker and also get its type
-    arrayOfBattleFieldMarkers.some(marker => {
-      //If the current marker matches the items on the array of markers, it's a valid marker
-      if (backgroundImageValue.includes(marker.icon)) {
-        currentMarkerKey = marker.key
-        for (let i = 0; i <= arrayOfUnits.length; i++) {
-          const element = arrayOfUnits[i];
-          if (currentMarkerKey === element.key || currentMarkerKey === element.type) {
-            //If the marker is valid, moves to the center
-            moveScreenCenter();
-            return
-            //break;
-          }
-        }
-      }
-    });
-  }
-}
-
-//When there are no markers, it can be trick to scroll to a valid position into view, this randomizes the possible values.
-const moveScreenRandomPosition = async () => {
-
-  const positions = ['start', 'center', 'end', 'nearest'];
-  const randomPosition = positions[Math.floor(Math.random() * positions.length)];
-  await moveScreen(randomPosition);
-}
-
-//Vertical and horizontal center
-async function moveScreenCenter() {
-  await moveScreen('center');
 }
 
 //Scroll into view the center of the currentMark
-async function moveScreen(position) {
+async function moveScreenCenter(marker) {
 
   //Set marker dimensions to zero so the unit can fit in its place
   try {
-    currentMarker.style.width = '0';
-    currentMarker.style.height = '0';
-    currentMarker.style.backgroundSize = '0';
+    marker.style.width = '0';
+    marker.style.height = '0';
+    marker.style.backgroundSize = '0';
 
     //Move screen so the current marker gets centered
     await delay(1000);
-    if (currentMarker && currentMarker !== undefined && currentMarker !== null) {
-      currentMarker.scrollIntoView({ block: 'center', inline: position });
+    if (marker && marker !== undefined && marker !== null) {
+      marker.scrollIntoView({ block: 'center', inline: 'center' });
     } else {
       goHome();
       return;
@@ -1022,56 +1031,6 @@ async function moveScreen(position) {
     goHome();
     return;
   }
-  await delay(1000);
-  //Invokes unit selection
-  await selectUnit();
-  await delay(1000);
-  //Invokes selected unit placement.
-  await placeTheUnit();
-  await delay(1000);
-  //Checks for frozen state
-  reloadRoot();
-}
-
-/* This function opens the unit inventory tab, boosts unit and selects the first available unit that is allowed for usage,
-isn't on cooldown, dead or exhausted. It also gets the unit name for future marker validation. */
-async function selectUnit() {
-
-
-
-
-
-
-
-
-
-  for (let i = 1; i <= unitsQuantity; i++) {
-    /* Select the unit if the current marker is a vibe or if there are no markers
-      or if the unit name or type match the current marker */
-    if (currentMarkerKey == "VIBE" || currentMarkerKey == "" ||
-      currentMarkerKey == unitType || currentMarkerKey == unitName) {
-      //Select the unit
-      unit.click();
-      await delay(1000);
-      /* If the unit is placed on an invalid marker or area or if the unit is on top of another ally unit,
-      tapping it forces the game to check if the placement can be performed */
-      tapUnit();
-      return;
-    } else if (isDungeon == true && dungeonPlaceAnywaySwitch && currentMarkerKey == "FLAG" && unitLevel <= userUnitLevel && dungeonLevel <= userDunLevel) {
-      //Select the unit
-      unit.click();
-      await delay(1000);
-      /* If the unit is placed on an invalid marker or area or if the unit is on top of another ally unit,
-      tapping it forces the game to check if the placement can be performed */
-      tapUnit();
-      return;
-    } else {
-      //Else get the next unit
-      continue;
-    }
-  }
-  goHome();
-  return;
 }
 
 //If the unit is in a valid marker that is in use, by taping the unit container it forces a button recheck on mouseup/touchend

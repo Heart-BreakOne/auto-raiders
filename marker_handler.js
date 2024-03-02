@@ -1,18 +1,12 @@
 
-
-function getMapMatrix(arrayOfMarkers) {
-    //arrayOfMarkers holds the vibe and set markers.
-
-    //Get captain units.
+function getCaptainUnit() {
     //Get ally units.
     const arrayOfBattleFieldUnitClickAreas = Array.from(document.querySelectorAll(".allyUnit"));
     const captainName = document.querySelector(".captainButtonActive.captainButtonImg").alt;
-    let captainUnit;
     let icon = "";
 
-    //Open leaderboard
+    //Open the leaderboard
     document.querySelector(".leaderboardCont").click();
-    //Look for skinned units here
 
     const allPlacers = document.querySelectorAll(".battlefieldLeaderboardRowCont");
     for (let i = 0; i < allPlacers.length; i++) {
@@ -30,28 +24,49 @@ function getMapMatrix(arrayOfMarkers) {
     }
 
     //Get element  that has innerHTML Leaderboard
-    outerLoop: for (let i = 0; i < arrayOfBattleFieldUnitClickAreas.length; i++) {
+    let firstPlacement
+    for (let i = 0; i < arrayOfBattleFieldUnitClickAreas.length; i++) {
         const captain = arrayOfBattleFieldUnitClickAreas[i];
-        const captainIcon = captain.querySelector("img").src;
+        if (captain == undefined || captain == null) {
+            continue
+        }
+        if(i == 0) {
+            firstPlacement = captain
+        }
+        let captainIcon = captain.querySelector("img").src;
+
+        const lastSlashIndex1 = captainIcon.lastIndexOf("/");
+        const lastSlashIndex2 = icon.lastIndexOf("/");
+
+        // Find the index of the last occurrence of "."
+        const lastDotIndex1 = captainIcon.lastIndexOf(".");
+        const lastDotIndex2 = icon.lastIndexOf(".");
+
+        // Extract the substring between the last dot and last slash
+        captainIcon= captainIcon.substring(lastDotIndex1 + 1, lastSlashIndex1);
+        icon = icon.substring(lastDotIndex2 + 1, lastSlashIndex2);
+
         if (captainIcon === icon) {
             for (let j = arrayOfBattleFieldUnitClickAreas.length - 1; j >= 0; j--) {
 
                 const lastUnitSize = arrayOfBattleFieldUnitClickAreas[j].querySelector(".battleFieldUnitClickArea").offsetWidth;
                 const captainSizeForComparison = captain.querySelector(".battleFieldUnitClickArea").offsetWidth;
 
-                if (lastUnitSize * 2 === captainSizeForComparison) {
-                    captainUnit = captain;
-                    break outerLoop;
-                } else if (captainSizeForComparison / 2 == lastUnitSize) {
-
-                    break;
-                } else if (captainSizeForComparison === lastUnitSize) {
-                    continue;
+                // 1. Is the captain. 2. ??. 3. Rare event where someone places before the captain with the same skin as the captain
+                if ((lastUnitSize * 2 === captainSizeForComparison) || (captainSizeForComparison / 2 == lastUnitSize) || (captainSizeForComparison === lastUnitSize)) {
+                    return captain
                 }
             }
         }
     }
+    return firstPlacement
+}
 
+function getMapMatrix(captainUnit, arrayOfMarkers) {
+
+    if(captainUnit == undefined) {
+        return arrayOfMarkers
+    }
     const elementSize = captainUnit.offsetWidth;
 
     const divisionSize = (elementSize / 8) * 3;
