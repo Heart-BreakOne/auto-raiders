@@ -19,6 +19,7 @@ document.addEventListener("DOMContentLoaded", function () {
     initializeSwitch("clashSwitch");
     initializeSwitch("campaignSwitch");
     initializeSwitch("battlepassSwitch");
+    initializeSwitch("logSwitch");
     initializeSwitch("offlineSwitch");
     initializeSwitch("skipSwitch");
     initializeSwitch("completeQuests");
@@ -51,6 +52,7 @@ document.addEventListener("DOMContentLoaded", function () {
     initializeReloader("maxUnitLvlDungInput");
     initializeReloader("maxDungeonLvlInput");
     initializeReloader("userIdleTimeInput");
+    initializeReloader("placementOddsInput")
 });
 
 //When the user interacts with the toggle switches, it gets the current stored value and update them with the value.
@@ -94,6 +96,7 @@ document.addEventListener("DOMContentLoaded", async function () {
     setInputButtonListener('minUnitLvlButton', 'maxUnitLvlDungInput');
     setInputButtonListener('minDungeonLvlButton', 'maxDungeonLvlInput');
     setInputButtonListener('idleTimeButton', 'userIdleTimeInput');
+    setInputButtonListener('placeOddButton', 'placementOddsInput');
 
 
     //Event listener for when the potion radio button is changed by the user

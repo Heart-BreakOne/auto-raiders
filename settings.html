@@ -54,6 +54,13 @@
                 <td><button id="idleTimeButton"
                         style="width: fit-content; height: fit-content; text-align: center; background-color: #5fa695;">Set</button>
                 </td>
+                <td><label for="placementOddsInput"
+                        title="Default: 100% - Placement guaranteed. 0% - Won't place at all. After the first placement it will calculate the odds of the next placement for a random period of time between 3 to 6 minutes. It won't place during this period and the next roll is not guaranteed to place an unit either">%
+                        Placement Odds for Campaign (Hover mouse for Info)<input type="number"
+                            id="placementOddsInput"></label></td>
+                <td><button id="placeOddButton"
+                        style="width: fit-content; height: fit-content; text-align: center; background-color: #5fa695;">Set</button>
+                </td>
             </tr>
             <td colspan="3"></td>
             </tr>
@@ -78,9 +85,15 @@
                         battlepass</label></td>
             </tr>
             <tr>
+                <td><label for="logSwitch"><input type="checkbox" id="logSwitch"> Enable logging for rewards and
+                        leaderboard results</label></td>
+            </tr>
+            <tr>
                 <td><label for="equipSwitch"><input type="checkbox" id="equipSwitch"> Equip captain skins</label></td>
                 <td><label for="equipNoDiamondSwitch"><input type="checkbox" id="equipNoDiamondSwitch"> Only equip skin
                         if not diamond</label></td>
+                <td><label for="moreSkinsSwitch" title="If there's skinned unit on the battle already, the extensio won't actively try to place a skinned unit, specially useful if you only have a single skin of the captain"><input type="checkbox" id="moreSkinsSwitch"><s>One skin is enough.</s></label>
+                </td>
             </tr>
             <tr>
                 <td
@@ -161,6 +174,7 @@
                 <td><label><input type="radio" name="potion" value="1"> Potions at 45</label></td>
                 <td><label><input type="radio" name="potion" value="2"> Potions at 100</label></td>
             </tr>
+
             <tr>
                 <td><label for="dungeonSlotSwitch" class="x"><input type="checkbox" id="dungeonSlotSwitch" class="x" Use
                             slot 0 for dungeons</label></td>
