@@ -315,23 +315,27 @@ async function start() {
         const oddKey = "oddId" + bSlot.querySelector(".offlineButton").id
         let canPlace = false
         const currentTime = new Date();
-        await chrome.storage.local.get(oddKey, function(result) {
-          if (chrome.runtime.lastError) {
-            canPlace = true
-          } else {
-            const enableTimeString = result[oddKey];
-            if (enableTimeString) {
-              const enableTime = new Date(enableTimeString);
-              
-              if (currentTime > enableTime) {
-                canPlace = true
-              } else {
-                canPlace = false
-              }
+        await new Promise((resolve, reject) => {
+          chrome.storage.local.get(oddKey, function (result) {
+            if (chrome.runtime.lastError) {
+              canPlace = true;
+              resolve();
             } else {
-              canPlace = true
+              const enableTimeString = result[oddKey];
+              if (enableTimeString) {
+                const enableTime = new Date(enableTimeString);
+
+                if (currentTime > enableTime) {
+                  canPlace = true;
+                } else {
+                  canPlace = false;
+                }
+              } else {
+                canPlace = true;
+              }
+              resolve();
             }
-          }
+          });
         });
         if (!canPlace) {
           continue
@@ -340,12 +344,12 @@ async function start() {
         if (placementOdds == undefined || placementOdds > 100) {
           placementOdds = 100
         }
-        else if(placementOdds < 0) {
+        else if (placementOdds < 0) {
           continue
         }
 
         if (placementOdds != 100 && button.innerText.includes("PLACE UNIT") && !closeBtn) {
-          if(!((Math.floor(Math.random() * 100) + 1) <= placementOdds)) {
+          if (!((Math.floor(Math.random() * 100) + 1) <= placementOdds)) {
             const minutes = Math.floor(Math.random() * 5) + 1;
             const eT = new Date(currentTime.getTime() + minutes * 60000);
             const eTString = eT.toISOString();
