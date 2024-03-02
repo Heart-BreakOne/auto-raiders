@@ -9,7 +9,7 @@ setInterval(start, 15000);
 let currentMarkerKey = "";
 let currentMarker;
 let arrayOfMarkers;
-let sortedArrayOfMarkers;
+let sortedArrMrks;
 let markerAttempt;
 let computedStyle;
 let backgroundImageValue;
@@ -631,23 +631,20 @@ function zoom() {
     //Resets tracking variables
     markerAttempt = 0;
     arrayOfMarkers = null;
-    sortedArrayOfMarkers = null;
+    sortedArrMrks = null;
     currentMarker = null;
     //Invoke getValidMarkers function
-    getValidMarkers();
+    getValidUnits();
   }
 }
 
-//Looks and selects a valid marker for placement
-async function getValidMarkers() {
+async function getValidUnits() {
+
   //Function to check for a frozen state
   reloadRoot();
   await delay(1000);
-  //Initializes a node list with placement markers
-  let nodeListOfMarkers = document.querySelectorAll(".planIcon");
-  arrayOfMarkers = Array.from(nodeListOfMarkers);
-  nodeListOfMarkers = null;
 
+  // If the timer is +28:30 or above, go back to the main menu as the captain may still be placing markers.
   const clockElement = document.querySelector('.battlePhaseTextClock .clock');
   if (clockElement == null) {
     goHome();
@@ -656,54 +653,273 @@ async function getValidMarkers() {
     //Initializes a variable with battle clock
     const timeText = clockElement.innerText.replace(':', '');
     const time = parseInt(timeText, 10);
-    //If the timer is at 29:00 or above, go back to the main menu as the captain may still be placing markers.
+
     if (time > 2830) {
       goHome();
       return;
     }
   }
-  //Captain is on open map only
-  if (arrayOfMarkers.length == 0) {
-    //Map without any markers.
 
+  // Open unit drawer and set the filter to ALL units
+  const placeUnitBtn = document.querySelector(".actionButton.actionButtonPrimary.placeUnitButton")
+  if (placeUnitBtn) {
+    placeUnitBtn.click()
+    await delay(1000);
+    document.querySelector('.unitFilterButton')?.click();
+  } else {
+    goHome();
+    return;
+  }
+
+
+  //Check if user wants to auto equip skins and equip them
+  const equipSwitch = await retrieveFromStorage("equipSwitch");
+  //Get the unit switcher container
+  const unitSwitcher = document.querySelector('.settingsSwitchCont');
+  if (equipSwitch !== undefined && unitSwitcher) {
+    //Get the unit switch check box, doing it inside the if garantees the the checkbox exists.
+    const checkbox = unitSwitcher.querySelector('input[type="checkbox"]');
+    if (checkbox) {
+      //Assign true or false to the checkbox
+      checkbox.checked = equipSwitch;
+    }
+  } else if (unitSwitcher) {
+    //Value from storage couldn't be retrieved, assign false to the unit checkbox
+    const checkbox = unitSwitcher.querySelector('input[type="checkbox"]');
+    if (checkbox) {
+      checkbox.checked = false;
+    }
+  }
+
+  await delay(500)
+  await doPotions()
+
+  //Get all units from the drawer
+  let canCompleteQuests = await retrieveFromStorage("completeQuests")
+  let unitDrawer = [...document.querySelectorAll(".unitSelectionCont")];
+  let unitsToRemove = []
+
+  // Check dungeon
+  const dungeonLevelSwitch = await retrieveFromStorage("dungeonLevelSwitch");
+  const dungeonPlaceAnywaySwitch = await retrieveFromStorage("dungeonPlaceAnywaySwitch");
+  isDungeon = false;
+  let dungeonLevel;
+  let userDunLevel;
+  let battleInfo = "";
+  try {
+    userDunLevel = await retrieveNumberFromStorage("maxDungeonLvlInput")
+  } catch (error) { }
+  let userUnitLevel = 0;
+  try {
+    userUnitLevel = await retrieveNumberFromStorage("maxUnitLvlDungInput")
+  } catch (error) { }
+
+  if (dungeonLevelSwitch) {
+    try {
+      battleInfo = document.querySelector(".battleInfo").innerText;
+      if (battleInfo.includes("Level")) {
+        dungeonLevel = parseInt(battleInfo.substr(battleInfo.length - 2));
+        isDungeon = true;
+      }
+    } catch (error) { }
+  }
+
+  // Remove cooldown units, dead units, exhausted units, unavailable units and rarity check units
+  for (let i = 0; i < unitDrawer[0].children.length; i++) {
+    let unit = unitDrawer[0].children[i];
+    //Get unit rarity
+
+    let commonCheck = unit.querySelector('.unitRarityCommon');
+    let uncommonCheck = unit.querySelector('.unitRarityUncommon');
+    let rareCheck = unit.querySelector('.unitRarityRare');
+    let legendaryCheck = unit.querySelector('.unitRarityLegendary');
+
+    //Get unit status: cooldown, defeated and exhausted
+    let coolDownCheck = unit.querySelector('.unitItemCooldown');
+    let defeatedCheck = unit.querySelector('.defeatedVeil');
+    //If unit has this class it's enabled, if it doesn't have it's not enabled.
+    let unitDisabled = unit.querySelector('.unitItemDisabledOff');
+    if (coolDownCheck || defeatedCheck || !unitDisabled) {
+      unitsToRemove.push(unit)
+      continue
+    }
+    if (legendaryCheck && !await getSwitchState("legendarySwitch") && !canCompleteQuests) {
+      unitsToRemove.push(unit)
+      continue
+    } else if (rareCheck && !await getSwitchState("rareSwitch") && !canCompleteQuests) {
+      unitsToRemove.push(unit)
+      continue
+    } else if (uncommonCheck && !await getSwitchState("uncommonSwitch") && !canCompleteQuests) {
+      unitsToRemove.push(unit)
+      continue
+    } else if (commonCheck && !await getSwitchState("commonSwitch") && !canCompleteQuests) {
+      unitsToRemove.push(unit)
+      continue
+    }
+
+    // Remove units based on unit level
+    if (isDungeon) {
+      let unitLevel;
+      try {
+        const unitName = unit.querySelector('.unitClass img').getAttribute('src').slice(-50).toUpperCase();
+        unitLevel = parseInt(unit.querySelector('.unitLevel').innerText);
+        if (userDunLevel == null || userDunLevel == undefined || userUnitLevel == null || userUnitLevel == undefined) {
+          continue;
+        } else if (dungeonLevel <= userDunLevel && unitLevel > userUnitLevel || unitName == "AMAZON") {// && unitName != "FLAG") {
+          unitsToRemove.push(unit)
+          continue
+        }
+
+      } catch (error) {
+        continue;
+      }
+    }
+
+  }
+
+  unitsToRemove.forEach(unit => unit.remove());
+  unitDrawer = [...document.querySelectorAll(".unitSelectionCont")];
+
+  if (await retrieveFromStorage("priorityListSwitch") && !canCompleteQuests) {
+    unitDrawer = await sortPriorityUnits(unitDrawer);
+  }
+
+  //Initializes a node list with all units
+  let unitsQuantity;
+  //Attempts to get ammount of units in the units drawers
+  try {
+    unitsQuantity = unitDrawer[0].children.length;
+  } catch (error) {
+    goHome();
+    return;
+  }
+
+  //Sort the array so units that match the captain skin are put on the front.
+  async function shiftUnits() {
+    for (let i = 1; i <= unitsQuantity; i++) {
+      const unit = unitDrawer[0].querySelector(".unitSelectionItemCont:nth-child(" + i + ") .unitItem:nth-child(1)");
+      if (unit.innerHTML.includes(captainNameFromDOM)) {
+        const unitIndex = Array.from(unitDrawer[0].children).findIndex(item => item === unit.parentElement);
+        if (unitIndex === -1) {
+          continue;
+        } else {
+          unitDrawer[0].insertBefore(unitDrawer[0].children[unitIndex], unitDrawer[0].children[0]);
+        }
+      }
+    }
+  }
+
+  //Put skinned units at the front if quest completer is not enabled.
+  if (await retrieveFromStorage("equipSwitch") && !canCompleteQuests) {
+    //Only equip if not diamond
+    if (await retrieveFromStorage("equipNoDiamondSwitch") && !diamondLoyalty.toString().includes("LoyaltyDiamond")) {
+      try {
+        await shiftUnits();
+      } catch (error) {
+        unitDrawer = [...document.querySelectorAll(".unitSelectionCont")];
+        console.log("log" + error);
+      }
+    } else if (!await retrieveFromStorage("equipNoDiamondSwitch")) {
+      try {
+        await shiftUnits();
+      } catch (error) {
+        unitDrawer = [...document.querySelectorAll(".unitSelectionCont")];
+        console.log("log" + error);
+      }
+    }
+  }
+
+  if (canCompleteQuests) {
+    try {
+      unitDrawer = await completeQuests(unitDrawer, unfinishedQuests)
+    } catch (error) {
+      unitDrawer = [...document.querySelectorAll(".unitSelectionCont")];
+    }
+  }
+
+  // This sorts the markers and adds imaginary markers if there aren't any
+  let arrayOfMarkers = await prepareMarkers()
+  for (let i = 0; i < unitDrawer[0].children.length; i++) {
+    let unit = unitDrawer[0].children[i];
+    let unitType = unit.querySelector('.unitClass img').getAttribute('alt').toUpperCase();
+    let unitName = unit.querySelector('.unitClass img').getAttribute('src').slice(-50).toUpperCase();
+    const unit1 = arrayOfUnits.filter(unit1 => unitName.includes(unit1.icon.toUpperCase()))[1];
+    if (unit1) {
+      unitName = unit1.key;
+    }
+    for (let j = 0; arrayOfMarkers.length; j++) {
+      let currentMarker = arrayOfMarkers[j]
+      let currentMarkerKey;
+      computedStyle = getComputedStyle(currentMarker);
+      let backgroundImageValue = computedStyle.getPropertyValue('background-image').toUpperCase();
+      //Checks if the marker is a valid placement marker and also get its type
+      arrayOfBattleFieldMarkers.some(marker => {
+        //If the current marker matches the items on the array of markers, it's a valid marker
+        if (backgroundImageValue.includes(marker.icon)) {
+          currentMarkerKey = marker.key
+          for (let i = 0; i <= arrayOfUnits.length; i++) {
+            const element = arrayOfUnits[i];
+            if (currentMarkerKey === element.key || currentMarkerKey === element.type) {
+
+            }
+          }
+        }
+      });
+      console.log()
+    }
+  }
+
+  //END OF UNIT DRAWER
+}
+
+
+//Looks and selects a valid marker for placement
+async function prepareMarkers() {
+
+  //Initializes a node list with placement markers
+  let arrMrks = Array.from(document.querySelectorAll(".planIcon"));
+  const bkpArray = arrMrks
+
+  function sort() {
+    try {
+      //Attempt to sort the markers based on how close they are to the captain
+      arrMrks = Array.from(document.querySelectorAll(".planIcon"));
+      sortedArrMrks = getMapMatrix(arrMrks);
+      return sortedArrMrks
+    } catch (error) {
+      return bkpArray
+    }
+  }
+
+  //Captain is on open map only
+  if (arrMrks.length == 0) {
     //Place imaginary markers to use instead and restart the function to get valid markers
     setImaginaryMarkers(document.querySelectorAll(".placementAlly"));
-    getValidMarkers();
-    return;
+    sort()
   } else {
     //Treat the markers to remove block markers
-    for (let i = arrayOfMarkers.length - 1; i >= 0; i--) {
-      let planIcon = arrayOfMarkers[i];
+    for (let i = arrMrks.length - 1; i >= 0; i--) {
+      let planIcon = arrMrks[i];
       let backgroundImageValue = getComputedStyle(planIcon).getPropertyValue('background-image').toUpperCase();
       if (backgroundImageValue.includes("VYAAAAASUVORK5CYII=")) {
-        arrayOfMarkers.splice(i, 1);
+        arrMrks.splice(i, 1);
       }
     }
 
     //Check what is inside new array.
-    if (arrayOfMarkers.length == 0 && (arrayOfAllyPlacement == undefined || arrayOfAllyPlacement.length == 0)) {
+    if (arrMrks.length == 0 && (arrayOfAllyPlacement == undefined || arrayOfAllyPlacement.length == 0)) {
       //Captain is using a mix of block markers and open zones.
       //Place imaginary markers to use instead
-      arrayOfMarkers = setImaginaryMarkers(document.querySelectorAll(".placementAlly"))
+      arrMrks = setImaginaryMarkers(document.querySelectorAll(".placementAlly"))
       //Check if user wants to avoid skins
       //Open the leaderboard
       //Look for skinned units
       //Set equipSkins
       //Close the leaderboard
-      getValidMarkers();
-      return;
-
+      sort()
     } else {
       //There are vibe or set markers that can be used.
-      try {
-        //Attempt to sort the markers based on how close they are to the captain
-        //Set equipSkins
-        sortedArrayOfMarkers = getMapMatrix(arrayOfMarkers);
-        arrayOfMarkers = sortedArrayOfMarkers;
-      } catch (error) {
-        console.log();
-      }
-      getSetMarker();
+      sort()
     }
   }
 }
@@ -743,7 +959,7 @@ async function getSetMarker() {
   } else {
     currentMarkerKey = ""
     // The randomization of the index increased the chances of getting a valid placement.
-    if (sortedArrayOfMarkers != null) {
+    if (sortedArrMrks != null) {
       currentMarker = arrayOfMarkers[0];
     } else {
       currentMarker = arrayOfMarkers[Math.floor(Math.random() * (arrayOfMarkers.length - 1))];
@@ -820,264 +1036,19 @@ async function moveScreen(position) {
 /* This function opens the unit inventory tab, boosts unit and selects the first available unit that is allowed for usage,
 isn't on cooldown, dead or exhausted. It also gets the unit name for future marker validation. */
 async function selectUnit() {
-  //Opens the unit drawer
-  let placeUnitSelection = document.querySelector(".actionButton.actionButtonPrimary.placeUnitButton");
-  if (placeUnitSelection) {
-    placeUnitSelection.click();
-  }
-
-  //Set the unit drawer to the ALL units tab.
-  let allUnitsButton = document.querySelector('.unitFilterButton');
-  if (allUnitsButton) {
-    allUnitsButton.click();
-  }
-
-  //Check if user wants to auto equip skins and equip them
-  const equipSwitch = await retrieveFromStorage("equipSwitch");
-  //Get the unit switcher container
-  const unitSwitcher = document.querySelector('.settingsSwitchCont');
-  if (equipSwitch !== undefined && unitSwitcher) {
-    //Get the unit switch check box, doing it inside the if garantees the the checkbox exists.
-    const checkbox = unitSwitcher.querySelector('input[type="checkbox"]');
-    if (checkbox) {
-      //Assign true or false to the checkbox
-      checkbox.checked = equipSwitch;
-    }
-  } else if (unitSwitcher) {
-    //Value from storage couldn't be retrieved, assign false to the unit checkbox
-    const checkbox = unitSwitcher.querySelector('input[type="checkbox"]');
-    if (checkbox) {
-      checkbox.checked = false;
-    }
-  }
-
-  await delay(500)
-  //Checks if user wants to use potions.
-  let potionState = await getRadioButton("selectedOption");
-  //CHeck if user wants to use potions only with specific captains
-  const favoriteSwitch = await getSwitchState("favoriteSwitch");
-  let favoritePotion = false;
-  let number;
-  let epicButton;
-
-  if (!favoriteSwitch) {
-    favoritePotion = true;
-  }
-  //Check if current captain is a favorite potion captain
-  try {
-    if (potionState != 0 && !mode && favoriteSwitch) {
-      const potionCaptainsList = await new Promise((resolve) => {
-        chrome.storage.local.get({ ['potionlist']: [] }, function (result) {
-          const potionCaptainsList = result["potionlist"];
-          resolve(potionCaptainsList);
-        });
-      });
-      // Check if the array exists and is an array with at least one element
-      if (Array.isArray(potionCaptainsList) && potionCaptainsList.length > 0) {
-        //Check if current captain is a favorite potion captain. If not set potion state to 0.
-        if (potionCaptainsList.some(item => item.toUpperCase() === captainNameFromDOM.toUpperCase())) {
-          favoritePotion = true;
-        }
-      }
-    }
-  } catch (error) { }
 
 
-  //User wants to use potions
-  if (potionState != 0 && !mode && favoritePotion) {
-    //Get potion strings so the string can be trimmed and converted to int for validation
-    let potions;
-    //Attempts to get potion quantity
-    try {
-      potions = document.querySelector("img[alt='Potion']").closest(".quantityItem");
-    } catch (error) {
-      goHome();
-      return;
-    }
-    let potionQuantity = potions.querySelector(".quantityText").textContent;
-    epicButton = document.querySelector(".actionButton.actionButtonPrimary.epicButton");
-    number = parseInt(potionQuantity.substring(0, 3));
-  }
-  //User wants to use potions as soon as there are at least 45 potions.
-  if (potionState == 1 && number >= 45) {
-    if (epicButton) {
-      epicButton.click();
-    }
-    //User wants to use potions as soon as there are 100 potions.
-  } else if (potionState && number == 100) {
-    if (epicButton) {
-      epicButton.click();
-    }
-  }
-  //Handles unit drawer.
-  let unitName = ""
-  let unitDrawer = [...document.querySelectorAll(".unitSelectionCont")];
 
-  //Sort units based on their priority
-  canCompleteQuests = await retrieveFromStorage("completeQuests")
-  if (await retrieveFromStorage("priorityListSwitch") && !canCompleteQuests) {
-    unitDrawer = await sortPriorityUnits(unitDrawer);
-  }
 
-  //Initializes a node list with all units
-  let unitsQuantity;
-  //Attempts to get ammount of units in the units drawers
-  try {
-    unitsQuantity = unitDrawer[0].children.length;
-  } catch (error) {
-    goHome();
-    return;
-  }
 
-  //Sort the array so units that match the captain skin are put on the front.
-  async function shiftUnits() {
-    for (let i = 1; i <= unitsQuantity; i++) {
-      const unit = unitDrawer[0].querySelector(".unitSelectionItemCont:nth-child(" + i + ") .unitItem:nth-child(1)");
-      if (unit.innerHTML.includes(captainNameFromDOM)) {
-        const unitIndex = Array.from(unitDrawer[0].children).findIndex(item => item === unit.parentElement);
-        if (unitIndex === -1) {
-          continue;
-        } else {
-          unitDrawer[0].insertBefore(unitDrawer[0].children[unitIndex], unitDrawer[0].children[0]);
-        }
-      }
-    }
-  }
 
-  //Put skinned units at the front if quest completer is not enabled.
-  if (await retrieveFromStorage("equipSwitch") && !canCompleteQuests) {
-    //Only equip if not diamond
-    if (await retrieveFromStorage("equipNoDiamondSwitch") && !diamondLoyalty.toString().includes("LoyaltyDiamond")) {
-      try {
-        await shiftUnits();
-      } catch (error) {
-        unitDrawer = [...document.querySelectorAll(".unitSelectionCont")];
-        console.log("log" + error);
-      }
-    } else if (!await retrieveFromStorage("equipNoDiamondSwitch")) {
-      try {
-        await shiftUnits();
-      } catch (error) {
-        unitDrawer = [...document.querySelectorAll(".unitSelectionCont")];
-        console.log("log" + error);
-      }
-    }
-  }
 
-  if (canCompleteQuests) {
-    try {
-      unitDrawer = await completeQuests(unitDrawer, unfinishedQuests)
-    } catch (error) {
-      unitDrawer = [...document.querySelectorAll(".unitSelectionCont")];
-    }
-  }
 
-  //Update units quantity
-  try {
-    unitsQuantity = unitDrawer[0].children.length;
-  } catch (error) {
-    goHome();
-    return;
-  }
-  const dungeonLevelSwitch = await retrieveFromStorage("dungeonLevelSwitch");
-  const dungeonPlaceAnywaySwitch = await retrieveFromStorage("dungeonPlaceAnywaySwitch");
-  let userDunLevel = 0;
-  try {
-    userDunLevel = await retrieveNumberFromStorage("maxDungeonLvlInput")
-  } catch (error) {
-    return;
-  }
-  let userUnitLevel = 0;
-  try {
-    userUnitLevel = await retrieveNumberFromStorage("maxUnitLvlDungInput")
-  } catch (error) {
-    return;
-  }
+
   for (let i = 1; i <= unitsQuantity; i++) {
-    //Iterates through every unit
-    const unit = unitDrawer[0].querySelector(".unitSelectionItemCont:nth-child(" + i + ") .unitItem:nth-child(1)");
-
-    //Get unit rarity
-    let commonCheck = unit.querySelector('.unitRarityCommon');
-    let uncommonCheck = unit.querySelector('.unitRarityUncommon');
-    let rareCheck = unit.querySelector('.unitRarityRare');
-    let legendaryCheck = unit.querySelector('.unitRarityLegendary');
-
-    //Get unit status: cooldown, defeated and exhausted
-    let coolDownCheck = unit.querySelector('.unitItemCooldown');
-    let defeatedCheck = unit.querySelector('.defeatedVeil');
-    let unitDisabled = unit.querySelector('.unitItemDisabledOff');
-    let unitLevel;
-    try {
-      unitLevel = parseInt(unit.querySelector('.unitLevel').innerText);
-    } catch (error) {
-      continue;
-    }
-
-    //Get unit type and unit name so it can be compared with the marker and determine if the placement is valid.
-    let unitType = unit.querySelector('.unitClass img').getAttribute('alt').toUpperCase();
-    unitName = unit.querySelector('.unitClass img').getAttribute('src').slice(-50).toUpperCase();
-    //Get human readable unitName
-    const unit1 = arrayOfUnits.filter(unit1 => unitName.includes(unit1.icon.toUpperCase()))[1];
-    if (unit1) {
-      unitName = unit1.key;
-    }
-    isDungeon = false;
-    let dungeonLevel;
-    if (dungeonLevelSwitch) {
-      let battleInfo;
-      try {
-        battleInfo = document.querySelector(".battleInfo").innerText;
-      } catch (error) {
-        continue;
-      }
-      if (battleInfo.includes("Level")) {
-        isDungeon = true;
-        dungeonLevel = parseInt(battleInfo.substr(battleInfo.length - 2));
-        //If it fails replace   retrieveFromStorage with   ->    retrieveNumberFromStorage
-        //Added unitName == "AMAZON" because most dungeon captains use Amazon marker for Epic Huntress Amazon so it's easier to just not allow Amazon units to be placed at all
-        if (userDunLevel == null || userDunLevel == undefined || userUnitLevel == null || userUnitLevel == undefined || unitName == "AMAZON") {
-          continue;
-        } else if (dungeonLevel <= userDunLevel && unitLevel > userUnitLevel) {// && unitName != "FLAG") {
-          continue;
-        }
-      }
-    }
-    let commonSwitch;
-    let uncommonSwitch;
-    let rareSwitch;
-    let legendarySwitch;
-
-    //Checks what units the user wants to place
-    if (legendaryCheck) {
-      legendarySwitch = await getSwitchState("legendarySwitch");
-    } else if (rareCheck) {
-      rareSwitch = await getSwitchState("rareSwitch");
-    } else if (uncommonCheck) {
-      uncommonSwitch = await getSwitchState("uncommonSwitch");
-    } else if (commonCheck) {
-      commonSwitch = await getSwitchState("commonSwitch");
-    }
-
-    //Check if the unit can be used.
-    if ((commonCheck && !commonSwitch) ||
-      (legendaryCheck && !legendarySwitch) ||
-      (rareCheck && !rareSwitch) ||
-      (uncommonCheck && !uncommonSwitch) ||
-      coolDownCheck || defeatedCheck || !unitDisabled) {
-      if (i >= unitsQuantity) {
-        //If there are no units that can be placed, get a new marker until there are no markers available to match any of the available units
-        markerAttempt++;
-        getSetMarker();
-        return;
-      } else {
-        //Current unit can't be used, get the next
-        continue;
-      }
-    }
     /* Select the unit if the current marker is a vibe or if there are no markers
       or if the unit name or type match the current marker */
-    else if (currentMarkerKey == "VIBE" || currentMarkerKey == "" ||
+    if (currentMarkerKey == "VIBE" || currentMarkerKey == "" ||
       currentMarkerKey == unitType || currentMarkerKey == unitName) {
       //Select the unit
       unit.click();
@@ -1566,4 +1537,63 @@ function clickHoldAndScroll(element, deltaY, duration) {
   }
 
 
+}
+
+async function doPotions() {
+  //Checks if user wants to use potions.
+  let potionState = await getRadioButton("selectedOption");
+  //CHeck if user wants to use potions only with specific captains
+  const favoriteSwitch = await getSwitchState("favoriteSwitch");
+  let favoritePotion = false;
+  let number;
+  let epicButton;
+
+  if (!favoriteSwitch) {
+    favoritePotion = true;
+  }
+  //Check if current captain is a favorite potion captain
+  try {
+    if (potionState != 0 && !mode && favoriteSwitch) {
+      const potionCaptainsList = await new Promise((resolve) => {
+        chrome.storage.local.get({ ['potionlist']: [] }, function (result) {
+          const potionCaptainsList = result["potionlist"];
+          resolve(potionCaptainsList);
+        });
+      });
+      // Check if the array exists and is an array with at least one element
+      if (Array.isArray(potionCaptainsList) && potionCaptainsList.length > 0) {
+        //Check if current captain is a favorite potion captain. If not set potion state to 0.
+        if (potionCaptainsList.some(item => item.toUpperCase() === captainNameFromDOM.toUpperCase())) {
+          favoritePotion = true;
+        }
+      }
+    }
+  } catch (error) { }
+
+  //User wants to use potions
+  if (potionState != 0 && !mode && favoritePotion) {
+    //Get potion strings so the string can be trimmed and converted to int for validation
+    let potions;
+    //Attempts to get potion quantity
+    try {
+      potions = document.querySelector("img[alt='Potion']").closest(".quantityItem");
+    } catch (error) {
+      goHome();
+      return;
+    }
+    let potionQuantity = potions.querySelector(".quantityText").textContent;
+    epicButton = document.querySelector(".actionButton.actionButtonPrimary.epicButton");
+    number = parseInt(potionQuantity.substring(0, 3));
+  }
+  //User wants to use potions as soon as there are at least 45 potions.
+  if (potionState == 1 && number >= 45) {
+    if (epicButton) {
+      epicButton.click();
+    }
+    //User wants to use potions as soon as there are 100 potions.
+  } else if (potionState && number == 100) {
+    if (epicButton) {
+      epicButton.click();
+    }
+  }
 }
