@@ -281,6 +281,7 @@ async function start() {
       //If the button has the inner text PLACE UNIT it's a valid button
       if (button.innerText.includes("PLACE UNIT")) {
         //Get captain name from the slot
+
         var captainSlot = button.closest('.capSlot');
         captainNameFromDOM = captainSlot.querySelector('.capSlotName').innerText;
         let chestType;
@@ -308,6 +309,51 @@ async function start() {
           console.log("")
         }
 
+        // Calculate placements odds
+        const bSlot = button.closest('.capSlot')
+        const closeBtn = bSlot.querySelector(".capSlotClose")
+        const oddKey = "oddId" + bSlot.querySelector(".offlineButton").id
+        let canPlace = false
+        const currentTime = new Date();
+        await chrome.storage.local.get(oddKey, function(result) {
+          if (chrome.runtime.lastError) {
+            canPlace = true
+          } else {
+            const enableTimeString = result[oddKey];
+            if (enableTimeString) {
+              const enableTime = new Date(enableTimeString);
+              
+              if (currentTime > enableTime) {
+                canPlace = true
+              } else {
+                canPlace = false
+              }
+            } else {
+              canPlace = true
+            }
+          }
+        });
+        if (!canPlace) {
+          continue
+        }
+        let placementOdds = await retrieveNumberFromStorage("placementOddsInput")
+        if (placementOdds == undefined || placementOdds > 100) {
+          placementOdds = 100
+        }
+        else if(placementOdds < 0) {
+          continue
+        }
+
+        if (placementOdds != 100 && button.innerText.includes("PLACE UNIT") && !closeBtn) {
+          if(!((Math.floor(Math.random() * 100) + 1) <= placementOdds)) {
+            const minutes = Math.floor(Math.random() * 5) + 1;
+            const eT = new Date(currentTime.getTime() + minutes * 60000);
+            const eTString = eT.toISOString();
+            await chrome.storage.local.set({ [oddKey]: eTString });
+            continue
+          }
+        }
+
         //Check if the captain is the one running a game mode
         const dungeonCaptainNameFromStorage = await retrieveFromStorage('dungeonCaptain');
         const clashCaptainNameFromStorage = await retrieveFromStorage('clashCaptain');
@@ -333,7 +379,7 @@ async function start() {
         let loyaltyRadioInt = 0
         try {
           loyaltyRadioInt = parseInt(loyaltyRadio)
-        } catch(error){
+        } catch (error) {
           loyaltyRadioInt = 0
         }
         if (loyaltyRadioInt != 0 && loyaltyRadio != undefined) {
@@ -350,7 +396,7 @@ async function start() {
 
               if ((!lgold && chestType.includes("chestboostedgold")) || (!lskin && chestType.includes("chestboostedskin")) || (!lscroll && chestType.includes("chestboostedscroll")) || (!ltoken && chestType.includes("chestboostedtoken")) || (!lboss && chestType.includes("chestboss") && !chestType.includes("chestbosssuper")) || (!lsuperboss && chestType.includes("chestbosssuper"))) {
                 captainLoyalty = true;
-              } else if (chestType.includes("bonechest") || chestType.includes("dungeonchest") || chestType.includes("chestbronze") || chestType.includes("chestsilver") || chestType.includes("chestgold")){
+              } else if (chestType.includes("bonechest") || chestType.includes("dungeonchest") || chestType.includes("chestbronze") || chestType.includes("chestsilver") || chestType.includes("chestgold")) {
                 captainLoyalty = false;
               } else {
                 captainLoyalty = false;
@@ -1291,7 +1337,7 @@ async function collectChests() {
       let leaderboardRank;
       let kills;
       let assists;
-      let unitIconList; 
+      let unitIconList;
       //Check if user wants to log rewards and leaderboard results
       const logSwitch = await retrieveFromStorage("logSwitch");
       if (logSwitch) {
@@ -1323,37 +1369,37 @@ async function collectChests() {
 
           let leaderboardRows;
           for (let k = 0; k < 30; k++) {
-              leaderboardRows = document.querySelectorAll(".rewardsLeaderboardRowCont");
+            leaderboardRows = document.querySelectorAll(".rewardsLeaderboardRowCont");
 
-              for (let i = 0; i < leaderboardRows.length; i++) {
-                const leaderboardRow = leaderboardRows[i];
-                const leaderboardRowUser = leaderboardRow.querySelector(".rewardsLeaderboardRowText.rewardsLeaderboardRowDisplayName");
+            for (let i = 0; i < leaderboardRows.length; i++) {
+              const leaderboardRow = leaderboardRows[i];
+              const leaderboardRowUser = leaderboardRow.querySelector(".rewardsLeaderboardRowText.rewardsLeaderboardRowDisplayName");
+              leaderboardRank = leaderboardRow.querySelector(".rewardsLeaderboardRowText.rewardsLeaderboardRowRank").innerText;
+              if (leaderboardRowUser.innerText == userName) {
                 leaderboardRank = leaderboardRow.querySelector(".rewardsLeaderboardRowText.rewardsLeaderboardRowRank").innerText;
-                if (leaderboardRowUser.innerText == userName) {
-                  leaderboardRank = leaderboardRow.querySelector(".rewardsLeaderboardRowText.rewardsLeaderboardRowRank").innerText;
-                  kills = leaderboardRow.querySelector(".rewardsLeaderboardRowText.rewardsLeaderboardRowKills").innerText;
-                  assists = leaderboardRow.querySelector(".rewardsLeaderboardRowText.rewardsLeaderboardRowAssists").innerText;
-                  let unitIconsAll = leaderboardRow.querySelector(".rewardsLeaderboardRowUnitIconsCont");
-                  let unitIcons = unitIconsAll.querySelectorAll(".rewardsLeaderboardRowUnitIconWrapper");
-                  unitIconList = "";
-                  for (let j = 0; j < unitIcons.length; j++) {
-                    const unitIconWrapper = unitIcons[j];
-                    let unitIcon = unitIconWrapper.querySelector(".rewardsLeaderboardRowUnitIcon");
-                    unitIconList = unitIcon.src + " " + unitIcon.alt + ","+ unitIconList
-                  }
-                  if (kills !== undefined) {
-                    await delay(500);//+(500*k));
-                  }
-                  break;
+                kills = leaderboardRow.querySelector(".rewardsLeaderboardRowText.rewardsLeaderboardRowKills").innerText;
+                assists = leaderboardRow.querySelector(".rewardsLeaderboardRowText.rewardsLeaderboardRowAssists").innerText;
+                let unitIconsAll = leaderboardRow.querySelector(".rewardsLeaderboardRowUnitIconsCont");
+                let unitIcons = unitIconsAll.querySelectorAll(".rewardsLeaderboardRowUnitIconWrapper");
+                unitIconList = "";
+                for (let j = 0; j < unitIcons.length; j++) {
+                  const unitIconWrapper = unitIcons[j];
+                  let unitIcon = unitIconWrapper.querySelector(".rewardsLeaderboardRowUnitIcon");
+                  unitIconList = unitIcon.src + " " + unitIcon.alt + "," + unitIconList
                 }
-              }
-              if (kills !== undefined && kills !== null) {
+                if (kills !== undefined) {
+                  await delay(500);//+(500*k));
+                }
                 break;
               }
-              clickHoldAndScroll(lastRow2, -1000, 100);
-              await delay(500);
-              rows2 = document.querySelectorAll(".rewardsLeaderboardRowCont");
-              lastRow2 = rows2[rows2.length - 1];
+            }
+            if (kills !== undefined && kills !== null) {
+              break;
+            }
+            clickHoldAndScroll(lastRow2, -1000, 100);
+            await delay(500);
+            rows2 = document.querySelectorAll(".rewardsLeaderboardRowCont");
+            lastRow2 = rows2[rows2.length - 1];
           }
 
         }
@@ -1369,7 +1415,7 @@ async function collectChests() {
       unitIconList = null;
       rewards = null;
       await delay(250);
-      
+
       if (slotState == 2) {
         const allCapSlots = document.querySelectorAll(".capSlot")
         for (const i in allCapSlots) {
@@ -1462,16 +1508,17 @@ async function requestMapName(captainNameFromDOM) {
 }
 
 function simulateMouseEvent(element, eventName, clientX, clientY) {
-    const event = new MouseEvent(eventName, {
-        bubbles: true,
-        cancelable: true,
-        clientX: clientX,
-        clientY: clientY
-    });
-    element.dispatchEvent(event);
+  const event = new MouseEvent(eventName, {
+    bubbles: true,
+    cancelable: true,
+    clientX: clientX,
+    clientY: clientY
+  });
+  element.dispatchEvent(event);
 }
 
 function clickHoldAndScroll(element, deltaY, duration) {
+  try {
     const rect = element.getBoundingClientRect();
     const clientX = rect.left + rect.width / 2;
     const clientY = rect.top + rect.height / 2;
@@ -1484,13 +1531,18 @@ function clickHoldAndScroll(element, deltaY, duration) {
     let cumulativeDeltaY = 0;
     let step = 0;
     const scrollInterval = setInterval(() => {
-        if (step < steps) {
-            cumulativeDeltaY += stepSize;
-            simulateMouseEvent(element, "mousemove", clientX, clientY + cumulativeDeltaY);
-            step++;
-        } else {
-            clearInterval(scrollInterval);
-            simulateMouseEvent(element, "mouseup", clientX, clientY + cumulativeDeltaY);
-        }
+      if (step < steps) {
+        cumulativeDeltaY += stepSize;
+        simulateMouseEvent(element, "mousemove", clientX, clientY + cumulativeDeltaY);
+        step++;
+      } else {
+        clearInterval(scrollInterval);
+        simulateMouseEvent(element, "mouseup", clientX, clientY + cumulativeDeltaY);
+      }
     }, interval);
+  } catch (error) {
+    console.log(error)
+  }
+
+
 }
