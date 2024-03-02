@@ -1,5 +1,28 @@
 
 document.addEventListener('DOMContentLoaded', function () {
+    const scrollToTopBtn = document.getElementById("scrollBtnUp");
+    const scrollToBotBtn = document.getElementById("scrollBtnDown");
+    scrollToBotBtn.style.display = "block";
+
+    // Show or hide the button based on scroll position
+    window.onscroll = function () {
+        if (document.body.scrollTop > 20 || document.documentElement.scrollTop > 20) {
+            scrollToTopBtn.style.display = "block";
+        } else {
+            scrollToTopBtn.style.display = "none";
+        }
+    };
+
+    // Scroll back to the top when the button is clicked
+    scrollToTopBtn.addEventListener("click", function () {
+        document.body.scrollTop = 0;
+        document.documentElement.scrollTop = 0;
+    });
+    // Scroll to the bottom when the button is clicked
+    scrollToBotBtn.addEventListener("click", function () {
+        document.body.scrollTop = document.body.scrollHeight;
+        document.documentElement.scrollTop = document.documentElement.scrollHeight;
+    });
 
     let dataContainer = document.getElementById('data_container');
     
