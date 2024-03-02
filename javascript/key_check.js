@@ -53,18 +53,25 @@ document.addEventListener('DOMContentLoaded', function () {
     chrome.storage.local.get(null, function(items) {
         var keys = Object.keys(items);
         var keysString = '';
-        var maxKeysPerLine = 10;
+        var maxKeysPerLine = 7;
     
         for (var i = 0; i < keys.length; i++) {
-            keysString += keys[i];
+            keysString += '<span name="keyItem">' + keys[i] + '</span>';
             if (i < keys.length - 1) {
                 keysString += ', ';
             }
             if ((i + 1) % maxKeysPerLine === 0 && i < keys.length - 1) {
-                keysString += '\n';
+                keysString += '<br>';
             }
         }
     
-        document.getElementById('keys_container').textContent = keysString;
+        document.getElementById('keys_container').innerHTML = keysString;
+        
+        let keyItems = document.getElementsByName('keyItem');
+        for (var i = 0; i < keyItems.length; i++) {
+          keyItems[i].addEventListener('click', function (e) {
+              document.getElementById("key_input").value=e.target.innerText; 
+          });
+        }
     });
 });
