@@ -94,21 +94,9 @@ chrome.runtime.onConnect.addListener((port) => {
       await checkBattleMessages();
     }
 
-    //Get loyalty to check chests
-    if (msg.action === "getLoyalty") {
-      // Handle the message, access payload with msg.payload
-      // Do something with the payload
-      //Might need async handling
-      const response = await getCaptainLoyalty(msg.captainNameFromDOM);
-      port.postMessage({ response });
-    }
-
-    //Get map name for log
-    if (msg.action === "getMapName") {
-      // Handle the message, access payload with msg.payload
-      // Do something with the payload
-      //Might need async handling
-      const response = await getMapName(msg.captainNameFromDOM);
+    //Get image URLs for log
+    if (msg.action === "getImageURLs") {
+      const response = await fetchImageURLs(msg.mobilelite_url);
       port.postMessage({ response });
     }
 	
@@ -218,187 +206,6 @@ async function getCookies() {
   });
 }
 
-//RETURNS CHESTTYPE (returns "chestbronze" if not found or if error)
-async function getCaptainLoyalty(captainName) {
-  try {
-    await getCookies();
-
-    // Post request to get all units
-    const response = await fetch(`https://www.streamraiders.com/api/game/?cn=getActiveRaids&clientVersion=${clientVersion}&clientPlatform=MobileLite&gameDataVersion=${gameDataVersion}&command=getActiveRaidsLite&isCaptain=0`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/x-www-form-urlencoded',
-        'Cookie': cookieString,
-      },
-    });
-
-    if (!response.ok) {
-      throw new Error('Network response was not ok');
-    }
-
-    // Get unit id and name.
-    const activeRaids = await response.json();
-
-    for (let i = 0; i < activeRaids.data.length; i++) {
-      const position = activeRaids.data[i];
-      const raidId = position.raidId;
-      const cptName = position.twitchDisplayName;
-
-      if (cptName === captainName) {
-        /*         if (loyalty === 4) {
-                  return "chestbronze";
-                } */
-
-        const mapLoyalty = await getRaidChest(raidId);
-        return mapLoyalty;
-      }
-    }
-
-    //No match found
-    return "chestbronze";
-
-  } catch (error) {
-    console.error('Error in getCaptainLoyalty:', error);
-    return "chestbronze";
-  }
-}
-
-// MAKE TWO POST REQUESTS, ONE FOR THE CURRENT CHEST AND ANOTHER TO COMPARE
-async function getRaidChest(raidId) {
-  try {
-    const response = await fetch(`https://www.streamraiders.com/api/game/?cn=getRaid&raidId=${raidId}&placementStartIndex=0&maybeSendNotifs=false&clientVersion=${clientVersion}&clientPlatform=WebLite&gameDataVersion=${gameDataVersion}&command=getRaid&isCaptain=0`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/x-www-form-urlencoded',
-        'Cookie': cookieString,
-      },
-    });
-
-    if (!response.ok) {
-      throw new Error('Network response was not ok');
-    }
-
-    const currentRaid = await response.json();
-    const raid_url = currentRaid.info.dataPath
-    let chests = await new Promise((resolve) => {
-      chrome.storage.local.get("loyaltyChests", async function (lChests) {
-        let update = false;
-        let storage_url;
-        let new_chests;
-        let get_chests
-        if (!lChests.loyaltyChests) {
-          new_chests = await fetchLoyaltyChests(raid_url);
-          await new Promise((resolve) => {
-            chrome.storage.local.set({ "loyaltyChests": new_chests }, resolve);
-          });
-          update = true;
-        }
-
-        if (update) {
-          storage_url = new_chests.url;
-          get_chests = new_chests.MapNodes;
-        } else {
-          storage_url = lChests.url;
-          get_chests = lChests.MapNodes;
-        }
-
-        if (raid_url !== storage_url) {
-          new_chests = await fetchLoyaltyChests(raid_url);
-          await new Promise((resolve) => {
-            chrome.storage.local.set({ "loyaltyChests": new_chests }, resolve);
-          });
-          storage_url = new_chests.url;
-          get_chests = new_chests.MapNodes;
-        }
-
-        resolve(get_chests);
-      });
-    });
-
-    const nodeKeys = [];
-
-    for (const key in chests) {
-      if (chests.hasOwnProperty(key)) {
-        nodeKeys.push(key);
-      }
-    }
-
-    const nodeId = currentRaid.data.nodeId;
-    const chestType = chests[nodeId].ChestType;
-    return chestType;
-
-  } catch (error) {
-    console.error('Error in getRaidChest:', error);
-    return "chestbronze";
-  }
-}
-
-async function getMapName(captainName) {
-  try {
-    await getCookies();
-
-    // Post request to get all units
-    const response = await fetch(`https://www.streamraiders.com/api/game/?cn=getActiveRaids&clientVersion=${clientVersion}&clientPlatform=MobileLite&gameDataVersion=${gameDataVersion}&command=getActiveRaidsLite&isCaptain=0`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/x-www-form-urlencoded',
-        'Cookie': cookieString,
-      },
-    });
-
-    if (!response.ok) {
-      throw new Error('Network response was not ok');
-    }
-
-    // Get unit id and name.
-    const activeRaids = await response.json();
-
-    for (let i = 0; i < activeRaids.data.length; i++) {
-      const position = activeRaids.data[i];
-      const raidId = position.raidId;
-      const cptName = position.twitchDisplayName;
-
-      if (cptName === captainName) {
-        const mapNode = await getMapNode(raidId);
-        return mapNode;
-      }
-    }
-
-    //No match found
-    return "";
-
-  } catch (error) {
-    console.error('Error in getMapName:', error);
-    return "";
-  }
-}
-
-async function getMapNode(raidId) {
-  try {
-    const response = await fetch(`https://www.streamraiders.com/api/game/?cn=getRaid&raidId=${raidId}&placementStartIndex=0&maybeSendNotifs=false&clientVersion=${clientVersion}&clientPlatform=WebLite&gameDataVersion=${gameDataVersion}&command=getRaid&isCaptain=0`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/x-www-form-urlencoded',
-        'Cookie': cookieString,
-      },
-    });
-
-    if (!response.ok) {
-      throw new Error('Network response was not ok');
-    }
-
-    const currentRaid = await response.json();
-    const raid_url = currentRaid.info.dataPath
-    const nodeId = currentRaid.data.nodeId;
-    return nodeId;
-
-  } catch (error) {
-    console.error('Error in getMapNode:', error);
-    return "";
-  }
-}
-
-
 //Get every unit the user has
 async function fetchUnits() {
   try {
@@ -422,7 +229,6 @@ async function fetchUnits() {
     console.error('Error fetching skins:', error.message);
   }
 }
-
 
 //Switch captains to a higher one if available
 async function switchCaptains(currentCaptain, masterList, index) {
@@ -671,42 +477,27 @@ async function logBattleStates() {
   });
 }
 
-
-async function fetchLoyaltyChests(raid_url) {
+async function fetchImageURLs(mobilelite_url) {
   try {
-    const response = await fetch(raid_url);
+    const response = await fetch(mobilelite_url);
     const blob = await response.blob();
     const corsResponse = new Response(blob, { headers: { 'Access-Control-Allow-Origin': '*' } });
 
-    const data = await corsResponse.json();
-    const mapNodes = data["sheets"]["MapNodes"]
-    for (const nodeKey in mapNodes) {
-      const node = mapNodes[nodeKey];
-      /*       if (
-              node.ChestType === "dungeonchest" ||
-              node.ChestType === "bonechest" ||
-              node.ChestType === "chestbronze" ||
-              node.ChestType === "chestsilver" ||
-              node.ChestType === "chestgold"
-            ) {
-              delete mapNodes[nodeKey];
-              continue;
-            } */
-      for (const keyToRemove of ["NodeDifficulty", "NodeType", "MapTags", "OnLoseDialog", "OnStartDialog", "OnWinDialog"]) {
-        delete node[keyToRemove];
-      }
+    const imageURLs = await corsResponse.json();
+
+    for (const nodeKey in imageURLs) {
+      const node = imageURLs[nodeKey];
     }
     const transformedJson = {
-      url: raid_url,
-      MapNodes: mapNodes
+      url: mobilelite_url,
+      ImageURLs: imageURLs
     };
 
     return transformedJson
   } catch (error) {
-    console.log("There was an error fetching the map nodes")
+    console.log("There was an error fetching the image URLs")
   }
 }
-
 
 // Reloader for when the game data changes
 async function checkGameData() {
