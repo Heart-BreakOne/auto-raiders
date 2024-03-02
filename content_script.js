@@ -1414,9 +1414,7 @@ async function collectChests() {
       unitIconList = null;
       rewards = null;
       await delay(250);
-<<<<<<< HEAD
-=======
-      
+
       const rewardContinueButton = document.querySelector(".actionButton.actionButtonPrimary.rewardsButton");
 
       if (rewardContinueButton) {
@@ -1425,8 +1423,6 @@ async function collectChests() {
         }
       }
       await delay(250);
->>>>>>> ce30615be50ba15c4cdc811554f915ca5dd1822b
-
       if (slotState == 2) {
         const allCapSlots = document.querySelectorAll(".capSlot")
         for (const i in allCapSlots) {
