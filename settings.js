@@ -46,13 +46,32 @@ document.addEventListener("DOMContentLoaded", function () {
     initializeSwitch("duelsSlotSwitch");
     initializeSwitch("skipDuelsSlotSwitch");
     initializeSwitch("clashSlotSwitch");
-    initializeSwitch("skipClashSlotSwitch")
+    initializeSwitch("skipClashSlotSwitch");
+    initializeSwitch("levelSwitch");
+    initializeSwitch("chestSwitch");
     initializeReloader("reloaderInput");
     initializeReloader("minimumCurrencyInput");
     initializeReloader("maxUnitLvlDungInput");
     initializeReloader("maxDungeonLvlInput");
     initializeReloader("userIdleTimeInput");
     initializeReloader("placementOddsInput")
+    initializeReloader("veInput");
+    initializeReloader("eInput");
+    initializeReloader("mInput");
+    initializeReloader("hInput");
+    initializeReloader("vhInput");
+    initializeReloader("iInput");
+    initializeReloader("bInput");
+    initializeReloader("ebInput");
+    initializeReloader("bronzeInput");
+    initializeReloader("silverInput");
+    initializeReloader("goldInput");
+    initializeReloader("lGoldInput");
+    initializeReloader("lSkinInput");
+    initializeReloader("lTokenInput");
+    initializeReloader("lScrollInput");
+    initializeReloader("BossInput");
+    initializeReloader("sBossInput")
 });
 
 //When the user interacts with the toggle switches, it gets the current stored value and update them with the value.
@@ -97,7 +116,23 @@ document.addEventListener("DOMContentLoaded", async function () {
     setInputButtonListener('minDungeonLvlButton', 'maxDungeonLvlInput');
     setInputButtonListener('idleTimeButton', 'userIdleTimeInput');
     setInputButtonListener('placeOddButton', 'placementOddsInput');
-
+    setInputButtonListener('veButton', 'veInput');
+    setInputButtonListener('eButton', 'eInput');
+    setInputButtonListener('mButton', 'mInput');
+    setInputButtonListener('hButton', 'hInput');
+    setInputButtonListener('vhButton', 'vhInput');
+    setInputButtonListener('iButton', 'iInput');
+    setInputButtonListener('bButton', 'bInput');
+    setInputButtonListener('ebButton', 'ebInput');
+    setInputButtonListener('bronzeButton', 'bronzeInput');
+    setInputButtonListener('silverButton', 'silverInput');
+    setInputButtonListener('goldButton', 'goldInput');
+    setInputButtonListener('lGoldButton', 'lGoldInput');
+    setInputButtonListener('lSkinButton', 'lSkinInput');
+    setInputButtonListener('lTokenButton', 'lTokenInput');
+    setInputButtonListener('lScrollButton', 'lScrollInput');
+    setInputButtonListener('BossButton', 'BossInput');
+    setInputButtonListener('sBossButton', 'sBossInput');
 
     //Event listener for when the potion radio button is changed by the user
     let potionRadioButtons = document.querySelectorAll('input[name="potion"]');

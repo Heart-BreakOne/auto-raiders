@@ -92,7 +92,9 @@
                 <td><label for="equipSwitch"><input type="checkbox" id="equipSwitch"> Equip captain skins</label></td>
                 <td><label for="equipNoDiamondSwitch"><input type="checkbox" id="equipNoDiamondSwitch"> Only equip skin
                         if not diamond</label></td>
-                <td><label for="moreSkinsSwitch" title="If there's skinned unit on the battle already, the extensio won't actively try to place a skinned unit, specially useful if you only have a single skin of the captain"><input type="checkbox" id="moreSkinsSwitch"><s>One skin is enough.</s></label>
+                <td><label for="moreSkinsSwitch"
+                        title="If there's skinned unit on the battle already, the extensio won't actively try to place a skinned unit, specially useful if you only have a single skin of the captain"><input
+                            type="checkbox" id="moreSkinsSwitch"><s>One skin is enough.</s></label>
                 </td>
             </tr>
             <tr>
@@ -193,7 +195,97 @@
                 <td><label for="skipClashSlotSwitch" class="x"><input type="checkbox" id="skipClashSlotSwitch"
                             class="x"> Leave slot 2 empty if there are no clashes</label></td>
             </tr>
+            <tr>
+                <td colspan="3"><label>How many units should be placed in specific levels, do not use both sets<br>
+                        simultaneously as one will overwrite the other.</label></td>
+            </tr>
+            <tr>
+                <td><label for="levelSwitch"><input type="checkbox" id="levelSwitch"> <s>Use LEVEL set</s></label>
+                </td>
+                <td><label for="veInput">Very Easy<input type="number" id="veInput"></label></td>
+                <td><button id="veButton"
+                        style="width: fit-content; height: fit-content; text-align: center; background-color: #5fa695;">Set</button>
+                </td>
+                <td><label for="eInput">Easy<input type="number" id="eInput"></label></td>
+                <td><button id="eButton"
+                        style="width: fit-content; height: fit-content; text-align: center; background-color: #5fa695;">Set</button>
+                </td>
+            </tr>
+            <tr>
+                <td><label for="mInput">Moderate<input type="number" id="mInput"></label></td>
+                <td><button id="mButton"
+                        style="width: fit-content; height: fit-content; text-align: center; background-color: #5fa695;">Set</button>
+                </td>
+                <td><label for="hInput">Hard<input type="number" id="hInput"></label></td>
+                <td><button id="hButton"
+                        style="width: fit-content; height: fit-content; text-align: center; background-color: #5fa695;">Set</button>
+                </td>
+                <td><label for="vhInput">Very Hard<input type="number" id="vhInput"></label></td>
+                <td><button id="vhButton"
+                        style="width: fit-content; height: fit-content; text-align: center; background-color: #5fa695;">Set</button>
+                </td>
+            </tr>
+            <tr>
+                <td><label for="iInput">Insane<input type="number" id="iInput"></label></td>
+                <td><button id="iButton"
+                        style="width: fit-content; height: fit-content; text-align: center; background-color: #5fa695;">Set</button>
+                </td>
+                <td><label for="bInput">Boss<input type="number" id="bInput"></label></td>
+                <td><button id="bButton"
+                        style="width: fit-content; height: fit-content; text-align: center; background-color: #5fa695;">Set</button>
+                </td>
+                <td><label for="ebInput">Extreme Boss<input type="number" id="ebInput"></label></td>
+                <td><button id="ebButton"
+                        style="width: fit-content; height: fit-content; text-align: center; background-color: #5fa695;">Set</button>
+                </td>
 
+            </tr>
+            <tr>
+                <td><label for="chestSwitch"><input type="checkbox" id="chestSwitch"><s> Use CHEST set</s></label>
+                </td>
+                <td><label for="bronzeInput">Bronze<input type="number" id="bronzeInput"></label></td>
+                <td><button id="bronzeButton"
+                        style="width: fit-content; height: fit-content; text-align: center; background-color: #5fa695;">Set</button>
+                </td>
+                <td><label for="silverInput">Silver<input type="number" id="silverInput"></label></td>
+                <td><button id="silverButton"
+                        style="width: fit-content; height: fit-content; text-align: center; background-color: #5fa695;">Set</button>
+                </td>
+            </tr>
+            <tr>
+                <td><label for="goldInput">Gold<input type="number" id="goldInput"></label></td>
+                <td><button id="goldButton"
+                        style="width: fit-content; height: fit-content; text-align: center; background-color: #5fa695;">Set</button>
+                </td>
+                <td><label for="lGoldInput">L Gold<input type="number" id="lGoldInput"></label></td>
+                <td><button id="lGoldButton"
+                        style="width: fit-content; height: fit-content; text-align: center; background-color: #5fa695;">Set</button>
+                </td>
+                <td><label for="lSkinInput">L Skin<input type="number" id="lSkinInput"></label></td>
+                <td><button id="lSkinButton"
+                        style="width: fit-content; height: fit-content; text-align: center; background-color: #5fa695;">Set</button>
+                </td>
+            </tr>
+            <tr>
+                <td><label for="lTokenInput">L Token <input type="number" id="lTokenInput"> </label></td>
+                <td><button id="lTokenButton"
+                        style="width: fit-content; height: fit-content; text-align: center; background-color: #5fa695;">Set</button>
+                </td>
+                <td><label for="lScrollInput">L Scroll<input type="number" id="lScrollInput"></label></td>
+                <td><button id="lScrollButton"
+                        style="width: fit-content; height: fit-content; text-align: center; background-color: #5fa695;">Set</button>
+                </td>
+                <td><label for="BossInput">Boss<input type="number" id="BossInput"></label></td>
+                <td><button id="BossButton"
+                        style="width: fit-content; height: fit-content; text-align: center; background-color: #5fa695;">Set</button>
+                </td>
+            </tr>
+            <tr>
+                <td><label for="sBossInput">Super Boss<input type="number" id="sBossInput"></label></td>
+                <td><button id="sBossButton"
+                        style="width: fit-content; height: fit-content; text-align: center; background-color: #5fa695;">Set</button>
+                </td>
+            </tr>
         </tbody>
     </table>
 </body>

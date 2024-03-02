@@ -350,7 +350,7 @@ async function start() {
 
         if (placementOdds != 100 && button.innerText.includes("PLACE UNIT") && !closeBtn) {
           if (!((Math.floor(Math.random() * 100) + 1) <= placementOdds)) {
-            const minutes = Math.floor(Math.random() * 5) + 1;
+            const minutes = Math.floor(Math.random() * 5) + 7;
             const eT = new Date(currentTime.getTime() + minutes * 60000);
             const eTString = eT.toISOString();
             await chrome.storage.local.set({ [oddKey]: eTString });
@@ -566,6 +566,23 @@ async function openBattlefield() {
     //Opens battle info and checks chest type.
     battleInfo = document.querySelector(".battleInfoMapTitle")
     battleInfo.click();
+
+    /*
+    let mapDifficulty = document.querySelector(".mapInfoDifficulty").innerText
+    mapDifficulty = mapDifficulty.split(":")[1].trim();
+    if (mapDifficulty == "Very Easy") {
+
+    } else if (mapDifficulty == "Easy") {
+
+    } else if (mapDifficulty == "Moderate") {
+
+    } else if (mapDifficulty == "Hard") {
+
+    } else if (mapDifficulty == "Very Hard") {
+
+    } else if (mapDifficulty == "Insane") {
+
+    } */
     await delay(2000);
     let chest;
     try {
