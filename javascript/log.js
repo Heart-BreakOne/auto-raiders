@@ -211,15 +211,26 @@ async function loadLogData() {
                 assists = entry.assists;
             }
             
-            if (entry.units === undefined) {
+            if (entry.units2 === undefined) {
                 units = "Unknown";
             } else {
-                unitsList = entry.units.split(",");
+                unitsList = entry.units2.split(",");
                 units = "";
+                let tempUnits;
                 for (let i = 0; i < unitsList.length; i++) {
                   const unit = unitsList[i].split(" ");
                   if (unit[1] !== undefined) {
-                    units = '<div class="crop"><img src="' + unit[0] + '" title="' + unit[1] + '"></div>' + units;
+                    tempUnits = '<div class="crop"><img src="' + unit[0] + '" title="Skin: ' + unit[1]
+                    if (unit[2] !== 'none') {
+                      tempUnits += '&#013;Type: ' + unit[2];
+                    }
+                    if (unit[4] !== 'none') {
+                      tempUnits += '&#013;Spec: ' + unit[4];
+                    }
+                    if (unit[3] !== 'none') {
+                      tempUnits += '&#013;Soul: ' + unit[3];
+                    }
+                    units = tempUnits + '"></div>' + units;
                   }
                 }
             }

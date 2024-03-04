@@ -66,12 +66,19 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     
         document.getElementById('keys_container').innerHTML = keysString;
-        
         let keyItems = document.getElementsByName('keyItem');
         for (var i = 0; i < keyItems.length; i++) {
-          keyItems[i].addEventListener('click', function (e) {
-              document.getElementById("key_input").value=e.target.innerText; 
-          });
+            keyItems[i].addEventListener('click', function (e) {
+                document.getElementById("key_input").value = e.target.innerText;
+                chrome.storage.local.get(e.target.innerText, function (result) {
+                    if (result && Object.keys(result).length > 0) {
+                        dataContainer.innerHTML = JSON.stringify(result[e.target.innerText], null, 2);
+                    } else {
+                        dataContainer.innerHTML = 'Key not found in local storage.';
+                    }
+                });
+            });
         }
+
     });
 });
