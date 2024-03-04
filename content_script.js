@@ -290,14 +290,12 @@ async function start() {
 
         //If slot state is disabled, move to the next slot
         if (slotState == 0) {
-          await logLeaderboardUnits();
           continue
         }
         try {
           const batClock = captainSlot.querySelector(".capSlotTimer").lastChild.innerText.replace(':', '')
           const batTime = parseInt(batClock, 10);
           if (batTime > 2830) {
-            await logLeaderboardUnits();
             continue
           }
         } catch (error) {
@@ -480,6 +478,8 @@ async function performCollection() {
 }
 
 async function logLeaderboardUnits() {
+  goHome();
+  await delay(1000);
   const captainSlots = document.querySelectorAll(".capSlots");
   if (captainSlots.length == 0) {
     return;
@@ -1283,11 +1283,11 @@ obsv.observe(tgtNode, conf);
 
 //Collect rewards and savages chests
 async function collectChests() {
-  let collecRewardButtons = document.querySelectorAll(".actionButton.capSlotButton.capSlotButtonAction");
+  let collectRewardButtons = document.querySelectorAll(".actionButton.capSlotButton.capSlotButtonAction");
   const buttonLabels = ["SEE RESULTS", "OPEN CHEST", "COLLECT KEYS", "COLLECT BONES"];
 
-  for (let i = 0; i < collecRewardButtons.length; i++) {
-    const button = collecRewardButtons[i];
+  for (let i = 0; i < collectRewardButtons.length; i++) {
+    const button = collectRewardButtons[i];
     const buttonText = button.innerText;
     if (buttonLabels.includes(buttonText)) {
       const offSetSlot = button.offsetParent;
@@ -1295,120 +1295,28 @@ async function collectChests() {
 
       let requestLoyaltyResults = await getCaptainLoyalty(captainName);
       let raidId = requestLoyaltyResults[0];
-      //Get battle result and chest type to add to storage log
-      let battleResult = offSetSlot.querySelector(".capSlotStatus").innerText;
-      let chestString;
-      let chestStringAlt;
-      if (battleResult.includes("Defeat")) {
-        chestStringAlt = "chestsalvage";
-      } else {
-        try {
-          chestString = button.querySelector('img');
-          try {
-            chestStringAlt = chestString.alt;
-            if (chestStringAlt === "") {
-              if (chestString.getAttribute('src').toLowerCase().includes("bone")) {
-                chestStringAlt = "bones";
-              } else if (chestString.getAttribute('src').toLowerCase().includes("key")) {
-                chestStringAlt = "keys";
-              }
-            }
-          } catch (error) {
-          }
-        } catch (error) {
-        };
-      }
 
       const capSlot = button.parentElement.parentElement
       const stBtn = capSlot.querySelector(".offlineButton").id
       const slotState = await getIdleState(stBtn);
       const cNm = capSlot.querySelector(".capSlotName").innerText
-      button.click();
+      
+      await delay(500);
+      let raidStats = await getRaidStats(raidId);
       await delay(2000);
-      let rewards;
-      let leaderboardRank;
-      let kills;
-      let assists;
-      let unitIconList; 
-      //Check if user wants to log rewards and leaderboard results
-      const logSwitch = await retrieveFromStorage("logSwitch");
-      if (logSwitch) {
-        let userName = document.querySelector(".userInfoImage").alt;
-        let rewardAmt;
-        rewards = "";
-        let rewardScrim = document.querySelectorAll(".rewardsScrim");
-        if (rewardScrim.length > 0) {
-          let rewardsTab = document.querySelector(".rewardsTab");
-          rewardsTab.click();
-          await delay(500);
-          let allRewards;
-          allRewards = rewardScrim[0].querySelectorAll(".rewardMainImage");
-          let allRewardAmts = rewardScrim[0].querySelectorAll(".rewardListItemAmt");
-          for (let i = 0; i < allRewards.length; i++) {
-            const reward = allRewards[i];
-            if (i < allRewardAmts.length) {
-              rewardAmt = allRewardAmts[i].innerText;
-            } else {
-              rewardAmt = "";
-            }
-            rewards = reward.src + " " + reward.alt + rewardAmt + "," + rewards;
-          }
-          if (rewards === "") {
-            let rewardGridFooter = rewardScrim[0].querySelector(".rewardGridFooter");
-            if (rewardGridFooter.innerText.includes("alvage")) {
-              rewards = "None";
-            }
-          }
-          let leaderboardTab = document.querySelector(".rewardsLeaderboardTab");
-          leaderboardTab.click();
-          await delay(500);
+      let battleResult = raidStats[0];
+      leaderboardRank = raidStats[1];
+      kills = raidStats[3];
+      assists = raidStats[4];
+      unitIconList = raidStats[8];
+      rewards = raidStats[2];
+      let chestStringAlt = raidStats[5];
+      let raidChest = raidStats[6];
+      let chestCount = raidStats[7];
 
-          let rows2 = document.querySelectorAll(".rewardsLeaderboardRowCont")
-          let lastRow2 = rows2[rows2.length - 1];
-
-          let leaderboardRows;
-          for (let k = 0; k < 30; k++) {
-              leaderboardRows = document.querySelectorAll(".rewardsLeaderboardRowCont");
-
-              for (let i = 0; i < leaderboardRows.length; i++) {
-                const leaderboardRow = leaderboardRows[i];
-                const leaderboardRowUser = leaderboardRow.querySelector(".rewardsLeaderboardRowText.rewardsLeaderboardRowDisplayName");
-                leaderboardRank = leaderboardRow.querySelector(".rewardsLeaderboardRowText.rewardsLeaderboardRowRank").innerText;
-                if (leaderboardRowUser.innerText == userName) {
-                  leaderboardRank = leaderboardRow.querySelector(".rewardsLeaderboardRowText.rewardsLeaderboardRowRank").innerText;
-                  kills = leaderboardRow.querySelector(".rewardsLeaderboardRowText.rewardsLeaderboardRowKills").innerText;
-                  assists = leaderboardRow.querySelector(".rewardsLeaderboardRowText.rewardsLeaderboardRowAssists").innerText;
-                  let unitIconsAll = leaderboardRow.querySelector(".rewardsLeaderboardRowUnitIconsCont");
-                  let unitIcons = unitIconsAll.querySelectorAll(".rewardsLeaderboardRowUnitIconWrapper");
-                  unitIconList = "";
-                  for (let j = 0; j < unitIcons.length; j++) {
-                    const unitIconWrapper = unitIcons[j];
-                    let unitIcon = unitIconWrapper.querySelector(".rewardsLeaderboardRowUnitIcon");
-                    unitIconList = unitIcon.src + " " + unitIcon.alt + ","+ unitIconList
-                  }
-                  if (kills !== undefined) {
-                    await delay(500);//+(500*k));
-                  }
-                  break;
-                }
-              }
-              if (kills !== undefined && kills !== null) {
-                break;
-              }
-              try {
-                clickHoldAndScroll(lastRow2, -1000, 100);
-              } catch (error) {
-                console.log("LOG-"+ error);
-              }
-              await delay(500);
-              rows2 = document.querySelectorAll(".rewardsLeaderboardRowCont");
-              lastRow2 = rows2[rows2.length - 1];
-          }
-
-        }
-        await delay(500);
+      if (captainName !== null && captainName !== undefined && raidId !== null && raidId !== undefined && ((battleResult !== null && battleResult !== undefined) || (chestStringAlt !== null && chestStringAlt !== undefined) || (leaderboardRank !== null && leaderboardRank !== undefined) || (kills !== null && kills !== undefined) || (assists !== null && assists !== undefined) || (unitIconList !== null && unitIconList !== undefined) || (rewards !== null && rewards !== undefined))) {
+        await setLogResults(battleResult, captainName, chestStringAlt, leaderboardRank, kills, assists, unitIconList, rewards, raidId);
       }
-      await setLogResults(battleResult, captainName, chestStringAlt, leaderboardRank, kills, assists, unitIconList, rewards, raidId);
       battleResult = null;
       captainName = null;
       chestStringAlt = null;
@@ -1417,16 +1325,7 @@ async function collectChests() {
       assists = null;
       unitIconList = null;
       rewards = null;
-      await delay(250);
-      
-      const rewardContinueButton = document.querySelector(".actionButton.actionButtonPrimary.rewardsButton");
-
-      if (rewardContinueButton) {
-        if (rewardContinueButton.innerText === "CONTINUE") {
-          rewardContinueButton.click();
-        }
-      }
-      await delay(250);
+      await delay(2000);
 
       if (slotState == 2) {
         const allCapSlots = document.querySelectorAll(".capSlot")
@@ -1450,6 +1349,7 @@ async function collectChests() {
       }
 
       break;
+      goHome();
     }
   }
 }
@@ -1679,10 +1579,10 @@ async function getLeaderboardUnitsData(raidId) {
             specializationUid = placement.specializationUid;
           }
           Object.keys(imageURLs.ImageURLs).forEach(function(key) {
-            if (key.toLowerCase() === "mobilelite/units/static/" + skin.toLowerCase() + ".png") {
+            if (key === "mobilelite/units/static/" + skin + ".png") {
               skinURL = "https://d2k2g0zg1te1mr.cloudfront.net/" + imageURLs.ImageURLs[key];
             }
-          })    
+          })
           unitIconList = skinURL + " " + skin.replace("allies","").replace("skinFull","") + " " + CharacterType + " " + SoulType + " " + specializationUid + "," + unitIconList
         }
       }
@@ -1696,6 +1596,255 @@ async function getLeaderboardUnitsData(raidId) {
   }
 }
 
+async function getRaidStats(raidId) {
+  try {
+    let cookieString = document.cookie;
+    const response = await fetch(`https://www.streamraiders.com/api/game/?cn=getRaidStatsByUser&raidId=${raidId}&clientVersion=${clientVersion}&clientPlatform=WebLite&gameDataVersion=${gameDataVersion}&command=getRaidStatsByUser&isCaptain=0`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/x-www-form-urlencoded',
+        'Cookie': cookieString,
+      },
+    });
+
+    if (!response.ok) {
+      throw new Error('Network response was not ok');
+    }
+    const currentRaid = await response.json();
+    try {
+      if (currentRaid.errorMessage !== null) {
+        console.log(currentRaid.errorMessage);
+        return "";
+      }
+    } catch (error){
+      console.log(error);
+    }
+    const raidData = currentRaid.data;
+    const stats = raidData.stats;
+    let raidStats = new Object();
+    let rewards = new Object();
+    
+    const userResponse = await fetch('https://www.streamraiders.com/api/game/?cn=getUser&command=getUser');
+    const userData = await userResponse.json();
+    const userId = userData.data.userId;
+    
+    let eventUid = await getEventProgressionLite();
+    
+    let items = await fetchItems(userData.info.dataPath);
+    let currency = await fetchCurrency(userData.info.dataPath)
+    let imageURLs = await fetchImageURLs("https://d2k2g0zg1te1mr.cloudfront.net/manifests/mobilelite.json");
+
+    if (stats.length > 0) {
+      if (raidData.battleResult === "True") {
+        raidStats[0] = "Victory";
+        raidStats[5] = raidData.chestAwarded;
+      } else {
+        raidStats[0] = "Defeat";
+        raidStats[5] = "chestsalvage";
+      }
+      for (let i = 0; i < stats.length; i++) {
+        const stat = stats[i];
+        if (stat.userId === userId) {
+          raidStats[1] = i.toString(); //leaderboard rank
+          raidStats[8] = stat.charsUsed + "|" + stat.skins + "|" + stat.specializationUids;
+        }
+      }
+    } else {
+      if (raidData.battleResult === "False") {
+        raidStats[0] = "Abandoned";
+        raidStats[5] = "Unknown";
+      } else {
+        raidStats[0] = "Unknown";
+        raidStats[5] = "Unknown";
+      }
+    }
+      
+    let i = 0;
+    try {    
+      if (raidData.goldAwarded > 0) {
+        rewards[i] = "https://d2k2g0zg1te1mr.cloudfront.net/env/prod1/mobile-lite/static/media/iconGold.6072909d.png";
+        rewards[i] = rewards[i] + " goldpiecebagx" + raidData.goldAwarded;
+        i++;
+      }
+    } catch (error) {
+      console.log(error);
+    }
+    try {
+      if (raidData.bonesAwarded > 0) {
+        rewards[i] = "https://d2k2g0zg1te1mr.cloudfront.net/env/prod1/mobile-lite/static/media/iconBones.56e87204.png";
+        rewards[i] = rewards[i] + " bonesx" + raidData.bonesAwarded;
+        raidStats[5] = "bones";
+        i++;
+      }
+    } catch (error) {
+      console.log(error);
+    }
+    try {
+      if (raidData.keysAwarded > 0) {
+        rewards[i] = "https://d2k2g0zg1te1mr.cloudfront.net/env/prod1/mobile-lite/static/media/iconKeys.01121bde.png";
+        rewards[i] = rewards[i] + " keysx" + raidData.keysAwarded;
+        raidStats[5] = "keys";
+        i++;
+      }
+    } catch (error) {
+      console.log(error);
+    }
+    try {
+      if (raidData.eventCurrencyAwarded > 0) {
+        rewards[i] = "";
+        Object.keys(imageURLs.ImageURLs).forEach(function(key) {
+          if (key === "mobilelite/events/" + eventUid + "/iconEventCurrency.png") {
+            rewards[i] = "https://d2k2g0zg1te1mr.cloudfront.net/" + imageURLs.ImageURLs[key];
+          }
+        })
+        rewards[i] = rewards[i] + " eventcurrencyx" + raidData.eventCurrencyAwarded;
+        i++;
+      }
+    } catch (error) {
+      console.log(error);
+    }
+    try {
+      if (raidData.treasureChestGold !== "0") {
+        rewards[i] = "https://d2k2g0zg1te1mr.cloudfront.net/env/prod1/mobile-lite/static/media/iconGold.6072909d.png";
+        rewards[i] = rewards[i] + " treasurechestgoldx" + raidData.treasureChestGold;
+        i++;
+      }
+    } catch (error) {
+      console.log(error);
+    }
+    try {
+      if (raidData.potionsAwarded !== "0") {
+        rewards[i] = "https://d2k2g0zg1te1mr.cloudfront.net/env/prod1/mobile-lite/static/media/iconPotion.2c8f0f08.png"
+        rewards[i] = rewards[i] + " epicpotionx" + raidData.potionsAwarded;
+        i++;
+      }
+    } catch (error) {
+      console.log(error);
+    }
+    try {
+      if (raidData.bonusItemReceived !== "" && raidData.bonusItemReceived !== null) {
+        if (raidData.bonusItemReceived.includes("goldbag")) {
+          rewards[i] = "https://d2k2g0zg1te1mr.cloudfront.net/env/prod1/mobile-lite/static/media/iconGold.6072909d.png";
+        } else if (raidData.bonusItemReceived.includes("epicpotion")) {
+          rewards[i] = "https://d2k2g0zg1te1mr.cloudfront.net/env/prod1/mobile-lite/static/media/iconPotion.2c8f0f08.png";
+        } else {
+          rewards[i] = "";
+          let item;
+          let bonusItemReceived = raidData.bonusItemReceived.split("|")[1];
+          Object.keys(items.Items).forEach(function(key) {
+            if (key === bonusItemReceived) {
+              item = items.Items[key].CurrencyTypeAwarded;
+            }
+          })
+          Object.keys(currency.Currency).forEach(function(key) {
+            if (key === item) {
+              item = currency.Currency[key].UnitAssetName;
+            }
+          })
+          Object.keys(imageURLs.ImageURLs).forEach(function(key) {
+            if (key === "mobilelite/units/static/" + item + ".png") {
+              rewards[i] = "https://d2k2g0zg1te1mr.cloudfront.net/" + imageURLs.ImageURLs[key];
+            }
+          })
+        }
+        rewards[i] = rewards[i] + " " + raidData.bonusItemReceived;
+        i++;
+      }
+    } catch (error) {
+      console.log(error);
+    }
+    try {
+      if (raidData.eventTokensReceived !== "0") {
+        rewards[i] = "";
+        Object.keys(imageURLs.ImageURLs).forEach(function(key) {
+          if (key === "mobilelite/events/" + eventUid + "/iconEventToken.png") {
+            rewards[i] = "https://d2k2g0zg1te1mr.cloudfront.net/" + imageURLs.ImageURLs[key];
+          }
+        })
+        rewards[i] = rewards[i] + " eventtokenx" + raidData.eventTokensReceived;
+        i++;
+      }
+    } catch (error) {
+      console.log(error);
+    }
+    try {
+      if (raidData.viewerChestRewards !== undefined && raidData.viewerChestRewards !== null) {
+        for (var k = 0; k < raidData.viewerChestRewards.length; k++) {
+          if (raidData.viewerChestRewards[k].includes("goldbag")) {
+            rewards[i] = "https://d2k2g0zg1te1mr.cloudfront.net/env/prod1/mobile-lite/static/media/iconGold.6072909d.png";
+          } else if (raidData.viewerChestRewards[k].includes("epicpotion")) {
+            rewards[i] = "https://d2k2g0zg1te1mr.cloudfront.net/env/prod1/mobile-lite/static/media/iconPotion.2c8f0f08.png";
+          } else {
+            rewards[i] = "";
+            let item;
+            let viewerChestRewardItem = raidData.viewerChestRewards[k].split("|")[1];
+            Object.keys(items.Items).forEach(function(key) {
+              if (key === viewerChestRewardItem) {
+                item = items.Items[key].CurrencyTypeAwarded;
+              }
+            })
+            Object.keys(currency.Currency).forEach(function(key) {
+              if (key === item) {
+                item = currency.Currency[key].UnitAssetName;
+              }
+            })
+            Object.keys(imageURLs.ImageURLs).forEach(function(key) {
+              if (key === "mobilelite/units/static/" + item + ".png") {
+                rewards[i] = "https://d2k2g0zg1te1mr.cloudfront.net/" + imageURLs.ImageURLs[key];
+              }
+            })
+          }
+          rewards[i] = rewards[i] + " " + raidData.viewerChestRewards[k];
+          i++;
+        }
+      }
+    } catch (error) {
+      console.log(error);
+    }
+    
+    raidStats[2] = "";
+    for (let j = 0; j < Object.keys(rewards).length; j++) {
+      raidStats[2] = rewards[j].toString() + "," + raidStats[2].toString();
+    }
+    raidStats[3] = raidData.kills;
+    raidStats[4] = raidData.assists;
+    //raidStats[5] = raidData.chestAwarded; //this value is set earlier in this function
+    raidStats[6] = raidData.raidChest;
+    raidStats[7] = raidData.chestCount;
+    
+    
+    return raidStats;
+
+  } catch (error) {
+    console.error('Error in getRaidStats:', error);
+    return "";
+  }
+}
+
+async function getEventProgressionLite() {
+  try {
+    let cookieString = document.cookie;
+    const response = await fetch(`https://www.streamraiders.com/api/game/?cn=getEventProgressionLite&clientVersion=${clientVersion}&clientPlatform=WebLite&gameDataVersion=${gameDataVersion}&command=getEventProgressionLite&isCaptain=0`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/x-www-form-urlencoded',
+        'Cookie': cookieString,
+      },
+    });
+
+    if (!response.ok) {
+      throw new Error('Network response was not ok');
+    }
+    const eventInfo = await response.json();
+    const eventUid = eventInfo.data.eventUid;
+    return eventUid;
+
+  } catch (error) {
+    console.error('Error in getEventProgressionLite:', error);
+    return "";
+  }
+}
+
 async function fetchSkinNames(data_url) {
   try {
     const response = await fetch(data_url);
@@ -1704,12 +1853,6 @@ async function fetchSkinNames(data_url) {
 
     const data = await corsResponse.json();
     const skins = data["sheets"]["Skins"]
-    for (const skinKey in skins) {
-      const skin = skins[skinKey];
-      for (const keyToRemove of ["CaptainUnitType", "DateAdded", "Description", "EpicAssetOverride", "EpicUnitType", "Filter", "IsCharity", "IsGiftable", "IsLive", "Jira", "ProductId", "ProjectileOverrideUid", "Shared", "SortOrder", "StreamerId", "StreamerName", "Type", "Uid"]) {
-        delete skin[keyToRemove];
-      }
-    }
     const transformedJson = {
       url: data_url,
       Skins: skins
@@ -1729,12 +1872,6 @@ async function fetchUnitAssetNames(data_url) {
 
     const data = await corsResponse.json();
     const units = data["sheets"]["Units"]
-    for (const unitKey in units) {
-      const unit = units[unitKey];
-      for (const keyToRemove of ["AssetScaleOverride","AttackRate","AttackType","BaseAction","BaseActionSelfVfxUid","CanBePlaced","Damage","DamageDelay","Description","EffectiveCircleDataUid","ExtraHitSize","HP","Heal","IsCaptain","IsEpic","IsFlying","Level","OnDeathAction","OnDeathActionSelfVfxUid","OnDefeatAction","OnKillAction","PassThroughList","PlacementType","PlacementVFX","Power","ProjectileUid","Range","Rarity","RemainsAsset","Role","ShowTeamIndicator","Size","SpecialAbilityActionUid","SpecialAbilityDescription","SpecialAbilityRate","SpecialAbilitySelfVfxUid","Speed","StartBuffsList","StrongAgainstTagsList","TagsList","TargetPriorityTagsList","TargetTeam","TargetingPriorityRange","Triggers","Uid","UnitTargetingType","UnitType","UpgradeCurrencyType","WeakAgainstTagsList"]) {
-        delete unit[keyToRemove];
-      }
-    }
     const transformedJson = {
       url: data_url,
       Units: units
@@ -1743,6 +1880,46 @@ async function fetchUnitAssetNames(data_url) {
     return transformedJson
   } catch (error) {
     console.log("There was an error fetching the units")
+  }
+}
+
+async function fetchItems(data_url) {
+  try {
+    const response = await fetch(data_url);
+    const blob = await response.blob();
+    const corsResponse = new Response(blob, { headers: { 'Access-Control-Allow-Origin': '*' } });
+
+    const data = await corsResponse.json();
+    const items = data["sheets"]["Items"]
+    
+    const transformedJson = {
+      url: data_url,
+      Items: items
+    };
+
+    return transformedJson
+  } catch (error) {
+    console.log("There was an error fetching the items")
+  }
+}
+
+async function fetchCurrency(data_url) {
+  try {
+    const response = await fetch(data_url);
+    const blob = await response.blob();
+    const corsResponse = new Response(blob, { headers: { 'Access-Control-Allow-Origin': '*' } });
+
+    const data = await corsResponse.json();
+    const currency = data["sheets"]["Currency"]
+    
+    const transformedJson = {
+      url: data_url,
+      Currency: currency
+    };
+
+    return transformedJson
+  } catch (error) {
+    console.log("There was an error fetching the currency")
   }
 }
 

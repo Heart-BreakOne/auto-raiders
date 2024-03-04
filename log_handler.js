@@ -76,7 +76,7 @@ async function setLogCaptain(logId, logCapName, logMode, currentTime, colorCode,
             let loggedData = result["logData"] || [];
             //Check if an entry for the current captain battle exists
             const existingEntryIndex = loggedData.findIndex(entry => entry.logCapName === logCapName
-                && (entry.currentTime != null || entry.currentTime != undefined) && entry.elapsedTime === undefined && entry.chest === undefined);
+                && (entry.currentTime != null || entry.currentTime != undefined) && entry.elapsedTime === undefined && entry.chest === undefined && entry.raidId === raidId);
 
             //Pushes battle data into the storage
             if (existingEntryIndex === -1) {
@@ -229,16 +229,31 @@ async function setLogResults(conclusion, logCapName, chest, leaderboardRank, kil
             for (let i = loggedData.length - 1; i >= 0; i--) {
               let entry = loggedData[i];
                 if (entry.logCapName === logCapName && entry.raidId === raidId &&
-                  (entry.currentTime !== null && entry.currentTime !== undefined) &&
-                  entry.elapsedTime === undefined) {
-                    entry.elapsedTime = Math.floor((now - new Date(entry.currentTime)) / (1000 * 60)).toString();
-                    entry.result = resolution;
-                    entry.chest = chest;
-                    entry.leaderboardRank = leaderboardRank;
-                    entry.kills = kills;
-                    entry.assists = assists;
-                    entry.units = units;
-                    entry.rewards = rewards;
+                  (entry.currentTime !== null && entry.currentTime !== undefined)) {
+                    if (entry.elapsedTime === undefined) {
+                      entry.elapsedTime = Math.floor((now - new Date(entry.currentTime)) / (1000 * 60)).toString();
+                    }
+                    if (entry.result == undefined && resolution !== "" && resolution !== undefined) {
+                      entry.result = resolution;
+                    }
+                    if (entry.chest == undefined && chest !== "" && chest !== undefined) {
+                      entry.chest = chest;
+                    }
+                    if (entry.leaderboardRank == undefined && leaderboardRank !== "" && leaderboardRank !== undefined) {
+                      entry.leaderboardRank = leaderboardRank;
+                    }
+                    if (entry.kills == undefined && kills !== "" && kills !== undefined) {
+                      entry.kills = kills;
+                    }
+                    if (entry.assists == undefined && assists !== "" && assists !== undefined) {
+                      entry.assists = assists;
+                    }
+                    if (entry.units == undefined && units !== "" && units !== undefined) {
+                      entry.units = units;
+                    }
+                    if (entry.rewards == undefined && rewards !== "" && rewards !== undefined) {
+                      entry.rewards = rewards;
+                    }
                     break;
                 }
             };
