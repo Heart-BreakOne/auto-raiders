@@ -944,7 +944,7 @@ async function getValidUnits() {
         }
 
       } else if (unitId.includes(markerId)) {
-        hasPlaced = await attempPlacement(unit, marker)
+        hasPlaced = await attemptPlacement(unit, marker)
         if (hasPlaced) {
           return
         } else {
@@ -975,7 +975,7 @@ async function cancelPlacement() {
 }
 
 
-async function attempPlacement(unit, marker) {
+async function attemptPlacement(unit, marker) {
 
   moveScreenCenter(marker)
   await delay(2000);
