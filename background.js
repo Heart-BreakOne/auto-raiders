@@ -547,8 +547,9 @@ async function checkGameData() {
 }
 
 
-chrome.runtime.onInstalled.addListener(function() {
+chrome.runtime.onInstalled.addListener(function(details) {
   fetchVersion();
+  setDefaultValues(details);
 });
 
 function fetchVersion() {
@@ -570,6 +571,16 @@ function fetchVersion() {
     .catch(error => {
       console.error('Error fetching config:', error);
     });
+}
+
+
+function setDefaultValues(details) {
+  if (details.reason === 'install') {
+    chrome.storage.local.set({
+      "commonSwitch": true,
+      "campaignSwitch": true
+    });
+  }
 }
 
 setInterval(checkGameData, 60000);

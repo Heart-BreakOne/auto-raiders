@@ -335,10 +335,10 @@ async function start() {
           continue
         }
         let placementOdds = await retrieveNumberFromStorage("placementOddsInput")
-        if (placementOdds == undefined || placementOdds > 100) {
+        if (placementOdds == -100 || placementOdds == undefined || placementOdds > 100) {
           placementOdds = 100
         }
-        else if (placementOdds < 0) {
+        else if (placementOdds <= 0) {
           continue
         }
 
@@ -934,7 +934,7 @@ async function getValidUnits() {
       let markerId = marker.id
       let hasPlaced;
       if (markerId == "VIBE") {
-        hasPlaced = await attempPlacement(unit, marker)
+        hasPlaced = await attemptPlacement(unit, marker)
         if (hasPlaced) {
           return
         }
