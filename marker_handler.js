@@ -59,7 +59,14 @@ function getCaptainUnit() {
             }
         }
     }
+    return firstPlacement
+}
 
+function getMapMatrix(captainUnit, arrayOfMarkers) {
+
+    if(captainUnit == undefined) {
+        return arrayOfMarkers
+    }
     const elementSize = captainUnit.offsetWidth;
 
     const divisionSize = (elementSize / 8) * 3;

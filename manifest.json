@@ -39,7 +39,8 @@
             "units_handler.js",
             "battle_message_handler.js",
             "quest_handler.js",
-            "request_manager.js"
+            "request_manager.js",
+            "mouse_events.js"
          ],
          "matches": [
             "https://www.streamraiders.com/*"
