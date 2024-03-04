@@ -131,8 +131,7 @@ async function start() {
 
   if (timeContainer && (elapsedMinutes !== null || elapsedMinutes !== undefined)) {
     battleMessages = await displayMessage();
-    update = await getUpdate();
-    timeContainer.innerHTML = `${update}Refresh: ${elapsedMinutes} mins ago. <span style="color: white; font-weight: bold">${battleMessages}</span>`;
+    timeContainer.innerHTML = `Refresh: ${elapsedMinutes} mins ago. <span style="color: white; font-weight: bold">${battleMessages}</span>`;
   }
 
   if (reload == 0) {
