@@ -9,7 +9,7 @@ setInterval(start, 15000);
 let currentMarkerKey = "";
 let currentMarker;
 let arrayOfMarkers;
-let sortedArrayOfMarkers;
+let sortedArrMrks;
 let markerAttempt;
 let computedStyle;
 let backgroundImageValue;
@@ -281,6 +281,7 @@ async function start() {
       //If the button has the inner text PLACE UNIT it's a valid button
       if (button.innerText.includes("PLACE UNIT")) {
         //Get captain name from the slot
+
         var captainSlot = button.closest('.capSlot');
         captainNameFromDOM = captainSlot.querySelector('.capSlotName').innerText;
         //Retrieve the slot pause state
@@ -300,6 +301,55 @@ async function start() {
           }
         } catch (error) {
           console.log("")
+        }
+
+        // Calculate placements odds
+        const bSlot = button.closest('.capSlot')
+        const closeBtn = bSlot.querySelector(".capSlotClose")
+        const oddKey = "oddId" + bSlot.querySelector(".offlineButton").id
+        let canPlace = false
+        const currentTime = new Date();
+        await new Promise((resolve, reject) => {
+          chrome.storage.local.get(oddKey, function (result) {
+            if (chrome.runtime.lastError) {
+              canPlace = true;
+              resolve();
+            } else {
+              const enableTimeString = result[oddKey];
+              if (enableTimeString) {
+                const enableTime = new Date(enableTimeString);
+
+                if (currentTime > enableTime) {
+                  canPlace = true;
+                } else {
+                  canPlace = false;
+                }
+              } else {
+                canPlace = true;
+              }
+              resolve();
+            }
+          });
+        });
+        if (!canPlace) {
+          continue
+        }
+        let placementOdds = await retrieveNumberFromStorage("placementOddsInput")
+        if (placementOdds == undefined || placementOdds > 100) {
+          placementOdds = 100
+        }
+        else if (placementOdds < 0) {
+          continue
+        }
+
+        if (placementOdds != 100 && button.innerText.includes("PLACE UNIT") && !closeBtn) {
+          if (!((Math.floor(Math.random() * 100) + 1) <= placementOdds)) {
+            const minutes = Math.floor(Math.random() * 5) + 7;
+            const eT = new Date(currentTime.getTime() + minutes * 60000);
+            const eTString = eT.toISOString();
+            await chrome.storage.local.set({ [oddKey]: eTString });
+            continue
+          }
         }
 
         //Check if the captain is the one running a game mode
@@ -327,7 +377,7 @@ async function start() {
         let loyaltyRadioInt = 0
         try {
           loyaltyRadioInt = parseInt(loyaltyRadio)
-        } catch(error){
+        } catch (error) {
           loyaltyRadioInt = 0
         }
         if (loyaltyRadioInt != 0 && loyaltyRadio != undefined) {
@@ -344,7 +394,7 @@ async function start() {
 
               if ((!lgold && chestType.includes("chestboostedgold")) || (!lskin && chestType.includes("chestboostedskin")) || (!lscroll && chestType.includes("chestboostedscroll")) || (!ltoken && chestType.includes("chestboostedtoken")) || (!lboss && chestType.includes("chestboss") && !chestType.includes("chestbosssuper")) || (!lsuperboss && chestType.includes("chestbosssuper"))) {
                 captainLoyalty = true;
-              } else if (chestType.includes("bonechest") || chestType.includes("dungeonchest") || chestType.includes("chestbronze") || chestType.includes("chestsilver") || chestType.includes("chestgold")){
+              } else if (chestType.includes("bonechest") || chestType.includes("dungeonchest") || chestType.includes("chestbronze") || chestType.includes("chestsilver") || chestType.includes("chestgold")) {
                 captainLoyalty = false;
               } else {
                 captainLoyalty = false;
@@ -549,6 +599,23 @@ async function openBattlefield() {
     //Opens battle info and checks chest type.
     battleInfo = document.querySelector(".battleInfoMapTitle")
     battleInfo.click();
+
+    /*
+    let mapDifficulty = document.querySelector(".mapInfoDifficulty").innerText
+    mapDifficulty = mapDifficulty.split(":")[1].trim();
+    if (mapDifficulty == "Very Easy") {
+
+    } else if (mapDifficulty == "Easy") {
+
+    } else if (mapDifficulty == "Moderate") {
+
+    } else if (mapDifficulty == "Hard") {
+
+    } else if (mapDifficulty == "Very Hard") {
+
+    } else if (mapDifficulty == "Insane") {
+
+    } */
     await delay(2000);
     let chest;
     try {
@@ -599,23 +666,20 @@ function zoom() {
     //Resets tracking variables
     markerAttempt = 0;
     arrayOfMarkers = null;
-    sortedArrayOfMarkers = null;
+    sortedArrMrks = null;
     currentMarker = null;
     //Invoke getValidMarkers function
-    getValidMarkers();
+    getValidUnits();
   }
 }
 
-//Looks and selects a valid marker for placement
-async function getValidMarkers() {
+async function getValidUnits() {
+
   //Function to check for a frozen state
   reloadRoot();
   await delay(1000);
-  //Initializes a node list with placement markers
-  let nodeListOfMarkers = document.querySelectorAll(".planIcon");
-  arrayOfMarkers = Array.from(nodeListOfMarkers);
-  nodeListOfMarkers = null;
 
+  // If the timer is +28:30 or above, go back to the main menu as the captain may still be placing markers.
   const clockElement = document.querySelector('.battlePhaseTextClock .clock');
   if (clockElement == null) {
     goHome();
@@ -624,181 +688,26 @@ async function getValidMarkers() {
     //Initializes a variable with battle clock
     const timeText = clockElement.innerText.replace(':', '');
     const time = parseInt(timeText, 10);
-    //If the timer is at 29:00 or above, go back to the main menu as the captain may still be placing markers.
+
     if (time > 2830) {
       goHome();
       return;
     }
   }
-  //Captain is on open map only
-  if (arrayOfMarkers.length == 0) {
-    //Map without any markers.
 
-    //Place imaginary markers to use instead and restart the function to get valid markers
-    setImaginaryMarkers(document.querySelectorAll(".placementAlly"));
-    getValidMarkers();
-    return;
-  } else {
-    //Treat the markers to remove block markers
-    for (let i = arrayOfMarkers.length - 1; i >= 0; i--) {
-      let planIcon = arrayOfMarkers[i];
-      let backgroundImageValue = getComputedStyle(planIcon).getPropertyValue('background-image').toUpperCase();
-      if (backgroundImageValue.includes("VYAAAAASUVORK5CYII=")) {
-        arrayOfMarkers.splice(i, 1);
-      }
-    }
+  const captainUnit = getCaptainUnit()
 
-    //Check what is inside new array.
-    if (arrayOfMarkers.length == 0 && (arrayOfAllyPlacement == undefined || arrayOfAllyPlacement.length == 0)) {
-      //Captain is using a mix of block markers and open zones.
-      //Place imaginary markers to use instead
-      arrayOfMarkers = setImaginaryMarkers(document.querySelectorAll(".placementAlly"))
-      //Check if user wants to avoid skins
-      //Open the leaderboard
-      //Look for skinned units
-      //Set equipSkins
-      //Close the leaderboard
-      getValidMarkers();
-      return;
-
-    } else {
-      //There are vibe or set markers that can be used.
-      try {
-        //Attempt to sort the markers based on how close they are to the captain
-        //Set equipSkins
-        sortedArrayOfMarkers = getMapMatrix(arrayOfMarkers);
-        arrayOfMarkers = sortedArrayOfMarkers;
-      } catch (error) {
-        console.log();
-      }
-      getSetMarker();
-    }
-  }
-}
-
-async function getSetMarker() {
-  let matchingMarker;
-  //This indicates that an attempt to place at the current marker has been made
-  if (markerAttempt >= 1) {
-    //Attemps to get a matching marker
-    try {
-      matchingMarker = arrayOfBattleFieldMarkers.find(marker => marker.key === currentMarkerKey).icon;
-    } catch (error) {
-      goHome();
-      return;
-    }
-    //Removes current marker from the page as they can't be used
-    for (let i = arrayOfMarkers.length - 1; i >= 0; i--) {
-      let planIcon = arrayOfMarkers[i];
-      let backgroundImageValue = getComputedStyle(planIcon).getPropertyValue('background-image').toUpperCase();
-
-      // Define the condition to match elements you want to remove
-      if (backgroundImageValue.includes(matchingMarker)) {
-        try {
-          // Remove the element from the array using splice
-          arrayOfMarkers.splice(i, 1);
-        } catch (error) {
-          continue;
-        }
-      }
-    }
-  }
-  if (arrayOfMarkers.length == 0) {
-    //there are no units to match any of the available markers
-    await flagCaptain('flaggedCaptains');
-    goHome();
-    return;
-  } else {
-    currentMarkerKey = ""
-    // The randomization of the index increased the chances of getting a valid placement.
-    if (sortedArrayOfMarkers != null) {
-      currentMarker = arrayOfMarkers[0];
-    } else {
-      currentMarker = arrayOfMarkers[Math.floor(Math.random() * (arrayOfMarkers.length - 1))];
-    }
-
-    // This bit gets the marker type for comparison later
-    computedStyle = getComputedStyle(currentMarker);
-    backgroundImageValue = computedStyle.getPropertyValue('background-image').toUpperCase();
-    //Checks if the marker is a valid placement marker and also get its type
-    arrayOfBattleFieldMarkers.some(marker => {
-      //If the current marker matches the items on the array of markers, it's a valid marker
-      if (backgroundImageValue.includes(marker.icon)) {
-        currentMarkerKey = marker.key
-        for (let i = 0; i <= arrayOfUnits.length; i++) {
-          const element = arrayOfUnits[i];
-          if (currentMarkerKey === element.key || currentMarkerKey === element.type) {
-            //If the marker is valid, moves to the center
-            moveScreenCenter();
-            return
-            //break;
-          }
-        }
-      }
-    });
-  }
-}
-
-//When there are no markers, it can be trick to scroll to a valid position into view, this randomizes the possible values.
-const moveScreenRandomPosition = async () => {
-
-  const positions = ['start', 'center', 'end', 'nearest'];
-  const randomPosition = positions[Math.floor(Math.random() * positions.length)];
-  await moveScreen(randomPosition);
-}
-
-//Vertical and horizontal center
-async function moveScreenCenter() {
-  await moveScreen('center');
-}
-
-//Scroll into view the center of the currentMark
-async function moveScreen(position) {
-
-  //Set marker dimensions to zero so the unit can fit in its place
-  try {
-    currentMarker.style.width = '0';
-    currentMarker.style.height = '0';
-    currentMarker.style.backgroundSize = '0';
-
-    //Move screen so the current marker gets centered
+  // Open unit drawer and set the filter to ALL units
+  const placeUnitBtn = document.querySelector(".actionButton.actionButtonPrimary.placeUnitButton")
+  if (placeUnitBtn) {
+    placeUnitBtn.click()
     await delay(1000);
-    if (currentMarker && currentMarker !== undefined && currentMarker !== null) {
-      currentMarker.scrollIntoView({ block: 'center', inline: position });
-    } else {
-      goHome();
-      return;
-    }
-    await delay(1000);
-  } catch (error) {
+    document.querySelector('.unitFilterButton')?.click();
+  } else {
     goHome();
     return;
   }
-  await delay(1000);
-  //Invokes unit selection
-  await selectUnit();
-  await delay(1000);
-  //Invokes selected unit placement.
-  await placeTheUnit();
-  await delay(1000);
-  //Checks for frozen state
-  reloadRoot();
-}
 
-/* This function opens the unit inventory tab, boosts unit and selects the first available unit that is allowed for usage,
-isn't on cooldown, dead or exhausted. It also gets the unit name for future marker validation. */
-async function selectUnit() {
-  //Opens the unit drawer
-  let placeUnitSelection = document.querySelector(".actionButton.actionButtonPrimary.placeUnitButton");
-  if (placeUnitSelection) {
-    placeUnitSelection.click();
-  }
-
-  //Set the unit drawer to the ALL units tab.
-  let allUnitsButton = document.querySelector('.unitFilterButton');
-  if (allUnitsButton) {
-    allUnitsButton.click();
-  }
 
   //Check if user wants to auto equip skins and equip them
   const equipSwitch = await retrieveFromStorage("equipSwitch");
@@ -820,69 +729,94 @@ async function selectUnit() {
   }
 
   await delay(500)
-  //Checks if user wants to use potions.
-  let potionState = await getRadioButton("selectedOption");
-  //CHeck if user wants to use potions only with specific captains
-  const favoriteSwitch = await getSwitchState("favoriteSwitch");
-  let favoritePotion = false;
-  let number;
-  let epicButton;
+  await doPotions()
 
-  if (!favoriteSwitch) {
-    favoritePotion = true;
-  }
-  //Check if current captain is a favorite potion captain
+  //Get all units from the drawer
+  let canCompleteQuests = await retrieveFromStorage("completeQuests")
+  let unitDrawer = [...document.querySelectorAll(".unitSelectionCont")];
+  let unitsToRemove = []
+
+  // Check dungeon
+  const dungeonLevelSwitch = await retrieveFromStorage("dungeonLevelSwitch");
+  const dungeonPlaceAnywaySwitch = await retrieveFromStorage("dungeonPlaceAnywaySwitch");
+  isDungeon = false;
+  let dungeonLevel;
+  let userDunLevel;
+  let battleInfo = "";
   try {
-    if (potionState != 0 && !mode && favoriteSwitch) {
-      const potionCaptainsList = await new Promise((resolve) => {
-        chrome.storage.local.get({ ['potionlist']: [] }, function (result) {
-          const potionCaptainsList = result["potionlist"];
-          resolve(potionCaptainsList);
-        });
-      });
-      // Check if the array exists and is an array with at least one element
-      if (Array.isArray(potionCaptainsList) && potionCaptainsList.length > 0) {
-        //Check if current captain is a favorite potion captain. If not set potion state to 0.
-        if (potionCaptainsList.some(item => item.toUpperCase() === captainNameFromDOM.toUpperCase())) {
-          favoritePotion = true;
-        }
-      }
-    }
+    userDunLevel = await retrieveNumberFromStorage("maxDungeonLvlInput")
+  } catch (error) { }
+  let userUnitLevel = 0;
+  try {
+    userUnitLevel = await retrieveNumberFromStorage("maxUnitLvlDungInput")
   } catch (error) { }
 
-
-  //User wants to use potions
-  if (potionState != 0 && !mode && favoritePotion) {
-    //Get potion strings so the string can be trimmed and converted to int for validation
-    let potions;
-    //Attempts to get potion quantity
+  if (dungeonLevelSwitch) {
     try {
-      potions = document.querySelector("img[alt='Potion']").closest(".quantityItem");
-    } catch (error) {
-      goHome();
-      return;
-    }
-    let potionQuantity = potions.querySelector(".quantityText").textContent;
-    epicButton = document.querySelector(".actionButton.actionButtonPrimary.epicButton");
-    number = parseInt(potionQuantity.substring(0, 3));
+      battleInfo = document.querySelector(".battleInfo").innerText;
+      if (battleInfo.includes("Level")) {
+        dungeonLevel = parseInt(battleInfo.substr(battleInfo.length - 2));
+        isDungeon = true;
+      }
+    } catch (error) { }
   }
-  //User wants to use potions as soon as there are at least 45 potions.
-  if (potionState == 1 && number >= 45) {
-    if (epicButton) {
-      epicButton.click();
-    }
-    //User wants to use potions as soon as there are 100 potions.
-  } else if (potionState && number == 100) {
-    if (epicButton) {
-      epicButton.click();
-    }
-  }
-  //Handles unit drawer.
-  let unitName = ""
-  let unitDrawer = [...document.querySelectorAll(".unitSelectionCont")];
 
-  //Sort units based on their priority
-  canCompleteQuests = await retrieveFromStorage("completeQuests")
+  // Remove cooldown units, dead units, exhausted units, unavailable units and rarity check units
+  for (let i = 0; i < unitDrawer[0].children.length; i++) {
+    let unit = unitDrawer[0].children[i];
+    //Get unit rarity
+
+    let commonCheck = unit.querySelector('.unitRarityCommon');
+    let uncommonCheck = unit.querySelector('.unitRarityUncommon');
+    let rareCheck = unit.querySelector('.unitRarityRare');
+    let legendaryCheck = unit.querySelector('.unitRarityLegendary');
+
+    //Get unit status: cooldown, defeated and exhausted
+    let coolDownCheck = unit.querySelector('.unitItemCooldown');
+    let defeatedCheck = unit.querySelector('.defeatedVeil');
+    //If unit has this class it's enabled, if it doesn't have it's not enabled.
+    let unitDisabled = unit.querySelector('.unitItemDisabledOff');
+    if (coolDownCheck || defeatedCheck || !unitDisabled) {
+      unitsToRemove.push(unit)
+      continue
+    }
+    if (legendaryCheck && !await getSwitchState("legendarySwitch") && !canCompleteQuests) {
+      unitsToRemove.push(unit)
+      continue
+    } else if (rareCheck && !await getSwitchState("rareSwitch") && !canCompleteQuests) {
+      unitsToRemove.push(unit)
+      continue
+    } else if (uncommonCheck && !await getSwitchState("uncommonSwitch") && !canCompleteQuests) {
+      unitsToRemove.push(unit)
+      continue
+    } else if (commonCheck && !await getSwitchState("commonSwitch") && !canCompleteQuests) {
+      unitsToRemove.push(unit)
+      continue
+    }
+
+    // Remove units based on unit level
+    if (isDungeon) {
+      let unitLevel;
+      try {
+        const unitName = unit.querySelector('.unitClass img').getAttribute('src').slice(-50).toUpperCase();
+        unitLevel = parseInt(unit.querySelector('.unitLevel').innerText);
+        if (userDunLevel == null || userDunLevel == undefined || userUnitLevel == null || userUnitLevel == undefined) {
+          continue;
+        } else if (dungeonLevel <= userDunLevel && unitLevel > userUnitLevel || unitName == "AMAZON") {// && unitName != "FLAG") {
+          unitsToRemove.push(unit)
+          continue
+        }
+
+      } catch (error) {
+        continue;
+      }
+    }
+
+  }
+
+  unitsToRemove.forEach(unit => unit.remove());
+  unitDrawer = [...document.querySelectorAll(".unitSelectionCont")];
+
   if (await retrieveFromStorage("priorityListSwitch") && !canCompleteQuests) {
     unitDrawer = await sortPriorityUnits(unitDrawer);
   }
@@ -940,149 +874,181 @@ async function selectUnit() {
     }
   }
 
-  //Update units quantity
-  try {
-    unitsQuantity = unitDrawer[0].children.length;
-  } catch (error) {
-    goHome();
-    return;
+  // This sorts the markers and adds imaginary markers if there aren't any
+  let arrayOfMarkers = await prepareMarkers(captainUnit)
+  if (arrayOfMarkers.length == 0) {
+    // Map full of block markers, flag the captain.
+    goHome()
+    return
   }
-  const dungeonLevelSwitch = await retrieveFromStorage("dungeonLevelSwitch");
-  const dungeonPlaceAnywaySwitch = await retrieveFromStorage("dungeonPlaceAnywaySwitch");
-  let userDunLevel = 0;
-  try {
-    userDunLevel = await retrieveNumberFromStorage("maxDungeonLvlInput")
-  } catch (error) {
-    return;
+  // Add unit type and name in the marker
+  for (let i = 0; i < arrayOfMarkers.length; i++) {
+    let mrkr = arrayOfMarkers[i];
+    computedStyle = getComputedStyle(mrkr);
+    let backgroundImageValue = computedStyle.getPropertyValue('background-image').toUpperCase();
+
+    arrayOfBattleFieldMarkers.some(marker => {
+      // If the current marker matches the items on the array of markers, it's a valid marker
+      if (backgroundImageValue.includes(marker.icon)) {
+        let currentMarkerKey = marker.key;
+        let associatedUnits = [];
+
+        for (let j = 0; j < arrayOfUnits.length; j++) {
+          const element = arrayOfUnits[j];
+          if (currentMarkerKey === element.type) {
+            associatedUnits.push(element.type);
+            if (!mrkr.id) {
+              mrkr.id = associatedUnits;
+              continue
+            }
+          }
+          if (currentMarkerKey === element.key) {
+            associatedUnits.push(element.key);
+            if (!mrkr.id) {
+              mrkr.id = associatedUnits;
+              continue
+            }
+          }
+        }
+      }
+    });
   }
-  let userUnitLevel = 0;
-  try {
-    userUnitLevel = await retrieveNumberFromStorage("maxUnitLvlDungInput")
-  } catch (error) {
-    return;
-  }
-  for (let i = 1; i <= unitsQuantity; i++) {
-    //Iterates through every unit
-    const unit = unitDrawer[0].querySelector(".unitSelectionItemCont:nth-child(" + i + ") .unitItem:nth-child(1)");
 
-    //Get unit rarity
-    let commonCheck = unit.querySelector('.unitRarityCommon');
-    let uncommonCheck = unit.querySelector('.unitRarityUncommon');
-    let rareCheck = unit.querySelector('.unitRarityRare');
-    let legendaryCheck = unit.querySelector('.unitRarityLegendary');
-
-    //Get unit status: cooldown, defeated and exhausted
-    let coolDownCheck = unit.querySelector('.unitItemCooldown');
-    let defeatedCheck = unit.querySelector('.defeatedVeil');
-    let unitDisabled = unit.querySelector('.unitItemDisabledOff');
-    let unitLevel;
-    try {
-      unitLevel = parseInt(unit.querySelector('.unitLevel').innerText);
-    } catch (error) {
-      continue;
-    }
-
-    //Get unit type and unit name so it can be compared with the marker and determine if the placement is valid.
+  //Add unit name and type to unit itself
+  for (let i = 0; i < unitDrawer[0].children.length; i++) {
+    let unit = unitDrawer[0].children[i];
     let unitType = unit.querySelector('.unitClass img').getAttribute('alt').toUpperCase();
-    unitName = unit.querySelector('.unitClass img').getAttribute('src').slice(-50).toUpperCase();
-    //Get human readable unitName
+    let unitName = unit.querySelector('.unitClass img').getAttribute('src').slice(-50).toUpperCase();
     const unit1 = arrayOfUnits.filter(unit1 => unitName.includes(unit1.icon.toUpperCase()))[1];
     if (unit1) {
-      unitName = unit1.key;
+      unit.id = unit1.key + "#" + unitType
+      continue
     }
-    isDungeon = false;
-    let dungeonLevel;
-    if (dungeonLevelSwitch) {
-      let battleInfo;
-      try {
-        battleInfo = document.querySelector(".battleInfo").innerText;
-      } catch (error) {
-        continue;
-      }
-      if (battleInfo.includes("Level")) {
-        isDungeon = true;
-        dungeonLevel = parseInt(battleInfo.substr(battleInfo.length - 2));
-        //If it fails replace   retrieveFromStorage with   ->    retrieveNumberFromStorage
-        //Added unitName == "AMAZON" because most dungeon captains use Amazon marker for Epic Huntress Amazon so it's easier to just not allow Amazon units to be placed at all
-        if (userDunLevel == null || userDunLevel == undefined || userUnitLevel == null || userUnitLevel == undefined || unitName == "AMAZON") {
-          continue;
-        } else if (dungeonLevel <= userDunLevel && unitLevel > userUnitLevel) {// && unitName != "FLAG") {
-          continue;
+  }
+
+  for (let i = 0; i < unitDrawer[0].children.length; i++) {
+    let unit = unitDrawer[0].children[i];
+    let unitId = unit.id
+    for (let j = 0; j < arrayOfMarkers.length; j++) {
+      let marker = arrayOfMarkers[j]
+      let markerId = marker.id
+      let hasPlaced;
+      if (markerId == "VIBE") {
+        hasPlaced = await attempPlacement(unit, marker)
+        if (hasPlaced) {
+          return
+        }
+        else {
+          await cancelPlacement()
+          continue
+        }
+
+      } else if (unitId.includes(markerId)) {
+        hasPlaced = await attemptPlacement(unit, marker)
+        if (hasPlaced) {
+          return
+        } else {
+          await cancelPlacement()
+          continue
         }
       }
     }
-    let commonSwitch;
-    let uncommonSwitch;
-    let rareSwitch;
-    let legendarySwitch;
-
-    //Checks what units the user wants to place
-    if (legendaryCheck) {
-      legendarySwitch = await getSwitchState("legendarySwitch");
-    } else if (rareCheck) {
-      rareSwitch = await getSwitchState("rareSwitch");
-    } else if (uncommonCheck) {
-      uncommonSwitch = await getSwitchState("uncommonSwitch");
-    } else if (commonCheck) {
-      commonSwitch = await getSwitchState("commonSwitch");
-    }
-
-    //Check if the unit can be used.
-    if ((commonCheck && !commonSwitch) ||
-      (legendaryCheck && !legendarySwitch) ||
-      (rareCheck && !rareSwitch) ||
-      (uncommonCheck && !uncommonSwitch) ||
-      coolDownCheck || defeatedCheck || !unitDisabled) {
-      if (i >= unitsQuantity) {
-        //If there are no units that can be placed, get a new marker until there are no markers available to match any of the available units
-        markerAttempt++;
-        getSetMarker();
-        return;
-      } else {
-        //Current unit can't be used, get the next
-        continue;
-      }
-    }
-    /* Select the unit if the current marker is a vibe or if there are no markers
-      or if the unit name or type match the current marker */
-    else if (currentMarkerKey == "VIBE" || currentMarkerKey == "" ||
-      currentMarkerKey == unitType || currentMarkerKey == unitName) {
-      //Select the unit
-      unit.click();
-      await delay(1000);
-      /* If the unit is placed on an invalid marker or area or if the unit is on top of another ally unit,
-      tapping it forces the game to check if the placement can be performed */
-      tapUnit();
-      return;
-    } else if (isDungeon == true && dungeonPlaceAnywaySwitch && currentMarkerKey == "FLAG" && unitLevel <= userUnitLevel && dungeonLevel <= userDunLevel) {
-      //Select the unit
-      unit.click();
-      await delay(1000);
-      /* If the unit is placed on an invalid marker or area or if the unit is on top of another ally unit,
-      tapping it forces the game to check if the placement can be performed */
-      tapUnit();
-      return;
-    } else {
-      //Else get the next unit
-      continue;
-    }
   }
-  goHome();
-  return;
+
+  goHome()
+  closeAll()
+  return
+
 }
 
-//If the unit is in a valid marker that is in use, by taping the unit container it forces a button recheck on mouseup/touchend
-function tapUnit() {
-  //Check for frozen state
-  reloadRoot()
-  //Attemps to tap the selected unit to force a valid placement check
-  try {
-    const placerUnitCont = document.querySelector('.placerUnitCont');
-    const event = new Event('mouseup', { bubbles: true, cancelable: true });
-    placerUnitCont.dispatchEvent(event);
-  } catch (error) {
-    goHome();
-    return;
+async function cancelPlacement() {
+  //Close unit, recalculate drawer, recalculate markers
+  const cancelBtn = document.querySelector(".actionButton.actionButtonNegative.placerButton")
+  if (cancelBtn) {
+    cancelBtn.click()
+  }
+  await delay(1000)
+  const unitDrawer = document.querySelector(".actionButton.actionButtonPrimary.placeUnitButton")
+  if (unitDrawer) {
+    unitDrawer.click()
+  }
+}
+
+
+async function attemptPlacement(unit, marker) {
+
+  moveScreenCenter(marker)
+  await delay(2000);
+  let unitItem = unit.querySelector(".unitItem")
+  unitItem.click();
+  await delay(1000);
+  tapUnit();
+  await delay(500);
+  const isPlaced = placeTheUnit();
+  await delay(1000);
+  reloadRoot();
+  await delay(1000);
+  if (isPlaced || checkPlacement()) {
+    return true
+  } else {
+    return false
+  }
+}
+
+function checkPlacement() {
+  const hasPlaced = document.querySelector(".actionButton.actionButtonDisabled.placeUnitButton");
+  const menu = document.querySelector(".captainSlots")
+  if (menu || hasPlaced.innerText.includes("UNIT READY TO PLACE IN")) {
+    return true
+  } else {
+    return false
+  }
+}
+
+//Looks and selects a valid marker for placement
+async function prepareMarkers(captainUnit) {
+
+  //Initializes a node list with placement markers
+  let arrMrks = Array.from(document.querySelectorAll(".planIcon"));
+
+  async function sort() {
+    arrMrks = Array.from(document.querySelectorAll(".planIcon"));
+    try {
+      //Attempt to sort the markers based on how close they are to the captain
+      sortedArrMrks = getMapMatrix(captainUnit, arrMrks);
+      return sortedArrMrks
+    } catch (error) {
+      return arrMrks
+    }
+  }
+
+  //Captain is on open map only
+  if (arrMrks.length == 0) {
+    //Place imaginary markers to use instead and restart the function to get valid markers
+    setImaginaryMarkers(document.querySelectorAll(".placementAlly"));
+    return await sort()
+  } else {
+    //Treat the markers to remove block markers
+    let blockMarkers = []
+    for (let i = arrMrks.length - 1; i >= 0; i--) {
+      let planIcon = arrMrks[i];
+      let backgroundImageValue = getComputedStyle(planIcon).getPropertyValue('background-image').toUpperCase();
+      if (backgroundImageValue.includes("VYAAAAASUVORK5CYII=")) {
+        blockMarkers.push(planIcon);
+      }
+    }
+    blockMarkers.forEach(marker => { marker.remove(); });
+    
+    //Check what is inside new array.
+    if (arrMrks.length == 0 && (arrayOfAllyPlacement == undefined || arrayOfAllyPlacement.length == 0)) {
+      //Captain is using a mix of block markers and open zones.
+      //Place imaginary markers to use instead
+      arrMrks = setImaginaryMarkers(document.querySelectorAll(".placementAlly"))
+      return await sort()
+    } else {
+      //There are vibe or set markers that can be used.
+      return await sort()
+    }
   }
 }
 
@@ -1096,7 +1062,7 @@ async function placeTheUnit() {
     clockText = document.querySelector('.battlePhaseTextClock .clock').innerText;
   } catch (error) {
     goHome();
-    return;
+    return true;
   }
 
   //If timer has reached 00:00 it means the battle has already started, return to main menu.
@@ -1107,7 +1073,7 @@ async function placeTheUnit() {
     if (placerButton && selectorBack) {
       placerButton.click();
       selectorBack.click();
-      return;
+      return true;
     }
   }
 
@@ -1121,12 +1087,11 @@ async function placeTheUnit() {
       const cancelButton = document.querySelector(cancelButtonSelector);
       if (cancelButton) {
         cancelButton.click();
+        return false;
       }
-      if (currentMarkerKey != null || currentMarkerKey != 0) {
-        getValidMarkers();
-      } else {
+      else {
         goHome();
-        return;
+        return true;
       }
     } else {
       if (confirmPlacement) {
@@ -1138,6 +1103,7 @@ async function placeTheUnit() {
           allPlaceAnywayButtons.forEach(button => {
             if (button.innerText === "PLACE ANYWAY") {
               placeAnywayButton = button;
+              return true;
             }
           });
           let allPlaceAnywayBackButtons = document.querySelectorAll('.actionButton.actionButtonPrimary')
@@ -1152,9 +1118,10 @@ async function placeTheUnit() {
               placeAnywayButton.click();
               await delay(1000);
               goHome();
-              return;
+              return true;
             } else {
               placeAnywayBackButton.click();
+              return true;
             }
           }
         }
@@ -1169,7 +1136,7 @@ async function placeTheUnit() {
     const placementSuccessful = document.querySelector(".actionButton.actionButtonDisabled.placeUnitButton");
     if (placementSuccessful) {
       goHome();
-      return;
+      return true;
     }
   }, 3000);
 
@@ -1178,10 +1145,11 @@ async function placeTheUnit() {
     const negativeButton = document.querySelector(cancelButtonSelector);
     if (disabledButton) {
       disabledButton.click();
+      return false;
     }
     if (negativeButton) {
       negativeButton.click();
-      getValidMarkers();
+      return false;
     }
   }, 5000);
 }
@@ -1300,23 +1268,88 @@ async function collectChests() {
       const stBtn = capSlot.querySelector(".offlineButton").id
       const slotState = await getIdleState(stBtn);
       const cNm = capSlot.querySelector(".capSlotName").innerText
-      
-      await delay(500);
-      let raidStats = await getRaidStats(raidId);
+      button.click();
       await delay(2000);
-      let battleResult = raidStats[0];
-      leaderboardRank = raidStats[1];
-      kills = raidStats[3];
-      assists = raidStats[4];
-      unitIconList = raidStats[8];
-      rewards = raidStats[2];
-      let chestStringAlt = raidStats[5];
-      let raidChest = raidStats[6];
-      let chestCount = raidStats[7];
-      console.log(battleResult + " " + captainName + " " + chestStringAlt + " " + leaderboardRank + " " + kills + " " + assists + " " + unitIconList + " " + rewards + " " + raidId);
-      if (captainName !== null && captainName !== undefined && raidId !== null && raidId !== undefined && ((battleResult !== null && battleResult !== undefined) || (chestStringAlt !== null && chestStringAlt !== undefined) || (leaderboardRank !== null && leaderboardRank !== undefined) || (kills !== null && kills !== undefined) || (assists !== null && assists !== undefined) || (unitIconList !== null && unitIconList !== undefined) || (rewards !== null && rewards !== undefined))) {
-        await setLogResults(battleResult, captainName, chestStringAlt, leaderboardRank, kills, assists, unitIconList, rewards, raidId);
+      let rewards;
+      let leaderboardRank;
+      let kills;
+      let assists;
+      let unitIconList; 
+      //Check if user wants to log rewards and leaderboard results
+      const logSwitch = await retrieveFromStorage("logSwitch");
+      if (logSwitch) {
+        let userName = document.querySelector(".userInfoImage").alt;
+        let rewardAmt;
+        rewards = "";
+        let rewardScrim = document.querySelectorAll(".rewardsScrim");
+        if (rewardScrim.length > 0) {
+          let rewardsTab = document.querySelector(".rewardsTab");
+          rewardsTab.click();
+          await delay(500);
+          let allRewards;
+          allRewards = rewardScrim[0].querySelectorAll(".rewardMainImage");
+          let allRewardAmts = rewardScrim[0].querySelectorAll(".rewardListItemAmt");
+          for (let i = 0; i < allRewards.length; i++) {
+            const reward = allRewards[i];
+            if (i < allRewardAmts.length) {
+              rewardAmt = allRewardAmts[i].innerText;
+            } else {
+              rewardAmt = "";
+            }
+            rewards = reward.src + " " + reward.alt + rewardAmt + "," + rewards;
+          }
+          if (rewards === "") {
+            let rewardGridFooter = rewardScrim[0].querySelector(".rewardGridFooter");
+            if (rewardGridFooter.innerText.includes("alvage")) {
+              rewards = "None";
+            }
+          }
+          let leaderboardTab = document.querySelector(".rewardsLeaderboardTab");
+          leaderboardTab.click();
+          await delay(500);
+
+          let rows2 = document.querySelectorAll(".rewardsLeaderboardRowCont")
+          let lastRow2 = rows2[rows2.length - 1];
+
+          let leaderboardRows;
+          for (let k = 0; k < 30; k++) {
+              leaderboardRows = document.querySelectorAll(".rewardsLeaderboardRowCont");
+
+              for (let i = 0; i < leaderboardRows.length; i++) {
+                const leaderboardRow = leaderboardRows[i];
+                const leaderboardRowUser = leaderboardRow.querySelector(".rewardsLeaderboardRowText.rewardsLeaderboardRowDisplayName");
+                leaderboardRank = leaderboardRow.querySelector(".rewardsLeaderboardRowText.rewardsLeaderboardRowRank").innerText;
+                if (leaderboardRowUser.innerText == userName) {
+                  leaderboardRank = leaderboardRow.querySelector(".rewardsLeaderboardRowText.rewardsLeaderboardRowRank").innerText;
+                  kills = leaderboardRow.querySelector(".rewardsLeaderboardRowText.rewardsLeaderboardRowKills").innerText;
+                  assists = leaderboardRow.querySelector(".rewardsLeaderboardRowText.rewardsLeaderboardRowAssists").innerText;
+                  let unitIconsAll = leaderboardRow.querySelector(".rewardsLeaderboardRowUnitIconsCont");
+                  let unitIcons = unitIconsAll.querySelectorAll(".rewardsLeaderboardRowUnitIconWrapper");
+                  unitIconList = "";
+                  for (let j = 0; j < unitIcons.length; j++) {
+                    const unitIconWrapper = unitIcons[j];
+                    let unitIcon = unitIconWrapper.querySelector(".rewardsLeaderboardRowUnitIcon");
+                    unitIconList = unitIcon.src + " " + unitIcon.alt + ","+ unitIconList
+                  }
+                  if (kills !== undefined) {
+                    await delay(500);//+(500*k));
+                  }
+                  break;
+                }
+              }
+              if (kills !== undefined && kills !== null) {
+                break;
+              }
+              clickHoldAndScroll(lastRow2, -1000, 100);
+              await delay(500);
+              rows2 = document.querySelectorAll(".rewardsLeaderboardRowCont");
+              lastRow2 = rows2[rows2.length - 1];
+          }
+
+        }
+        await delay(500);
       }
+      await setLogResults(battleResult, captainName, chestStringAlt, leaderboardRank, kills, assists, unitIconList, rewards);
       battleResult = null;
       captainName = null;
       chestStringAlt = null;
@@ -1325,7 +1358,16 @@ async function collectChests() {
       assists = null;
       unitIconList = null;
       rewards = null;
-      await delay(2000);
+      await delay(250);
+
+      const rewardContinueButton = document.querySelector(".actionButton.actionButtonPrimary.rewardsButton");
+
+      if (rewardContinueButton) {
+        if (rewardContinueButton.innerText === "CONTINUE") {
+          rewardContinueButton.click();
+        }
+      }
+      await delay(250);
 
       if (slotState == 2) {
         const allCapSlots = document.querySelectorAll(".capSlot")
@@ -1348,8 +1390,9 @@ async function collectChests() {
         await delay(1000);
       }
 
-      break;
       goHome();
+      break;
+      
     }
   }
 }
@@ -1369,632 +1412,62 @@ function goHome() {
   }
 }
 
-//RETURNS raidId and CHESTTYPE (returns "chestbronze" if not found or if error)
-async function getCaptainLoyalty(captainName) {
-  //Get client and game version for http request
-  const response = await fetch('https://www.streamraiders.com/api/game/?cn=getUser&command=getUser');
-  const data = await response.json();
-  if (data && data.info && data.info.version && data.info.clientVersion) {
-    clientVersion = data.info.version;
-    gameDataVersion = data.info.dataVersion;
+
+async function doPotions() {
+  //Checks if user wants to use potions.
+  let potionState = await getRadioButton("selectedOption");
+  //CHeck if user wants to use potions only with specific captains
+  const favoriteSwitch = await getSwitchState("favoriteSwitch");
+  let favoritePotion = false;
+  let number;
+  let epicButton;
+
+  if (!favoriteSwitch) {
+    favoritePotion = true;
   }
+  //Check if current captain is a favorite potion captain
   try {
-    let cookieString = document.cookie;
-    // Post request to get all units
-    const response = await fetch(`https://www.streamraiders.com/api/game/?cn=getActiveRaids&clientVersion=${clientVersion}&clientPlatform=MobileLite&gameDataVersion=${gameDataVersion}&command=getActiveRaidsLite&isCaptain=0`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/x-www-form-urlencoded',
-        'Cookie': cookieString,
-      },
-    });
-    if (!response.ok) {
-      throw new Error('Network response was not ok');
-    }
-
-    // Get unit id and name.
-    const activeRaids = await response.json();
-    let loyaltyResults = new Object();
-    for (let i = 0; i < activeRaids.data.length; i++) {
-      const position = activeRaids.data[i];
-      const raidId = position.raidId;
-      const cptName = position.twitchDisplayName;
-      if (cptName === captainName) {
-        loyaltyResults[0] = raidId;
-        loyaltyResults[1] = "chestbronze";
-        const mapLoyalty = await getRaidChest(raidId);
-        loyaltyResults[1] = mapLoyalty;
-        return loyaltyResults;
-      }
-    }
-    //No match found
-    return loyaltyResults;
-
-  } catch (error) {
-    console.error('Error in getCaptainLoyalty:', error);
-    return loyaltyResults;
-  }
-}
-
-// MAKE TWO POST REQUESTS, ONE FOR THE CURRENT CHEST AND ANOTHER TO COMPARE
-async function getRaidChest(raidId) {
-  try {
-    let cookieString = document.cookie;
-    const response = await fetch(`https://www.streamraiders.com/api/game/?cn=getRaid&raidId=${raidId}&placementStartIndex=0&maybeSendNotifs=false&clientVersion=${clientVersion}&clientPlatform=WebLite&gameDataVersion=${gameDataVersion}&command=getRaid&isCaptain=0`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/x-www-form-urlencoded',
-        'Cookie': cookieString,
-      },
-    });
-
-    if (!response.ok) {
-      throw new Error('Network response was not ok');
-    }
-
-    const currentRaid = await response.json();
-    const raid_url = currentRaid.info.dataPath
-    let chests = await new Promise((resolve) => {
-      chrome.storage.local.get("loyaltyChests", async function (lChests) {
-        let update = false;
-        let storage_url;
-        let new_chests;
-        let get_chests
-        if (!lChests.loyaltyChests) {
-          new_chests = await fetchLoyaltyChests(raid_url);
-          await new Promise((resolve) => {
-            chrome.storage.local.set({ "loyaltyChests": new_chests }, resolve);
-          });
-          update = true;
-        }
-
-        if (update) {
-          storage_url = new_chests.url;
-          get_chests = new_chests.MapNodes;
-        } else {
-          storage_url = lChests.url;
-          get_chests = lChests.MapNodes;
-        }
-
-        if (raid_url !== storage_url) {
-          new_chests = await fetchLoyaltyChests(raid_url);
-          await new Promise((resolve) => {
-            chrome.storage.local.set({ "loyaltyChests": new_chests }, resolve);
-          });
-          storage_url = new_chests.url;
-          get_chests = new_chests.MapNodes;
-        }
-
-        resolve(get_chests);
+    if (potionState != 0 && !mode && favoriteSwitch) {
+      const potionCaptainsList = await new Promise((resolve) => {
+        chrome.storage.local.get({ ['potionlist']: [] }, function (result) {
+          const potionCaptainsList = result["potionlist"];
+          resolve(potionCaptainsList);
+        });
       });
-    });
-
-    const nodeKeys = [];
-
-    for (const key in chests) {
-      if (chests.hasOwnProperty(key)) {
-        nodeKeys.push(key);
-      }
-    }
-
-    const nodeId = currentRaid.data.nodeId;
-    const chestType = chests[nodeId].ChestType;
-    return chestType;
-
-  } catch (error) {
-    console.error('Error in getRaidChest:', error);
-    return "chestbronze";
-  }
-}
-
-async function fetchLoyaltyChests(raid_url) {
-  try {
-    const response = await fetch(raid_url);
-    const blob = await response.blob();
-    const corsResponse = new Response(blob, { headers: { 'Access-Control-Allow-Origin': '*' } });
-
-    const data = await corsResponse.json();
-    const mapNodes = data["sheets"]["MapNodes"]
-    for (const nodeKey in mapNodes) {
-      const node = mapNodes[nodeKey];
-      for (const keyToRemove of ["NodeDifficulty", "NodeType", "MapTags", "OnLoseDialog", "OnStartDialog", "OnWinDialog"]) {
-        delete node[keyToRemove];
-      }
-    }
-    const transformedJson = {
-      url: raid_url,
-      MapNodes: mapNodes
-    };
-
-    return transformedJson
-  } catch (error) {
-    console.log("There was an error fetching the map nodes")
-  }
-}
-
-async function getLeaderboardUnitsData(raidId) {
-  const response = await fetch('https://www.streamraiders.com/api/game/?cn=getUser&command=getUser');
-  const userData = await response.json();
-  const userId = userData.data.userId;
-
-  let unitAssetNames = await fetchUnitAssetNames(userData.info.dataPath)
-  let skinNames = await fetchSkinNames(userData.info.dataPath);
-  let imageURLs = await fetchImageURLs("https://d2k2g0zg1te1mr.cloudfront.net/manifests/mobilelite.json");
-  
-  try {
-    let cookieString = document.cookie;
-    const response = await fetch(`https://www.streamraiders.com/api/game/?cn=getRaid&raidId=${raidId}&placementStartIndex=0&maybeSendNotifs=false&clientVersion=${clientVersion}&clientPlatform=WebLite&gameDataVersion=${gameDataVersion}&command=getRaid&isCaptain=0`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/x-www-form-urlencoded',
-        'Cookie': cookieString,
-      },
-    });
-
-    if (!response.ok) {
-      throw new Error('Network response was not ok');
-    }
-    const currentRaid = await response.json();
-    const raid_url = currentRaid.info.dataPath
-    const placements = currentRaid.data.placements;
-    let CharacterType = "";
-    let skin = "";
-    let skinURL = "";
-    let SoulType = "";
-    let specializationUid = "";
-    let unitIconList = "";
-    
-    if (placements) {
-      for (let i = 0; i < placements.length; i++) {
-        const placement = placements[i];
-      if (placement.userId === userId) {
-          if (placement.CharacterType === null || placement.CharacterType === "") {
-            CharacterType = "none";
-          } else {
-            CharacterType = placement.CharacterType;
-          }
-          if (placement.skin === null || placement.skin === "") {
-            Object.keys(unitAssetNames.Units).forEach(function(key) {
-              if (key === CharacterType) {
-                skin = unitAssetNames.Units[key].AssetName;
-              }
-            })
-          } else {
-            skin = placement.skin;
-            
-            Object.keys(skinNames.Skins).forEach(function(key) {
-              if (key === placement.skin) {
-                skin = skinNames.Skins[key].BaseAssetName;
-              }
-            })   
-          }
-          if (placement.SoulType === null || placement.SoulType === "") {
-            SoulType = "none";
-          } else {
-            SoulType = placement.SoulType;
-          }
-          if (placement.specializationUid === null || placement.specializationUid === "") {
-            specializationUid = "none";
-          } else {
-            specializationUid = placement.specializationUid;
-          }
-          Object.keys(imageURLs.ImageURLs).forEach(function(key) {
-            if (key === "mobilelite/units/static/" + skin + ".png") {
-              skinURL = "https://d2k2g0zg1te1mr.cloudfront.net/" + imageURLs.ImageURLs[key];
-            }
-          })
-          unitIconList = skinURL + " " + skin.replace("allies","").replace("skinFull","") + " " + CharacterType + " " + SoulType + " " + specializationUid + "," + unitIconList
+      // Check if the array exists and is an array with at least one element
+      if (Array.isArray(potionCaptainsList) && potionCaptainsList.length > 0) {
+        //Check if current captain is a favorite potion captain. If not set potion state to 0.
+        if (potionCaptainsList.some(item => item.toUpperCase() === captainNameFromDOM.toUpperCase())) {
+          favoritePotion = true;
         }
       }
     }
+  } catch (error) { }
 
-    return unitIconList;
-
-  } catch (error) {
-    console.error('Error in getLeaderboardData:', error);
-    return "";
+  //User wants to use potions
+  if (potionState != 0 && !mode && favoritePotion) {
+    //Get potion strings so the string can be trimmed and converted to int for validation
+    let potions;
+    //Attempts to get potion quantity
+    try {
+      potions = document.querySelector("img[alt='Potion']").closest(".quantityItem");
+    } catch (error) {
+      goHome();
+      return;
+    }
+    let potionQuantity = potions.querySelector(".quantityText").textContent;
+    epicButton = document.querySelector(".actionButton.actionButtonPrimary.epicButton");
+    number = parseInt(potionQuantity.substring(0, 3));
   }
-}
-
-async function getRaidStats(raidId) {
-  try {
-    let cookieString = document.cookie;
-    const response = await fetch(`https://www.streamraiders.com/api/game/?cn=getRaidStatsByUser&raidId=${raidId}&clientVersion=${clientVersion}&clientPlatform=WebLite&gameDataVersion=${gameDataVersion}&command=getRaidStatsByUser&isCaptain=0`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/x-www-form-urlencoded',
-        'Cookie': cookieString,
-      },
-    });
-
-    if (!response.ok) {
-      throw new Error('Network response was not ok');
+  //User wants to use potions as soon as there are at least 45 potions.
+  if (potionState == 1 && number >= 45) {
+    if (epicButton) {
+      epicButton.click();
     }
-    const currentRaid = await response.json();
-    try {
-      if (currentRaid.errorMessage !== null) {
-        console.log(currentRaid.errorMessage);
-        return "";
-      }
-    } catch (error){
-      console.log(error);
+    //User wants to use potions as soon as there are 100 potions.
+  } else if (potionState && number == 100) {
+    if (epicButton) {
+      epicButton.click();
     }
-    const raidData = currentRaid.data;
-    const stats = raidData.stats;
-    let raidStats = new Object();
-    let rewards = new Object();
-    
-    const userResponse = await fetch('https://www.streamraiders.com/api/game/?cn=getUser&command=getUser');
-    const userData = await userResponse.json();
-    const userId = userData.data.userId;
-    
-    let eventUid = await getEventProgressionLite();
-    
-    let items = await fetchItems(userData.info.dataPath);
-    let currency = await fetchCurrency(userData.info.dataPath)
-    let imageURLs = await fetchImageURLs("https://d2k2g0zg1te1mr.cloudfront.net/manifests/mobilelite.json");
-
-    if (stats.length > 0) {
-      if (raidData.battleResult === "True") {
-        raidStats[0] = "Victory";
-        raidStats[5] = raidData.chestAwarded;
-      } else {
-        raidStats[0] = "Defeat";
-        raidStats[5] = "chestsalvage";
-      }
-      for (let i = 0; i < stats.length; i++) {
-        const stat = stats[i];
-        if (stat.userId === userId) {
-          raidStats[1] = i.toString(); //leaderboard rank
-          raidStats[8] = stat.charsUsed + "|" + stat.skins + "|" + stat.specializationUids;
-        }
-      }
-    } else {
-      if (raidData.battleResult === "False") {
-        raidStats[0] = "Abandoned";
-        raidStats[5] = "Unknown";
-      } else {
-        raidStats[0] = "Unknown";
-        raidStats[5] = "Unknown";
-      }
-    }
-      
-    let i = 0;
-    try {    
-      if (raidData.goldAwarded > 0) {
-        rewards[i] = "https://d2k2g0zg1te1mr.cloudfront.net/env/prod1/mobile-lite/static/media/iconGold.6072909d.png";
-        rewards[i] = rewards[i] + " goldpiecebagx" + raidData.goldAwarded;
-        i++;
-      }
-    } catch (error) {
-      console.log(error);
-    }
-    try {
-      if (raidData.bonesAwarded > 0) {
-        rewards[i] = "https://d2k2g0zg1te1mr.cloudfront.net/env/prod1/mobile-lite/static/media/iconBones.56e87204.png";
-        rewards[i] = rewards[i] + " bonesx" + raidData.bonesAwarded;
-        raidStats[5] = "bones";
-        i++;
-      }
-    } catch (error) {
-      console.log(error);
-    }
-    try {
-      if (raidData.keysAwarded > 0) {
-        rewards[i] = "https://d2k2g0zg1te1mr.cloudfront.net/env/prod1/mobile-lite/static/media/iconKeys.01121bde.png";
-        rewards[i] = rewards[i] + " keysx" + raidData.keysAwarded;
-        raidStats[5] = "keys";
-        i++;
-      }
-    } catch (error) {
-      console.log(error);
-    }
-    try {
-      if (raidData.eventCurrencyAwarded > 0) {
-        rewards[i] = "";
-        Object.keys(imageURLs.ImageURLs).forEach(function(key) {
-          if (key === "mobilelite/events/" + eventUid + "/iconEventCurrency.png") {
-            rewards[i] = "https://d2k2g0zg1te1mr.cloudfront.net/" + imageURLs.ImageURLs[key];
-          }
-        })
-        rewards[i] = rewards[i] + " eventcurrencyx" + raidData.eventCurrencyAwarded;
-        i++;
-      }
-    } catch (error) {
-      console.log(error);
-    }
-    try {
-      if (raidData.treasureChestGold !== "0") {
-        rewards[i] = "https://d2k2g0zg1te1mr.cloudfront.net/env/prod1/mobile-lite/static/media/iconGold.6072909d.png";
-        rewards[i] = rewards[i] + " treasurechestgoldx" + raidData.treasureChestGold;
-        i++;
-      }
-    } catch (error) {
-      console.log(error);
-    }
-    try {
-      if (raidData.potionsAwarded !== "0") {
-        rewards[i] = "https://d2k2g0zg1te1mr.cloudfront.net/env/prod1/mobile-lite/static/media/iconPotion.2c8f0f08.png"
-        rewards[i] = rewards[i] + " epicpotionx" + raidData.potionsAwarded;
-        i++;
-      }
-    } catch (error) {
-      console.log(error);
-    }
-    try {
-      if (raidData.bonusItemReceived !== "" && raidData.bonusItemReceived !== null) {
-        if (raidData.bonusItemReceived.includes("goldbag")) {
-          rewards[i] = "https://d2k2g0zg1te1mr.cloudfront.net/env/prod1/mobile-lite/static/media/iconGold.6072909d.png";
-        } else if (raidData.bonusItemReceived.includes("epicpotion")) {
-          rewards[i] = "https://d2k2g0zg1te1mr.cloudfront.net/env/prod1/mobile-lite/static/media/iconPotion.2c8f0f08.png";
-        } else if (raidData.bonusItemReceived.includes("cooldown")) {
-          rewards[i] = "https://d2k2g0zg1te1mr.cloudfront.net/env/prod1/mobile-lite/static/media/iconMeat.5c167903.png";
-        } else {
-          rewards[i] = "";
-          let item;
-          let bonusItemReceived;
-          if (raidData.bonusItemReceived.includes("|")) {
-            bonusItemReceived = raidData.bonusItemReceived.split("|")[1];
-          } else {
-            bonusItemReceived = raidData.bonusItemReceived;
-          }
-          Object.keys(items.Items).forEach(function(key) {
-            if (key === bonusItemReceived) {
-              item = items.Items[key].CurrencyTypeAwarded;
-            }
-          })
-          Object.keys(currency.Currency).forEach(function(key) {
-            if (key === item) {
-              item = currency.Currency[key].UnitAssetName;
-            }
-          })
-          Object.keys(imageURLs.ImageURLs).forEach(function(key) {
-            if (key === "mobilelite/units/static/" + item + ".png") {
-              rewards[i] = "https://d2k2g0zg1te1mr.cloudfront.net/" + imageURLs.ImageURLs[key];
-            }
-          })
-        }
-        rewards[i] = rewards[i] + " " + raidData.bonusItemReceived;
-        i++;
-      }
-    } catch (error) {
-      console.log(error);
-    }
-    try {
-      if (raidData.eventTokensReceived !== "0") {
-        rewards[i] = "";
-        Object.keys(imageURLs.ImageURLs).forEach(function(key) {
-          if (key === "mobilelite/events/" + eventUid + "/iconEventToken.png") {
-            rewards[i] = "https://d2k2g0zg1te1mr.cloudfront.net/" + imageURLs.ImageURLs[key];
-          }
-        })
-        rewards[i] = rewards[i] + " eventtokenx" + raidData.eventTokensReceived;
-        i++;
-      }
-    } catch (error) {
-      console.log(error);
-    }
-    try {
-      if (raidData.viewerChestRewards !== undefined && raidData.viewerChestRewards !== null) {
-        for (var k = 0; k < raidData.viewerChestRewards.length; k++) {
-          if (raidData.viewerChestRewards[k].includes("goldbag")) {
-            rewards[i] = "https://d2k2g0zg1te1mr.cloudfront.net/env/prod1/mobile-lite/static/media/iconGold.6072909d.png";
-          } else if (raidData.viewerChestRewards[k].includes("epicpotion")) {
-            rewards[i] = "https://d2k2g0zg1te1mr.cloudfront.net/env/prod1/mobile-lite/static/media/iconPotion.2c8f0f08.png";
-          } else if (raidData.viewerChestRewards[k].includes("cooldown")) {
-            rewards[i] = "https://d2k2g0zg1te1mr.cloudfront.net/env/prod1/mobile-lite/static/media/iconMeat.5c167903.png";
-          } else {
-            rewards[i] = "";
-            let item;
-            let viewerChestRewardItem;
-            if (raidData.viewerChestRewards[k].includes("|")) {
-              viewerChestRewardItem = raidData.viewerChestRewards[k].split("|")[1];
-            } else {
-              viewerChestRewardItem = raidData.viewerChestRewards[k]
-            }
-            Object.keys(items.Items).forEach(function(key) {
-              if (key === viewerChestRewardItem) {
-                item = items.Items[key].CurrencyTypeAwarded;
-              }
-            })
-            Object.keys(currency.Currency).forEach(function(key) {
-              if (key === item) {
-                item = currency.Currency[key].UnitAssetName;
-              }
-            })
-            Object.keys(imageURLs.ImageURLs).forEach(function(key) {
-              if (key === "mobilelite/units/static/" + item + ".png") {
-                rewards[i] = "https://d2k2g0zg1te1mr.cloudfront.net/" + imageURLs.ImageURLs[key];
-              }
-            })
-          }
-          rewards[i] = rewards[i] + " " + raidData.viewerChestRewards[k];
-          i++;
-        }
-      }
-    } catch (error) {
-      console.log(error);
-    }
-    
-    raidStats[2] = "";
-    for (let j = 0; j < Object.keys(rewards).length; j++) {
-      raidStats[2] = rewards[j].toString() + "," + raidStats[2].toString();
-    }
-    if (raidStats[2] === "") {
-      raidStats[2] = "None"
-    }
-    raidStats[3] = raidData.kills;
-    raidStats[4] = raidData.assists;
-    //raidStats[5] = raidData.chestAwarded; //this value is set earlier in this function
-    raidStats[6] = raidData.raidChest;
-    raidStats[7] = raidData.chestCount;
-    
-    
-    return raidStats;
-
-  } catch (error) {
-    console.error('Error in getRaidStats:', error);
-    return "";
   }
-}
-
-async function getEventProgressionLite() {
-  try {
-    let cookieString = document.cookie;
-    const response = await fetch(`https://www.streamraiders.com/api/game/?cn=getEventProgressionLite&clientVersion=${clientVersion}&clientPlatform=WebLite&gameDataVersion=${gameDataVersion}&command=getEventProgressionLite&isCaptain=0`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/x-www-form-urlencoded',
-        'Cookie': cookieString,
-      },
-    });
-
-    if (!response.ok) {
-      throw new Error('Network response was not ok');
-    }
-    const eventInfo = await response.json();
-    const eventUid = eventInfo.data.eventUid;
-    return eventUid;
-
-  } catch (error) {
-    console.error('Error in getEventProgressionLite:', error);
-    return "";
-  }
-}
-
-async function fetchSkinNames(data_url) {
-  try {
-    const response = await fetch(data_url);
-    const blob = await response.blob();
-    const corsResponse = new Response(blob, { headers: { 'Access-Control-Allow-Origin': '*' } });
-
-    const data = await corsResponse.json();
-    const skins = data["sheets"]["Skins"]
-    const transformedJson = {
-      url: data_url,
-      Skins: skins
-    };
-
-    return transformedJson
-  } catch (error) {
-    console.log("There was an error fetching the skins")
-  }
-}
-
-async function fetchUnitAssetNames(data_url) {
-  try {
-    const response = await fetch(data_url);
-    const blob = await response.blob();
-    const corsResponse = new Response(blob, { headers: { 'Access-Control-Allow-Origin': '*' } });
-
-    const data = await corsResponse.json();
-    const units = data["sheets"]["Units"]
-    const transformedJson = {
-      url: data_url,
-      Units: units
-    };
-
-    return transformedJson
-  } catch (error) {
-    console.log("There was an error fetching the units")
-  }
-}
-
-async function fetchItems(data_url) {
-  try {
-    const response = await fetch(data_url);
-    const blob = await response.blob();
-    const corsResponse = new Response(blob, { headers: { 'Access-Control-Allow-Origin': '*' } });
-
-    const data = await corsResponse.json();
-    const items = data["sheets"]["Items"]
-    
-    const transformedJson = {
-      url: data_url,
-      Items: items
-    };
-
-    return transformedJson
-  } catch (error) {
-    console.log("There was an error fetching the items")
-  }
-}
-
-async function fetchCurrency(data_url) {
-  try {
-    const response = await fetch(data_url);
-    const blob = await response.blob();
-    const corsResponse = new Response(blob, { headers: { 'Access-Control-Allow-Origin': '*' } });
-
-    const data = await corsResponse.json();
-    const currency = data["sheets"]["Currency"]
-    
-    const transformedJson = {
-      url: data_url,
-      Currency: currency
-    };
-
-    return transformedJson
-  } catch (error) {
-    console.log("There was an error fetching the currency")
-  }
-}
-
-async function fetchImageURLs(mobilelite_url) {
-  let contentScriptPort = chrome.runtime.connect({ name: "content-script" });
-  return new Promise((resolve, reject) => {
-    const responseListener = (response) => {
-      clearTimeout(timeout);
-      // Handle the response (true/false)
-      if (response !== undefined) {
-        resolve(response.response);
-      } else {
-        reject(new Error('Invalid response format from the background script'));
-      }
-      contentScriptPort.onMessage.removeListener(responseListener);
-    };
-
-    const timeout = setTimeout(() => {
-      reject(new Error('Timeout while waiting for response'));
-      contentScriptPort.onMessage.removeListener(responseListener);
-    }, 8000);
-
-    contentScriptPort.onMessage.addListener(responseListener);
-
-    contentScriptPort.postMessage({ action: "getImageURLs", mobilelite_url });
-  });
-}
-
-function simulateMouseEvent(element, eventName, clientX, clientY) {
-    const event = new MouseEvent(eventName, {
-        bubbles: true,
-        cancelable: true,
-        clientX: clientX,
-        clientY: clientY
-    });
-    element.dispatchEvent(event);
-}
-
-function clickHoldAndScroll(element, deltaY, duration) {
-    const rect = element.getBoundingClientRect();
-    const clientX = rect.left + rect.width / 2;
-    const clientY = rect.top + rect.height / 2;
-
-    simulateMouseEvent(element, "mousedown", clientX, clientY);
-
-    const interval = 10;
-    const steps = Math.ceil(duration / interval);
-    const stepSize = deltaY / steps;
-    let cumulativeDeltaY = 0;
-    let step = 0;
-    const scrollInterval = setInterval(() => {
-        if (step < steps) {
-            cumulativeDeltaY += stepSize;
-            simulateMouseEvent(element, "mousemove", clientX, clientY + cumulativeDeltaY);
-            step++;
-        } else {
-            clearInterval(scrollInterval);
-            simulateMouseEvent(element, "mouseup", clientX, clientY + cumulativeDeltaY);
-        }
-    }, interval);
 }

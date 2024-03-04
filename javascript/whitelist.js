@@ -59,6 +59,8 @@ const keysToExport = [
     "skipDuelsSlotSwitch",
     "clashSlotSwitch",
     "skipClashSlotSwitch",
+    "levelSwitch",
+    "chestSwitch",
     "quickSetOne",
     "quickSetTwo",
     "quickSetThree",
