@@ -934,7 +934,7 @@ async function getValidUnits() {
       let markerId = marker.id
       let hasPlaced;
       if (markerId == "VIBE") {
-        hasPlaced = await attempPlacement(unit, marker)
+        hasPlaced = await attemptPlacement(unit, marker)
         if (hasPlaced) {
           return
         }
