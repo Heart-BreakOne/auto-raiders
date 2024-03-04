@@ -357,7 +357,7 @@ async function getRaidChest(raidId) {
             rewards[i] = "https://d2k2g0zg1te1mr.cloudfront.net/env/prod1/mobile-lite/static/media/iconGold.6072909d.png";
           } else if (raidData.bonusItemReceived.includes("epicpotion")) {
             rewards[i] = "https://d2k2g0zg1te1mr.cloudfront.net/env/prod1/mobile-lite/static/media/iconPotion.2c8f0f08.png";
-          } else if (raidData.viewerChestRewards[k].includes("cooldown")) {
+          } else if (raidData.bonusItemReceived.includes("cooldown")) {
             rewards[i] = "https://d2k2g0zg1te1mr.cloudfront.net/env/prod1/mobile-lite/static/media/iconMeat.5c167903.png";
           } else {
             rewards[i] = "";
@@ -449,6 +449,9 @@ async function getRaidChest(raidId) {
       raidStats[2] = "";
       for (let j = 0; j < Object.keys(rewards).length; j++) {
         raidStats[2] = rewards[j].toString() + "," + raidStats[2].toString();
+      }
+      if (raidStats[2] === "") {
+        raidStats[2] = "None";
       }
       raidStats[3] = raidData.kills;
       raidStats[4] = raidData.assists;
