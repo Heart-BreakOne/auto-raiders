@@ -1313,7 +1313,7 @@ async function collectChests() {
       let chestStringAlt = raidStats[5];
       let raidChest = raidStats[6];
       let chestCount = raidStats[7];
-
+      console.log(battleResult + " " + captainName + " " + chestStringAlt + " " + leaderboardRank + " " + kills + " " + assists + " " + unitIconList + " " + rewards + " " + raidId);
       if (captainName !== null && captainName !== undefined && raidId !== null && raidId !== undefined && ((battleResult !== null && battleResult !== undefined) || (chestStringAlt !== null && chestStringAlt !== undefined) || (leaderboardRank !== null && leaderboardRank !== undefined) || (kills !== null && kills !== undefined) || (assists !== null && assists !== undefined) || (unitIconList !== null && unitIconList !== undefined) || (rewards !== null && rewards !== undefined))) {
         await setLogResults(battleResult, captainName, chestStringAlt, leaderboardRank, kills, assists, unitIconList, rewards, raidId);
       }
@@ -1727,10 +1727,17 @@ async function getRaidStats(raidId) {
           rewards[i] = "https://d2k2g0zg1te1mr.cloudfront.net/env/prod1/mobile-lite/static/media/iconGold.6072909d.png";
         } else if (raidData.bonusItemReceived.includes("epicpotion")) {
           rewards[i] = "https://d2k2g0zg1te1mr.cloudfront.net/env/prod1/mobile-lite/static/media/iconPotion.2c8f0f08.png";
+        } else if (raidData.viewerChestRewards[k].includes("cooldown")) {
+          rewards[i] = "https://d2k2g0zg1te1mr.cloudfront.net/env/prod1/mobile-lite/static/media/iconMeat.5c167903.png";
         } else {
           rewards[i] = "";
           let item;
-          let bonusItemReceived = raidData.bonusItemReceived.split("|")[1];
+          let bonusItemReceived;
+          if (raidData.bonusItemReceived.includes("|")) {
+            bonusItemReceived = raidData.bonusItemReceived.split("|")[1];
+          } else {
+            bonusItemReceived = raidData.bonusItemReceived;
+          }
           Object.keys(items.Items).forEach(function(key) {
             if (key === bonusItemReceived) {
               item = items.Items[key].CurrencyTypeAwarded;
@@ -1774,10 +1781,17 @@ async function getRaidStats(raidId) {
             rewards[i] = "https://d2k2g0zg1te1mr.cloudfront.net/env/prod1/mobile-lite/static/media/iconGold.6072909d.png";
           } else if (raidData.viewerChestRewards[k].includes("epicpotion")) {
             rewards[i] = "https://d2k2g0zg1te1mr.cloudfront.net/env/prod1/mobile-lite/static/media/iconPotion.2c8f0f08.png";
+          } else if (raidData.viewerChestRewards[k].includes("cooldown")) {
+            rewards[i] = "https://d2k2g0zg1te1mr.cloudfront.net/env/prod1/mobile-lite/static/media/iconMeat.5c167903.png";
           } else {
             rewards[i] = "";
             let item;
-            let viewerChestRewardItem = raidData.viewerChestRewards[k].split("|")[1];
+            let viewerChestRewardItem;
+            if (raidData.viewerChestRewards[k].includes("|")) {
+              viewerChestRewardItem = raidData.viewerChestRewards[k].split("|")[1];
+            } else {
+              viewerChestRewardItem = raidData.viewerChestRewards[k]
+            }
             Object.keys(items.Items).forEach(function(key) {
               if (key === viewerChestRewardItem) {
                 item = items.Items[key].CurrencyTypeAwarded;

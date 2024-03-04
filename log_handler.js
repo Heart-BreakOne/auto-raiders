@@ -230,6 +230,7 @@ async function setLogResults(conclusion, logCapName, chest, leaderboardRank, kil
               let entry = loggedData[i];
                 if (entry.logCapName === logCapName && entry.raidId === raidId &&
                   (entry.currentTime !== null && entry.currentTime !== undefined)) {
+                    console.log("LOG-log entry found");
                     if (entry.elapsedTime === undefined) {
                       entry.elapsedTime = Math.floor((now - new Date(entry.currentTime)) / (1000 * 60)).toString();
                     }
@@ -253,7 +254,9 @@ async function setLogResults(conclusion, logCapName, chest, leaderboardRank, kil
                     }
                     if (entry.rewards == undefined && rewards !== "" && rewards !== undefined) {
                       entry.rewards = rewards;
+                      console.log("LOG-1"+rewards);
                     }
+                    console.log("LOG-2"+entry.rewards);
                     break;
                 }
             };
@@ -269,10 +272,11 @@ async function setLogResults(conclusion, logCapName, chest, leaderboardRank, kil
                 }
                 return entry;
             });
-
+            console.log("LOG-begin log update")
             // Update the loggedData object in storage
             chrome.storage.local.set({ "logData": loggedData }, function () {
                 resolve(loggedData);
+                console.log("LOG-log update successful");
             });
         });
     });
