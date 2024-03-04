@@ -105,7 +105,7 @@ document.addEventListener('DOMContentLoaded', async function () {
 
     //Export all settings to a file.
     document.getElementById("exportLogButton").addEventListener("click", async function () {
-       await exportData(["logData"]);
+        await exportData(["logData"]);
     });
 
     //Import all settings to a file.
@@ -142,9 +142,9 @@ async function loadLogData() {
         //Create table header row
         const headerRow = document.createElement('tr');
         if (logSwitch) {
-          headerRow.innerHTML = '<th>#</th><th>Slot</th><th>Captain Name</th><th>Mode</th><th>Color Code</th><th>Start time</th><th>End time</th><th>Duration</th><th>Result</th><th>Awarded Chest</th><th>Initial Chest</th><th>Rewards</th><th>Leaderboard Rank</th><th>Kills</th><th>Assists</th><th>Units Placed</th>';
+            headerRow.innerHTML = '<th>#</th><th>Slot</th><th>Captain Name</th><th>Mode</th><th>Color Code</th><th>Start time</th><th>End time</th><th>Duration</th><th>Result</th><th>Awarded Chest</th><th>Initial Chest</th><th>Rewards</th><th>Leaderboard Rank</th><th>Kills</th><th>Assists</th><th>Units Placed</th>';
         } else {
-          headerRow.innerHTML = '<th>#</th><th>Slot</th><th>Captain Name</th><th>Mode</th><th>Color Code</th><th>Start time</th><th>End time</th><th>Duration</th><th>Result</th><th>Awarded Chest</th><th>Initial Chest</th>';
+            headerRow.innerHTML = '<th>#</th><th>Slot</th><th>Captain Name</th><th>Mode</th><th>Color Code</th><th>Start time</th><th>End time</th><th>Duration</th><th>Result</th><th>Awarded Chest</th><th>Initial Chest</th>';
         }
 
         //Append header row to the table
@@ -192,7 +192,7 @@ async function loadLogData() {
             if (entry.currentTime === entry.elapsedTime) {
                 elapsed = "Unknown";
             }
-            
+
             if (entry.leaderboardRank === undefined) {
                 leaderboardRank = "Unknown";
             } else {
@@ -210,7 +210,7 @@ async function loadLogData() {
             } else {
                 assists = entry.assists;
             }
-            
+
             if (entry.units2 === undefined) {
                 units = "Unknown";
             } else {
@@ -218,20 +218,20 @@ async function loadLogData() {
                 units = "";
                 let tempUnits;
                 for (let i = 0; i < unitsList.length; i++) {
-                  const unit = unitsList[i].split(" ");
-                  if (unit[1] !== undefined) {
-                    tempUnits = '<div class="crop"><img src="' + unit[0] + '" title="Skin: ' + unit[1]
-                    if (unit[2] !== 'none') {
-                      tempUnits += '&#013;Type: ' + unit[2];
+                    const unit = unitsList[i].split(" ");
+                    if (unit[1] !== undefined) {
+                        tempUnits = '<div class="crop"><img src="' + unit[0] + '" title="Skin: ' + unit[1]
+                        if (unit[2] !== 'none') {
+                            tempUnits += '&#013;Type: ' + unit[2];
+                        }
+                        if (unit[4] !== 'none') {
+                            tempUnits += '&#013;Spec: ' + unit[4];
+                        }
+                        if (unit[3] !== 'none') {
+                            tempUnits += '&#013;Soul: ' + unit[3];
+                        }
+                        units = tempUnits + '"></div>' + units;
                     }
-                    if (unit[4] !== 'none') {
-                      tempUnits += '&#013;Spec: ' + unit[4];
-                    }
-                    if (unit[3] !== 'none') {
-                      tempUnits += '&#013;Soul: ' + unit[3];
-                    }
-                    units = tempUnits + '"></div>' + units;
-                  }
                 }
             }
 
@@ -241,14 +241,14 @@ async function loadLogData() {
                 rewardsList = entry.rewards.split(",");
                 rewards = "";
                 for (let i = 0; i < rewardsList.length; i++) {
-                  const reward = rewardsList[i].split(" ");
-                  if (reward[1] !== undefined) {
-                    if (reward[1].includes("scroll")) {
-                                rewards = '<div class="crop"><img src="' + reward[0] + '" title="' + reward[1] + '"></div>' + rewards;
-                    } else {
-                                rewards = '<img src="' + reward[0] + '" title="' + reward[1] + '" style="height: 30px; width: auto">' + rewards;
+                    const reward = rewardsList[i].split(" ");
+                    if (reward[1] !== undefined) {
+                        if (reward[1].includes("scroll")) {
+                            rewards = '<div class="crop"><img src="' + reward[0] + '" title="' + reward[1] + '"></div>' + rewards;
+                        } else {
+                            rewards = '<img src="' + reward[0] + '" title="' + reward[1] + '" style="height: 30px; width: auto">' + rewards;
+                        }
                     }
-                  }
                 }
             }
 
@@ -306,27 +306,27 @@ async function loadLogData() {
             row.id = `${i}`;
             let initialchestHTML;
             if (entry.initialchest !== undefined) {
-              initialchestHTML = `<td style="text-align: center; vertical-align: middle;">
+                initialchestHTML = `<td style="text-align: center; vertical-align: middle;">
                         <div style="display: flex; flex-direction: column; align-items: center;">
                             ${initialChestName}
                             <img src="${initialUrl}" alt="Initial Chest Image" style="height: 30px; width: auto">
                         </div>
                     </td>`
             } else {
-              initialchestHTML = `<td style="text-align: center; vertical-align: middle;">
+                initialchestHTML = `<td style="text-align: center; vertical-align: middle;">
                         <div style="display: flex; flex-direction: column; align-items: center;">
                         </div>
                     </td>`
             }
             let logRewards;
             if (logSwitch) {
-              logRewards = `<td>${rewards}</td>
+                logRewards = `<td>${rewards}</td>
                     <td>${leaderboardRank}</td>
                     <td>${kills}</td>
                     <td>${assists}</td>
                     <td>${units}</td>`
             } else {
-              logRewards = ``
+                logRewards = ``
             }
             row.innerHTML = `<td>${counter}</td>
                 <td>${entry.logId}</td>
