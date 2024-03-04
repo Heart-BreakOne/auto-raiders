@@ -919,6 +919,10 @@ async function getValidUnits() {
     }
   }
 
+  goHome()
+  closeAll()
+  return
+
 }
 
 async function cancelPlacement() {
