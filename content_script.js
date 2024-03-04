@@ -1268,88 +1268,23 @@ async function collectChests() {
       const stBtn = capSlot.querySelector(".offlineButton").id
       const slotState = await getIdleState(stBtn);
       const cNm = capSlot.querySelector(".capSlotName").innerText
-      button.click();
+      
+      await delay(500);
+      let raidStats = await getRaidStats(raidId);
       await delay(2000);
-      let rewards;
-      let leaderboardRank;
-      let kills;
-      let assists;
-      let unitIconList; 
-      //Check if user wants to log rewards and leaderboard results
-      const logSwitch = await retrieveFromStorage("logSwitch");
-      if (logSwitch) {
-        let userName = document.querySelector(".userInfoImage").alt;
-        let rewardAmt;
-        rewards = "";
-        let rewardScrim = document.querySelectorAll(".rewardsScrim");
-        if (rewardScrim.length > 0) {
-          let rewardsTab = document.querySelector(".rewardsTab");
-          rewardsTab.click();
-          await delay(500);
-          let allRewards;
-          allRewards = rewardScrim[0].querySelectorAll(".rewardMainImage");
-          let allRewardAmts = rewardScrim[0].querySelectorAll(".rewardListItemAmt");
-          for (let i = 0; i < allRewards.length; i++) {
-            const reward = allRewards[i];
-            if (i < allRewardAmts.length) {
-              rewardAmt = allRewardAmts[i].innerText;
-            } else {
-              rewardAmt = "";
-            }
-            rewards = reward.src + " " + reward.alt + rewardAmt + "," + rewards;
-          }
-          if (rewards === "") {
-            let rewardGridFooter = rewardScrim[0].querySelector(".rewardGridFooter");
-            if (rewardGridFooter.innerText.includes("alvage")) {
-              rewards = "None";
-            }
-          }
-          let leaderboardTab = document.querySelector(".rewardsLeaderboardTab");
-          leaderboardTab.click();
-          await delay(500);
+      let battleResult = raidStats[0];
+      leaderboardRank = raidStats[1];
+      kills = raidStats[3];
+      assists = raidStats[4];
+      unitIconList = raidStats[8];
+      rewards = raidStats[2];
+      let chestStringAlt = raidStats[5];
+      let raidChest = raidStats[6];
+      let chestCount = raidStats[7];
 
-          let rows2 = document.querySelectorAll(".rewardsLeaderboardRowCont")
-          let lastRow2 = rows2[rows2.length - 1];
-
-          let leaderboardRows;
-          for (let k = 0; k < 30; k++) {
-              leaderboardRows = document.querySelectorAll(".rewardsLeaderboardRowCont");
-
-              for (let i = 0; i < leaderboardRows.length; i++) {
-                const leaderboardRow = leaderboardRows[i];
-                const leaderboardRowUser = leaderboardRow.querySelector(".rewardsLeaderboardRowText.rewardsLeaderboardRowDisplayName");
-                leaderboardRank = leaderboardRow.querySelector(".rewardsLeaderboardRowText.rewardsLeaderboardRowRank").innerText;
-                if (leaderboardRowUser.innerText == userName) {
-                  leaderboardRank = leaderboardRow.querySelector(".rewardsLeaderboardRowText.rewardsLeaderboardRowRank").innerText;
-                  kills = leaderboardRow.querySelector(".rewardsLeaderboardRowText.rewardsLeaderboardRowKills").innerText;
-                  assists = leaderboardRow.querySelector(".rewardsLeaderboardRowText.rewardsLeaderboardRowAssists").innerText;
-                  let unitIconsAll = leaderboardRow.querySelector(".rewardsLeaderboardRowUnitIconsCont");
-                  let unitIcons = unitIconsAll.querySelectorAll(".rewardsLeaderboardRowUnitIconWrapper");
-                  unitIconList = "";
-                  for (let j = 0; j < unitIcons.length; j++) {
-                    const unitIconWrapper = unitIcons[j];
-                    let unitIcon = unitIconWrapper.querySelector(".rewardsLeaderboardRowUnitIcon");
-                    unitIconList = unitIcon.src + " " + unitIcon.alt + ","+ unitIconList
-                  }
-                  if (kills !== undefined) {
-                    await delay(500);//+(500*k));
-                  }
-                  break;
-                }
-              }
-              if (kills !== undefined && kills !== null) {
-                break;
-              }
-              clickHoldAndScroll(lastRow2, -1000, 100);
-              await delay(500);
-              rows2 = document.querySelectorAll(".rewardsLeaderboardRowCont");
-              lastRow2 = rows2[rows2.length - 1];
-          }
-
-        }
-        await delay(500);
+      if (captainName !== null && captainName !== undefined && raidId !== null && raidId !== undefined && ((battleResult !== null && battleResult !== undefined) || (chestStringAlt !== null && chestStringAlt !== undefined) || (leaderboardRank !== null && leaderboardRank !== undefined) || (kills !== null && kills !== undefined) || (assists !== null && assists !== undefined) || (unitIconList !== null && unitIconList !== undefined) || (rewards !== null && rewards !== undefined))) {
+        await setLogResults(battleResult, captainName, chestStringAlt, leaderboardRank, kills, assists, unitIconList, rewards, raidId);
       }
-      await setLogResults(battleResult, captainName, chestStringAlt, leaderboardRank, kills, assists, unitIconList, rewards);
       battleResult = null;
       captainName = null;
       chestStringAlt = null;
@@ -1358,16 +1293,7 @@ async function collectChests() {
       assists = null;
       unitIconList = null;
       rewards = null;
-      await delay(250);
-
-      const rewardContinueButton = document.querySelector(".actionButton.actionButtonPrimary.rewardsButton");
-
-      if (rewardContinueButton) {
-        if (rewardContinueButton.innerText === "CONTINUE") {
-          rewardContinueButton.click();
-        }
-      }
-      await delay(250);
+      await delay(2000);
 
       if (slotState == 2) {
         const allCapSlots = document.querySelectorAll(".capSlot")
