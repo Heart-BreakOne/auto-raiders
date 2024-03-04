@@ -338,7 +338,7 @@ async function start() {
         if (placementOdds == -100 || placementOdds == undefined || placementOdds > 100) {
           placementOdds = 100
         }
-        else if (placementOdds < 0) {
+        else if (placementOdds <= 0) {
           continue
         }
 
