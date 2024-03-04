@@ -905,6 +905,7 @@ async function getValidUnits() {
         }
         else {
           await cancelPlacement()
+          continue
         }
 
       } else if (unitId.includes(markerId)) {
@@ -913,6 +914,7 @@ async function getValidUnits() {
           return
         } else {
           await cancelPlacement()
+          continue
         }
       }
     }
@@ -943,11 +945,11 @@ async function attempPlacement(unit, marker) {
   await delay(1000);
   tapUnit();
   await delay(500);
-  placeTheUnit();
+  const isPlaced = placeTheUnit();
   await delay(1000);
   reloadRoot();
   await delay(1000);
-  if (checkPlacement()) {
+  if (isPlaced || checkPlacement()) {
     return true
   } else {
     return false
@@ -988,14 +990,16 @@ async function prepareMarkers(captainUnit) {
     return await sort()
   } else {
     //Treat the markers to remove block markers
+    let blockMarkers = []
     for (let i = arrMrks.length - 1; i >= 0; i--) {
       let planIcon = arrMrks[i];
       let backgroundImageValue = getComputedStyle(planIcon).getPropertyValue('background-image').toUpperCase();
       if (backgroundImageValue.includes("VYAAAAASUVORK5CYII=")) {
-        arrMrks.splice(i, 1);
+        blockMarkers.push(planIcon);
       }
     }
-
+    blockMarkers.forEach(marker => { marker.remove(); });
+    
     //Check what is inside new array.
     if (arrMrks.length == 0 && (arrayOfAllyPlacement == undefined || arrayOfAllyPlacement.length == 0)) {
       //Captain is using a mix of block markers and open zones.
@@ -1044,7 +1048,7 @@ function tapUnit() {
     placerUnitCont.dispatchEvent(event);
   } catch (error) {
     goHome();
-    return;
+    return true;
   }
 }
 
@@ -1058,7 +1062,7 @@ async function placeTheUnit() {
     clockText = document.querySelector('.battlePhaseTextClock .clock').innerText;
   } catch (error) {
     goHome();
-    return;
+    return true;
   }
 
   //If timer has reached 00:00 it means the battle has already started, return to main menu.
@@ -1069,7 +1073,7 @@ async function placeTheUnit() {
     if (placerButton && selectorBack) {
       placerButton.click();
       selectorBack.click();
-      return;
+      return true;
     }
   }
 
@@ -1083,12 +1087,11 @@ async function placeTheUnit() {
       const cancelButton = document.querySelector(cancelButtonSelector);
       if (cancelButton) {
         cancelButton.click();
+        return false;
       }
-      if (currentMarkerKey != null || currentMarkerKey != 0) {
-        getValidMarkers();
-      } else {
+      else {
         goHome();
-        return;
+        return true;
       }
     } else {
       if (confirmPlacement) {
@@ -1100,6 +1103,7 @@ async function placeTheUnit() {
           allPlaceAnywayButtons.forEach(button => {
             if (button.innerText === "PLACE ANYWAY") {
               placeAnywayButton = button;
+              return true;
             }
           });
           let allPlaceAnywayBackButtons = document.querySelectorAll('.actionButton.actionButtonPrimary')
@@ -1114,9 +1118,10 @@ async function placeTheUnit() {
               placeAnywayButton.click();
               await delay(1000);
               goHome();
-              return;
+              return true;
             } else {
               placeAnywayBackButton.click();
+              return true;
             }
           }
         }
@@ -1130,7 +1135,7 @@ async function placeTheUnit() {
     const placementSuccessful = document.querySelector(".actionButton.actionButtonDisabled.placeUnitButton");
     if (placementSuccessful) {
       goHome();
-      return;
+      return true;
     }
   }, 3000);
 
@@ -1139,10 +1144,11 @@ async function placeTheUnit() {
     const negativeButton = document.querySelector(cancelButtonSelector);
     if (disabledButton) {
       disabledButton.click();
+      return false;
     }
     if (negativeButton) {
       negativeButton.click();
-      getValidMarkers();
+      return false;
     }
   }, 5000);
 }
@@ -1509,7 +1515,6 @@ function clickHoldAndScroll(element, deltaY, duration) {
   } catch (error) {
     console.log(error)
   }
-
 
 }
 
