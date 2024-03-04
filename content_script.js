@@ -335,7 +335,7 @@ async function start() {
           continue
         }
         let placementOdds = await retrieveNumberFromStorage("placementOddsInput")
-        if (placementOdds == undefined || placementOdds > 100) {
+        if (placementOdds == -100 || placementOdds == undefined || placementOdds > 100) {
           placementOdds = 100
         }
         else if (placementOdds < 0) {
