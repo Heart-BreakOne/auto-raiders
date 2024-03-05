@@ -691,8 +691,8 @@ async function getMapNode(raidId) {
 
 //Quest collection
 
-setInterval(collectQuests, 60000);
+setInterval(collectQuestsAPI, 60000);
 
-async function collectQuests() {
+async function collectQuestsAPI() {
 
 }
