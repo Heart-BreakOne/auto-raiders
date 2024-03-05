@@ -21,6 +21,7 @@ const keysToExport = [
     "legendarySwitch",
     "offlinePermission",
     "offlineSwitch",
+    "setMarkerSwitch",
     "questSwitch",
     "rareSwitch",
     "scrollSwitch",

@@ -562,7 +562,7 @@ async function logLeaderboardUnits() {
 }
 // This function checks if the battlefield is present, the current chest type, then zooms into it.
 async function openBattlefield() {
-
+  await delay(7000)
   // Attempts to check if battlefield is open
   let battleInfo
   try {
@@ -580,7 +580,7 @@ async function openBattlefield() {
   let radioLoyaltyInt = 0
   try {
     radioLoyaltyInt = parseInt(radioLoyalty)
-  } catch(error){
+  } catch (error) {
     radioLoyaltyInt = 0
   }
 
@@ -914,6 +914,21 @@ async function getValidUnits() {
     });
   }
 
+  if (retrieveFromStorage("setMarkerSwitch")) {
+    let arrayOfVibeMarkers = [];
+    let notVibeMarkers = [];
+    
+    for (let i = 0; i < arrayOfMarkers.length; i++) {
+      let marker = arrayOfMarkers[i];
+      if (marker.id === "VIBE") {
+        arrayOfVibeMarkers.push(marker);
+      } else {
+        notVibeMarkers.push(marker);
+      }
+    }
+    arrayOfMarkers = notVibeMarkers.concat(arrayOfVibeMarkers);
+  }
+
   //Add unit name and type to unit itself
   for (let i = 0; i < unitDrawer[0].children.length; i++) {
     let unit = unitDrawer[0].children[i];
@@ -1038,7 +1053,7 @@ async function prepareMarkers(captainUnit) {
       }
     }
     blockMarkers.forEach(marker => { marker.remove(); });
-    
+
     //Check what is inside new array.
     if (arrMrks.length == 0 && (arrayOfAllyPlacement == undefined || arrayOfAllyPlacement.length == 0)) {
       //Captain is using a mix of block markers and open zones.
@@ -1268,7 +1283,7 @@ async function collectChests() {
       const stBtn = capSlot.querySelector(".offlineButton").id
       const slotState = await getIdleState(stBtn);
       const cNm = capSlot.querySelector(".capSlotName").innerText
-      
+
       await delay(500);
       let raidStats = await getRaidStats(raidId);
       await delay(2000);
@@ -1318,7 +1333,7 @@ async function collectChests() {
 
       goHome();
       break;
-      
+
     }
   }
 }

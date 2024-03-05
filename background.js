@@ -578,7 +578,8 @@ function setDefaultValues(details) {
   if (details.reason === 'install') {
     chrome.storage.local.set({
       "commonSwitch": true,
-      "campaignSwitch": true
+      "campaignSwitch": true,
+      "loyalty": "0"
     });
   }
 }
