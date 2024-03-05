@@ -528,37 +528,7 @@ async function performCollection() {
 }
 
 async function logLeaderboardUnits() {
-  goHome();
-  await delay(1000);
-  const captainSlots = document.querySelectorAll(".capSlots");
-  if (captainSlots.length == 0) {
-    return;
-  }
-  //Using the game mode key retrieves captainName from storage
-  const firstCapSlot = captainSlots[0];
-  const capSlotChildren = firstCapSlot.querySelectorAll('.capSlot');
-  let captainNameFromDOM;
-
-  for (const capSlot of capSlotChildren) {
-    //Attempts to get the captain name from the current slot
-    try {
-      captainNameFromDOM = capSlot.querySelector('.capSlotName').innerText;
-    } catch (error) {
-      continue;
-    }
-    let requestLoyaltyResults;
-    if (captainNameFromDOM !== undefined) {
-      requestLoyaltyResults = await getCaptainLoyalty(captainNameFromDOM);
-    }
-    let raidId;
-    raidId = requestLoyaltyResults[0];
-
-    let leaderboardUnitsData;
-    leaderboardUnitsData = await getLeaderboardUnitsData(raidId);
-    if (leaderboardUnitsData !== "") {
-      await setLogUnitsData(captainNameFromDOM, raidId, leaderboardUnitsData);
-    }
-  }
+    let leaderboardUnitsData = await getLeaderboardUnitsData();
 }
 // This function checks if the battlefield is present, the current chest type, then zooms into it.
 async function openBattlefield() {
@@ -988,7 +958,8 @@ async function attemptPlacement(unit, marker) {
   await delay(1000);
   reloadRoot();
   await delay(1000);
-  if (isPlaced || checkPlacement()) {
+  //if (isPlaced || checkPlacement()) {
+  if (checkPlacement()) {
     return true
   } else {
     return false
@@ -998,8 +969,14 @@ async function attemptPlacement(unit, marker) {
 function checkPlacement() {
   const hasPlaced = document.querySelector(".actionButton.actionButtonDisabled.placeUnitButton");
   const menu = document.querySelector(".captainSlots")
-  if (menu || hasPlaced.innerText.includes("UNIT READY TO PLACE IN")) {
+  if (menu) {
     return true
+  } else if (hasPlaced) {
+    if (hasPlaced.innerText.includes("UNIT READY TO PLACE IN")) {
+      return true
+    } else {
+      return false
+    }
   } else {
     return false
   }

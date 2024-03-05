@@ -142,9 +142,13 @@ async function fetchLoyaltyChests(raid_url) {
   }
 }
 
-async function getLeaderboardUnitsData(raidId) {
+async function getLeaderboardUnitsData() {
   const response = await fetch('https://www.streamraiders.com/api/game/?cn=getUser&command=getUser');
   const userData = await response.json();
+  if (userData && userData.info && userData.info.version && userData.info.clientVersion) {
+    clientVersion = userData.info.version;
+    gameuserDataVersion = userData.info.dataVersion;
+  }
   const userId = userData.data.userId;
 
   let unitAssetNames = await fetchUnitAssetNames(userData.info.dataPath)
@@ -153,7 +157,8 @@ async function getLeaderboardUnitsData(raidId) {
 
   try {
     let cookieString = document.cookie;
-    const response = await fetch(`https://www.streamraiders.com/api/game/?cn=getRaid&raidId=${raidId}&placementStartIndex=0&maybeSendNotifs=false&clientVersion=${clientVersion}&clientPlatform=WebLite&gameDataVersion=${gameDataVersion}&command=getRaid&isCaptain=0`, {
+    // Post request to get all units
+    const response = await fetch(`https://www.streamraiders.com/api/game/?cn=getActiveRaids&clientVersion=${clientVersion}&clientPlatform=MobileLite&gameDataVersion=${gameDataVersion}&command=getActiveRaidsLite&isCaptain=0`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/x-www-form-urlencoded',
@@ -164,62 +169,85 @@ async function getLeaderboardUnitsData(raidId) {
     if (!response.ok) {
       throw new Error('Network response was not ok');
     }
-    const currentRaid = await response.json();
-    const raid_url = currentRaid.info.dataPath
-    const placements = currentRaid.data.placements;
-    let CharacterType = "";
-    let skin = "";
-    let skinURL = "";
-    let SoulType = "";
-    let specializationUid = "";
-    let unitIconList = "";
 
-    if (placements) {
-      for (let i = 0; i < placements.length; i++) {
-        const placement = placements[i];
-        if (placement.userId === userId) {
-          if (placement.CharacterType === null || placement.CharacterType === "") {
-            CharacterType = "none";
-          } else {
-            CharacterType = placement.CharacterType;
-          }
-          if (placement.skin === null || placement.skin === "") {
-            Object.keys(unitAssetNames.Units).forEach(function (key) {
-              if (key === CharacterType) {
-                skin = unitAssetNames.Units[key].AssetName;
-              }
-            })
-          } else {
-            skin = placement.skin;
+    // Get unit id and name.
+    const activeRaids = await response.json();
 
-            Object.keys(skinNames.Skins).forEach(function (key) {
-              if (key === placement.skin) {
-                skin = skinNames.Skins[key].BaseAssetName;
-              }
-            })
-          }
-          if (placement.SoulType === null || placement.SoulType === "") {
-            SoulType = "none";
-          } else {
-            SoulType = placement.SoulType;
-          }
-          if (placement.specializationUid === null || placement.specializationUid === "") {
-            specializationUid = "none";
-          } else {
-            specializationUid = placement.specializationUid;
-          }
-          Object.keys(imageURLs.ImageURLs).forEach(function (key) {
-            if (key === "mobilelite/units/static/" + skin + ".png") {
-              skinURL = "https://d2k2g0zg1te1mr.cloudfront.net/" + imageURLs.ImageURLs[key];
+    for (let i = 0; i < activeRaids.data.length; i++) {
+      const position = activeRaids.data[i];
+      const raidId = position.raidId;
+      const cptName = position.twitchDisplayName;
+
+      const response = await fetch(`https://www.streamraiders.com/api/game/?cn=getRaid&raidId=${raidId}&placementStartIndex=0&maybeSendNotifs=false&clientVersion=${clientVersion}&clientPlatform=WebLite&gameDataVersion=${gameDataVersion}&command=getRaid&isCaptain=0`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/x-www-form-urlencoded',
+          'Cookie': cookieString,
+        },
+      });
+
+      if (!response.ok) {
+        throw new Error('Network response was not ok');
+      }
+      const currentRaid = await response.json();
+      const raid_url = currentRaid.info.dataPath
+      const placements = currentRaid.data.placements;
+      let CharacterType = "";
+      let skin = "";
+      let skinURL = "";
+      let SoulType = "";
+      let specializationUid = "";
+      let unitIconList = "";
+
+      if (placements) {
+        for (let i = 0; i < placements.length; i++) {
+          const placement = placements[i];
+          if (placement.userId === userId) {
+            if (placement.CharacterType === null || placement.CharacterType === "") {
+              CharacterType = "none";
+            } else {
+              CharacterType = placement.CharacterType;
             }
-          })
-          unitIconList = skinURL + " " + skin.replace("allies", "").replace("skinFull", "") + " " + CharacterType + " " + SoulType + " " + specializationUid + "," + unitIconList
+            if (placement.skin === null || placement.skin === "") {
+              Object.keys(unitAssetNames.Units).forEach(function (key) {
+                if (key === CharacterType) {
+                  skin = unitAssetNames.Units[key].AssetName;
+                }
+              })
+            } else {
+              skin = placement.skin;
+
+              Object.keys(skinNames.Skins).forEach(function (key) {
+                if (key === placement.skin) {
+                  skin = skinNames.Skins[key].BaseAssetName;
+                }
+              })
+            }
+            if (placement.SoulType === null || placement.SoulType === "") {
+              SoulType = "none";
+            } else {
+              SoulType = placement.SoulType;
+            }
+            if (placement.specializationUid === null || placement.specializationUid === "") {
+              specializationUid = "none";
+            } else {
+              specializationUid = placement.specializationUid;
+            }
+            Object.keys(imageURLs.ImageURLs).forEach(function (key) {
+              if (key === "mobilelite/units/static/" + skin + ".png") {
+                skinURL = "https://d2k2g0zg1te1mr.cloudfront.net/" + imageURLs.ImageURLs[key];
+              }
+            })
+            unitIconList = skinURL + " " + skin.replace("allies", "").replace("skinFull", "") + " " + CharacterType + " " + SoulType + " " + specializationUid + "," + unitIconList
+          }
         }
       }
+
+      if (unitIconList !== "") {
+        await setLogUnitsData(cptName, raidId, unitIconList);
+      }
     }
-
-    return unitIconList;
-
+    return "";
   } catch (error) {
     console.error('Error in getLeaderboardData:', error);
     return "";
