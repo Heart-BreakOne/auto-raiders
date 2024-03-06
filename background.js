@@ -391,6 +391,8 @@ async function getGameData(gameDataPathUrl) {
       const currency = data.sheets.Currency;
       const items = data.sheets.Items;
       const units = data.sheets.Units;
+      const unitsArray = Object.values(units);
+      const filteredUnits = unitsArray.filter(unit => unit.PlacementType === "viewer");
       const skins = data.sheets.Skins;
       const mapNodes = data.sheets.MapNodes
 
@@ -405,7 +407,7 @@ async function getGameData(gameDataPathUrl) {
         MapNodes: mapNodes
       };
       
-      await chrome.storage.local.set({"loyaltyChests": transformedJson, "currency": currency, "items": items, "units": units, "skins": skins });
+      await chrome.storage.local.set({"loyaltyChests": transformedJson, "currency": currency, "items": items, "units": filteredUnits, "skins": skins });
       
       console.log("Game data successfully fetched and saved to chrome storage.");
   } catch (error) {
