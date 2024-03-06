@@ -534,7 +534,7 @@ async function openBattlefield() {
   sortedArrMrks = null;
   unitDrawer = null;
   await delay(6000)
-  
+
   // Attempts to check if battlefield is open
   let battleInfo
   try {
@@ -950,7 +950,7 @@ async function cancelPlacement() {
 }
 
 async function attemptPlacement(unit, marker) {
-  if(!await moveScreenCenter(marker)) {
+  if (!await moveScreenCenter(marker)) {
     closeAll();
     goHome();
     return;
@@ -982,7 +982,13 @@ function checkPlacement() {
 
 //Looks and selects a valid marker for placement
 async function prepareMarkers(captainUnit) {
-  let arrMrks = getMarkers();
+  let arrMrks, arrLen = getMarkers();
+
+  // Captain has full block markers
+  if (!arrMrks || (arrMrks.length == 0 && arrLen != 0)) {
+    goHome();
+    return
+  }
 
   async function sortMarkers(arrMrks) {
     try {
@@ -996,7 +1002,7 @@ async function prepareMarkers(captainUnit) {
     // If no markers are available or captain is using a mix of block markers and open zones,
     // place imaginary markers and use them instead.
     setImaginaryMarkers(document.querySelectorAll(".placementAlly"));
-    arrMrks = removeHalf(getMarkers());
+    arrMrks, _ = removeHalf(getMarkers());
     return await sortMarkers(arrMrks);
   }
 
@@ -1340,10 +1346,15 @@ function removeHalf(arrMrks) {
 
 function getMarkers() {
   const arrOfAllMrks = document.querySelectorAll(".planIcon");
-  const arrOfMarkers = Array.from(arrOfAllMrks).filter(planIcon => {
+  let arrLen = arrOfAllMrks.length
+
+  Array.from(arrOfAllMrks).forEach(planIcon => {
     const backgroundImageValue = getComputedStyle(planIcon).getPropertyValue('background-image');
-    return !backgroundImageValue.includes("VYAAAAASUVORK5CYII=");
+    if (backgroundImageValue.includes("VYAAAAASUVORK5CYII=")) {
+      planIcon.remove();
+    }
   });
 
-  return arrOfMarkers;
+  const arrOfMarkers = Array.from(document.querySelectorAll(".planIcon"));
+  return arrOfMarkers, arrLen;
 }
