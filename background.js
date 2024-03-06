@@ -379,39 +379,126 @@ async function checkGameData() {
 }
 
 async function getGameData(gameDataPathUrl) {
-  try {
-      const response = await fetch(gameDataPathUrl);
-      
-      if (!response.ok) {
-          throw new Error(`Failed to fetch game data (${response.status} ${response.statusText})`);
-      }
-      
-      const data = await response.json();
-      
-      const currency = data.sheets.Currency;
-      const items = data.sheets.Items;
-      const units = data.sheets.Units;
-      const unitsArray = Object.values(units);
-      const filteredUnits = unitsArray.filter(unit => unit.PlacementType === "viewer");
-      const skins = data.sheets.Skins;
-      const mapNodes = data.sheets.MapNodes
 
-      for (const nodeKey in mapNodes) {
-        const node = mapNodes[nodeKey];
-        for (const keyToRemove of ["NodeDifficulty", "NodeType", "MapTags", "OnLoseDialog", "OnStartDialog", "OnWinDialog"]) {
-          delete node[keyToRemove];
-        }
-      }
-      const transformedJson = {
-        url: gameDataPathUrl,
-        MapNodes: mapNodes
-      };
-      
-      await chrome.storage.local.set({"loyaltyChests": transformedJson, "currency": currency, "items": items, "units": filteredUnits, "skins": skins });
-      
-      console.log("Game data successfully fetched and saved to chrome storage.");
+  try {
+    const response = await fetch(gameDataPathUrl);
+
+    if (!response.ok) {
+      throw new Error(`Failed to fetch game data (${response.status} ${response.statusText})`);
+    }
+
+    const data = await response.json();
+
+    const currency_keys_rm = [
+      "CapCaptain",
+      "CapViewer",
+      "CaptainType",
+      "DisplayName",
+      "EpicType",
+      "NearCapCaptain",
+      "NearCapViewer",
+      "RegularType",
+      "Type",
+      "Uid"
+    ]
+    let currency = data.sheets.Currency;
+    currency = removeKeys(currency, currency_keys_rm)
+
+    const items_keys_rm = ["DisplayName", "IsInRandomPool", "Rarity", "Uid"]
+    let items = data.sheets.Items;
+    items = removeKeys(items, items_keys_rm)
+
+    const units_keys_rm = ["AssetScaleOverride",
+      "AttackRate",
+      "AttackType",
+      "BaseAction",
+      "BaseActionSelfVfxUid",
+      "CanBePlaced",
+      "Damage",
+      "DamageDelay",
+      "Description",
+      "DisplayName",
+      "EffectiveCircleDataUid",
+      "ExtraHitSize",
+      "HP",
+      "Heal",
+      "IsCaptain",
+      "IsEpic",
+      "IsFlying",
+      "Level",
+      "OnDeathAction",
+      "OnDeathActionSelfVfxUid",
+      "OnDefeatAction",
+      "OnKillAction",
+      "PassThroughList",
+      "PlacementType",
+      "PlacementVFX",
+      "Power",
+      "ProjectileUid",
+      "Range",
+      "Rarity",
+      "RemainsAsset",
+      "Role",
+      "ShowTeamIndicator",
+      "Size",
+      "SpecialAbilityActionUid",
+      "SpecialAbilityDescription",
+      "SpecialAbilityRate",
+      "SpecialAbilitySelfVfxUid",
+      "Speed",
+      "StartBuffsList",
+      "StrongAgainstTagsList",
+      "TagsList",
+      "TargetPriorityTagsList",
+      "TargetTeam",
+      "TargetingPriorityRange",
+      "Triggers",
+      "UnitTargetingType",
+      "UnitType",
+      "UpgradeCurrencyType",
+      "WeakAgainstTagsList"]
+    const units = data.sheets.Units;
+    const unitsArray = Object.values(units);
+    let filteredUnits = unitsArray.filter(unit => unit.PlacementType === "viewer");
+    filteredUnits = removeKeys(filteredUnits, units_keys_rm)
+
+    const skins_keys_rm = ["BaseUnitType",
+    "CaptainUnitType",
+    "DateAdded",
+    "Description",
+    "DisplayName",
+    "EpicAssetOverride",
+    "EpicUnitType",
+    "Filter",
+    "IsCharity",
+    "IsGiftable",
+    "IsLive",
+    "Jira",
+    "ProductId",
+    "ProjectileOverrideUid",
+    "Shared",
+    "SortOrder",
+    "StreamerId",
+    "StreamerName",
+    "Type",
+    "Uid"]
+    let skins = data.sheets.Skins;
+    skins = removeKeys(skins, skins_keys_rm)
+
+    const map_keys_rm = ["NodeDifficulty", "NodeType", "MapTags", "OnLoseDialog", "OnStartDialog", "OnWinDialog"]
+    let mapNodes = data.sheets.MapNodes
+    mapNodes = removeKeys(mapNodes, map_keys_rm)
+
+    const transformedJson = {
+      url: gameDataPathUrl,
+      MapNodes: mapNodes
+    };
+
+    await chrome.storage.local.set({ "loyaltyChests": transformedJson, "currency": currency, "items": items, "units": filteredUnits, "skins": skins });
+
+    console.log("Game data successfully fetched and saved to chrome storage.");
   } catch (error) {
-      console.error("Error fetching or saving game data:", error);
+    console.error("Error fetching or saving game data:", error);
   }
 }
 
@@ -434,6 +521,16 @@ async function updateImageURLS() {
 }
 
 
+function removeKeys(items, keysToRemove) {
+  for (const nodeKey in items) {
+    const node = items[nodeKey];
+    for (const keyToRemove of keysToRemove) {
+      delete node[keyToRemove];
+    }
+  }
+  return items
+}
+
 // Set some default values when extension is installed
 chrome.runtime.onInstalled.addListener(function (details) {
   if (details.reason === 'install') {
@@ -446,11 +543,4 @@ chrome.runtime.onInstalled.addListener(function (details) {
   }
 });
 
-setInterval(checkGameData, 60000);
-
-
-/* NEW KEYS
-
-
-
-*/
+setInterval(checkGameData, 10000);
