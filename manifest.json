@@ -1,7 +1,7 @@
 {
    "manifest_version": 3,
    "name": "SRHelper",
-   "version": "5.0.8",
+   "version": "5.0.9",
    "description": "Stream Raiders Helper",
    "action": {
       "default_popup": "popup.html",
@@ -40,7 +40,8 @@
             "battle_message_handler.js",
             "quest_handler.js",
             "request_handler.js",
-            "mouse_events.js"
+            "mouse_events.js",
+            "level_handler.js"
          ],
          "matches": [
             "https://www.streamraiders.com/*"

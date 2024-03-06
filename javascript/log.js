@@ -118,6 +118,7 @@ document.addEventListener('DOMContentLoaded', async function () {
 
 async function loadLogData() {
     const logSwitch = await retrieveFromStorage("logSwitch");
+    const raidIdSwitch = await retrieveFromStorage("raidIdSwitch")
 
     //If table already exists, remove it so a new one can be injected
     const isTable = document.getElementById("logTable");
@@ -142,7 +143,13 @@ async function loadLogData() {
         //Create table header row
         const headerRow = document.createElement('tr');
         if (logSwitch) {
-            headerRow.innerHTML = '<th>#</th><th>Slot</th><th>Captain Name</th><th>Mode</th><th>Color Code</th><th>Start time</th><th>End time</th><th>Duration</th><th>Result</th><th>Awarded Chest</th><th>Initial Chest</th><th>Rewards</th><th>Leaderboard Rank</th><th>Kills</th><th>Assists</th><th>Units Placed</th>';
+            const headerString1 = '<th>#</th><th>Slot</th><th>Captain Name</th><th>Mode</th><th>Color Code</th><th>Start time</th><th>End time</th><th>Duration</th><th>Result</th><th>Awarded Chest</th><th>Initial Chest</th>'
+            const headerString2 = '<th>Rewards</th><th>Leaderboard Rank</th><th>Kills</th><th>Assists</th><th>Units Placed</th>'
+            if(raidIdSwitch) {
+                headerRow.innerHTML = headerString1 + '<th>Raid ID</th>' + headerString2
+            } else {
+                headerRow.innerHTML = headerString1 + headerString2;
+            }
         } else {
             headerRow.innerHTML = '<th>#</th><th>Slot</th><th>Captain Name</th><th>Mode</th><th>Color Code</th><th>Start time</th><th>End time</th><th>Duration</th><th>Result</th><th>Awarded Chest</th><th>Initial Chest</th>';
         }
@@ -165,6 +172,7 @@ async function loadLogData() {
             let assists;
             let units;
             let unitsList;
+            let raidId;
             let rewards;
             let rewardsList;
 
@@ -209,6 +217,12 @@ async function loadLogData() {
                 assists = "Unknown";
             } else {
                 assists = entry.assists;
+            }
+
+            if (entry.raidId === undefined) {
+                raidId = "Unknown"
+            } else {
+                raidId = entry.raidId
             }
 
             if (entry.units2 === undefined) {
@@ -304,6 +318,7 @@ async function loadLogData() {
             // Create a table row
             const row = document.createElement('tr');
             row.id = `${i}`;
+            row.setAttribute('title', raidId);
             let initialchestHTML;
             if (entry.initialchest !== undefined) {
                 initialchestHTML = `<td style="text-align: center; vertical-align: middle;">
@@ -325,6 +340,9 @@ async function loadLogData() {
                     <td>${kills}</td>
                     <td>${assists}</td>
                     <td>${units}</td>`
+                if (raidIdSwitch) {
+                    logRewards = `<td>${raidId}</td>${logRewards}`
+                }
             } else {
                 logRewards = ``
             }

@@ -570,22 +570,14 @@ async function openBattlefield() {
     battleInfo = document.querySelector(".battleInfoMapTitle")
     battleInfo.click();
 
-    /*
-    let mapDifficulty = document.querySelector(".mapInfoDifficulty").innerText
-    mapDifficulty = mapDifficulty.split(":")[1].trim();
-    if (mapDifficulty == "Very Easy") {
+    //Check how many units user wants
+    let amountUnitsUserWants = await getUnitAmountData()
 
-    } else if (mapDifficulty == "Easy") {
+    if (amountUnitsUserWants != 6) {
+      const battleLog = await retrieveFromStorage("logData")
+      currentBattle = battleLog
+    }
 
-    } else if (mapDifficulty == "Moderate") {
-
-    } else if (mapDifficulty == "Hard") {
-
-    } else if (mapDifficulty == "Very Hard") {
-
-    } else if (mapDifficulty == "Insane") {
-
-    } */
     await delay(2000);
     let chest;
     try {
