@@ -565,6 +565,7 @@ async function openBattlefield() {
 
     try {
       let battleLog = await retrieveFromStorage("logData");
+      battleLog = battleLog.slice(-4);
       for (let i = battleLog.length - 1; i >= 0; i--) {
         const battleOfInterest = battleLog[i];
         const capName = battleOfInterest["logCapName"].toLowerCase().trim();
