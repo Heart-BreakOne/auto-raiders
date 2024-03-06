@@ -13,8 +13,7 @@
    "permissions": [
       "storage",
       "declarativeNetRequestWithHostAccess",
-      "cookies",
-      "unlimitedStorage"
+      "cookies"
    ],
    "options_ui": {
       "page": "popup.html"
