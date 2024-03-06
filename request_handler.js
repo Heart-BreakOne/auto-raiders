@@ -137,7 +137,8 @@ async function getLeaderboardUnitsData() {
             }
             if (placement.skin === null || placement.skin === "") {
               Object.keys(unitAssetNames).forEach(function (key) {
-                if (key === CharacterType) {
+                const uid = unitAssetNames[key].Uid
+                if (uid === CharacterType) {
                   skin = unitAssetNames[key].AssetName;
                 }
               })
@@ -147,7 +148,7 @@ async function getLeaderboardUnitsData() {
                 if (key === placement.skin) {
                   skin = skinNames[key].BaseAssetName;
                 }
-              })
+              })  
             }
             if (placement.SoulType === null || placement.SoulType === "") {
               SoulType = "none";
@@ -159,7 +160,6 @@ async function getLeaderboardUnitsData() {
             } else {
               specializationUid = placement.specializationUid;
             }
-
             Object.keys(imageURLs).forEach(function(key) {
               if (key === "mobilelite/units/static/" + skin + ".png") {
                 skinURL = "https://d2k2g0zg1te1mr.cloudfront.net/" + imageURLs[key];
