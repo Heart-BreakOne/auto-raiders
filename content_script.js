@@ -868,7 +868,7 @@ async function getValidUnits() {
   // This sorts the markers and adds imaginary markers if there aren't any
   let arrayOfMarkers = await prepareMarkers(captainUnit);
 
-  if (arrayOfMarkers.length === 0) {
+  if (!arrayOfMarkers || arrayOfMarkers.length == 0) {
     // TODO Map full of block markers, flag the captain.
     goHome();
     return;
@@ -982,10 +982,10 @@ function checkPlacement() {
 
 //Looks and selects a valid marker for placement
 async function prepareMarkers(captainUnit) {
-  let arrMrks, arrLen = getMarkers();
+  let arrMrks = getMarkers();
 
   // Captain has full block markers
-  if (!arrMrks || (arrMrks.length == 0 && arrLen != 0)) {
+  if (!arrMrks || arrMrks.length == 0) {
     goHome();
     return
   }
@@ -1002,7 +1002,7 @@ async function prepareMarkers(captainUnit) {
     // If no markers are available or captain is using a mix of block markers and open zones,
     // place imaginary markers and use them instead.
     setImaginaryMarkers(document.querySelectorAll(".placementAlly"));
-    arrMrks, _ = removeHalf(getMarkers());
+    arrMrks = removeHalf(getMarkers());
     return await sortMarkers(arrMrks);
   }
 
@@ -1346,15 +1346,14 @@ function removeHalf(arrMrks) {
 
 function getMarkers() {
   const arrOfAllMrks = document.querySelectorAll(".planIcon");
-  let arrLen = arrOfAllMrks.length
 
   Array.from(arrOfAllMrks).forEach(planIcon => {
     const backgroundImageValue = getComputedStyle(planIcon).getPropertyValue('background-image');
-    if (backgroundImageValue.includes("VYAAAAASUVORK5CYII=")) {
+    if (backgroundImageValue.toUpperCase().includes("VYAAAAASUVORK5CYII=")) {
       planIcon.remove();
     }
   });
 
   const arrOfMarkers = Array.from(document.querySelectorAll(".planIcon"));
-  return arrOfMarkers, arrLen;
+  return arrOfMarkers
 }
