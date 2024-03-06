@@ -982,13 +982,8 @@ function checkPlacement() {
 
 //Looks and selects a valid marker for placement
 async function prepareMarkers(captainUnit) {
-  let arrMrks = getMarkers();
 
-  // Captain has full block markers
-  if (!arrMrks || arrMrks.length == 0) {
-    goHome();
-    return
-  }
+  let arrMrks = getMarkers();
 
   async function sortMarkers(arrMrks) {
     try {
@@ -998,15 +993,18 @@ async function prepareMarkers(captainUnit) {
     }
   }
 
+
   if (arrMrks.length === 0) {
     // If no markers are available or captain is using a mix of block markers and open zones,
     // place imaginary markers and use them instead.
     setImaginaryMarkers(document.querySelectorAll(".placementAlly"));
+    
     arrMrks = removeHalf(getMarkers());
     return await sortMarkers(arrMrks);
   }
 
   // There are available markers.
+  arrMrks = removeBlockMarkers(arrMrks)
   return await sortMarkers(arrMrks);
 }
 
@@ -1337,23 +1335,36 @@ async function doPotions() {
 }
 
 function removeHalf(arrMrks) {
+  arrMrks = removeBlockMarkers(arrMrks)
   const halfIndex = Math.ceil(arrMrks.length / 2);
   const removedIcons = arrMrks.splice(0, halfIndex);
   removedIcons.forEach(icon => icon.remove());
   return arrMrks;
 }
 
-
 function getMarkers() {
-  const arrOfAllMrks = document.querySelectorAll(".planIcon");
+  const arrOfMarkers = Array.from(document.querySelectorAll(".planIcon"));
+  return arrOfMarkers
+}
 
-  Array.from(arrOfAllMrks).forEach(planIcon => {
+function removeBlockMarkers(arrMrkrs) {
+  let hasCommonMarkers = false;
+  let hasBlockMarkers = false;
+  Array.from(arrMrkrs).forEach(planIcon => {
     const backgroundImageValue = getComputedStyle(planIcon).getPropertyValue('background-image');
     if (backgroundImageValue.toUpperCase().includes("VYAAAAASUVORK5CYII=")) {
       planIcon.remove();
+      hasBlockMarkers = true
+    } else {
+      hasCommonMarkers = true
     }
   });
 
-  const arrOfMarkers = Array.from(document.querySelectorAll(".planIcon"));
-  return arrOfMarkers
+  if(!hasCommonMarkers && hasBlockMarkers) {
+    closeAll();
+    goHome();
+    return;
+  }
+
+  return arrMrkrs
 }
