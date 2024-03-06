@@ -20,6 +20,7 @@ document.addEventListener("DOMContentLoaded", function () {
     initializeSwitch("campaignSwitch");
     initializeSwitch("battlepassSwitch");
     initializeSwitch("logSwitch");
+    initializeSwitch("shuffleSwitch");
     initializeSwitch("offlineSwitch");
     initializeSwitch("setMarkerSwitch");
     initializeSwitch("skipSwitch");
@@ -309,6 +310,7 @@ function exportSettingsToFile() {
         "eventChestSwitch",
         "battlepassSwitch",
         "logSwitch",
+        "shuffleSwitch",
         "equipSwitch",
         "equipNoDiamondSwitch",
         "moreSkinsSwitch",

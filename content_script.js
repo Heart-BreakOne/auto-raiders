@@ -528,7 +528,7 @@ async function performCollection() {
 }
 
 async function logLeaderboardUnits() {
-    let leaderboardUnitsData = await getLeaderboardUnitsData();
+  let leaderboardUnitsData = await getLeaderboardUnitsData();
 }
 // This function checks if the battlefield is present, the current chest type, then zooms into it.
 async function openBattlefield() {
@@ -844,6 +844,12 @@ async function getValidUnits() {
     }
   }
 
+  if (await retrieveFromStorage("shuffleSwitch")) {
+    const children = [...document.querySelectorAll(".unitSelectionCont")[0].children];
+    children.sort(() => Math.random() - 0.5);
+    children.forEach(child => document.querySelector(".unitSelectionCont").appendChild(child));
+  }
+
   // This sorts the markers and adds imaginary markers if there aren't any
   let arrayOfMarkers = await prepareMarkers(captainUnit)
   if (arrayOfMarkers.length == 0) {
@@ -887,7 +893,7 @@ async function getValidUnits() {
   if (retrieveFromStorage("setMarkerSwitch")) {
     let arrayOfVibeMarkers = [];
     let notVibeMarkers = [];
-    
+
     for (let i = 0; i < arrayOfMarkers.length; i++) {
       let marker = arrayOfMarkers[i];
       if (marker.id === "VIBE") {
