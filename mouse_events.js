@@ -23,8 +23,6 @@ async function moveScreenCenter(marker) {
 
 //If the unit is in a valid marker that is in use, by taping the unit container it forces a button recheck on mouseup/touchend
 function tapUnit() {
-  //Check for frozen state
-  reloadRoot()
   //Attemps to tap the selected unit to force a valid placement check
   try {
     const placerUnitCont = document.querySelector('.placerUnitCont');

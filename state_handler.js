@@ -84,14 +84,12 @@ async function checkBattlefield(selector, battleDelayTimer) {
 //Receives a selector and a time in milisecondseconds. Check if the element with the selector exists, then checks again after the elapsed time has passed.
 //If the element still exists and the dom has not been changed it reloads the frozen page.
 async function checkAndReload(selector, battleDelayTimer) {
-  domChanged = false;
-  let element = document.querySelector(selector);
-  if (element) {
+  const element = document.querySelector(selector);
+  if (element && !domChanged) {
     await battleDelay(battleDelayTimer);
-    element = document.querySelector(selector);
-    if (element && !domChanged) {
+    const updatedElement = document.querySelector(selector);
+    if (updatedElement === element && !domChanged) {
       locationReload();
-      return;
     }
   }
 }
@@ -115,139 +113,148 @@ async function closeAll() {
   }
 }
 
-//Mutator observer to remove stuck modals, frozen states and update recently loaded elements.
-const observer = new MutationObserver(async function (mutations) {
+const observerCallback = async function(mutations) {
   let contentPort = chrome.runtime.connect({ name: "content-script" });
+
   //If desktop mode loads, reload with mobile mode
   if (document.querySelector("#\\#canvas")) {
-    contentPort.postMessage({ action: "reloadCleanCache", });
-    return;
+      contentPort.postMessage({ action: "reloadCleanCache", });
+      return;
   }
 
   domChanged = true;
   reloadRoot();
 
-  let mainContainer;
-  try {
-    mainContainer = document.querySelector(".rotateMessageCont");
-  } catch (error) {
-    return;
-  };
-
   const salesTag = document.querySelector(".saleTagCont")
   if (salesTag) {
-    salesTag.style.display = "none";
+      salesTag.style.display = "none";
   }
 
-  //If there too many attemps to place a unit, go home.
-
-  if (isBattlefield == null || isBattlefield === undefined) {
-    isBattlefield = document.querySelector(".battlefield");
+  //If there too many attempts to place a unit, go home.
+  if (!isBattlefield) {
+      isBattlefield = document.querySelector(".battlefield");
   } else {
-    let placeButton = document.querySelector(".actionButton.actionButtonPrimary.placeUnitButton");
-    let confirmButton = document.querySelector(".actionButton.actionButtonDisabled.placerButton");
+      let placeButton = document.querySelector(".actionButton.actionButtonPrimary.placeUnitButton");
+      let confirmButton = document.querySelector(".actionButton.actionButtonDisabled.placerButton");
 
-    if (placeButton && placeButton !== initialPlaceButton && !placeButton.classList.contains("new")) {
-      placeUnitCounter++;
-      initialPlaceButton = placeButton;
-      placeButton.classList.add("new");
-    } else if (confirmButton && confirmButton !== initialConfirmButton && !confirmButton.classList.contains("new")) {
-      confirmCounter++;
-      initialConfirmButton = confirmButton;
-      confirmButton.classList.add("new");
-    }
-
-    if (placeUnitCounter >= 4 || confirmCounter >= 4) {
-      isBattlefield = null;
-      initialPlaceButton = null;
-      initialConfirmButton = null;
-      confirmButton = null;
-      placeButton = null;
-      placeUnitCounter = 0;
-      confirmCounter = 0;
-      const close = document.querySelector(".actionButton.actionButtonNegative.placerButton");
-      if (close) {
-        close.click();
-      }
-      goHome();
-      return;
-    }
-  }
-
-  mutations.forEach(async function (mutation) {
-    mutation.addedNodes.forEach(async function (node) {
-
-      //Hides reward modal that fails to be clicked.
-      //Hide some elements from user view so they don't affect user interaction.
-      const rewardsScrim = document.querySelector(".rewardsScrim");
-      const toast = document.querySelector(".toastsCont.toastsContMore");
-      function hideElementsFromView(element) {
-        if (element) {
-          element.style.width = '0';
-          element.style.height = '0';
-        }
-      }
-      //hideElementsFromView(rewardsScrim);
-      hideElementsFromView(toast);
-
-      let questModal = document.querySelector(".modalScrim.modalOn");
-      if (questModal && !questModal.innerText.includes("Leave battle") && !questModal.innerText.includes("PLACE ANYWAY")) {
-        try {
-          questModal.style.display = "none";
-        } catch (error) { }
-
+      if (placeButton && placeButton !== initialPlaceButton && !placeButton.classList.contains("new")) {
+          placeUnitCounter++;
+          initialPlaceButton = placeButton;
+          placeButton.classList.add("new");
+      } else if (confirmButton && confirmButton !== initialConfirmButton && !confirmButton.classList.contains("new")) {
+          confirmCounter++;
+          initialConfirmButton = confirmButton;
+          confirmButton.classList.add("new");
       }
 
-      let menuView = document.querySelector(".mainNavCont.mainNavContPortrait");
-      if (!menuView) {
-        menuView = document.querySelector(".mainNavCont.mainNavContLandscape");
-      }
-      if (menuView) {
-        await battleDelay(5);
-        injectIntoDOM();
-      }
-
-      const battleLabel = document.querySelector(".battlePhaseTextCurrent");
-      if (battleLabel) {
-        if (battleLabel.innerText === "Battle Ready") {
-          const computedStyle = window.getComputedStyle(battleLabel);
-          const color = computedStyle.getPropertyValue("color");
-          if (color === "rgb(49, 255, 49)") {
-            goHome();
-            return;
+      if (placeUnitCounter >= 4 || confirmCounter >= 4) {
+          resetCountersAndButtons();
+          const close = document.querySelector(".actionButton.actionButtonNegative.placerButton");
+          if (close) {
+              close.click();
           }
-        }
-      }
-
-      let battleButton = document.querySelector(".placeUnitButtonItems");
-      if (battleButton && (battleButton.innerText.includes("UNIT READY TO PLACE IN") || battleButton.innerText.includes("BATTLE STARTING SOON"))) {
-        await battleDelay(15000);
-        battleButton = document.querySelector(".placeUnitButtonItems");
-        if (battleButton && (battleButton.innerText.includes("UNIT READY TO PLACE IN") || battleButton.innerText.includes("BATTLE STARTING SOON"))) {
           goHome();
           return;
-        }
       }
+  }
 
-      const buttons = document.querySelectorAll(".button.actionButton.actionButtonPrimary");
-      buttons.forEach((button) => {
-        const buttonText = button.querySelector("div").textContent.trim();
-        if (buttonText === "GO BACK") {
-          button.click();
-        }
+  mutations.forEach(async function(mutation) {
+      mutation.addedNodes.forEach(async function() {
+          const rewardsScrim = document.querySelector(".rewardsScrim");
+          const toast = document.querySelector(".toastsCont.toastsContMore");
+          hideElementsFromView(rewardsScrim);
+          hideElementsFromView(toast);
+
+          hideQuestModal();
+
+          const menuView = document.querySelector(".mainNavCont.mainNavContPortrait") || document.querySelector(".mainNavCont.mainNavContLandscape");
+          if (menuView) {
+              await battleDelay(5);
+              injectIntoDOM();
+          }
+
+          checkBattlePhase();
+
+          await checkAndHandleBattleButton();
+
+          clickGoBackButtons();
+
+          hideRotateMessage();
+
+          setScroll();
+          setUnitContainer();
       });
-
-      if (node.nodeType === Node.ELEMENT_NODE && node.classList.contains("rotateMessageCont")) {
-        if (mainContainer) {
-          hideContainer(mainContainer);
-        }
-      }
-    });
-    setScroll();
-    setUnitContainer();
   });
-});
+};
 
+const observerOptions = { childList: true, subtree: true };
+const observer = new MutationObserver(observerCallback);
 const targetNode = document.body;
-const config = { childList: true, subtree: true };
-observer.observe(targetNode, config);
+observer.observe(targetNode, observerOptions);
+
+function hideElementsFromView(element) {
+  if (element) {
+      element.style.width = '0';
+      element.style.height = '0';
+  }
+}
+
+function hideQuestModal() {
+  let questModal = document.querySelector(".modalScrim.modalOn");
+  if (questModal && !questModal.innerText.includes("Leave battle") && !questModal.innerText.includes("PLACE ANYWAY")) {
+      try {
+          questModal.style.display = "none";
+      } catch (error) { }
+  }
+}
+
+function checkBattlePhase() {
+  const battleLabel = document.querySelector(".battlePhaseTextCurrent");
+  if (battleLabel && battleLabel.innerText === "Battle Ready" && window.getComputedStyle(battleLabel).getPropertyValue("color") === "rgb(49, 255, 49)") {
+      goHome();
+      return;
+  }
+}
+
+async function checkAndHandleBattleButton() {
+  let battleButton = document.querySelector(".placeUnitButtonItems");
+  if (battleButton && (battleButton.innerText.includes("UNIT READY TO PLACE IN") || battleButton.innerText.includes("BATTLE STARTING SOON"))) {
+      await battleDelay(15000);
+      battleButton = document.querySelector(".placeUnitButtonItems");
+      if (battleButton && (battleButton.innerText.includes("UNIT READY TO PLACE IN") || battleButton.innerText.includes("BATTLE STARTING SOON"))) {
+          goHome();
+          return;
+      }
+  }
+}
+
+function clickGoBackButtons() {
+  const buttons = document.querySelectorAll(".button.actionButton.actionButtonPrimary");
+  buttons.forEach((button) => {
+      const buttonText = button.querySelector("div").textContent.trim();
+      if (buttonText === "GO BACK") {
+          button.click();
+      }
+  });
+}
+
+function hideRotateMessage() {
+  const mainContainer = document.querySelector(".rotateMessageCont");
+  if (mainContainer) {
+      hideContainer(mainContainer);
+  }
+}
+
+function resetCountersAndButtons() {
+  isBattlefield = null;
+  initialPlaceButton = null;
+  initialConfirmButton = null;
+  confirmButton = null;
+  placeButton = null;
+  placeUnitCounter = 0;
+  confirmCounter = 0;
+}
+
+function hideContainer(container) {
+  container.style.display = "none";
+}

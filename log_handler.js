@@ -1,65 +1,43 @@
+const logDelay = ms => new Promise(res => setTimeout(res, ms));
+
 //Observer for changes on the dom
-const logObserver = new MutationObserver(async function (mutations) {
-
-    //Check if the captain slots exist
+const logObserverCallback = async function (mutations) {
     const logSlots = document.querySelectorAll(".capSlots");
-    if (logSlots.length == 0) {
-        return;
-    }
-    //Get the captain slot from the nodelist
-    const logSlotsChildren = logSlots[0].querySelectorAll('.capSlot');
-    for (let i = 0; i < logSlotsChildren.length; i++) {
+    if (logSlots.length === 0) return;
 
-        //Extract data from the captain slot
+    const logSlotsChildren = logSlots[0].querySelectorAll('.capSlot');
+
+    for (let i = 0; i < logSlotsChildren.length; i++) {
         const logSlot = logSlotsChildren[i];
         const logId = i + 1;
-        let logCapName;
-        let logMode;
-        let currentTime;
-        let colorCode = window.getComputedStyle(logSlot).backgroundColor;
+        let logCapName, logMode, currentTime, colorCode;
 
-        // Trying to get captain name, mode an timer. If timer doesn't exist it means the captain is not in active placement
         try {
             logCapName = logSlot.querySelector('.capSlotName').innerText;
+            logMode = logSlot.querySelector('.versusLabelContainer')?.innerText || "Campaign";
+            currentTime = logSlot.querySelector(".capSlotTimer") ? new Date().toString() : undefined;
+            colorCode = window.getComputedStyle(logSlot).backgroundColor;
         } catch (error) {
             continue;
         }
-        try {
-            logMode = logSlot.querySelector('.versusLabelContainer').innerText;
-            if (logMode === undefined) {
-                logMode = "Campaign"
-            }
-        } catch (error) {
-            logMode = "Campaign";
-        }
-        try {
-            if (logSlot.querySelector(".capSlotTimer")) {
-                currentTime = new Date().toString();
-            } else {
-                continue;
-            }
-        } catch (error) { }
-  
-        let requestLoyaltyResults;
-        let raidId;
-        let chestType;
-        let mapName;
-        
-        if (logCapName !== undefined) {
-          requestLoyaltyResults = await getCaptainLoyalty(logCapName);
-          raidId = requestLoyaltyResults[0];
-          chestType = requestLoyaltyResults[1];
-          mapName = await getMapName(logCapName);
-        }
-        
-        //Invoke setLogCaptain with the variables obtained above.
-        await setLogCaptain(logId, logCapName, logMode, currentTime, colorCode, raidId, mapName, chestType)
-    }
-});
 
+        if (logCapName) {
+            const requestLoyaltyResults = await getCaptainLoyalty(logCapName);
+            const raidId = requestLoyaltyResults[0];
+            const chestType = requestLoyaltyResults[1];
+            const mapName = await getMapName(logCapName);
+            await setLogCaptain(logId, logCapName, logMode, currentTime, colorCode, raidId, mapName, chestType);
+        }
+    }
+
+    await logDelay(20000);
+};
+
+const logObserver = new MutationObserver(logObserverCallback);
 const documentNode = document.body;
 const logConf = { childList: true, subtree: true };
 logObserver.observe(documentNode, logConf);
+
 
 //Saves initial battle information to the local storage
 async function setLogCaptain(logId, logCapName, logMode, currentTime, colorCode, raidId, mapName, chestType) {
@@ -133,13 +111,13 @@ async function setLogInitialChest(logCapName, raidId, initialchest) {
 
             // Add final battle time, result, and chest type
             for (let i = loggedData.length - 1; i >= 0; i--) {
-              let entry = loggedData[i];
+                let entry = loggedData[i];
                 if (entry.logCapName === logCapName &&
                     (entry.currentTime !== null && entry.currentTime !== undefined) &&
                     entry.elapsedTime === undefined && entry.initialchest === undefined && entry.raidId === undefined) {
-                      entry.initialchest = initialchest;
-                      entry.raidId = raidId;
-                      break;
+                    entry.initialchest = initialchest;
+                    entry.raidId = raidId;
+                    break;
                 }
             };
 
@@ -161,10 +139,10 @@ async function setLogInitialChest2(logCapName, raidId, initialchest2) {
 
             // Add final battle time, result, and chest type
             for (let i = loggedData.length - 1; i >= 0; i--) {
-              let entry = loggedData[i];
+                let entry = loggedData[i];
                 if (entry.logCapName === logCapName &&
-                  (entry.currentTime !== null && entry.currentTime !== undefined) &&
-                  entry.elapsedTime === undefined && entry.initialchest2 === undefined && entry.raidId === raidId) {
+                    (entry.currentTime !== null && entry.currentTime !== undefined) &&
+                    entry.elapsedTime === undefined && entry.initialchest2 === undefined && entry.raidId === raidId) {
                     entry.initialchest2 = initialchest2;
                     break;
                 }
@@ -188,7 +166,7 @@ async function setLogUnitsData(logCapName, raidId, unitsData) {
 
             // Add final battle time, result, and chest type
             for (let i = loggedData.length - 1; i >= 0; i--) {
-              let entry = loggedData[i];
+                let entry = loggedData[i];
                 if (entry.logCapName === logCapName && entry.raidId === raidId) {
                     entry.units2 = unitsData;
                     break;
@@ -227,36 +205,36 @@ async function setLogResults(conclusion, logCapName, chest, leaderboardRank, kil
 
             // Add final battle time, result, and chest type
             for (let i = loggedData.length - 1; i >= 0; i--) {
-              let entry = loggedData[i];
+                let entry = loggedData[i];
                 if (entry.logCapName === logCapName && entry.raidId === raidId &&
-                  (entry.currentTime !== null && entry.currentTime !== undefined)) {
+                    (entry.currentTime !== null && entry.currentTime !== undefined)) {
                     console.log("LOG-log entry found");
                     if (entry.elapsedTime === undefined) {
-                      entry.elapsedTime = Math.floor((now - new Date(entry.currentTime)) / (1000 * 60)).toString();
+                        entry.elapsedTime = Math.floor((now - new Date(entry.currentTime)) / (1000 * 60)).toString();
                     }
                     if (entry.result == undefined && resolution !== "" && resolution !== undefined) {
-                      entry.result = resolution;
+                        entry.result = resolution;
                     }
                     if (entry.chest == undefined && chest !== "" && chest !== undefined) {
-                      entry.chest = chest;
+                        entry.chest = chest;
                     }
                     if (entry.leaderboardRank == undefined && leaderboardRank !== "" && leaderboardRank !== undefined) {
-                      entry.leaderboardRank = leaderboardRank;
+                        entry.leaderboardRank = leaderboardRank;
                     }
                     if (entry.kills == undefined && kills !== "" && kills !== undefined) {
-                      entry.kills = kills;
+                        entry.kills = kills;
                     }
                     if (entry.assists == undefined && assists !== "" && assists !== undefined) {
-                      entry.assists = assists;
+                        entry.assists = assists;
                     }
                     if (entry.units == undefined && units !== "" && units !== undefined) {
-                      entry.units = units;
+                        entry.units = units;
                     }
                     if (entry.rewards == undefined && rewards !== "" && rewards !== undefined) {
-                      entry.rewards = rewards;
-                      console.log("LOG-1"+rewards);
+                        entry.rewards = rewards;
+                        console.log("LOG-1" + rewards);
                     }
-                    console.log("LOG-2"+entry.rewards);
+                    console.log("LOG-2" + entry.rewards);
                     break;
                 }
             };
