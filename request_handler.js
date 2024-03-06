@@ -689,10 +689,12 @@ async function getMapNode(raidId) {
   }
 }
 
-//Quest collection
+/* Quest collection
 
 setInterval(collectQuestsAPI, 60000);
 
 async function collectQuestsAPI() {
 
 }
+
+*/

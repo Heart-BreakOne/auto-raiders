@@ -869,6 +869,7 @@ async function getValidUnits() {
 
   // This sorts the markers and adds imaginary markers if there aren't any
   let arrayOfMarkers = await prepareMarkers(captainUnit)
+  
   if (arrayOfMarkers.length == 0) {
     // Map full of block markers, flag the captain.
     goHome()
@@ -1021,7 +1022,7 @@ function checkPlacement() {
 
 //Looks and selects a valid marker for placement
 async function prepareMarkers(captainUnit) {
-
+ 
   //Initializes a node list with placement markers
   let arrMrks = Array.from(document.querySelectorAll(".planIcon"));
 
@@ -1032,7 +1033,7 @@ async function prepareMarkers(captainUnit) {
       sortedArrMrks = getMapMatrix(captainUnit, arrMrks);
       return sortedArrMrks
     } catch (error) {
-      return arrMrks
+      return arrMrks.slice(0, 20);
     }
   }
 
@@ -1056,6 +1057,7 @@ async function prepareMarkers(captainUnit) {
     }
     blockMarkers.forEach(marker => { marker.remove(); });
 
+    arrMrks = Array.from(document.querySelectorAll(".planIcon"));
     //Check what is inside new array.
     if (arrMrks.length == 0 && (arrayOfAllyPlacement == undefined || arrayOfAllyPlacement.length == 0)) {
       //Captain is using a mix of block markers and open zones.
