@@ -355,7 +355,7 @@ async function start() {
 
         //Pass captain name and check if the captain is flagged
         try {
-          if(!captainNameFromDOM) {
+          if (!captainNameFromDOM) {
             captainNameFromDOM = ""
           }
           captainFlag = await getCaptainFlag(captainNameFromDOM, 'flaggedCaptains');
@@ -383,6 +383,8 @@ async function start() {
               const lboss = await retrieveFromStorage("lbossSwitch")
               const lsuperboss = await retrieveFromStorage("lsuperbossSwitch")
 
+              let lResults = await getCaptainLoyalty(captainNameFromDOM);
+              let chestType = lResults[1]
               if ((!lgold && chestType.includes("chestboostedgold")) || (!lskin && chestType.includes("chestboostedskin")) || (!lscroll && chestType.includes("chestboostedscroll")) || (!ltoken && chestType.includes("chestboostedtoken")) || (!lboss && chestType.includes("chestboss") && !chestType.includes("chestbosssuper")) || (!lsuperboss && chestType.includes("chestbosssuper"))) {
                 captainLoyalty = true;
               } else if (chestType.includes("bonechest") || chestType.includes("dungeonchest") || chestType.includes("chestbronze") || chestType.includes("chestsilver") || chestType.includes("chestgold")) {
@@ -630,6 +632,7 @@ async function openBattlefield() {
     //diamondLoyalty = null;
   } else {
     //User doesn't want to preserve diamond loyalty
+    closeAll();
     zoom();
   }
 }
@@ -989,11 +992,10 @@ async function attemptPlacement(unit, marker) {
   await delay(1000);
   tapUnit();
   await delay(500);
-  const isPlaced = placeTheUnit();
+  placeTheUnit();
   await delay(1000);
   reloadRoot();
   await delay(1000);
-  //if (isPlaced || checkPlacement()) {
   if (checkPlacement()) {
     return true
   } else {
@@ -1091,7 +1093,13 @@ async function placeTheUnit() {
 
   //Attemps to place the selected unit and go back to menu, if the marker is valid, but in use, get a new marker.
   const placeModal = document.querySelector(".placerConfirmButtonsCont")
-  const confirmPlacement = placeModal.querySelector(".actionButton.actionButtonPrimary.placerButton");
+  let confirmPlacement = undefined;
+  try {
+    confirmPlacement = placeModal.querySelector(".actionButton.actionButtonPrimary.placerButton");
+  } catch (error) {
+    confirmPlacement = undefined
+  }
+
   if (confirmPlacement) {
     //Placement is blocked by invalid unit location.
     const blockedMarker = document.querySelector(".placerRangeIsBlocked");
@@ -1139,6 +1147,9 @@ async function placeTheUnit() {
         }
       }
     }
+  } else {
+    goHome();
+    return true;
   }
 
   await logLeaderboardUnits();

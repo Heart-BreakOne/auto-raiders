@@ -41,8 +41,9 @@ After installation, just open the game website and stay at the main menu.
 
 ### General patch notes:
 1.0.0 - Unit placement, scroll dealing, quest collection<br>
-2.0.0 - Basic system to get a marker and place an unit reworked.<br>
+2.0.0 - Basic system to get a marker and place units reworked.<br>
 3.0.0 - Storage access obtained, improved and more precise marker and unit placement system, captain flagging for no available units, idling slot and loyalty. Idle captain switcher, individual slot handling, customized user handling of potions, quests, scroll shop, game modes, unit type selection.<br>
-4.0.0 - Added agent spoofing for a seamless experience on desktop browsers.<br>
+4.0.0 - Added user agent spoofing for a seamless experience on desktop browsers, unit priority settings, battle logging.<br>
+5.0.0 - Reworked the placement system.<br>
 
 ## For feedback hit me on discord and contributors are welcome, specially to improve the quality of the code since javascript is not my forte.

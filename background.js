@@ -99,7 +99,7 @@ chrome.runtime.onConnect.addListener((port) => {
       const response = await fetchImageURLs(msg.mobilelite_url);
       port.postMessage({ response });
     }
-	
+
     //Force a reload if the game doesn't load with mobile mode
     if (msg.action === "reloadCleanCache") {
       processedTabs = new Set();
@@ -349,133 +349,9 @@ The captain can spend a lot of time on state 1, not a useful marker in my opinio
 And state 10 can take several minutes while the captain hands out the rewards or mere seconds if the captain doesn't care. If the crawler is not running on this timeframe, it misses.
 10        Waiting for Captain to collect reward! 
 So effectively, the time between 11 and 7 is the battle time. The time between 7 and 11 is the downtime.
-
-
-
-1        Waiting on Captain to find Battle
-2        
-4        In Placement Period
 5        Battle ready soon (can't place)
-7        Waiting for Captain to start Battle!
-10        Waiting for Captain to collect reward!
-11        In Captain Planning Period
+
 */
-//setInterval(logBattleStates, 15000);
-
-async function logBattleStates() {
-
-  await getCookies()
-
-  let captainsArray = [];
-  for (let i = 1; i < 6; i++) {
-    try {
-      const response = await fetch(`https://www.streamraiders.com/api/game/?cn=getCaptainsForSearch&isPlayingS=desc&isLiveS=desc&page=${i}&format=normalized&seed=4140&resultsPerPage=30&filters={%22favorite%22:false,%22isLive%22:1,%22ambassadors%22:%22false%22}&clientVersion=${clientVersion}&clientPlatform=MobileLite&gameDataVersion=${gameDataVersion}&command=getCaptainsForSearch&isCaptain=0`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/x-www-form-urlencoded',
-          'Cookie': cookieString,
-        },
-      });
-
-      if (!response.ok) {
-        throw new Error('Network response was not ok');
-      }
-
-      // get unit id and name.
-      const captainsData = await response.json();
-
-      for (let i = 0; i < captainsData.data.captains.length; i++) {
-
-        const current = captainsData.data.captains[i];
-        const name = current.twitchDisplayName;
-        const state = current.raidState;
-        const type = current.type;
-        let stateString
-        let typeString
-        const currentTime = new Date()
-        let placementTime;
-        let startTime;
-        let idleTime;
-        let resolved = false;
-
-        if (state === 1 || state === 11 || state === 10) {
-          continue;
-        }
-
-        //Make state human readable
-        switch (state) {
-          case 4:
-            stateString = "Placement";
-            placementTime = currentTime
-            break;
-          case 7:
-            stateString = "Start";
-            startTime = currentTime
-            break;
-          default:
-            stateString = "Unknown";
-        }
-
-        //Make type human readable
-        switch (type) {
-          case "1":
-            typeString = "Campaign";
-            break;
-          case "2":
-            typeString = "Clash";
-            break;
-          case "3":
-            typeString = "Dungeons";
-            break;
-          case "4":
-            typeString = "Duel";
-            break;
-          default:
-            typeString = "Unknown";
-        }
-
-        captainsArray.push({
-          name, state, stateString, typeString, placementTime, startTime, idleTime, resolved
-        });
-      }
-    } catch (error) {
-      console.error('Error fetching captains:', error.message);
-      return false;
-    }
-  }
-
-  //If it doesnt exist, add it.
-  //If it exists, check if it's resolved.
-  //If it's resolved, add a new entry.
-  //If new entry only has startTime available, set placementTime as the current time and set as resolved so the cycle restarts.
-
-  //If new entry has placementTime available, set it. Leave the rest as is not resolved.
-  //If not resolved, check if it has placementTime set, if it has placementTime set and startTime is not yet available, do nothing.
-  //If not resolved, placementTime is already set and startTime is now available, set startTime and as resolved. Cycle restarts
-
-  //If placementTime is set and is older than 35 minutes, set startTime to currentTime
-  //If new entry has placementTime and previous is set as resolved, calculate idleTime.
-  //console.log(captainsArray)
-
-  chrome.storage.local.remove("battleData", function () { });
-
-  chrome.storage.local.get(['battleData'], function (result) {
-    let battleData = result.battleData || [];
-    //Add the data if it doesn't exist
-    if (battleData.length === 0) {
-      battleData = captainsArray
-    }
-
-    //Now that the data exists, handle the several possible conditions for new entries
-
-    //Add new entry
-
-
-
-    //console.log(battleData)
-    chrome.storage.local.set({ battleData: battleData });
-  });
-}
 
 async function fetchImageURLs(mobilelite_url) {
   try {
@@ -503,41 +379,19 @@ async function fetchImageURLs(mobilelite_url) {
 async function checkGameData() {
   const response = await fetch('https://www.streamraiders.com/api/game/?cn=getUser&command=getUser');
   const data = await response.json();
+
   if (data.info.dataPath) {
     const dataPath = data.info.dataPath;
-
     chrome.storage.local.get("gameDataPath", function (result) {
-      if (chrome.runtime.lastError) {
-        console.error(chrome.runtime.lastError);
-        return;
-      }
-
       const gameDataPath = result.gameDataPath;
-
-      if (!gameDataPath) {
-        chrome.storage.local.set({ "gameDataPath": dataPath }, function () {
-          if (chrome.runtime.lastError) {
-            console.error(chrome.runtime.lastError);
-            return;
-          }
-          console.log("New game data path set successfully.");
-        });
-      } else if (gameDataPath !== dataPath) {
-        chrome.storage.local.set({ "gameDataPath": dataPath }, function () {
-          if (chrome.runtime.lastError) {
-            console.error(chrome.runtime.lastError);
-            return;
-          }
-          console.log("New game data path set successfully.");
-          chrome.tabs.query({}, function (tabs) {
-            for (let i = 0; i < tabs.length; i++) {
-              const tab = tabs[i];
-              if (tab.url && tab.url.startsWith("https://www.streamraiders.com")) {
-                chrome.tabs.reload(tab.id, {
-                  bypassCache: true
-                });
-                break;
-              }
+      const setGameDataPath = () => chrome.storage.local.set({ "gameDataPath": dataPath }, () => console.log("New game data path set successfully."));
+      if (!gameDataPath || gameDataPath !== dataPath) {
+        setGameDataPath();
+        chrome.tabs.query({}, tabs => {
+          tabs.some(tab => {
+            if (tab.url && tab.url.startsWith("https://www.streamraiders.com")) {
+              chrome.tabs.reload(tab.id, { bypassCache: true });
+              return true;
             }
           });
         });
@@ -546,35 +400,8 @@ async function checkGameData() {
   }
 }
 
-
-chrome.runtime.onInstalled.addListener(function(details) {
-  fetchVersion();
-  setDefaultValues(details);
-});
-
-function fetchVersion() {
-  fetch('https://mobius-one.github.io/webpages/config.json')
-    .then(response => response.json())
-    .then(data => {
-      const version = data["version"]
-      const extensionVersion = chrome.runtime.getManifest().version;
-      if (version === extensionVersion) {
-        new Promise((resolve) => {
-          chrome.storage.local.set({ "hasUpdate": false }, resolve);
-        });
-      } else {
-        new Promise((resolve) => {
-          chrome.storage.local.set({ "hasUpdate": true }, resolve);
-        });
-      }
-    })
-    .catch(error => {
-      console.error('Error fetching config:', error);
-    });
-}
-
-
-function setDefaultValues(details) {
+// Set some default values when extension is installed
+chrome.runtime.onInstalled.addListener(function (details) {
   if (details.reason === 'install') {
     chrome.storage.local.set({
       "commonSwitch": true,
@@ -582,7 +409,6 @@ function setDefaultValues(details) {
       "loyalty": "0"
     });
   }
-}
+});
 
 setInterval(checkGameData, 60000);
-setInterval(fetchVersion, 1800000)
