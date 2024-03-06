@@ -59,6 +59,8 @@ let chestCounter = [
 //Event listener for when the page loads
 document.addEventListener('DOMContentLoaded', async function () {
 
+    initializeSwitch("raidIdSwitch")
+    initializeSwitch("logSwitch")
     const scrollToTopBtn = document.getElementById("scrollBtn");
 
     // Show or hide the button based on scroll position
@@ -69,6 +71,14 @@ document.addEventListener('DOMContentLoaded', async function () {
             scrollToTopBtn.style.display = "none";
         }
     };
+
+    document.getElementById('raidIdSwitch').addEventListener('change', function () {
+        location.reload()
+    });
+
+    document.getElementById('logSwitch').addEventListener('change', function () {
+        location.reload()
+    });
 
     // Scroll back to the top when the button is clicked
     scrollToTopBtn.addEventListener("click", function () {
@@ -145,7 +155,7 @@ async function loadLogData() {
         if (logSwitch) {
             const headerString1 = '<th>#</th><th>Slot</th><th>Captain Name</th><th>Mode</th><th>Color Code</th><th>Start time</th><th>End time</th><th>Duration</th><th>Result</th><th>Awarded Chest</th><th>Initial Chest</th>'
             const headerString2 = '<th>Rewards</th><th>Leaderboard Rank</th><th>Kills</th><th>Assists</th><th>Units Placed</th>'
-            if(raidIdSwitch) {
+            if (raidIdSwitch) {
                 headerRow.innerHTML = headerString1 + '<th>Raid ID</th>' + headerString2
             } else {
                 headerRow.innerHTML = headerString1 + headerString2;
