@@ -193,24 +193,12 @@ async function start() {
       if (st.innerHTML.includes("ENTER_CODE")) {
         const cpId = parseInt(i, 10) + 1;
         const cpNmSt = st.querySelector(".capSlotName").innerText
-        const curTime = new Date().toISOString();
         const cB = st.querySelector(".fal.fa-times-square")
         if (cB) {
           cB.click();
         }
         //Flag captain into memory
-        chrome.storage.local.get("flaggedCaptains", function (data) {
-          let flaggedCpts = data.flaggedCaptains || [];
-
-          flaggedCpts.push({
-            captainId: cpId,
-            captainName: cpNmSt,
-            currentTime: curTime,
-          });
-
-          chrome.storage.local.set({ "flaggedCaptains": flaggedCpts }, function () {
-          });
-        });
+        await flagCaptainRed(cpId, cpNmSt)
         continue;
       }
       const btn = st.querySelector(".offlineButton").id
@@ -571,11 +559,32 @@ async function openBattlefield() {
     battleInfo.click();
 
     //Check how many units user wants
-    let amountUnitsUserWants = await getUnitAmountData()
+    const unitQtt = await getUnitAmountData()
+    let hasPlacedSkin = false
+    let commaCount = 0;
 
-    if (amountUnitsUserWants != 6) {
-      const battleLog = await retrieveFromStorage("logData")
-      currentBattle = battleLog
+    try {
+      let battleLog = await retrieveFromStorage("logData");
+      for (let i = battleLog.length - 1; i >= 0; i--) {
+        const battleOfInterest = battleLog[i];
+        const capName = battleOfInterest["logCapName"].toLowerCase().trim();
+        if (captainNameFromDOM.toLowerCase().trim() === capName) {
+          const unitsPlaced = battleOfInterest["units2"].toLowerCase();
+          commaCount = unitsPlaced.split(",").length - 1;
+          if (unitsPlaced.includes(captainNameFromDOM.toLowerCase().trim())) {
+            hasPlacedSkin = true
+          }
+          break
+        }
+      }
+    } catch (error) { }
+
+    if (unitQtt == commaCount) {
+      const rnNm = Math.floor(Math.random() * 9) + 12;
+      flagCaptainRed(rnNm, captainNameFromDOM)
+      closeAll();
+      goHome();
+      return;
     }
 
     await delay(2000);

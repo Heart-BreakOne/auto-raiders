@@ -93,3 +93,19 @@ async function getCaptainFlag(captainName, flagKey) {
         });
     });
 }
+
+async function flagCaptainRed(cpId, cpNmSt) {
+    const curTime = new Date().toISOString();
+    chrome.storage.local.get("flaggedCaptains", function (data) {
+        let flaggedCpts = data.flaggedCaptains || [];
+
+        flaggedCpts.push({
+            captainId: cpId,
+            captainName: cpNmSt,
+            currentTime: curTime,
+        });
+
+        chrome.storage.local.set({ "flaggedCaptains": flaggedCpts }, function () {
+        });
+    });
+}
