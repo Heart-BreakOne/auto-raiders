@@ -19,6 +19,14 @@ document.addEventListener("DOMContentLoaded", async function () {
 
     });
 
+    document.getElementById("loadUnitFileBtn").addEventListener("change", async function () {
+        importUnitsFromFile()
+    });
+
+    document.getElementById("exportUnits_button").addEventListener("click", async function () {
+        exportUnitsToFile()
+    });
+
     //Closes the popup
     document.getElementById("closeBtn").addEventListener("click", async function () {
         const popup = document.getElementById('popup');
@@ -305,5 +313,69 @@ function initializeSwitch(switchId) {
         const switchState = this.checked;
         chrome.storage.local.set({ [switchId]: switchState }, function () {
         });
+    });
+}
+
+
+function importUnitsFromFile() {
+    const fileInput = document.getElementById("loadUnitFileBtn").files[0];
+
+    if (!fileInput) {
+        alert('Please select a file!');
+        return;
+    }
+
+    const reader = new FileReader();
+
+    reader.onload = function (e) {
+        try {
+            const data = JSON.parse(e.target.result);
+            chrome.storage.local.set(data, function () {
+                console.log('Settings imported successfully.');
+            });
+        } catch (error) {
+            alert('An error occurred: ' + error);
+        }
+    };
+
+    reader.readAsText(fileInput);
+    location.reload()
+}
+
+
+function exportUnitsToFile() {
+    const keysToExport = [
+        "quickSetOne",
+        "quickSetTwo",
+        "quickSetThree",
+        "quickSetFour",
+        "slotQuickSetOne",
+        "slotQuickSetTwo",
+        "slotQuickSetThree",
+        "slotQuickSetFour",
+        "enableQuickSetSlotOne",
+        "enableQuickSetSlotTwo",
+        "enableQuickSetSlotThree",
+        "enableQuickSetSlotFour",
+        "unitList"
+    ]
+
+    chrome.storage.local.get(keysToExport, function (data) {
+        const exportedData = {};
+        keysToExport.forEach(key => {
+            exportedData[key] = data[key];
+        });
+
+        const json = JSON.stringify(exportedData, null, 2);
+        const blob = new Blob([json], { type: "application/json" });
+        const url = URL.createObjectURL(blob);
+
+        const a = document.createElement("a");
+        a.href = url;
+        a.download = "SRHelper_Settings.json";
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url);
     });
 }

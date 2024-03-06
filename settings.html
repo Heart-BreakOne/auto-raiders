@@ -26,12 +26,15 @@
                                 <td colspan="4"></td>
                         </tr>
                         <tr>
-                                <td><label for="reloaderInput">Reloader&nbsp;&nbsp;&nbsp;<input type="number"
-                                                        id="reloaderInput"></label></td>
+                                <td><label for="reloaderInput"
+                                                title="After a while, especially if running multiple instances of the extension, the game will become unstable, and the tab will crash irrecoverably. Setting a reload period mitigates this issue">Reloader&nbsp;&nbsp;&nbsp;<input
+                                                        type="number" id="reloaderInput"></label></td>
                                 <td><button id="reloaderButton"
                                                 style="width: fit-content; height: fit-content; text-align: center; background-color: #5fa695;">Set</button>
                                 </td>
-                                <td><label for="minimumCurrencyInput">Minimum event currency to buy event chests
+                                <td><label for="minimumCurrencyInput"
+                                                title="The minimum amount of event currency you must have before buying it 5 times.">Minimum
+                                                event currency to buy event chests
                                                 &nbsp;&nbsp;&nbsp;<input type="number"
                                                         id="minimumCurrencyInput"></label></td>
                                 <td><button id="minimumCurrencyButton"
@@ -39,13 +42,17 @@
                                 </td>
                         </tr>
                         <tr>
-                                <td><label for="maxUnitLvlDungInput">Maximum unit level for
+                                <td><label for="maxUnitLvlDungInput"
+                                                title="Enable custom levels for dungeons below. This option sets the maximum level for units placed in dungeons.">Maximum
+                                                unit level for
                                                 dungeons&nbsp;&nbsp;&nbsp;<input type="number"
                                                         id="maxUnitLvlDungInput"></label></td>
                                 <td><button id="minUnitLvlButton"
                                                 style="width: fit-content; height: fit-content; text-align: center; background-color: #5fa695;">Set</button>
                                 </td>
-                                <td><label for="maxDungeonLvlInput">Maximum dungeon level for custom unit level
+                                <td><label for="maxDungeonLvlInput"
+                                                title="Enable custom levels for dungeons below. This option determines the maximum dungeon level at which the maximum unit level will take effect.">Maximum
+                                                dungeon level for custom unit level
                                                 &nbsp;&nbsp;&nbsp;<input type="number" id="maxDungeonLvlInput"></label>
                                 </td>
                                 <td><button id="minDungeonLvlButton"
@@ -53,7 +60,10 @@
                                 </td>
                         </tr>
                         <tr>
-                                <td><label for="userIdleTimeInput">Maximum idle time in minutes (Default is 15
+                                <td><label for="userIdleTimeInput"
+                                                title="Maximum time a captain is allowed to idle before being switched">Maximum
+                                                idle time in minutes
+                                                (Default is 15
                                                 minutes)<input type="number" id="userIdleTimeInput"></label></td>
                                 <td><button id="idleTimeButton"
                                                 style="width: fit-content; height: fit-content; text-align: center; background-color: #5fa695;">Set</button>
@@ -69,10 +79,14 @@
                         <td colspan="3"></td>
                         </tr>
                         <tr>
-                                <td><label for="offlineSwitch"><input type="checkbox" id="offlineSwitch"> Switch idle
+                                <td><label for="offlineSwitch"
+                                                title="Switch captains that are idling, useful for captains that go offline and slow captains."><input
+                                                        type="checkbox" id="offlineSwitch"> Switch idle
                                                 captain</label>
                                 </td>
-                                <td><label for="skipSwitch"><input type="checkbox" id="skipSwitch"> Leave blank if no
+                                <td><label for="skipSwitch"
+                                                title="After an idle switch, leave the slot blank if no loyalty captain is available."><input
+                                                        type="checkbox" id="skipSwitch"> Leave blank if no
                                                 loyalty</label>
                                 </td>
                                 <td><label for="setMarkerSwitch"
@@ -82,49 +96,65 @@
                                 </td>
                         </tr>
                         <tr>
-                                <td><label for="scrollSwitch"><input type="checkbox" id="scrollSwitch"> Buy
+                                <td><label for="scrollSwitch" title="Buy scrolls in the store."><input type="checkbox"
+                                                        id="scrollSwitch"> Buy
                                                 scrolls</label></td>
-                                <td><label for="extraSwitch"><input type="checkbox" id="extraSwitch"> Buy extra $100
+                                <td><label for="extraSwitch" title="Buy the extra set of scrolls for 100 coins"><input
+                                                        type="checkbox" id="extraSwitch"> Buy extra $100
                                                 scrolls</label>
                                 </td>
-                                <td><label for="questSwitch"><input type="checkbox" id="questSwitch"> Collect
+                                <td><label for="questSwitch" title="Collect completed quests."><input type="checkbox"
+                                                        id="questSwitch"> Collect
                                                 quests</label></td>
                         </tr>
                         <tr>
-                                <td><label for="dailySwitch"><input type="checkbox" id="dailySwitch"> Collect daily
+                                <td><label for="dailySwitch"
+                                                title="Collect the daily free currency if available."><input
+                                                        type="checkbox" id="dailySwitch"> Collect daily
                                                 reward</label></td>
-                                <td><label for="eventChestSwitch"><input type="checkbox" id="eventChestSwitch"> Buy
+                                <td><label for="eventChestSwitch" title="Buy event currency chests if available."><input
+                                                        type="checkbox" id="eventChestSwitch"> Buy
                                                 event chests</label>
                                 </td>
-                                <td><label for="battlepassSwitch"><input type="checkbox" id="battlepassSwitch"> Collect
+                                <td><label for="battlepassSwitch"
+                                                title="Collect completed battlepasses if available."><input
+                                                        type="checkbox" id="battlepassSwitch"> Collect
                                                 battlepass</label></td>
                         </tr>
                         <tr>
-                                <td><label for="logSwitch"><input type="checkbox" id="logSwitch"> Enable logging for
+                                <td><label for="logSwitch"
+                                                title="Display additional log information on the battle log"><input
+                                                        type="checkbox" id="logSwitch"> Enable logging for
                                                 rewards and
                                                 leaderboard results</label></td>
                         </tr>
                         <tr>
-                                <td><label for="equipSwitch"><input type="checkbox" id="equipSwitch"> Equip captain
+                                <td><label for="equipSwitch" title="Equip captain skins for the extra loyalty."><input
+                                                        type="checkbox" id="equipSwitch"> Equip
+                                                captain
                                                 skins</label></td>
-                                <td><label for="equipNoDiamondSwitch"><input type="checkbox" id="equipNoDiamondSwitch">
+                                <td><label for="equipNoDiamondSwitch"
+                                                title="Only equip captain skins if the loyalty is not diamond."><input
+                                                        type="checkbox" id="equipNoDiamondSwitch">
                                                 Only equip skin
                                                 if not diamond</label></td>
                                 <td><label for="moreSkinsSwitch"
-                                                title="If there's skinned unit on the battle already, the extensio won't actively try to place a skinned unit, specially useful if you only have a single skin of the captain"><input
+                                                title="If there's skinned unit on the battle already, the extension won't actively try to place a skinned unit, specially useful if you only have a single skin of the captain"><input
                                                         type="checkbox" id="moreSkinsSwitch"><s>One skin is
                                                         enough.</s></label>
                                 </td>
                         </tr>
                         <tr>
-                                <td
-                                        title="Not efficient on set markers. This will disable priority lists and enable all unit rarity classes so the auto quester has authority.">
-                                        <label for="completeQuests"><input type="checkbox" id="completeQuests">Complete
+                                <td>
+                                        <label for="completeQuests"
+                                                title="Actively try to place units that can complete the current set of quests. Not efficient on set markers. This will disable priority lists and enable all unit rarity classes so the auto quester has authority."><input
+                                                        type="checkbox" id="completeQuests">Complete
                                                 campaign related
                                                 quests (Hover for info)</label>
                                 </td>
-                                <td><label for="priorityListSwitch"><input type="checkbox"
-                                                        id="priorityListSwitch">Enable unit priority
+                                <td><label for="priorityListSwitch"
+                                                title="When enable the unit list will be sorted based on the unit priority list."><input
+                                                        type="checkbox" id="priorityListSwitch">Enable unit priority
                                                 list
                                 <td><label for="commonSwitch"><input type="checkbox" id="commonSwitch"> Use common
                                                 units</label></td>
@@ -138,49 +168,68 @@
                                 <td><label for="legendarySwitch"><input type="checkbox" id="legendarySwitch"> Use
                                                 legendary
                                                 units</label></td>
-                                <td><label for="campaignSwitch"><input type="checkbox" id="campaignSwitch"> Unlimited
+                                <td><label for="campaignSwitch" title="Place more than one unit in campaign"><input
+                                                        type="checkbox" id="campaignSwitch"> Unlimited
                                                 Campaign</label>
                                 </td>
 
                         </tr>
                         <tr>
-                                <td><label for="duelSwitch"><input type="checkbox" id="duelSwitch"> Unlimited
+                                <td><label for="duelSwitch" title="Place more than one unit in duels"><input
+                                                        type="checkbox" id="duelSwitch"> Unlimited
                                                 duels</label></td>
-                                <td><label for="clashSwitch"><input type="checkbox" id="clashSwitch"> Unlimited
+                                <td><label for="clashSwitch" title="Place more than one unit in clashes"><input
+                                                        type="checkbox" id="clashSwitch"> Unlimited
                                                 clashes</label></td>
-                                <td><label for="dungeonSwitch"><input type="checkbox" id="dungeonSwitch"> Unlimited
+                                <td><label for="dungeonSwitch" title="Place more than one unit in dungeons"><input
+                                                        type="checkbox" id="dungeonSwitch"> Unlimited
                                                 dungeons</label>
                                 </td>
                         </tr>
                         <tr>
-                                <td><label for="dungeonLevelSwitch"><input type="checkbox" id="dungeonLevelSwitch">
+                                <td><label for="dungeonLevelSwitch"
+                                                title="Some captains request units with a maximum level, this prevents units with a higher level from being placed on dungeons."><input
+                                                        type="checkbox" id="dungeonLevelSwitch">
                                                 Place units with a
                                                 maximum custom level on dungeons</label></td>
-                                <td><label for="dungeonPlaceAnywaySwitch"><input type="checkbox"
-                                                        id="dungeonPlaceAnywaySwitch"> Allow
+                                <td><label for="dungeonPlaceAnywaySwitch"
+                                                title="This bypasses the flag marker and places the unit regardless on dungeons."><input
+                                                        type="checkbox" id="dungeonPlaceAnywaySwitch"> Allow
                                                 Place Anyway on flag markers in Dungeons (must turn on custom level on
                                                 dungeons) - BE CAREFUL -
                                                 Place Anyway can get you banned</label></td>
                         </tr>
                         <tr>
-                                <td><label for="liveMasterSwitch"><input type="checkbox" id="liveMasterSwitch"> Force
+                                <td><label for="liveMasterSwitch"
+                                                title="Switch live captains for another live captain that is on the masterlist"><input
+                                                        type="checkbox" id="liveMasterSwitch"> Force
                                                 live switch to
                                                 masterlist</label></td>
-                                <td><label for="priorityMasterSwitch"><input type="checkbox" id="priorityMasterSwitch">
+                                <td><label for="priorityMasterSwitch"
+                                                title="Switch live captains for another live captain that is HIGHER on the masterlist"><input
+                                                        type="checkbox" id="priorityMasterSwitch">
                                                 Force live
                                                 switch to priority masterlist</label></td>
-                                <td><label for="idleMasterSwitch"><input type="checkbox" id="idleMasterSwitch">
+                                <td><label for="idleMasterSwitch"
+                                                title="Prioritize the masterlist when switching captains"><input
+                                                        type="checkbox" id="idleMasterSwitch">
                                                 Prioritize masterlist on
                                                 idle switch</label></td>
-                                <td><label for=skipIdleMasterSwitch"><input type="checkbox" id="skipIdleMasterSwitch">
+                                <td><label for=skipIdleMasterSwitch"
+                                                title="Leave slot blank if no masterlist captain is available."><input
+                                                        type="checkbox" id="skipIdleMasterSwitch">
                                                 Skip idle switch
                                                 if no masterlist is online</label></td>
                         </tr>
                         <tr>
-                                <td><label for="afterSwitch"><input type="checkbox" id="afterSwitch"> Enable slot on
+                                <td><label for="afterSwitch"
+                                                title="Enable slot after removing captain on leave after battle"><input
+                                                        type="checkbox" id="afterSwitch"> Enable slot on
                                                 leave after</label>
                                 </td>
-                                <td><label for="beforeSwitch"><input type="checkbox" id="beforeSwitch"> Enable slot on
+                                <td><label for="beforeSwitch"
+                                                title="Enable slot after removing captain on leave before battle"><input
+                                                        type="checkbox" id="beforeSwitch"> Enable slot on
                                                 leave
                                                 before</label></td>
                         </tr>
@@ -229,7 +278,8 @@
 
                         <tr>
                                 <td><label for="dungeonSlotSwitch" class="x"><input type="checkbox"
-                                                        id="dungeonSlotSwitch" class="x" Use slot 0 for dungeons</label>
+                                                        id="dungeonSlotSwitch" class="x"> Use slot 0 for
+                                                dungeons</label>
                                 </td>
                                 <td><label for="skipDungeonSlotSwitch" class="x"><input type="checkbox"
                                                         id="skipDungeonSlotSwitch" class="x"> Leave slot 0 empty if
@@ -347,8 +397,17 @@
                                                 style="width: fit-content; height: fit-content; text-align: center; background-color: #5fa695;">Set</button>
                                 </td>
                         </tr>
+
                 </tbody>
         </table>
+        <div class="bottom_container">
+                <div class="inline_block">
+                        <button id="exportSettingsToFileBtn" class="green_button">Export your units to a file</button>
+                        <div class="file-input-container inline_block">
+                                <label for="importSettingsToFileBtn" class="green_button">Import units from file</label>
+                                <input type="file" id="importSettingsToFileBtn" style="display: none;">
+                        </div>
+                </div>
+        </div>
 </body>
-
 </html>

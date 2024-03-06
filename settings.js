@@ -50,6 +50,7 @@ document.addEventListener("DOMContentLoaded", function () {
     initializeSwitch("skipClashSlotSwitch");
     initializeSwitch("levelSwitch");
     initializeSwitch("chestSwitch");
+    initializeSwitch("moreSkinsSwitch");
     initializeReloader("reloaderInput");
     initializeReloader("minimumCurrencyInput");
     initializeReloader("maxUnitLvlDungInput");
@@ -72,7 +73,15 @@ document.addEventListener("DOMContentLoaded", function () {
     initializeReloader("lTokenInput");
     initializeReloader("lScrollInput");
     initializeReloader("BossInput");
-    initializeReloader("sBossInput")
+    initializeReloader("sBossInput");
+    
+    document.getElementById("importSettingsToFileBtn").addEventListener("change", async function () {
+        importSettingsFromFile()
+    });
+
+    document.getElementById("exportSettingsToFileBtn").addEventListener("click", async function () {
+        exportSettingsToFile()
+    });
 });
 
 //When the user interacts with the toggle switches, it gets the current stored value and update them with the value.
@@ -254,4 +263,125 @@ async function initializeReloader(key) {
     if (reloaderInput !== undefined) {
         document.getElementById(key).value = reloaderInput;
     }
+}
+
+function importSettingsFromFile() {
+    const fileInput = document.getElementById("importSettingsToFileBtn").files[0];
+
+    if (!fileInput) {
+        alert('Please select a file!');
+        return;
+    }
+
+    const reader = new FileReader();
+
+    reader.onload = function (e) {
+        try {
+            const data = JSON.parse(e.target.result);
+            chrome.storage.local.set(data, function () {
+                console.log('Settings imported successfully.');
+            });
+        } catch (error) {
+            alert('An error occurred: ' + error);
+        }
+    };
+
+    reader.readAsText(fileInput);
+    location.reload()
+}
+
+
+function exportSettingsToFile() {
+    const keysToExport = [
+        "reloaderInput",
+        "minimumCurrencyInput",
+        "maxUnitLvlDungInput",
+        "maxDungeonLvlInput",
+        "userIdleTimeInput",
+        "placementOddsInput",
+        "offlineSwitch",
+        "skipSwitch",
+        "setMarkerSwitch",
+        "scrollSwitch",
+        "extraSwitch",
+        "questSwitch",
+        "dailySwitch",
+        "eventChestSwitch",
+        "battlepassSwitch",
+        "logSwitch",
+        "equipSwitch",
+        "equipNoDiamondSwitch",
+        "moreSkinsSwitch",
+        "completeQuests",
+        "priorityListSwitch",
+        "commonSwitch",
+        "uncommonSwitch",
+        "rareSwitch",
+        "legendarySwitch",
+        "campaignSwitch",
+        "duelSwitch",
+        "clashSwitch",
+        "dungeonSwitch",
+        "dungeonLevelSwitch",
+        "dungeonPlaceAnywaySwitch",
+        "liveMasterSwitch",
+        "priorityMasterSwitch",
+        "idleMasterSwitch",
+        "skipIdleMasterSwitch",
+        "afterSwitch",
+        "beforeSwitch",
+        "loyalty",
+        "lgoldSwitch",
+        "lskinSwitch",
+        "lscrollSwitch",
+        "ltokenSwitch",
+        "lbossSwitch",
+        "lsuperbossSwitch",
+        "favoriteSwitch",
+        "selectedOption",
+        "levelSwitch",
+        "veInput",
+        "eInput",
+        "mInput",
+        "hInput",
+        "vhInput",
+        "iInput",
+        "bInput",
+        "ebInput",
+        "chestSwitch",
+        "bronzeInput",
+        "silverInput",
+        "goldInput",
+        "lGoldInput",
+        "lSkinInput",
+        "lTokenInput",
+        "lScrollInput",
+        "BossInput",
+        "sBossInput",
+        "dungeonSlotSwitch",
+        "skipDungeonSlotSwitch",
+        "duelsSlotSwitch",
+        "skipDuelsSlotSwitch",
+        "clashSlotSwitch",
+        "skipClashSlotSwitch"
+    ]
+
+    chrome.storage.local.get(keysToExport, function (data) {
+        const exportedData = {};
+        keysToExport.forEach(key => {
+            exportedData[key] = data[key];
+        });
+
+        const json = JSON.stringify(exportedData, null, 2);
+        const blob = new Blob([json], { type: "application/json" });
+        const url = URL.createObjectURL(blob);
+
+        const a = document.createElement("a");
+        a.href = url;
+        a.download = "SRHelper_Settings.json";
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url);
+    });
 }

@@ -63,3 +63,12 @@ td {
     color: rgba(128, 128, 128, 0.0);
     display: none;
 }
+
+.bottom_container {
+    text-align: center;
+    margin-top: 20px;
+}
+
+.inline_block {
+    display: inline-block;
+}
