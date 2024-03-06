@@ -819,7 +819,13 @@ async function getValidUnits() {
   }
 
   //Put skinned units at the front if quest completer is not enabled.
-  if (await retrieveFromStorage("equipSwitch") && !canCompleteQuests) {
+  const moreSkinsSwitch = await retrieveStateFromStorage("moreSkinsSwitch")
+  if (moreSkinsSwitch && hasPlacedSkin) {
+    moreSkinsSwitch = false
+  } else {
+    moreSkinsSwitch = true
+  }
+  if (moreSkinsSwitch && await retrieveFromStorage("equipSwitch") && !canCompleteQuests) {
     //Only equip if not diamond
     if (await retrieveFromStorage("equipNoDiamondSwitch") && !diamondLoyalty.toString().includes("LoyaltyDiamond")) {
       try {
