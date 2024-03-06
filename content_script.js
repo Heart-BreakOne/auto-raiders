@@ -355,6 +355,9 @@ async function start() {
 
         //Pass captain name and check if the captain is flagged
         try {
+          if(!captainNameFromDOM) {
+            captainNameFromDOM = ""
+          }
           captainFlag = await getCaptainFlag(captainNameFromDOM, 'flaggedCaptains');
           //Make a second attempt to set loyalty flag
         } catch (error) {
