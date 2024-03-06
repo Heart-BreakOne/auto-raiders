@@ -32,8 +32,8 @@ async function manageCaptain(captainType, keyword) {
     }
 }
 
-//Runs the check on dungeons every 5 seconds.
-setInterval(manageDungeon, 5000);
+//Runs the check on special game modes every 15 seconds.
+setInterval(manageDungeon, 15000);
 
 //Checks if the slots menu exists and invokes the manageCaptain function.
 async function manageDungeon() {

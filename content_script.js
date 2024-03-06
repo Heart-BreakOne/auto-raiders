@@ -10,15 +10,12 @@ let currentMarkerKey = "";
 let currentMarker;
 let arrayOfMarkers;
 let sortedArrMrks;
-let markerAttempt;
 let computedStyle;
 let backgroundImageValue;
 let mode;
 let diamondLoyalty;
-let arrayOfAllyPlacement;
 let firstReload;
 let captainNameFromDOM;
-let arrayOfSkinUnits;
 let reload = 0;
 let isContentRunning = false;
 let unfinishedQuests = null;
@@ -31,8 +28,10 @@ const delay = ms => new Promise(res => setTimeout(res, ms));
 let isDungeon = false;
 let dungeonPlaceAnywaySwitch;
 let battleResult;
-let captainName
+let captainName;
 let chestStringAlt;
+let unitDrawer;
+let hasPlacedSkin;
 
 //Battlefield markers.
 const arrayOfBattleFieldMarkers = [
@@ -259,7 +258,7 @@ async function start() {
   //If there are no place unit buttons, invoke the collection function then return.
   if (placeUnitButtons.length == 0 || (placeUnitButtons.length == 1 && placeUnitButtons[0].innerText === "SUBMIT")) {
     await performCollection();
-    await logLeaderboardUnits();
+    await getLeaderboardUnitsData();
     return;
   }
   //If placement buttons exist, validate them
@@ -524,11 +523,16 @@ async function performCollection() {
   await collectBattlePass();
 }
 
+/*
 async function logLeaderboardUnits() {
   let leaderboardUnitsData = await getLeaderboardUnitsData();
 }
+*/
 // This function checks if the battlefield is present, the current chest type, then zooms into it.
 async function openBattlefield() {
+  arrayOfMarkers = null;
+  sortedArrMrks = null;
+  unitDrawer = null;
   await delay(7000)
   // Attempts to check if battlefield is open
   let battleInfo
@@ -569,7 +573,7 @@ async function openBattlefield() {
 
     //Check how many units user wants
     const unitQtt = await getUnitAmountData()
-    let hasPlacedSkin = false
+    hasPlacedSkin = false
     let commaCount = 0;
 
     try {
@@ -645,10 +649,10 @@ function zoom() {
       zoomButton.click();
     };
     //Resets tracking variables
-    markerAttempt = 0;
     arrayOfMarkers = null;
     sortedArrMrks = null;
     currentMarker = null;
+    unitDrawer = null;
     //Invoke getValidMarkers function
     getValidUnits();
   }
@@ -714,12 +718,12 @@ async function getValidUnits() {
 
   //Get all units from the drawer
   let canCompleteQuests = await retrieveFromStorage("completeQuests")
-  let unitDrawer = [...document.querySelectorAll(".unitSelectionCont")];
+  unitDrawer = [...document.querySelectorAll(".unitSelectionCont")];
   let unitsToRemove = []
 
   // Check dungeon
   const dungeonLevelSwitch = await retrieveFromStorage("dungeonLevelSwitch");
-  const dungeonPlaceAnywaySwitch = await retrieveFromStorage("dungeonPlaceAnywaySwitch");
+  //const dungeonPlaceAnywaySwitch = await retrieveFromStorage("dungeonPlaceAnywaySwitch");
   isDungeon = false;
   let dungeonLevel;
   let userDunLevel;
@@ -796,6 +800,7 @@ async function getValidUnits() {
   }
 
   unitsToRemove.forEach(unit => unit.remove());
+  unitsToRemove = undefined
   unitDrawer = [...document.querySelectorAll(".unitSelectionCont")];
 
   if (await retrieveFromStorage("priorityListSwitch") && !canCompleteQuests) {
@@ -828,22 +833,16 @@ async function getValidUnits() {
   }
 
   //Put skinned units at the front if quest completer is not enabled.
-  let moreSkinsSwitch = await retrieveStateFromStorage("moreSkinsSwitch")
+  let moreSkinsSwitch = await retrieveStateFromStorage("moreSkinsSwitch");
   if (moreSkinsSwitch && hasPlacedSkin) {
-    moreSkinsSwitch = false
+    moreSkinsSwitch = false;
   } else {
-    moreSkinsSwitch = true
+    moreSkinsSwitch = true;
   }
+
   if (moreSkinsSwitch && await retrieveFromStorage("equipSwitch") && !canCompleteQuests) {
-    //Only equip if not diamond
-    if (await retrieveFromStorage("equipNoDiamondSwitch") && !diamondLoyalty.toString().includes("LoyaltyDiamond")) {
-      try {
-        await shiftUnits();
-      } catch (error) {
-        unitDrawer = [...document.querySelectorAll(".unitSelectionCont")];
-        console.log("log" + error);
-      }
-    } else if (!await retrieveFromStorage("equipNoDiamondSwitch")) {
+    const equipNoDiamondSwitch = await retrieveFromStorage("equipNoDiamondSwitch");
+    if (equipNoDiamondSwitch || (equipNoDiamondSwitch && !diamondLoyalty.toString().includes("LoyaltyDiamond"))) {
       try {
         await shiftUnits();
       } catch (error) {
@@ -868,102 +867,65 @@ async function getValidUnits() {
   }
 
   // This sorts the markers and adds imaginary markers if there aren't any
-  let arrayOfMarkers = await prepareMarkers(captainUnit)
-  
-  if (arrayOfMarkers.length == 0) {
-    // Map full of block markers, flag the captain.
-    goHome()
-    return
+  let arrayOfMarkers = await prepareMarkers(captainUnit);
+
+  if (arrayOfMarkers.length === 0) {
+    // TODO Map full of block markers, flag the captain.
+    goHome();
+    return;
   }
+
   // Add unit type and name in the marker
-  for (let i = 0; i < arrayOfMarkers.length; i++) {
-    let mrkr = arrayOfMarkers[i];
-    computedStyle = getComputedStyle(mrkr);
-    let backgroundImageValue = computedStyle.getPropertyValue('background-image').toUpperCase();
+  for (const marker of arrayOfMarkers) {
+    const computedStyle = getComputedStyle(marker);
+    const backgroundImageValue = computedStyle.getPropertyValue('background-image').toUpperCase();
 
-    arrayOfBattleFieldMarkers.some(marker => {
-      // If the current marker matches the items on the array of markers, it's a valid marker
-      if (backgroundImageValue.includes(marker.icon)) {
-        let currentMarkerKey = marker.key;
-        let associatedUnits = [];
+    for (const battlefieldMarker of arrayOfBattleFieldMarkers) {
+      if (backgroundImageValue.includes(battlefieldMarker.icon)) {
+        const currentMarkerKey = battlefieldMarker.key;
+        const associatedUnits = arrayOfUnits.filter(element => element.type === currentMarkerKey || element.key === currentMarkerKey).map(element => element.type || element.key);
 
-        for (let j = 0; j < arrayOfUnits.length; j++) {
-          const element = arrayOfUnits[j];
-          if (currentMarkerKey === element.type) {
-            associatedUnits.push(element.type);
-            if (!mrkr.id) {
-              mrkr.id = associatedUnits;
-              continue
-            }
-          }
-          if (currentMarkerKey === element.key) {
-            associatedUnits.push(element.key);
-            if (!mrkr.id) {
-              mrkr.id = associatedUnits;
-              continue
-            }
-          }
+        if (!marker.id) {
+          marker.id = associatedUnits;
         }
       }
-    });
+    }
   }
 
-  if (retrieveFromStorage("setMarkerSwitch")) {
-    let arrayOfVibeMarkers = [];
-    let notVibeMarkers = [];
+  if (await retrieveFromStorage("setMarkerSwitch")) {
+    const arrayOfVibeMarkers = arrayOfMarkers.filter(marker => marker.id === "VIBE");
+    const notVibeMarkers = arrayOfMarkers.filter(marker => marker.id !== "VIBE");
 
-    for (let i = 0; i < arrayOfMarkers.length; i++) {
-      let marker = arrayOfMarkers[i];
-      if (marker.id === "VIBE") {
-        arrayOfVibeMarkers.push(marker);
-      } else {
-        notVibeMarkers.push(marker);
-      }
-    }
     arrayOfMarkers = notVibeMarkers.concat(arrayOfVibeMarkers);
   }
 
   //Add unit name and type to unit itself
-  for (let i = 0; i < unitDrawer[0].children.length; i++) {
-    let unit = unitDrawer[0].children[i];
-    let unitType = unit.querySelector('.unitClass img').getAttribute('alt').toUpperCase();
-    let unitName = unit.querySelector('.unitClass img').getAttribute('src').slice(-50).toUpperCase();
-    const unit1 = arrayOfUnits.filter(unit1 => unitName.includes(unit1.icon.toUpperCase()))[1];
+  for (const unit of unitDrawer[0].children) {
+    const unitClassImg = unit.querySelector('.unitClass img');
+    const unitType = unitClassImg.getAttribute('alt').toUpperCase();
+    const unitName = unitClassImg.getAttribute('src').slice(-50).toUpperCase();
+    const unit1 = arrayOfUnits.find(unit1 => unitName.includes(unit1.icon.toUpperCase()));
     if (unit1) {
-      unit.id = unit1.key + "#" + unitType
-      continue
+      unit.id = unit1.key + "#" + unitType;
     }
   }
 
-  for (let i = 0; i < unitDrawer[0].children.length; i++) {
-    let unit = unitDrawer[0].children[i];
-    let unitId = unit.id
-    for (let j = 0; j < arrayOfMarkers.length; j++) {
-      let marker = arrayOfMarkers[j]
-      let markerId = marker.id
+  for (const unit of unitDrawer[0].children) {
+    const unitId = unit.id;
+    for (const marker of arrayOfMarkers) {
+      const markerId = marker.id;
       let hasPlaced;
-      if (markerId == "VIBE") {
-        hasPlaced = await attemptPlacement(unit, marker)
+      if (markerId === "VIBE" || unitId.includes(markerId)) {
+        hasPlaced = await attemptPlacement(unit, marker);
         if (hasPlaced) {
-          return
-        }
-        else {
-          await cancelPlacement()
-          continue
-        }
-
-      } else if (unitId.includes(markerId)) {
-        hasPlaced = await attemptPlacement(unit, marker)
-        if (hasPlaced) {
-          return
+          break;
         } else {
-          await cancelPlacement()
-          continue
+          await cancelPlacement();
+          continue;
         }
       }
     }
   }
-
   goHome()
   closeAll()
   return
@@ -971,25 +933,22 @@ async function getValidUnits() {
 }
 
 async function cancelPlacement() {
-  //Close unit, recalculate drawer, recalculate markers
-  const cancelBtn = document.querySelector(".actionButton.actionButtonNegative.placerButton")
+  const cancelBtn = document.querySelector(".actionButton.actionButtonNegative.placerButton");
   if (cancelBtn) {
-    cancelBtn.click()
+    cancelBtn.click();
+    await delay(1000);
   }
-  await delay(1000)
-  const unitDrawer = document.querySelector(".actionButton.actionButtonPrimary.placeUnitButton")
+
+  const unitDrawer = document.querySelector(".actionButton.actionButtonPrimary.placeUnitButton");
   if (unitDrawer) {
-    unitDrawer.click()
+    unitDrawer.click();
   }
 }
 
-
 async function attemptPlacement(unit, marker) {
-
-  moveScreenCenter(marker)
+  moveScreenCenter(marker);
   await delay(2000);
-  let unitItem = unit.querySelector(".unitItem")
-  unitItem.click();
+  unit.querySelector(".unitItem").click();
   await delay(1000);
   tapUnit();
   await delay(500);
@@ -997,114 +956,70 @@ async function attemptPlacement(unit, marker) {
   await delay(1000);
   reloadRoot();
   await delay(1000);
-  if (checkPlacement()) {
-    return true
-  } else {
-    return false
-  }
+  return checkPlacement();
 }
 
 function checkPlacement() {
   const hasPlaced = document.querySelector(".actionButton.actionButtonDisabled.placeUnitButton");
-  const menu = document.querySelector(".captainSlots")
-  if (menu) {
-    return true
-  } else if (hasPlaced) {
-    if (hasPlaced.innerText.includes("UNIT READY TO PLACE IN")) {
-      return true
-    } else {
-      return false
-    }
+  const menu = document.querySelector(".captainSlots");
+
+  if (menu || (hasPlaced && hasPlaced.innerText.includes("UNIT READY TO PLACE IN"))) {
+    return true;
   } else {
-    return false
+    return false;
   }
 }
 
 //Looks and selects a valid marker for placement
 async function prepareMarkers(captainUnit) {
- 
-  //Initializes a node list with placement markers
-  let arrMrks = Array.from(document.querySelectorAll(".planIcon"));
+  let arrMrks = getMarkers();
 
-  async function sort() {
-    arrMrks = Array.from(document.querySelectorAll(".planIcon"));
+  async function sortMarkers(arrMrks) {
     try {
-      //Attempt to sort the markers based on how close they are to the captain
-      sortedArrMrks = getMapMatrix(captainUnit, arrMrks);
-      return sortedArrMrks
+      return getMapMatrix(captainUnit, arrMrks);
     } catch (error) {
       return arrMrks.slice(0, 20);
     }
   }
 
-  //Captain is on open map only
-  if (arrMrks.length == 0) {
-    //Place imaginary markers to use instead and restart the function to get valid markers
+  if (arrMrks.length === 0) {
+    // If no markers are available or captain is using a mix of block markers and open zones,
+    // place imaginary markers and use them instead.
     setImaginaryMarkers(document.querySelectorAll(".placementAlly"));
-    removeHalf()
-
-    return await sort()
-  } else {
-    //Treat the markers to remove block markers
-    const blockMarkers = [];
-    const arrMrksLength = arrMrks.length;
-    for (let i = arrMrksLength - 1; i >= 0; i--) {
-      const planIcon = arrMrks[i];
-      const backgroundImageValue = getComputedStyle(planIcon).getPropertyValue('background-image');
-      if (backgroundImageValue.includes("VYAAAAASUVORK5CYII=")) {
-        blockMarkers.push(planIcon);
-      }
-    }
-    blockMarkers.forEach(marker => { marker.remove(); });
-
-    arrMrks = Array.from(document.querySelectorAll(".planIcon"));
-    //Check what is inside new array.
-    if (arrMrks.length == 0 && (arrayOfAllyPlacement == undefined || arrayOfAllyPlacement.length == 0)) {
-      //Captain is using a mix of block markers and open zones.
-      //Place imaginary markers to use instead
-      arrMrks = setImaginaryMarkers(document.querySelectorAll(".placementAlly"))
-      removeHalf()
-      return await sort()
-    } else {
-      //There are vibe or set markers that can be used.
-      return await sort()
-    }
+    arrMrks = removeHalf(getMarkers());
+    return await sortMarkers(arrMrks);
   }
+
+  // There are available markers.
+  return await sortMarkers(arrMrks);
 }
+
 
 //Places unit or asks for a new valid marker
 async function placeTheUnit() {
-  const dungeonPlaceAnywaySwitch = await retrieveFromStorage("dungeonPlaceAnywaySwitch");
-  //Gets timer, if it doesn't exist return to main menu.
-  let clockText
-  //Attempts to get the clock text
   try {
-    clockText = document.querySelector('.battlePhaseTextClock .clock').innerText;
+    const dungeonPlaceAnywaySwitch = await retrieveFromStorage("dungeonPlaceAnywaySwitch");
+    const clockText = document.querySelector('.battlePhaseTextClock .clock').innerText;
+
+    if (clockText === "00:00") {
+      const placerButton = document.querySelector(cancelButtonSelector);
+      const selectorBack = document.querySelector(".selectorBack");
+
+      if (placerButton && selectorBack) {
+        placerButton.click();
+        selectorBack.click();
+        return true;
+      }
+    }
   } catch (error) {
     goHome();
     return true;
   }
 
-  //If timer has reached 00:00 it means the battle has already started, return to main menu.
-  if (clockText === "00:00") {
-    let placerButton = document.querySelector(cancelButtonSelector);
-    let selectorBack = document.querySelector(".selectorBack");
-
-    if (placerButton && selectorBack) {
-      placerButton.click();
-      selectorBack.click();
-      return true;
-    }
-  }
-
   //Attemps to place the selected unit and go back to menu, if the marker is valid, but in use, get a new marker.
-  const placeModal = document.querySelector(".placerConfirmButtonsCont")
-  let confirmPlacement = undefined;
-  try {
-    confirmPlacement = placeModal.querySelector(".actionButton.actionButtonPrimary.placerButton");
-  } catch (error) {
-    confirmPlacement = undefined
-  }
+  const placeModal = document.querySelector(".placerConfirmButtonsCont");
+  let confirmPlacement = placeModal?.querySelector(".actionButton.actionButtonPrimary.placerButton");
+
 
   if (confirmPlacement) {
     //Placement is blocked by invalid unit location.
@@ -1158,10 +1073,9 @@ async function placeTheUnit() {
     return true;
   }
 
-  await logLeaderboardUnits();
+  await getLeaderboardUnitsData()
   //Unit was placed successfully, returns to main menu and the process restarts.
   setTimeout(() => {
-    // Unit was successfully placed, exit battlefield and so the cycle can be restarted.
     const placementSuccessful = document.querySelector(".actionButton.actionButtonDisabled.placeUnitButton");
     if (placementSuccessful) {
       goHome();
@@ -1172,12 +1086,9 @@ async function placeTheUnit() {
   setTimeout(() => {
     const disabledButton = document.querySelector(".actionButton.actionButtonDisabled.placerButton");
     const negativeButton = document.querySelector(cancelButtonSelector);
-    if (disabledButton) {
-      disabledButton.click();
-      return false;
-    }
-    if (negativeButton) {
-      negativeButton.click();
+    if (disabledButton || negativeButton) {
+      disabledButton?.click();
+      negativeButton?.click();
       return false;
     }
   }, 5000);
@@ -1306,14 +1217,14 @@ async function collectChests() {
       let raidStats = await getRaidStats(raidId);
       await delay(2000);
       let battleResult = raidStats[0];
-      leaderboardRank = raidStats[1];
-      kills = raidStats[3];
-      assists = raidStats[4];
-      unitIconList = raidStats[8];
-      rewards = raidStats[2];
+      let leaderboardRank = raidStats[1];
+      let kills = raidStats[3];
+      let assists = raidStats[4];
+      let unitIconList = raidStats[8];
+      let rewards = raidStats[2];
       let chestStringAlt = raidStats[5];
-      let raidChest = raidStats[6];
-      let chestCount = raidStats[7];
+      //let raidChest = raidStats[6];
+      //let chestCount = raidStats[7];
 
       if (captainName !== null && captainName !== undefined && raidId !== null && raidId !== undefined && ((battleResult !== null && battleResult !== undefined) || (chestStringAlt !== null && chestStringAlt !== undefined) || (leaderboardRank !== null && leaderboardRank !== undefined) || (kills !== null && kills !== undefined) || (assists !== null && assists !== undefined) || (unitIconList !== null && unitIconList !== undefined) || (rewards !== null && rewards !== undefined))) {
         await setLogResults(battleResult, captainName, chestStringAlt, leaderboardRank, kills, assists, unitIconList, rewards, raidId);
@@ -1373,70 +1284,56 @@ function goHome() {
 
 
 async function doPotions() {
-  //Checks if user wants to use potions.
-  let potionState = await getRadioButton("selectedOption");
-  //CHeck if user wants to use potions only with specific captains
+  const potionState = await getRadioButton("selectedOption");
   const favoriteSwitch = await getSwitchState("favoriteSwitch");
-  let favoritePotion = false;
-  let number;
-  let epicButton;
 
-  if (!favoriteSwitch) {
-    favoritePotion = true;
-  }
-  //Check if current captain is a favorite potion captain
-  try {
-    if (potionState != 0 && !mode && favoriteSwitch) {
+  let favoritePotion = !favoriteSwitch;
+
+  if (potionState != 0 && !mode && favoriteSwitch) {
+    try {
       const potionCaptainsList = await new Promise((resolve) => {
-        chrome.storage.local.get({ ['potionlist']: [] }, function (result) {
-          const potionCaptainsList = result["potionlist"];
-          resolve(potionCaptainsList);
+        chrome.storage.local.get({ 'potionlist': [] }, function (result) {
+          resolve(result["potionlist"]);
         });
       });
-      // Check if the array exists and is an array with at least one element
+
       if (Array.isArray(potionCaptainsList) && potionCaptainsList.length > 0) {
-        //Check if current captain is a favorite potion captain. If not set potion state to 0.
-        if (potionCaptainsList.some(item => item.toUpperCase() === captainNameFromDOM.toUpperCase())) {
-          favoritePotion = true;
+        favoritePotion = potionCaptainsList.some(item => item.toUpperCase() === captainNameFromDOM.toUpperCase());
+      }
+    } catch (error) { }
+  }
+
+  if (potionState != 0 && !mode && favoritePotion) {
+    try {
+      const potions = document.querySelector("img[alt='Potion']").closest(".quantityItem");
+      const potionQuantity = parseInt(potions.querySelector(".quantityText").textContent.substring(0, 3));
+
+      if (potionQuantity >= 45 || potionQuantity === 100) {
+        const epicButton = document.querySelector(".actionButton.actionButtonPrimary.epicButton");
+        if (epicButton) {
+          epicButton.click();
         }
       }
-    }
-  } catch (error) { }
-
-  //User wants to use potions
-  if (potionState != 0 && !mode && favoritePotion) {
-    //Get potion strings so the string can be trimmed and converted to int for validation
-    let potions;
-    //Attempts to get potion quantity
-    try {
-      potions = document.querySelector("img[alt='Potion']").closest(".quantityItem");
     } catch (error) {
       goHome();
-      return;
-    }
-    let potionQuantity = potions.querySelector(".quantityText").textContent;
-    epicButton = document.querySelector(".actionButton.actionButtonPrimary.epicButton");
-    number = parseInt(potionQuantity.substring(0, 3));
-  }
-  //User wants to use potions as soon as there are at least 45 potions.
-  if (potionState == 1 && number >= 45) {
-    if (epicButton) {
-      epicButton.click();
-    }
-    //User wants to use potions as soon as there are 100 potions.
-  } else if (potionState && number == 100) {
-    if (epicButton) {
-      epicButton.click();
     }
   }
 }
 
-function removeHalf() {
-  let allIcons = Array.from(document.querySelectorAll(".planIcon"));
-  allIcons.sort(() => Math.random() - 0.5);
-
-  const halfIndex = Math.ceil(allIcons.length / 2);
-  const removedIcons = allIcons.splice(0, halfIndex);
-
+function removeHalf(arrMrks) {
+  const halfIndex = Math.ceil(arrMrks.length / 2);
+  const removedIcons = arrMrks.splice(0, halfIndex);
   removedIcons.forEach(icon => icon.remove());
+  return arrMrks;
+}
+
+
+function getMarkers() {
+  const arrOfAllMrks = document.querySelectorAll(".planIcon");
+  const arrOfMarkers = Array.from(arrOfAllMrks).filter(planIcon => {
+    const backgroundImageValue = getComputedStyle(planIcon).getPropertyValue('background-image');
+    return !backgroundImageValue.includes("VYAAAAASUVORK5CYII=");
+  });
+
+  return arrOfMarkers;
 }
