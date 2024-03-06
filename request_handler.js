@@ -136,9 +136,18 @@ async function getLeaderboardUnitsData() {
               CharacterType = placement.CharacterType;
             }
             if (placement.skin === null || placement.skin === "") {
-              skin = unitAssetNames[CharacterType]?.AssetName || null;
+              Object.keys(unitAssetNames).forEach(function (key) {
+                if (key === CharacterType) {
+                  skin = unitAssetNames[key].AssetName;
+                }
+              })
             } else {
-              skin = skinNames[placement.skin]?.BaseAssetName || null;
+              skin = placement.skin;
+              Object.keys(skinNames).forEach(function (key) {
+                if (key === placement.skin) {
+                  skin = skinNames[key].BaseAssetName;
+                }
+              })
             }
             if (placement.SoulType === null || placement.SoulType === "") {
               SoulType = "none";
