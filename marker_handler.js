@@ -30,7 +30,7 @@ function getCaptainUnit() {
         if (captain == undefined || captain == null) {
             continue
         }
-        if(i == 0) {
+        if (i == 0) {
             firstPlacement = captain
         }
         let captainIcon = captain.querySelector("img").src;
@@ -43,7 +43,7 @@ function getCaptainUnit() {
         const lastDotIndex2 = icon.lastIndexOf(".");
 
         // Extract the substring between the last dot and last slash
-        captainIcon= captainIcon.substring(lastDotIndex1 + 1, lastSlashIndex1);
+        captainIcon = captainIcon.substring(lastDotIndex1 + 1, lastSlashIndex1);
         icon = icon.substring(lastDotIndex2 + 1, lastSlashIndex2);
 
         if (captainIcon === icon) {
@@ -63,44 +63,44 @@ function getCaptainUnit() {
 }
 
 function getMapMatrix(captainUnit, arrayOfMarkers) {
-
-    if(captainUnit == undefined) {
-        return arrayOfMarkers
+    if (captainUnit === undefined) {
+        return arrayOfMarkers;
     }
-    const elementSize = captainUnit.offsetWidth;
 
+    const elementSize = captainUnit.offsetWidth;
     const divisionSize = (elementSize / 8) * 3;
+    const reducedElementSize = (elementSize / 8) * 2;
 
     const captainTop = captainUnit.offsetTop + divisionSize;
     const captainLeft = captainUnit.offsetLeft + divisionSize;
 
-    const reducedElementSize = (elementSize / 8) * 2;
-
     const sortedArray = [];
 
-    for (let i = 0; i < arrayOfMarkers.length; i++) {
-        const marker = arrayOfMarkers[i];
-
+    for (const marker of arrayOfMarkers) {
         const markerTop = marker.offsetTop;
         const markerLeft = marker.offsetLeft;
 
-        const squaredDistance =
+        const distanceSquared =
             Math.pow(markerTop - captainTop, 2) +
-            Math.pow(markerLeft - captainLeft, 2) +
+            Math.pow(markerLeft - captainLeft, 2);
+
+        const sizeSquared =
             Math.pow(marker.offsetWidth - reducedElementSize, 2) +
             Math.pow(marker.offsetHeight - reducedElementSize, 2);
 
-        sortedArray.push({ marker, squaredDistance });
+        const totalSquaredDistance = distanceSquared * 1 + sizeSquared * 1;
+
+        sortedArray.push({ marker, totalSquaredDistance });
     }
 
-    sortedArray.sort((a, b) => a.squaredDistance - b.squaredDistance);
-
-    //Randomize first 10 markers to reduce misplacements and still remain near the captain.
-    const itemsToRandomize = Math.min(sortedArray.length, 10);
-    for (let i = itemsToRandomize - 1; i > 0; i--) {
-        const j = Math.floor(Math.random() * (i + 1));
+    // Randomize first 10 markers
+    for (let i = 0; i < 10 && i < sortedArray.length; i++) {
+        const j = Math.floor(Math.random() * (sortedArray.length - i)) + i;
         [sortedArray[i], sortedArray[j]] = [sortedArray[j], sortedArray[i]];
     }
-    return sortedArray.map(item => item.marker);
 
+    sortedArray.sort((a, b) => a.totalSquaredDistance - b.totalSquaredDistance);
+
+    const first20Items = sortedArray.slice(0, 20);
+    return first20Items.map(item => item.marker);
 }

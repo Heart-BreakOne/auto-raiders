@@ -1040,13 +1040,16 @@ async function prepareMarkers(captainUnit) {
   if (arrMrks.length == 0) {
     //Place imaginary markers to use instead and restart the function to get valid markers
     setImaginaryMarkers(document.querySelectorAll(".placementAlly"));
+    removeHalf()
+
     return await sort()
   } else {
     //Treat the markers to remove block markers
-    let blockMarkers = []
-    for (let i = arrMrks.length - 1; i >= 0; i--) {
-      let planIcon = arrMrks[i];
-      let backgroundImageValue = getComputedStyle(planIcon).getPropertyValue('background-image').toUpperCase();
+    const blockMarkers = [];
+    const arrMrksLength = arrMrks.length;
+    for (let i = arrMrksLength - 1; i >= 0; i--) {
+      const planIcon = arrMrks[i];
+      const backgroundImageValue = getComputedStyle(planIcon).getPropertyValue('background-image');
       if (backgroundImageValue.includes("VYAAAAASUVORK5CYII=")) {
         blockMarkers.push(planIcon);
       }
@@ -1058,6 +1061,7 @@ async function prepareMarkers(captainUnit) {
       //Captain is using a mix of block markers and open zones.
       //Place imaginary markers to use instead
       arrMrks = setImaginaryMarkers(document.querySelectorAll(".placementAlly"))
+      removeHalf()
       return await sort()
     } else {
       //There are vibe or set markers that can be used.
@@ -1217,7 +1221,7 @@ const obsv = new MutationObserver(function (mutations) {
       if (!purpleFlag) {
         purpleFlag = await retrieveMaxUnit(capNameDOM);
       }
-      
+
       const blueFlag = await getCaptainFlag(capNameDOM, 'captainLoyalty');
 
       /*If the current captain is running a special mode and is not the one with the current flag OR
@@ -1423,4 +1427,14 @@ async function doPotions() {
       epicButton.click();
     }
   }
+}
+
+function removeHalf() {
+  let allIcons = Array.from(document.querySelectorAll(".planIcon"));
+  allIcons.sort(() => Math.random() - 0.5);
+
+  const halfIndex = Math.ceil(allIcons.length / 2);
+  const removedIcons = allIcons.splice(0, halfIndex);
+
+  removedIcons.forEach(icon => icon.remove());
 }
