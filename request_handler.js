@@ -280,9 +280,9 @@ async function getRaidStats(raidId) {
       if (raidData.eventCurrencyAwarded > 0) {
         rewards[i] = "";
        
-        Object.keys(imageURLs.ImageURLs).forEach(function (key) {
+        Object.keys(imageURLs).forEach(function (key) {
           if (key === "mobilelite/events/" + eventUid + "/iconEventCurrency.png") {
-            rewards[i] = "https://d2k2g0zg1te1mr.cloudfront.net/" + imageURLs.ImageURLs[key];
+            rewards[i] = "https://d2k2g0zg1te1mr.cloudfront.net/" + imageURLs[key];
           }
         })
         rewards[i] = rewards[i] + " eventcurrencyx" + raidData.eventCurrencyAwarded;
@@ -336,9 +336,9 @@ async function getRaidStats(raidId) {
               item = currency[key].UnitAssetName;
             }
           })
-          Object.keys(imageURLs.ImageURLs).forEach(function (key) {
+          Object.keys(imageURLs).forEach(function (key) {
             if (key === "mobilelite/units/static/" + item + ".png") {
-              rewards[i] = "https://d2k2g0zg1te1mr.cloudfront.net/" + imageURLs.ImageURLs[key];
+              rewards[i] = "https://d2k2g0zg1te1mr.cloudfront.net/" + imageURLs[key];
             }
           })
         }
@@ -351,9 +351,9 @@ async function getRaidStats(raidId) {
     try {
       if (raidData.eventTokensReceived !== "0") {
         rewards[i] = "";
-        Object.keys(imageURLs.ImageURLs).forEach(function (key) {
+        Object.keys(imageURLs).forEach(function (key) {
           if (key === "mobilelite/events/" + eventUid + "/iconEventToken.png") {
-            rewards[i] = "https://d2k2g0zg1te1mr.cloudfront.net/" + imageURLs.ImageURLs[key];
+            rewards[i] = "https://d2k2g0zg1te1mr.cloudfront.net/" + imageURLs[key];
           }
         })
         rewards[i] = rewards[i] + " eventtokenx" + raidData.eventTokensReceived;
