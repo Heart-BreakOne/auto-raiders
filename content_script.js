@@ -446,6 +446,10 @@ async function start() {
           captainFlag = false;
         }
         //If captain has any flags, change color and move to the next slot
+        // Reuse captainLoyalty to setMaxloyalty
+        if(!captainLoyalty == false) {
+          captainLoyalty = await retrieveMaxUnit(capNameDOM);
+        }
         if (captainLoyalty || captainFlag) {
           if (captainLoyalty) {
             captainSlot.style.backgroundColor = blue;
@@ -581,8 +585,7 @@ async function openBattlefield() {
     } catch (error) { }
 
     if (unitQtt == commaCount) {
-      const rnNm = Math.floor(Math.random() * 9) + 12;
-      flagCaptainRed(rnNm, captainNameFromDOM)
+      await setMaxUnit(captainNameFromDOM)
       closeAll();
       goHome();
       return;
@@ -819,7 +822,7 @@ async function getValidUnits() {
   }
 
   //Put skinned units at the front if quest completer is not enabled.
-  const moreSkinsSwitch = await retrieveStateFromStorage("moreSkinsSwitch")
+  let moreSkinsSwitch = await retrieveStateFromStorage("moreSkinsSwitch")
   if (moreSkinsSwitch && hasPlacedSkin) {
     moreSkinsSwitch = false
   } else {
@@ -1196,7 +1199,11 @@ const obsv = new MutationObserver(function (mutations) {
       }
 
       //Get flag states
-      const purpleFlag = await getCaptainFlag(capNameDOM, 'flaggedCaptains');
+      let purpleFlag = await getCaptainFlag(capNameDOM, 'flaggedCaptains');
+      if (!purpleFlag) {
+        purpleFlag = await retrieveMaxUnit(capNameDOM);
+      }
+      
       const blueFlag = await getCaptainFlag(capNameDOM, 'captainLoyalty');
 
       /*If the current captain is running a special mode and is not the one with the current flag OR

@@ -109,3 +109,42 @@ async function flagCaptainRed(cpId, cpNmSt) {
         });
     });
 }
+
+async function setMaxUnit(capName) {
+    const curTime = new Date().toISOString();
+    
+    chrome.storage.local.get('maxUnitsPlaced', function(result) {
+        let maxUnitsPlaced = result.maxUnitsPlaced || [];
+        const existingIndex = maxUnitsPlaced.findIndex(item => item.capName === capName);
+
+        if (existingIndex !== -1) {
+            maxUnitsPlaced[existingIndex].time = curTime;
+        } else {
+            maxUnitsPlaced.push({ capName, time: curTime });
+        }
+
+        const tenMinutesAgo = new Date(Date.now() - 10 * 60 * 1000).toISOString();
+        maxUnitsPlaced = maxUnitsPlaced.filter(item => new Date(item.time) > new Date(tenMinutesAgo));
+
+        chrome.storage.local.set({ 'maxUnitsPlaced': maxUnitsPlaced });
+    });
+}
+
+
+async function retrieveMaxUnit(capName) {
+    return new Promise(resolve => {
+        chrome.storage.local.get('maxUnitsPlaced', function(result) {
+            const maxUnitsPlaced = result.maxUnitsPlaced || [];
+
+            const entry = maxUnitsPlaced.find(item => item.capName === capName);
+
+            if (entry) {
+                const tenMinutesAgo = new Date(Date.now() - 10 * 60 * 1000);
+                const entryTime = new Date(entry.time);
+                resolve(entryTime > tenMinutesAgo);
+            } else {
+                resolve(false);
+            }
+        });
+    });
+}
