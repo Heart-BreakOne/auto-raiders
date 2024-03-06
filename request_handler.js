@@ -150,11 +150,12 @@ async function getLeaderboardUnitsData() {
             } else {
               specializationUid = placement.specializationUid;
             }
-            Object.keys(imageURLs.ImageURLs).forEach(function (key) {
+
+            Object.keys(imageURLs).forEach(function(key) {
               if (key === "mobilelite/units/static/" + skin + ".png") {
-                skinURL = "https://d2k2g0zg1te1mr.cloudfront.net/" + imageURLs.ImageURLs[key];
+                skinURL = "https://d2k2g0zg1te1mr.cloudfront.net/" + imageURLs[key];
               }
-            })
+            });
             unitIconList = skinURL + " " + skin.replace("allies", "").replace("skinFull", "") + " " + CharacterType + " " + SoulType + " " + specializationUid + "," + unitIconList
           }
         }
@@ -269,6 +270,7 @@ async function getRaidStats(raidId) {
     try {
       if (raidData.eventCurrencyAwarded > 0) {
         rewards[i] = "";
+       
         Object.keys(imageURLs.ImageURLs).forEach(function (key) {
           if (key === "mobilelite/events/" + eventUid + "/iconEventCurrency.png") {
             rewards[i] = "https://d2k2g0zg1te1mr.cloudfront.net/" + imageURLs.ImageURLs[key];
@@ -315,14 +317,14 @@ async function getRaidStats(raidId) {
           } else {
             bonusItemReceived = raidData.bonusItemReceived;
           }
-          Object.keys(items.Items).forEach(function (key) {
+          Object.keys(items).forEach(function (key) {
             if (key === bonusItemReceived) {
-              item = items.Items[key].CurrencyTypeAwarded;
+              item = items[key].CurrencyTypeAwarded;
             }
           })
-          Object.keys(currency.Currency).forEach(function (key) {
+          Object.keys(currency).forEach(function (key) {
             if (key === item) {
-              item = currency.Currency[key].UnitAssetName;
+              item = currency[key].UnitAssetName;
             }
           })
           Object.keys(imageURLs.ImageURLs).forEach(function (key) {
@@ -369,19 +371,24 @@ async function getRaidStats(raidId) {
             } else {
               viewerChestRewardItem = raidData.viewerChestRewards[k]
             }
-            Object.keys(items.Items).forEach(function (key) {
+            Object.keys(items).forEach(function (key) {
               if (key === viewerChestRewardItem) {
-                item = items.Items[key].CurrencyTypeAwarded;
+                item = items[key].CurrencyTypeAwarded;
               }
             })
-            Object.keys(currency.Currency).forEach(function (key) {
+            Object.keys(currency).forEach(function (key) {
               if (key === item) {
-                item = currency.Currency[key].UnitAssetName;
+                item = currency[key].UnitAssetName;
               }
             })
-            Object.keys(imageURLs.ImageURLs).forEach(function (key) {
+            Object.keys(imageURLs).forEach(function(key) {
+              if (key === "mobilelite/units/static/" + skin + ".png") {
+                skinURL = "https://d2k2g0zg1te1mr.cloudfront.net/" + imageURLs[key];
+              }
+            });
+            Object.keys(imageURLs).forEach(function (key) {
               if (key === "mobilelite/units/static/" + item + ".png") {
-                rewards[i] = "https://d2k2g0zg1te1mr.cloudfront.net/" + imageURLs.ImageURLs[key];
+                rewards[i] = "https://d2k2g0zg1te1mr.cloudfront.net/" + imageURLs[key];
               }
             })
           }
