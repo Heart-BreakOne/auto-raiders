@@ -446,9 +446,9 @@ async function start() {
           captainFlag = false;
         }
         //If captain has any flags, change color and move to the next slot
-        // Reuse captainLoyalty to setMaxloyalty
-        if(!captainLoyalty == false) {
-          captainLoyalty = await retrieveMaxUnit(capNameDOM);
+
+        if (await retrieveMaxUnit(captainNameFromDOM)) {
+          continue
         }
         if (captainLoyalty || captainFlag) {
           if (captainLoyalty) {
