@@ -910,15 +910,24 @@ async function getValidUnits() {
     }
   }
 
+  let attempt = 0
   for (const unit of unitDrawer[0].children) {
     const unitId = unit.id;
     for (const marker of arrayOfMarkers) {
+      attempt += 1
+      if (attempt == 10) {
+        goHome()
+        closeAll()
+        return
+      }
       const markerId = marker.id;
       let hasPlaced;
       if (markerId === "VIBE" || unitId.includes(markerId)) {
         hasPlaced = await attemptPlacement(unit, marker);
         if (hasPlaced) {
-          break;
+          goHome()
+          closeAll()
+          return
         } else {
           await cancelPlacement();
           continue;
@@ -926,10 +935,6 @@ async function getValidUnits() {
       }
     }
   }
-  goHome()
-  closeAll()
-  return
-
 }
 
 async function cancelPlacement() {
@@ -946,11 +951,17 @@ async function cancelPlacement() {
 }
 
 async function attemptPlacement(unit, marker) {
-  moveScreenCenter(marker);
+  if(!await moveScreenCenter(marker)) {
+    closeAll();
+    goHome();
+    return;
+  }
   await delay(2000);
   unit.querySelector(".unitItem").click();
   await delay(1000);
-  tapUnit();
+  if (!tapUnit()) {
+    return true
+  }
   await delay(500);
   placeTheUnit();
   await delay(1000);
