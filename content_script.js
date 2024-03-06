@@ -587,7 +587,7 @@ async function openBattlefield() {
       }
     } catch (error) { }
 
-    if (unitQtt == commaCount) {
+    if (commaCount >= unitQtt) {
       await setMaxUnit(captainNameFromDOM)
       closeAll();
       goHome();

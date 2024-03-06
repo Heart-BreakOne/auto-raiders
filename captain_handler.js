@@ -112,7 +112,7 @@ async function flagCaptainRed(cpId, cpNmSt) {
 
 async function setMaxUnit(capName) {
     const curTime = new Date().toISOString();
-    let capName = capName.toLowerCase()
+    capName = capName.toLowerCase()
     
     chrome.storage.local.get('maxUnitsPlaced', function(result) {
         let maxUnitsPlaced = result.maxUnitsPlaced || [];
@@ -133,7 +133,7 @@ async function setMaxUnit(capName) {
 
 
 async function retrieveMaxUnit(capName) {
-    let capName = capName.toLowerCase()
+    capName = capName.toLowerCase()
     return new Promise(resolve => {
         chrome.storage.local.get('maxUnitsPlaced', function(result) {
             const maxUnitsPlaced = result.maxUnitsPlaced || [];
