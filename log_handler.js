@@ -30,7 +30,7 @@ const logObserverCallback = async function (mutations) {
         }
     }
 
-    await logDelay(20000);
+    await logDelay(30000);
 };
 
 const logObserver = new MutationObserver(logObserverCallback);

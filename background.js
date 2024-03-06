@@ -94,12 +94,6 @@ chrome.runtime.onConnect.addListener((port) => {
       await checkBattleMessages();
     }
 
-    //Get image URLs for log
-    if (msg.action === "getImageURLs") {
-      const response = await fetchImageURLs(msg.mobilelite_url);
-      port.postMessage({ response });
-    }
-
     //Force a reload if the game doesn't load with mobile mode
     if (msg.action === "reloadCleanCache") {
       processedTabs = new Set();
@@ -353,39 +347,23 @@ So effectively, the time between 11 and 7 is the battle time. The time between 7
 
 */
 
-async function fetchImageURLs(mobilelite_url) {
-  try {
-    const response = await fetch(mobilelite_url);
-    const blob = await response.blob();
-    const corsResponse = new Response(blob, { headers: { 'Access-Control-Allow-Origin': '*' } });
-
-    const imageURLs = await corsResponse.json();
-
-    for (const nodeKey in imageURLs) {
-      const node = imageURLs[nodeKey];
-    }
-    const transformedJson = {
-      url: mobilelite_url,
-      ImageURLs: imageURLs
-    };
-
-    return transformedJson
-  } catch (error) {
-    console.log("There was an error fetching the image URLs")
-  }
-}
-
 // Reloader for when the game data changes
 async function checkGameData() {
   const response = await fetch('https://www.streamraiders.com/api/game/?cn=getUser&command=getUser');
   const data = await response.json();
+  const clientVersion = data.info.version;
+  const dataVersion = data.info.dataVersion;
+  const userId = data.data.userId
 
   if (data.info.dataPath) {
     const dataPath = data.info.dataPath;
-    chrome.storage.local.get("gameDataPath", function (result) {
+    chrome.storage.local.get("gameDataPath", async function (result) {
       const gameDataPath = result.gameDataPath;
       const setGameDataPath = () => chrome.storage.local.set({ "gameDataPath": dataPath }, () => console.log("New game data path set successfully."));
       if (!gameDataPath || gameDataPath !== dataPath) {
+        await chrome.storage.local.set({ "userId": userId, "clientVersion": clientVersion, "dataVersion": dataVersion });
+        await updateImageURLS()
+        await getGameData(dataPath)
         setGameDataPath();
         chrome.tabs.query({}, tabs => {
           tabs.some(tab => {
@@ -400,15 +378,77 @@ async function checkGameData() {
   }
 }
 
+async function getGameData(gameDataPathUrl) {
+  try {
+      const response = await fetch(gameDataPathUrl);
+      
+      if (!response.ok) {
+          throw new Error(`Failed to fetch game data (${response.status} ${response.statusText})`);
+      }
+      
+      const data = await response.json();
+      
+      const currency = data.sheets.Currency;
+      const items = data.sheets.Items;
+      const units = data.sheets.Units;
+      const skins = data.sheets.Skins;
+      const mapNodes = data.sheets.MapNodes
+
+      for (const nodeKey in mapNodes) {
+        const node = mapNodes[nodeKey];
+        for (const keyToRemove of ["NodeDifficulty", "NodeType", "MapTags", "OnLoseDialog", "OnStartDialog", "OnWinDialog"]) {
+          delete node[keyToRemove];
+        }
+      }
+      const transformedJson = {
+        url: gameDataPathUrl,
+        MapNodes: mapNodes
+      };
+      
+      await chrome.storage.local.set({"loyaltyChests": transformedJson, "currency": currency, "items": items, "units": units, "skins": skins });
+      
+      console.log("Game data successfully fetched and saved to chrome storage.");
+  } catch (error) {
+      console.error("Error fetching or saving game data:", error);
+  }
+}
+
+async function updateImageURLS() {
+  try {
+    const response = await fetch("https://d2k2g0zg1te1mr.cloudfront.net/manifests/mobilelite.json");
+
+    if (!response.ok) {
+      throw new Error('Failed to fetch data');
+    }
+
+    const data = await response.json();
+
+    await chrome.storage.local.set({ imageUrls: data });
+
+    console.log('Image URLs updated successfully.');
+  } catch (error) {
+    console.error('Error updating image URLs:', error);
+  }
+}
+
+
 // Set some default values when extension is installed
 chrome.runtime.onInstalled.addListener(function (details) {
   if (details.reason === 'install') {
     chrome.storage.local.set({
       "commonSwitch": true,
       "campaignSwitch": true,
-      "loyalty": "0"
+      "loyalty": "0",
+      "selectedOption": "0",
     });
   }
 });
 
 setInterval(checkGameData, 60000);
+
+
+/* NEW KEYS
+
+
+
+*/

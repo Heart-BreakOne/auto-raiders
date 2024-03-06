@@ -533,7 +533,8 @@ async function openBattlefield() {
   arrayOfMarkers = null;
   sortedArrMrks = null;
   unitDrawer = null;
-  await delay(7000)
+  await delay(6000)
+  
   // Attempts to check if battlefield is open
   let battleInfo
   try {
@@ -858,9 +859,7 @@ async function getValidUnits() {
     } catch (error) {
       unitDrawer = [...document.querySelectorAll(".unitSelectionCont")];
     }
-  }
-
-  if (await retrieveFromStorage("shuffleSwitch")) {
+  } else if (await retrieveFromStorage("shuffleSwitch")) {
     const children = [...document.querySelectorAll(".unitSelectionCont")[0].children];
     children.sort(() => Math.random() - 0.5);
     children.forEach(child => document.querySelector(".unitSelectionCont").appendChild(child));
