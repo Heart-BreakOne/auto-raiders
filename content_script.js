@@ -268,8 +268,10 @@ async function start() {
           battleType = "Campaign";
         } else if (captainSlot.innerText.includes("Dungeons")) {
           battleType = "Dungeons";
-        } else if (captainSlot.innerText.includes("Clash") || captainSlot.innerText.includes("Duel")) {
-          battleType = "PVP";
+        } else if (captainSlot.innerText.includes("Clash")) {
+          battleType = "Clash";
+        } else if (captainSlot.innerText.includes("Duel")) {
+          battleType = "Duel";
         }
 
         //If slot state is disabled, move to the next slot
@@ -463,26 +465,26 @@ async function start() {
         So if the dungeon captain on storage is Mike and there is another captain name John also running a dungeon
         the captain John will be skipped, this is done so only one captain runs a special mode at any given time and keys don't get reset.  */
         let multiClashSwitch;
-        if (captainSlot.innerText.includes("Clash")) {
+        if (battleType == "Clash") {
           multiClashSwitch = await getSwitchState("multiClashSwitch");
         }
-        if (((dungeonCaptainNameFromStorage != captainNameFromDOM) && captainSlot.innerText.includes("Dungeons")) ||
-          (!multiClashSwitch && (clashCaptainNameFromStorage != captainNameFromDOM) && captainSlot.innerText.includes("Clash")) ||
-          ((duelsCaptainNameFromStorage != captainNameFromDOM) && captainSlot.innerText.includes("Duel"))) {
+        if (((dungeonCaptainNameFromStorage != captainNameFromDOM) && battleType == "Dungeons") ||
+          (!multiClashSwitch && (clashCaptainNameFromStorage != captainNameFromDOM) && battleType == "Clash") ||
+          ((duelsCaptainNameFromStorage != captainNameFromDOM) && battleType == "Duel")) {
           continue
         }
         /* Checks if the captain saved on storage running a special mode is still running the same mode, if they change they might lock
         the slot for 30 minutes so if a captain switches to campaign they are skipped and colored red */
-        else if (((dungeonCaptainNameFromStorage == captainNameFromDOM) && !captainSlot.innerText.includes("Dungeons")) ||
-          (!multiClashSwitch && (clashCaptainNameFromStorage == captainNameFromDOM) && !captainSlot.innerText.includes("Clash")) ||
-          ((duelsCaptainNameFromStorage == captainNameFromDOM) && !captainSlot.innerText.includes("Duel"))) {
+        else if ((dungeonCaptainNameFromStorage == captainNameFromDOM && battleType != "Dungeons") ||
+          (!multiClashSwitch && clashCaptainNameFromStorage == captainNameFromDOM && battleType != "Clash") ||
+          (duelsCaptainNameFromStorage == captainNameFromDOM && battleType != "Duel")) {
           captainSlot.style.backgroundColor = red;
           continue
         }
         /* Checks if the slot is a special game mode and if a unit has already been placed it check if the user wants to place
         multiple units on special modes */
-        else if (((captainSlot.innerText.includes("Dungeons") && !dungeonSwitch) || (captainSlot.innerText.includes("Clash") && !clashSwitch) ||
-          ((captainSlot.innerText.includes("Duel") && !duelSwitch)) || !campaignSwitch) &&
+        else if (((battleType == "Dungeons" && !dungeonSwitch) || (battleType == "Clash" && !clashSwitch) ||
+          ((battleType == "Duel" && !duelSwitch)) || !campaignSwitch) &&
           captainSlot.querySelector('.capSlotClose') == null) {
           continue
         }
@@ -846,7 +848,7 @@ async function getValidUnits(captainNameFromDOM, slotOption, diamondLoyalty, bat
     } else if ((unitDead || unitExhausted || unitKnocked) && isDungeon && !canCompleteQuests) {
       unitsToRemove.push(unit)
       continue
-    } else if (battleType == "PVP" && specCheck == null && !await getSwitchState("pvpSpecSwitch")) {
+    } else if ((battleType == "Clash" || battleType == "Duel") && specCheck == null && await getSwitchState("pvpSpecSwitch")) {
       unitsToRemove.push(unit)
       continue
     }
@@ -1329,6 +1331,9 @@ function zoom() {
 
 async function getUserWaitTime(battleType) {
   try {
+    if (battleType == "Clash" || battleType == "Duel") {
+      battleType = "PVP"
+    }
     let userWaitTime = await retrieveNumberFromStorage("userWaitTimeInput" + battleType);
     let secondsToMin = userWaitTime / 60;
     let min = "0" + (60 - ((secondsToMin - parseInt(secondsToMin)) * 60));
