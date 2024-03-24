@@ -921,7 +921,7 @@ async function getValidUnits(captainNameFromDOM, slotOption, diamondLoyalty, bat
   }
 
   //Put skinned units at the front if quest completer is not enabled.
-  let moreSkinsSwitch = await retrieveStateFromStorage("moreSkinsSwitch");
+  let moreSkinsSwitch = await retrieveFromStorage("moreSkinsSwitch");
   if (moreSkinsSwitch && hasPlacedSkin) {
     moreSkinsSwitch = false;
   } else {
