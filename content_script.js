@@ -873,9 +873,15 @@ async function getValidUnits(captainNameFromDOM, slotOption, diamondLoyalty, bat
   unitsToRemove = undefined
   unitDrawer = [...document.querySelectorAll(".unitSelectionCont")];
   
-  let priorityListSwitchSlot = await retrieveFromStorage("priorityListSwitch" + slotOption);
+  let slotNum;
+  if (battleType == "Dungeons") {
+    slotNum = '5';
+  } else {
+    slotNum = slotOption;
+  }
+  let priorityListSwitchSlot = await retrieveFromStorage("priorityListSwitch" + slotNum);
   let priorityListSwitchAll = await retrieveFromStorage("priorityListSwitch0");
-  let shuffleSwitchSlot = await retrieveFromStorage("shuffleSwitch" + slotOption);
+  let shuffleSwitchSlot = await retrieveFromStorage("shuffleSwitch" + slotNum);
   let shuffleSwitchSlotAll = await retrieveFromStorage("shuffleSwitch0");
   let shuffleSwitch = false;
   if (shuffleSwitchSlot || shuffleSwitchSlotAll) {
@@ -884,7 +890,7 @@ async function getValidUnits(captainNameFromDOM, slotOption, diamondLoyalty, bat
   if (!canCompleteQuests) {
     //If unit priority list for the slot is selected, use the list for the slot
     if (priorityListSwitchSlot) {
-      unitDrawer = await sortPriorityUnits(unitDrawer, slotOption, shuffleSwitch);
+      unitDrawer = await sortPriorityUnits(unitDrawer, slotNum, shuffleSwitch);
     //If unit priority list for the slot is not selected and unit priority list for all slots is selected, use the list for all slots
     } else if (!priorityListSwitchSlot && priorityListSwitchAll) {
       unitDrawer = await sortPriorityUnits(unitDrawer, "0", shuffleSwitch);
