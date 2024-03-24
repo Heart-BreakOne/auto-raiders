@@ -1343,7 +1343,7 @@ async function getUserWaitTime(battleType) {
       }
     } else if (battleType == "Dungeons") {
       if (userWaitTime == -100 || userWaitTime >= (5 * 60)) {
-        return 400
+        return 500
       } else {
         if (userWaitTime == 0) {
           return 500;
@@ -1352,7 +1352,7 @@ async function getUserWaitTime(battleType) {
       }
     } else if (battleType == "PVP") {
       if (userWaitTime == -100 || userWaitTime >= (6 * 60)) {
-        return 500
+        return 600
       } else {
         if (userWaitTime == 0) {
           return 600;
