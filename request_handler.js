@@ -1013,7 +1013,6 @@ So effectively, the time between 11 and 7 is the battle time. The time between 7
 async function getFavoriteCaptainIds() {
   
   try {
-      let cookieString = document.cookie;
       const response = await fetch('https://www.streamraiders.com/api/game/?cn=getUser&command=getUser');
       const data = await response.json();
       let favoriteCaptainIds;

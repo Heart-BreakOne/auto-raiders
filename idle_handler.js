@@ -225,11 +225,17 @@ async function switchIdleCaptain() {
       //Invokes function to get list with bronze loyalty captains
       let bronzeLoyaltyList = createLoyaltyList(acceptableList, bronzeLoyaltyString, blackList);
       //Gets list of favorited captains that are running campaign
-      let favoriteCaptainIds = await getFavoriteCaptainIds();
-      let favoriteCaptainIdsArray = favoriteCaptainIds.split(",");
-      const favoriteList = acceptableList.filter(
-          entry => (favoriteCaptainIdsArray.includes(entry[0]) && !blackList.includes(entry) && entry[3] !== true)
-      );
+      let favoriteList = []
+      try {
+        let favoriteCaptainIds = await getFavoriteCaptainIds();
+        let favoriteCaptainIdsArray = favoriteCaptainIds.split(",");
+        favoriteList = acceptableList.filter(
+            entry => (favoriteCaptainIdsArray.includes(entry[0]) && !blackList.includes(entry) && entry[3] !== true)
+        );
+      } catch(error) {
+        favoriteList = []
+      }
+      
 
       
       //If diamond loyalty captains exist, click on a random one
