@@ -946,10 +946,6 @@ async function getValidUnits(captainNameFromDOM, slotOption, diamondLoyalty, bat
     } catch (error) {
       unitDrawer = [...document.querySelectorAll(".unitSelectionCont")];
     }
-  } else if (await retrieveFromStorage("shuffleSwitch")) {
-    const children = [...document.querySelectorAll(".unitSelectionCont")[0].children];
-    children.sort(() => Math.random() - 0.5);
-    children.forEach(child => document.querySelector(".unitSelectionCont").appendChild(child));
   }
 
   if (!arrayOfMarkers || arrayOfMarkers.length == 0) {
