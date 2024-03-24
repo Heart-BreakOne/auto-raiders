@@ -149,7 +149,7 @@ async function start() {
       }
     })
   }
-  if ((reload != undefined && elapsedMinutes >= reload && reload >= 5) || ((reload != undefined || reload != 0) && elapsedMinutes >= 60)) {
+  if (chestsRunning == false && ((reload != undefined && elapsedMinutes >= reload && reload >= 5) || ((reload != undefined || reload != 0) && elapsedMinutes >= 60))) {
     locationReload();
     return;
   }
@@ -587,7 +587,12 @@ async function openBattlefield(captainNameFromDOM, slotOption, diamondLoyalty, b
     let commaCount = 0;
 
     try {
+      while (logRunning == true) {
+        await delay(10);
+      }
+      logRunning = true;
       let battleLog = await retrieveFromStorage("logData");
+      logRunning = false;
       battleLog = battleLog.slice(-4);
       for (let i = battleLog.length - 1; i >= 0; i--) {
         const battleOfInterest = battleLog[i];

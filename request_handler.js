@@ -1,10 +1,15 @@
-setInterval(collectChests, 10000);
-setInterval(getLeaderboardUnitsData, 10000);
+setInterval(logChestsAndUnitsInterval, 10000);
 setInterval(levelUp, 150000);
 
 //Declaring variables
 let isRunning = false;
+let chestsRunning = false;
 let backgroundDelay = ms => new Promise(res => setTimeout(res, ms));
+
+async function logChestsAndUnitsInterval() {
+  await collectChests();
+  await getLeaderboardUnitsData();
+}
 
 //RETURNS raidId and CHESTTYPE (returns "chestbronze" if not found or if error)
 async function getCaptainLoyalty(captainName) {
@@ -201,6 +206,8 @@ async function collectChests() {
   if (await retrieveFromStorage("paused_checkbox")) {
     return
   }
+  
+  chestsRunning = true;
 
   const clientVersion = await retrieveFromStorage("clientVersion")
   const gameDataVersion = await retrieveFromStorage("dataVersion")
@@ -263,8 +270,10 @@ async function collectChests() {
         rewards = null;
       }
     }
+    chestsRunning = false;
   } catch (error) {
     console.error('Error in getAllRewardChests:', error);
+    chestsRunning = false;
     return "";
   }
 }
