@@ -282,7 +282,9 @@ async function loadLogData() {
 
             //Getting human-readable chest name and picture
             try {
-              for (const battleChest of battleChests) {
+                let entryStartDateTime = new Date(entry.currentTime);
+                let entryEndDateTime = new Date(entryStartDateTime.getTime() + (entry.elapsedTime*60000))
+                for (const battleChest of battleChests) {
                   if (entry.chest == undefined){
                       chestName = tbd;
                       url = "/icons/tbd.png";
@@ -291,34 +293,42 @@ async function loadLogData() {
                       //outcome = battleChest.outcome;
                       url = battleChest.url;
 
-                      //Increment chest quantity
-                      for (const loyaltyChest of chestCounter) {
-                          if ((loyaltyChest.key != "chestboss" && entry.chest.includes(loyaltyChest.key)) || loyaltyChest.key === "chestboss" && loyaltyChest.key.includes(entry.chest)) {
-                              loyaltyChest.quantity += 1;
-                              break;
-                          }
-                      }
+
                       //Get latest value for chest count
                       if (entry.raidChest !== undefined) {
                         try {
                           let chestCount = parseInt(entry.chestCount);
                           for (const loyaltyChest of chestCounter) {
                               if ((loyaltyChest.key != "chestboss" && entry.raidChest.includes(loyaltyChest.key)) || loyaltyChest.key === "chestboss" && loyaltyChest.key.includes(entry.raidChest)) {
-                                  let entryStartDateTime = new Date(entry.currentTime);
-                                  let entryEndDateTime = new Date(entryStartDateTime.getTime() + (entry.elapsedTime*60000))
                                   if (entryEndDateTime >= currentEventStartTime) {
-                                    if (chestCount > loyaltyChest.count) {
-                                      loyaltyChest.count = entry.chestCount;
-                                    }
+                                      if (chestCount > loyaltyChest.count) {
+                                          loyaltyChest.count = entry.chestCount;
+                                      }
                                   }
                                   break;
                               }
                           }
                         } catch (error) {}
                       }
-                      break;
+                        //Increment chest quantity
+                        for (const loyaltyChest of chestCounter) {
+                            if (loyaltyChest.quantity < loyaltyChest.count && ((loyaltyChest.key != "chestboss" && entry.chest.includes(loyaltyChest.key)) || loyaltyChest.key === "chestboss" && loyaltyChest.key.includes(entry.chest))) {
+                                loyaltyChest.quantity += 1;
+                                break;
+                            }
+                        }
+                        break;
                   }
-              }
+                }
+                if (entry.chest == "Unknown" && entry.units2 != undefined) {
+                    // Increment chest quantity if units have been placed because even if the battle is abandoned, the chest still counts
+                    for (const loyaltyChest of chestCounter) {
+                        if (entryStartDateTime >= currentEventStartTime && loyaltyChest.quantity < loyaltyChest.count && ((loyaltyChest.key != "chestboss" && entry.initialchest.includes(loyaltyChest.key)) || loyaltyChest.key === "chestboss" && loyaltyChest.key.includes(entry.initialchest))) {
+                            loyaltyChest.quantity += 1;
+                            break;
+                        }
+                    }
+                }
             } catch(error) {
               console.log(entry)
               console.log(error)
