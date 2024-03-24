@@ -23,7 +23,8 @@
     <div class="bulleted-list">
         <h1>Set you priority captains lists</h1>
         <ul>
-            <li>When switching an idle captain the order of priority is: Masterlist (if enabled to do so) > Diamond > Gold > Silver > Bronze > Allowlist >
+            <li>When switching an idle captain the order of priority is: Masterlist (if enabled to do so) > Diamond >
+                Gold > Silver > Bronze > Allowlist >
                 Favorites > Any captain</li>
             <li>Blocklisted captains will be ignored, unless they are the only ones in the Any Captains list.</li>
             <li>Write the name of the Captains with a space in between</li>
@@ -35,7 +36,8 @@
         </ul>
         <div>
             <label>Masterlist:</label><br>
-            <textarea id="masterlist" name="masterlist" placeholder="captain1 captain2 captain3 captain4"></textarea><br>
+            <textarea id="masterlist" name="masterlist"
+                placeholder="captain1 captain2 captain3 captain4"></textarea><br>
             <br>
             <label>Allowlist:</label><br>
             <textarea id="whitelist" name="whitelist" placeholder="captain1 captain2 captain3 captain4"></textarea><br>
@@ -46,6 +48,17 @@
             <label>Potion allowlist (ENABLE ON THE SETTINGS):</label><br>
             <textarea id="potionlist" name="potionlist"
                 placeholder="captain1 captain2 captain3 captain4"></textarea><br>
+
+            <div><br>The playstyle and rigidness of some captains change when they are doing Dungeons<br>
+                When slot 0 gets set to Dungeons these lists will govern it.<br>
+                Logic remains the same: Dungeon list > Diamond > Gold > Silver > Bronze > Favorites > Any<br>
+                Ignore list will be completely ignored even if there are no other captains available.</div><br>
+            <label>Dungeonlist:</label><br>
+            <textarea id="dungeonlist" name="dungeonlist" placeholder="captain1 captain2 captain3 captain4"></textarea><br>
+            <br>
+            <label>Dungeon blocklist:</label><br>
+            <textarea id="dungeonblocklist" name="dungeonblocklist" placeholder="captain1 captain2 captain3 captain4"></textarea><br>
+            <br>
         </div>
     </div>
     <div class="center-container">

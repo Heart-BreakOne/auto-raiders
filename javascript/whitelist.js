@@ -5,6 +5,8 @@ const keysToExport = [
     "whitelist",
     "blacklist",
     "potionlist",
+    "dungeonlist",
+    "dungeonblocklist"
 ];
 
 //Event listener for when the page loads
@@ -27,6 +29,9 @@ document.addEventListener('DOMContentLoaded', async function () {
         await setCaptainList('whitelist');
         await setCaptainList('blacklist');
         await setCaptainList('potionlist');
+        await setCaptainList('dungeonlist');
+        await setCaptainList('dungeonblocklist');
+
         alert("Lists updated successfully!");
     });
 
@@ -34,6 +39,9 @@ document.addEventListener('DOMContentLoaded', async function () {
     await loadAndInjectList('whitelist');
     await loadAndInjectList('blacklist');
     await loadAndInjectList('potionlist');
+    await loadAndInjectList('dungeonlist');
+    await loadAndInjectList('dungeonblocklist');
+
 
 });
 
@@ -121,6 +129,8 @@ async function importData(string) {
                     loadAndInjectList('whitelist');
                     loadAndInjectList('blacklist');
                     loadAndInjectList('potionlist');
+                    loadAndInjectList('dungeonlist');
+                    loadAndInjectList('dungeonblocklist');
                 });
             } catch (error) {
                 alert('An error occurred', error);
@@ -131,8 +141,6 @@ async function importData(string) {
         alert('Please select a file!');
     }
 }
-
-
 
 
 /* EXPORT ALL KEYS
