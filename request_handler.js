@@ -1269,6 +1269,15 @@ async function getAvailableCurrencies() {
 
 async function levelUp() {
 
+  if (await retrieveFromStorage("paused_checkbox")) {
+    return
+  }
+
+  let minCur = await retrieveNumberFromStorage("minCurrency");
+  if (minCur <= 0) {
+    return
+  }
+
   const clientVersion = await retrieveFromStorage("clientVersion")
   const gameDataVersion = await retrieveFromStorage("dataVersion")
   const userId = await retrieveFromStorage("userId")
@@ -1334,22 +1343,15 @@ async function levelUp() {
     { lower: 28, high: 29, gold: 1600, scroll: 20 },
     { lower: 29, high: 30, gold: 2000, scroll: 20 }];
 
-  if (await retrieveFromStorage("paused_checkbox")) {
-    return
-  }
-
-  let minCur = await retrieveNumberFromStorage("minCurrency");
-  if (minCur <= 0) {
-    return
-  }
-
   let u = await fetchUnits()
   let units = u.data
 
   let uC = await getAvailableCurrencies()
   let userCurrencies = uC.data
   let gold = userCurrencies.gold
-  if (gold < minCur) {
+  let goldInt = parseInt(gold)
+  let minCurInt = parseInt(minCur)
+  if (goldInt < minCurInt) {
     return
   }
 

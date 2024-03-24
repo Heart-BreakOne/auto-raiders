@@ -522,6 +522,7 @@ chrome.runtime.onInstalled.addListener(function (details) {
       "campaignSwitch": true,
       "loyalty": "0",
       "selectedOption": "0",
+      "minCurrency": "0"
     });
   }
 });
