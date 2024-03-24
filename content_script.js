@@ -190,6 +190,8 @@ async function start() {
     }
   }
 
+  await manageDungeonSlot()
+
   const capSlots = document.querySelectorAll(".capSlot")
   for (i in capSlots) {
     try {

@@ -1379,7 +1379,8 @@ async function levelUp() {
     let unit = unitsArray[i]
     let unitName = unit[0]
     let canLevelUp = unit[1].canLevelUp
-    //let canSpec = unit[1].canSpec
+    let canSpec = unit[1].canSpec
+    let spec = unit[1].spec
 
     if (!canLevelUp) {
       continue
@@ -1399,7 +1400,7 @@ async function levelUp() {
         continue
       }
       let level = gameUnit.level
-      if (level == 30 || level == 19) {
+      if (level == 30) {
         continue
       }
 
@@ -1411,10 +1412,14 @@ async function levelUp() {
           let scrollCost = price.scroll
           let goldCost = price.gold
           if (scrolls >= scrollCost && gold >= goldCost) {
-
+            
             //Make the api call to level up
-            let upgradeUrl = `https://www.streamraiders.com/api/game/?cn=upgradeUnit&userId=${userId}&isCaptain=0&gameDataVersion=${gameDataVersion}&command=upgradeUnit&unitType=${unitName}&unitLevel=${level}&unitId=${unitId}&clientVersion=${clientVersion}&clientPlatform=MobileLite`
-
+            let upgradeUrl =  ""
+            if (level == 19 && canSpec) {
+              upgradeUrl = `https://www.streamraiders.com/api/game/?cn=specializeUnit&unitId=${unitId}&specializationUid=${spec}&clientVersion=${clientVersion}&clientPlatform=MobileLite&gameDataVersion=${gameDataVersion}&command=specializeUnit&isCaptain=0`
+            } else {
+              upgradeUrl = `https://www.streamraiders.com/api/game/?cn=upgradeUnit&userId=${userId}&isCaptain=0&gameDataVersion=${gameDataVersion}&command=upgradeUnit&unitType=${unitName}&unitLevel=${level}&unitId=${unitId}&clientVersion=${clientVersion}&clientPlatform=MobileLite`
+            }
             try {
               let cookieString = document.cookie;
               const response = await fetch(upgradeUrl, {
