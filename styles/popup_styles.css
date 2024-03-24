@@ -1,0 +1,13 @@
+.counter-container {
+    font-size: large;
+    margin-bottom: 10px;
+
+}
+
+.green_button {
+    color: white;
+    cursor: pointer;
+    margin-bottom: 10px;
+    border: solid black;
+    background-color: #5fa695;
+}

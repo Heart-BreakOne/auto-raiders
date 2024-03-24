@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Battle Log</title>
+    <script src="/javascript/log.js"></script>
+    <script src="/storage_manager.js"></script>
+    <script src="/javascript/shared_scripts.js"></script>
+    <script src="/popup.js"></script>
+    <link rel="stylesheet" type="text/css" href="/styles/styles.css">
+</head>
+
+<body>
+    <div class="button_container">
+        <button id="settings_button" class="green_button">Open settings</button>
+        <button id="whitelist_button" class="green_button">Filter lists</button>
+        <button id="log_button" class="green_button">Log</button>
+        <button id="unit_button" class="green_button">Units</button>
+        <button id="instructions_button" class="green_button">Instructions</button>
+        <button id="key_check_button" class="green_button">Key check</button>
+    </div>
+    <div class="center-container">
+        <h1>This is your battle log</h1>
+        <h2>Unknown time and result means the extension couldn't get a battle closure, this generally means that the
+            battle was manually abandoned or the reward chest manually collected.</h2>
+        <h2>Duration is the time in minutes from when placement started up to the time the captain handed out the chest
+            rewards</h2>
+        <h2>If the initial chest is a loyalty chest, but the awarded chest is a Gold Chest it means you maxed out on
+            that chest type.</h2>
+        <div>
+            <button id="updateLogButton" class="green_button">Update Log</button>
+            <button id="deleteLogButton" class="green_button">Delete log</button>
+            <button id="exportLogButton" class="green_button">Export Log</button>
+            <div class="file-input-container">
+                <label for="log-file-input" class="green_button">Import your log from file (.json)</label>
+                <input type="file" id="log-file-input">
+            </div>
+            <div>
+                <label for="logSwitch"><input type="checkbox" id="logSwitch">Show rewards and leaderboard</label>
+                <label for="raidIdSwitch"><input type="checkbox" id="raidIdSwitch">Show raid ID</label>
+                <label for="pendingSwitch"><input type="checkbox" id="pendingSwitch">Show pending</label>
+            </div>
+        </div>
+        <h3>Loyalty Chest counter</h3>
+        <div class="counter-container"></div>
+    </div>
+    <div id="dataContainer"></div><br><br>
+    <button id="scrollBtn" title="Go to top">↑</button>
+</body>
+
+</html>

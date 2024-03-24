@@ -1,0 +1,630 @@
+<html>
+
+<head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Settings</title>
+        <script src="settings.js"></script>
+        <script src="/popup.js"></script>
+        <link rel="stylesheet" type="text/css" href="/styles/settings_styles.css">
+</head>
+<main class="main"></main>
+
+<body>
+        <div class="button_container">
+                <button id="settings_button" class="green_button">Open settings</button>
+                <button id="whitelist_button" class="green_button">Filter lists</button>
+                <button id="log_button" class="green_button">Log</button>
+                <button id="unit_button" class="green_button">Units</button>
+                <button id="instructions_button" class="green_button">Instructions</button>
+                <button id="key_check_button" class="green_button">Key check</button>
+        </div>
+        <h1 style="font-size: xx-large;">Set your preferences here</h1>
+        <div class="center" style="max-width:1000px">
+                <table width="100%">
+                        <tbody>
+                                <tr>
+                                        <td><div style="font-size:1.25em;font-style:italic">General</div>
+                                        </td>
+                                </tr>    
+                        </tbody>
+                </table>
+                <table width="100%">
+                        <tbody>
+                                <tr>
+                                        <td width="15%" style="white-space: nowrap;">&nbsp;&nbsp;&nbsp;<input type="number" id="reloaderInput"></label>&nbsp;<button id="reloaderButton"
+                                                        style="width: fit-content; height: fit-content; text-align: center; background-color: #5fa695;">Set</button>
+                                        </td>
+                                        <td width="85%"><label for="reloaderInput"
+                                                        title="After a while, especially if running multiple instances of the extension, the game will become unstable, and the tab will crash irrecoverably. Setting a reload period mitigates this issue">Reloader</td>
+                                </tr>
+                                <tr>
+                                        <td width="15%" style="white-space: nowrap;">&nbsp;&nbsp;&nbsp;<input type="number" id="userIdleTimeInput"></label>&nbsp;<button id="idleTimeButton"
+                                                        style="width: fit-content; height: fit-content; text-align: center; background-color: #5fa695;">Set</button>
+                                        </td>
+                                        <td width="85%"><label for="userIdleTimeInput"
+                                                        title="Maximum time a captain is allowed to idle before being switched">Maximum
+                                                        idle time in minutes
+                                                        (Default is 15
+                                                        minutes)</td>
+                                </tr>
+                        </tbody>
+                </table>
+                <table width="100%">
+                        <tbody>
+                                <tr>
+                                        <td width="33%"><label for="offlineSwitch"
+                                                        title="Switch captains that are idling, useful for captains that go offline and slow captains."><input
+                                                                type="checkbox" id="offlineSwitch"> Switch idle
+                                                        captain</label>
+                                        </td>
+                                        <td width="33%"><label for="skipSwitch"
+                                                        title="After an idle switch, leave the slot blank if no loyalty captain is available."><input
+                                                                type="checkbox" id="skipSwitch"> Leave blank if no
+                                                        loyalty</label>
+                                        </td>
+                                        <td width="33%"><label for="afterSwitch"
+                                                        title="Enable slot after removing captain on leave after battle"><input
+                                                                type="checkbox" id="afterSwitch"> Enable slot on
+                                                        leave after</label>
+                                        </td>                        
+                                </tr>
+                                <tr>
+                                        <td><label for="commonSwitch"><input type="checkbox" id="commonSwitch"> Use common
+                                                        units</label></td>
+                                        <td><label for="uncommonSwitch"><input type="checkbox" id="uncommonSwitch"> Use uncommon
+                                                        units</label>
+                                        </td>
+                                        <td><label for="rareSwitch"><input type="checkbox" id="rareSwitch"> Use rare
+                                                        units</label></td>
+                                </tr>
+                                <tr>
+
+                                        <td><label for="legendarySwitch"><input type="checkbox" id="legendarySwitch"> Use
+                                                        legendary
+                                                        units</label></td>
+                                        <td><label for="modeChangeSwitch" title="If the captain switches from Dungeons or PVP to a different mode (ex. Dungeons to Campaign, Clash to Duels, etc), they are skipped by default. This option will ignore these mode switches and allow placements to continue as usual."><input type="checkbox" id="modeChangeSwitch"> Allow mode change</label></td>
+                                        <td><label for="setMarkerSwitch"
+                                                        title="The extension seeks the closest marker to the captain, with this option enabled it will seek the closest set marker. For example, if there's a vibe marker and ranged marker next to one another, the extension might place an archer on the vibe marker, with this option it will prioritize the ranged marker over the vibe marker."><input
+                                                                type="checkbox" id="setMarkerSwitch">Priority on set
+                                                        markers</label>
+                                        </td>
+                                </tr>
+                                <tr>
+                                        <td><div class="x">&nbsp;</div>
+                                        </td>
+                                </tr>
+                                <tr>
+                                        <td><div title="When enabled, the unit list for the selected slots will be sorted based on the unit priority list.">&nbsp;&nbsp;&nbsp;Enable unit priority list:</div></td>
+                                        <td><div title="Randomly shuffle your units so the placement varies.">&nbsp;&nbsp;&nbsp;Enable shuffle:</div></td>
+                                </tr>
+                                <tr>
+                                        <td><label for="priorityListSwitch0"
+                                                        title="When enabled, the unit list for all slots (excluding any additional slots selected) will be sorted based on the unit priority list."><input
+                                                                type="checkbox" id="priorityListSwitch0">All slots</label></td>
+                                        <td><label for="shuffleSwitch0"
+                                                        title="Randomly shuffle your units in all slots so the placement varies."><input
+                                                                type="checkbox" id="shuffleSwitch0">All slots</label></td>
+                                        <td></td>
+                                </tr>
+                                <tr>
+                                        <td><label for="priorityListSwitch1"
+                                                        title="When enabled, the unit list for slot 1 will be sorted based on the unit priority list."><input
+                                                                type="checkbox" id="priorityListSwitch1">Slot 1</label></td>
+                                        <td><label for="shuffleSwitch1"
+                                                        title="Randomly shuffle your units in slot 1 so the placement varies."><input
+                                                                type="checkbox" id="shuffleSwitch1">Slot 1</label></td>
+                                        <td></td>
+                                </tr>
+                                <tr>
+                                        <td><label for="priorityListSwitch2"
+                                                        title="When enabled, the unit list for slot 2 will be sorted based on the unit priority list."><input
+                                                                type="checkbox" id="priorityListSwitch2">Slot 2</label></td>
+                                        <td><label for="shuffleSwitch2"
+                                                        title="Randomly shuffle your units in slot 1 so the placement varies."><input
+                                                                type="checkbox" id="shuffleSwitch2">Slot 2</label></td>
+                                        <td></td>
+                                </tr>
+                                <tr>
+                                        <td><label for="priorityListSwitch3"
+                                                        title="When enabled, the unit list for slot 3 will be sorted based on the unit priority list."><input
+                                                                type="checkbox" id="priorityListSwitch3">Slot 3</label></td>
+                                        <td><label for="shuffleSwitch3"
+                                                        title="Randomly shuffle your units in slot 1 so the placement varies."><input
+                                                                type="checkbox" id="shuffleSwitch3">Slot 3</label></td>
+                                        <td></td>
+                                </tr>
+                                <tr>
+                                        <td><label for="priorityListSwitch4"
+                                                        title="When enabled, the unit list for slot 4 will be sorted based on the unit priority list."><input
+                                                                type="checkbox" id="priorityListSwitch4">Slot 4</label></td>
+                                        <td><label for="shuffleSwitch4"
+                                                        title="Randomly shuffle your units in slot 1 so the placement varies."><input
+                                                                type="checkbox" id="shuffleSwitch4">Slot 4</label></td>
+                                        <td></td>
+                                </tr>
+                                <tr>
+                                        <td><div class="x">&nbsp;</div>
+                                        </td>
+                                </tr>
+                                <tr>
+                                        <td><div style="font-size:1.25em;font-style:italic">Collecting</div>
+                                        </td>
+                                </tr>
+                        </tbody>
+                </table>
+                <table width="100%">
+                        <tbody>                                <tr>
+                                        <td width="15%" style="white-space: nowrap;">&nbsp;&nbsp;&nbsp;<input type="number" id="minimumCurrencyInput"></label>&nbsp;<button id="minimumCurrencyButton"
+                                                        style="width: fit-content; height: fit-content; text-align: center; background-color: #5fa695;">Set</button>
+                                        </td>
+                                        <td width="85%"><label for="minimumCurrencyInput"
+                                                        title="The minimum amount of event currency you must have before buying it 5 times.">Minimum
+                                                        event currency to buy event chests</td>
+                                </tr>
+                        </tbody>
+                </table>
+                <table width="100%">
+                        <tbody>                                <tr>
+                                        <td><label for="scrollSwitch" title="Buy scrolls in the store."><input type="checkbox"
+                                                                id="scrollSwitch"> Buy
+                                                        scrolls</label></td>
+                                        <td><label for="extraSwitch" title="Buy the extra set of scrolls for 100 coins"><input
+                                                                type="checkbox" id="extraSwitch"> Buy extra $100
+                                                        scrolls</label>
+                                        </td>
+                                        <td><label for="questSwitch" title="Collect completed quests."><input type="checkbox"
+                                                                id="questSwitch"> Collect
+                                                        quests</label></td>
+                                </tr>
+                                <tr>
+                                        <td><label for="dailySwitch"
+                                                        title="Collect the daily free currency if available."><input
+                                                                type="checkbox" id="dailySwitch"> Collect daily
+                                                        reward</label></td>
+                                        <td><label for="eventChestSwitch" title="Buy event currency chests if available."><input
+                                                                type="checkbox" id="eventChestSwitch"> Buy
+                                                        event chests</label>
+                                        </td>
+                                        <td><label for="battlepassSwitch"
+                                                        title="Collect completed battlepasses if available."><input
+                                                                type="checkbox" id="battlepassSwitch"> Collect
+                                                        battlepass</label></td>
+                                </tr>
+                                <tr>
+                                        <td><div class="x">&nbsp;</div>
+                                        </td>
+                                </tr>
+                                <tr>
+                                        <td><div style="font-size:1.25em;font-style:italic">Skins</div>
+                                        </td>
+                                </tr>    
+                                <tr>
+                                        <td><label for="equipSwitch" title="Equip captain skins for the extra loyalty."><input
+                                                                type="checkbox" id="equipSwitch"> Equip
+                                                        captain
+                                                        skins</label></td>
+                                        <td><label for="equipNoDiamondSwitch"
+                                                        title="Only equip captain skins if the loyalty is not diamond."><input
+                                                                type="checkbox" id="equipNoDiamondSwitch">
+                                                        Only equip skin
+                                                        if not diamond</label></td>
+                                        <td><label for="moreSkinsSwitch"
+                                                        title="If there's skinned unit on the battle already, the extension won't actively try to place a skinned unit, specially useful if you only have a single skin of the captain"><input
+                                                                type="checkbox" id="moreSkinsSwitch">One skin is
+                                                        enough</label>
+                                        </td>
+                                </tr>
+                                <tr>
+                                        <td><div class="x">&nbsp;</div>
+                                        </td>
+                                </tr>
+                                <tr>
+                                        <td><div style="font-size:1.25em;font-style:italic">Campaign</div>
+                                        </td>
+                                </tr>  
+                        </tbody>
+                </table>
+                <table width="100%">
+                        <tbody>
+                                <tr>
+                                        <td width="15%" style="white-space: nowrap;">&nbsp;&nbsp;&nbsp;<input type="number" id="userWaitTimeInputCampaign"></label>&nbsp;<button id="waitTimeCampaignButton"
+                                                        style="width: fit-content; height: fit-content; text-align: center; background-color: #5fa695;">Set</button>
+                                        </td>
+                                        <td width="85%"><label for="userWaitTimeInputCampaign"
+                                                        title="Time to wait before placing a unit after a campaign battlefield has opened">Campaign wait time in seconds
+                                                        (Default is 90
+                                                        seconds)</td>
+                                </tr>
+                                <tr>
+                                        <td width="15%" style="white-space: nowrap;">&nbsp;&nbsp;&nbsp;<input type="number"
+                                                                id="placementOddsInput"></label>&nbsp;<button id="placeOddButton"
+                                                        style="width: fit-content; height: fit-content; text-align: center; background-color: #5fa695;">Set</button>
+                                        </td>
+                                        <td width="85%"><label for="placementOddsInput"
+                                                        title="Default: 100% - Placement guaranteed. 0% - Won't place at all. After the first placement it will calculate the odds of the next placement for a random period of time between 3 to 6 minutes. It won't place during this period and the next roll is not guaranteed to place an unit either">%
+                                                        Placement Odds for Campaign (Hover mouse for Info)</td>
+                                </tr>
+                        </tbody>
+                </table>
+                <table width="100%">
+                        <tbody>
+                                <tr>
+                                        <td><label for="campaignSwitch" title="Place more than one unit in campaign"><input
+                                                                type="checkbox" id="campaignSwitch"> Unlimited
+                                                        Campaign</label>
+                                        </td>
+                                        <td><label for="completeQuests"
+                                                        title="Actively try to place units that can complete the current set of quests. Not efficient on set markers. This will disable priority lists and enable all unit rarity classes so the auto quester has authority."><input
+                                                                type="checkbox" id="completeQuests">Complete
+                                                        campaign related
+                                                        quests (Hover for info)</label>
+                                        </td>
+                                </tr>
+                        </tbody>
+                </table>
+                <table width="100%">
+                        <tbody>
+                                <tr>
+                                        <td width="25%"><label for="favoriteSwitch"><input type="checkbox" id="favoriteSwitch"> Potions
+                                                        allowlist
+                                                        only</label></td>
+                                        <td width="25%"><label><input type="radio" name="potion" value="0"> No potions</label></td>
+                                        <td width="25%"><label><input type="radio" name="potion" value="1"> Potions at 45</label></td>
+                                        <td width="25%"><label><input type="radio" name="potion" value="2"> Potions at 100</label></td>
+                                </tr>
+                        </tbody>
+                </table>
+                <table width="100%">
+                        <tbody>
+                                <tr>
+                                        <td width="50%"><div class="x">&nbsp;</div>
+                                        </td>
+                                        <td width="50%"><div class="x">&nbsp;</div>
+                                        </td>
+                                </tr>
+                                <tr>
+                                        <td><div style="font-size:1.25em;font-style:italic">PVP</div>
+                                        </td>
+                                </tr>
+                        </tbody>
+                </table>
+                <table width="100%">
+                        <tbody>                                <tr>
+                                        <td width="15%" style="white-space: nowrap;">&nbsp;&nbsp;&nbsp;<input type="number" id="userWaitTimeInputPVP"></label>&nbsp;<button id="waitTimePvpButton"
+                                                        style="width: fit-content; height: fit-content; text-align: center; background-color: #5fa695;">Set</button>
+                                        </td>
+                                        <td width="85%"><label for="userWaitTimeInputPVP"
+                                                        title="Time to wait before placing a unit after a dungeon battlefield has opened">PVP wait time in seconds
+                                                        (Default is 60
+                                                        seconds)</td>
+                                </tr>
+                        </tbody>
+                </table>
+                <table width="100%">
+                        <tbody>                                <tr>
+                                        <td><label for="duelSwitch" title="Place more than one unit in duels"><input
+                                                                type="checkbox" id="duelSwitch"> Unlimited
+                                                        duels</label></td>
+                                        <td><label for="clashSwitch" title="Place more than one unit in clashes"><input
+                                                                type="checkbox" id="clashSwitch"> Unlimited
+                                                        clashes</label></td>
+                                </tr>
+                                <tr>
+                                        <td><label for="multiClashSwitch" title="Allow clashes in more than one slot. Units will be placed in the next available slot from left to right."><input
+                                                                type="checkbox" id="multiClashSwitch"> Multiple
+                                                        clashes</label>
+                                        </td>
+                                        <td><label for="pvpSpecSwitch" title="Only select specialized units for PVP."><input
+                                                                type="checkbox" id="pvpSpecSwitch"> Specialized units only</label>
+                                        </td>
+                                </tr>
+                        </tbody>
+                </table>
+                <table width="100%">
+                        <tbody>
+                                <tr>
+                                        <td width="50%"><div class="x">&nbsp;</div>
+                                        </td>
+                                        <td width="50%"><div class="x">&nbsp;</div>
+                                        </td>
+                                </tr>
+                                <tr>
+                                        <td><div style="font-size:1.25em;font-style:italic">Dungeons</div>
+                                        </td>
+                                </tr>
+                        </tbody>
+                </table>
+                <table width="100%">
+                        <tbody>
+                                <tr>
+                                        <td width="15%" style="white-space: nowrap;">&nbsp;&nbsp;&nbsp;<input type="number" id="userWaitTimeInputDungeons"></label>&nbsp;<button id="waitTimeDungeonButton"
+                                                        style="width: fit-content; height: fit-content; text-align: center; background-color: #5fa695;">Set</button>
+                                        </td>
+                                        <td width="85%"><label for="userWaitTimeInputDungeons"
+                                                        title="Time to wait before placing a unit after a dungeon battlefield has opened">Dungeon wait time in seconds
+                                                        (Default is 60
+                                                        seconds)</td>
+                                </tr>
+                                <tr>
+                                        <td width="15%" style="white-space: nowrap;">&nbsp;&nbsp;&nbsp;<input type="number" id="maxUnitLvlDungInput"></label>&nbsp;<button id="minUnitLvlButton"
+                                                        style="width: fit-content; height: fit-content; text-align: center; background-color: #5fa695;">Set</button>
+                                        </td>
+                                        <td width="85%"><label for="maxUnitLvlDungInput"
+                                                        title="Enable custom levels for dungeons below. This option sets the maximum level for units placed in dungeons.">Maximum
+                                                        unit level for
+                                                        dungeons&nbsp;&nbsp;&nbsp;</td>
+                                </tr>
+                                <tr>
+                                        <td width="15%" style="white-space: nowrap;">&nbsp;&nbsp;&nbsp;<input type="number" id="maxDungeonLvlInput"></label>&nbsp;<button id="minDungeonLvlButton"
+                                                        style="width: fit-content; height: fit-content; text-align: center; background-color: #5fa695;">Set</button>
+                                        </td>
+                                        <td width="85%"><label for="maxDungeonLvlInput"
+                                                        title="Enable custom levels for dungeons below. This option determines the maximum dungeon level at which the maximum unit level will take effect.">Maximum
+                                                        dungeon level for custom unit level
+                                                        &nbsp;&nbsp;&nbsp;</td>
+                                </tr>
+                        </tbody>
+                </table>
+                <table width="100%">
+                        <tbody>
+                                <tr>
+                                        <td><label for="dungeonSwitch" title="Place more than one unit in dungeons"><input
+                                                                type="checkbox" id="dungeonSwitch"> Unlimited
+                                                        dungeons</label>
+                                        </td>                        
+                                        <td><label for="dungeonLevelSwitch"
+                                                        title="Some captains request units with a maximum level, this prevents units with a higher level from being placed on dungeons."><input
+                                                                type="checkbox" id="dungeonLevelSwitch">
+                                                        Place units with a
+                                                        maximum custom level on dungeons</label></td>
+                                        <td class="x"><label for="dungeonPlaceAnywaySwitch"
+                                                        title="This bypasses the flag marker and places the unit regardless on dungeons."><input
+                                                                type="checkbox" id="dungeonPlaceAnywaySwitch"> Allow
+                                                        Place Anyway on flag markers in Dungeons (must turn on custom level on
+                                                        dungeons) - BE CAREFUL - Place Anyway can get you banned</label></td>
+                                </tr>
+                                <tr>
+                                        <td><div class="x">&nbsp;</div>
+                                        </td>
+                                </tr>
+                                <tr>
+                                        <td><div style="font-size:1.25em;font-style:italic">Masterlist</div>
+                                        </td>
+                                </tr>  
+                                <tr>
+                                        <td><label for="liveMasterSwitch"
+                                                        title="Switch live captains for another live captain that is on the masterlist"><input
+                                                                type="checkbox" id="liveMasterSwitch">Force live switch to masterlist</label></td>
+                                        <td><label for="priorityMasterSwitch"
+                                                        title="Switch live captains for another live captain that is HIGHER on the masterlist"><input
+                                                                type="checkbox" id="priorityMasterSwitch">Force live switch to priority masterlist</label></td>
+                                </tr>
+                                <tr>
+
+                                        <td><label for="idleMasterSwitch"
+                                                        title="Prioritize the masterlist when switching captains"><input
+                                                                type="checkbox" id="idleMasterSwitch">Prioritize masterlist on idle switch</label></td>
+                                        <td><label for="skipIdleMasterSwitch"
+                                                        title="Leave slot blank if no masterlist captain is available."><input
+                                                                type="checkbox" id="skipIdleMasterSwitch">Skip idle switch if no masterlist is online</label></td>
+                                </tr>
+                        </tbody>
+                </table>
+                <br>
+                <table width="100%">
+                        <tbody>
+                                <tr>
+                                        <td><div style="font-size:1.25em;font-style:italic">Loyalty</div>
+                                        </td>
+                                </tr>    
+                                <tr>
+                                        <td><label><input type="radio" name="loyalty" value="0"> Don't preserve loyalty</label>
+                                        </td>
+                                        <td><label><input type="radio" name="loyalty" value="1"> Preserve if not bronze</label>
+                                        </td>
+                                        <td><label><input type="radio" name="loyalty" value="2"> Preserve if not silver</label>
+                                        </td>
+                                        <td><label><input type="radio" name="loyalty" value="3"> Preserve if not gold</label>
+                                        </td>
+                                        <td><label><input type="radio" name="loyalty" value="4"> Preserve if not diamond</label>
+                                        </td>
+                                </tr>
+                        </tbody>
+                </table>
+                <br>
+                <table width="100%">
+                        <tbody>
+                                <tr>
+                                        <td><label for="lgoldSwitch"><input type="checkbox" id="lgoldSwitch"> Bypass and allow
+                                                        LGold</label>
+                                        </td>
+                                        <td><label for="lskinSwitch"><input type="checkbox" id="lskinSwitch"> Bypass and allow
+                                                        LSkin</label>
+                                        </td>
+                                        <td><label for="lscrollSwitch"><input type="checkbox" id="lscrollSwitch"> Bypass and
+                                                        allow
+                                                        LScroll</label></td>
+                                </tr>
+                                <tr>
+                                        <td><label for="ltokenSwitch"><input type="checkbox" id="ltokenSwitch"> Bypass and allow
+                                                        LToken</label>
+                                        </td>
+                                        <td><label for="lbossSwitch"><input type="checkbox" id="lbossSwitch"> Bypass and allow
+                                                        LBoss</label>
+                                        </td>
+                                        <td><label for="lsuperbossSwitch"><input type="checkbox" id="lsuperbossSwitch"> Bypass
+                                                        and allow
+                                                        LSuperBoss</label></td>
+                                </tr>
+                        </tbody>
+                </table>
+        </div>
+        <br>
+        <table>
+                <tbody>
+                        <tr>
+                                <td><label for="dungeonSlotSwitch" class="x"><input type="checkbox"
+                                                        id="dungeonSlotSwitch" class="x"> Use slot 0 for
+                                                dungeons</label>
+                                </td>
+                                <td><label for="skipDungeonSlotSwitch" class="x"><input type="checkbox"
+                                                        id="skipDungeonSlotSwitch" class="x"> Leave slot 0 empty if
+                                                there are no dungeons</label></td>
+                        </tr>
+                        <tr>
+                                <td><label for="duelsSlotSwitch" class="x"><input type="checkbox" id="duelsSlotSwitch"
+                                                        class="x"> Use
+                                                slot 1 for duels</label></td>
+                                <td><label for="skipDuelsSlotSwitch" class="x"><input type="checkbox"
+                                                        id="skipDuelsSlotSwitch" class="x"> Leave slot 1 empty if there
+                                                are no duels</label></td>
+                        </tr>
+                        <tr>
+                                <td><label for="clashSlotSwitch" class="x"><input type="checkbox" id="clashSlotSwitch"
+                                                        class="x"> Use
+                                                slot 2 for Clash</label></td>
+                                <td><label for="skipClashSlotSwitch" class="x"><input type="checkbox"
+                                                        id="skipClashSlotSwitch" class="x"> Leave slot 2 empty if there
+                                                are no clashes</label></td>
+                        </tr>
+                </tbody>
+        </table>
+        <table>
+                <tbody>
+                        <tr>
+                                <td><label>How many units should be placed in specific levels, do not use
+                                                both sets<br>
+                                                simultaneously as one will overwrite the other.</label></td>
+                        </tr>
+                </tbody>
+        </table>
+        <table>
+                <tbody>
+                        <tr>
+                                <td colspan="5"><label for="levelSwitch"><input type="checkbox" id="levelSwitch">Use LEVEL
+                                                set</label>
+                                </td>
+                        </tr>
+                        <tr>
+                                <td><label for="veInput">Very Easy&nbsp;</td>
+                                <td><input type="number" id="veInput"></label></td>
+                                <td><button id="veButton"
+                                                style="width: fit-content; height: fit-content; text-align: center; background-color: #5fa695;">Set</button>
+                                </td>
+                                <td><label for="eInput">Easy&nbsp;</td>
+                                <td><input type="number" id="eInput"></label></td>
+                                <td><button id="eButton"
+                                                style="width: fit-content; height: fit-content; text-align: center; background-color: #5fa695;">Set</button>
+                                </td>
+                                <td><label for="mInput">Moderate&nbsp;</td>
+                                <td><input type="number" id="mInput"></label></td>
+                                <td><button id="mButton"
+                                                style="width: fit-content; height: fit-content; text-align: center; background-color: #5fa695;">Set</button>
+                                </td>
+                        </tr>
+                        <tr>
+                                <td><label for="hInput">Hard&nbsp;</td>
+                                <td><input type="number" id="hInput"></label></td>
+                                <td><button id="hButton"
+                                                style="width: fit-content; height: fit-content; text-align: center; background-color: #5fa695;">Set</button>
+                                </td>
+                                <td><label for="vhInput">Very Hard&nbsp;</td>
+                                <td><input type="number" id="vhInput"></label></td>
+                                <td><button id="vhButton"
+                                                style="width: fit-content; height: fit-content; text-align: center; background-color: #5fa695;">Set</button>
+                                </td>
+                                <td><label for="iInput">Insane&nbsp;</td>
+                                <td><input type="number" id="iInput"></label></td>
+                                <td><button id="iButton"
+                                                style="width: fit-content; height: fit-content; text-align: center; background-color: #5fa695;">Set</button>
+                                </td>
+                        </tr>
+                        <tr>
+                                <td><label for="bInput">Boss&nbsp;</td>
+                                <td><input type="number" id="bInput"></label></td>
+                                <td><button id="bButton"
+                                                style="width: fit-content; height: fit-content; text-align: center; background-color: #5fa695;">Set</button>
+                                </td>
+                                <td><label for="ebInput">Extreme Boss&nbsp;</td>
+                                <td><input type="number" id="ebInput"></label></td>
+                                <td><button id="ebButton"
+                                                style="width: fit-content; height: fit-content; text-align: center; background-color: #5fa695;">Set</button>
+                                </td>
+
+                        </tr>
+                        <tr>
+                                <td colspan="5"><label for="chestSwitch"><input type="checkbox" id="chestSwitch"> Use CHEST
+                                                set</label>
+                                </td>
+                        </tr>
+                        <tr>
+                                <td><label for="bronzeInput">Bronze&nbsp;</td>
+                                <td><input type="number" id="bronzeInput"></label></td>
+                                <td><button id="bronzeButton"
+                                                style="width: fit-content; height: fit-content; text-align: center; background-color: #5fa695;">Set</button>
+                                </td>
+                                <td><label for="silverInput">Silver&nbsp;</td>
+                                <td><input type="number" id="silverInput"></label></td>
+                                <td><button id="silverButton"
+                                                style="width: fit-content; height: fit-content; text-align: center; background-color: #5fa695;">Set</button>
+                                </td>
+                                <td><label for="goldInput">Gold&nbsp;</td>
+                                <td><input type="number" id="goldInput"></label></td>
+                                <td><button id="goldButton"
+                                                style="width: fit-content; height: fit-content; text-align: center; background-color: #5fa695;">Set</button>
+                                </td>
+                        </tr>
+                        <tr>
+                                <td><label for="lGoldInput">L Gold&nbsp;</td>
+                                <td><input type="number" id="lGoldInput"></label></td>
+                                <td><button id="lGoldButton"
+                                                style="width: fit-content; height: fit-content; text-align: center; background-color: #5fa695;">Set</button>
+                                </td>
+                                <td><label for="lSkinInput">L Skin&nbsp;</td>
+                                <td><input type="number" id="lSkinInput"></label></td>
+                                <td><button id="lSkinButton"
+                                                style="width: fit-content; height: fit-content; text-align: center; background-color: #5fa695;">Set</button>
+                                </td>
+                                <td><label for="lTokenInput">L Token&nbsp;</td>
+                                <td><input type="number" id="lTokenInput"> </label>
+                                </td>
+                                <td><button id="lTokenButton"
+                                                style="width: fit-content; height: fit-content; text-align: center; background-color: #5fa695;">Set</button>
+                                </td>
+                        </tr>
+                        <tr>
+                                <td><label for="lScrollInput">L Scroll&nbsp;</td>
+                                <td><input type="number" id="lScrollInput"></label>
+                                </td>
+                                <td><button id="lScrollButton"
+                                                style="width: fit-content; height: fit-content; text-align: center; background-color: #5fa695;">Set</button>
+                                </td>
+                                <td><label for="BossInput">Boss&nbsp;</td>
+                                <td><input type="number" id="BossInput"></label></td>
+                                <td><button id="BossButton"
+                                                style="width: fit-content; height: fit-content; text-align: center; background-color: #5fa695;">Set</button>
+                                </td>
+                                <td><label for="sBossInput">Super Boss&nbsp;</td>
+                                <td><input type="number" id="sBossInput"></label></td>
+                                <td><button id="sBossButton"
+                                                style="width: fit-content; height: fit-content; text-align: center; background-color: #5fa695;">Set</button>
+                                </td>
+                        </tr>
+
+                </tbody>
+        </table>
+        <div class="bottom_container">
+                <div class="inline_block">
+                        <button id="exportSettingsToFileBtn" class="green_button">Export your settings to a
+                                file</button>
+                        <div class="file-input-container inline_block">
+                                <label for="importSettingsToFileBtn" class="green_button">Import settings from
+                                        file</label>
+                                <input type="file" id="importSettingsToFileBtn" style="display: none;">
+                        </div>
+                </div>
+        </div>
+</body>
+
+</html>

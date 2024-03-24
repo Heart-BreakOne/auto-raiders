@@ -1,0 +1,87 @@
+/* Add permanent scrollbar to prevent shifting of content */
+html {
+  overflow-y: scroll;
+}
+
+/* Spacing for buttons */
+/* button { */
+    /* margin-bottom: 20px; */
+/* } */
+
+input[type="checkbox"],
+input[type="radio"] {
+    box-sizing: border-box;
+    width: 100%;
+    max-width: 50px;
+    height: 25px;
+    position: relative;
+    margin-bottom: 10px;
+}
+
+input[type="number"] {
+    max-width: 50px;
+}
+
+table {
+    border-collapse: collapse;
+    font-size: large;
+    font-weight: bold;
+    color: gray;
+    margin-left: auto;
+    margin-right: auto;
+    table-layout: fixed;
+}
+
+td label {
+    display: flex;
+    align-items: center;
+}
+
+.center {
+    margin-left: auto;
+    margin-right: auto;
+}
+
+#unitsTable, #unitTableContainer {
+    width: 100%;
+    padding-top: 40px;
+    padding-right: 5%;
+    padding-left: 5%;
+}
+
+th,
+td {
+    border: 1px solid transparent;
+    text-align: left;
+    padding: 8px;
+}
+
+.button_container, h1 {
+    text-align: center;
+}
+
+.green_button {
+    color: white;
+    font-weight: bold;
+    margin-left: 25px;
+    margin-right: 25px;
+    cursor: pointer;
+    border: solid black;
+    padding: 16px 20px;
+    background-color: #5fa695;
+    margin-bottom: 20px;
+}
+
+.x {
+    color: rgba(128, 128, 128, 0.0);
+    display: none;
+}
+
+.bottom_container {
+    text-align: center;
+    margin-top: 20px;
+}
+
+.inline_block {
+    display: inline-block;
+}
