@@ -1399,7 +1399,7 @@ async function levelUp() {
         continue
       }
       let level = gameUnit.level
-      if (level == 30) {
+      if (level == 30 || level == 19) {
         continue
       }
 
