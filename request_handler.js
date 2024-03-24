@@ -7,6 +7,9 @@ let chestsRunning = false;
 let backgroundDelay = ms => new Promise(res => setTimeout(res, ms));
 
 async function logChestsAndUnitsInterval() {
+  if (await retrieveFromStorage("paused_checkbox")) {
+    return
+  }
   await collectChests();
   await getLeaderboardUnitsData();
 }
