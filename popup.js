@@ -1,19 +1,4 @@
 document.addEventListener("DOMContentLoaded", function () {
-    
-    var pausedCheckbox = document.getElementById("paused_checkbox");
-
-    chrome.storage.local.get("paused_checkbox", function(result) {
-        if (result.paused_checkbox === true) {
-            pausedCheckbox.checked = true;
-        } else {
-            pausedCheckbox.checked = false;
-        }
-    });
-
-
-    pausedCheckbox.addEventListener("change", function() {
-        chrome.storage.local.set({"paused_checkbox": pausedCheckbox.checked});
-    });
 
     document.getElementById("instructions_button").addEventListener('click', function () {
         const url = `https://mobius-one.github.io/webpages/how_to_play.html`
@@ -30,6 +15,12 @@ document.addEventListener("DOMContentLoaded", function () {
         const url = `chrome-extension://${chrome.runtime.id}/html/whitelist.html`
         chrome.tabs.create({ url: url });
     });
+
+    document.getElementById("level_button").addEventListener('click', function () {
+        const url = `chrome-extension://${chrome.runtime.id}/html/levelup.html`
+        chrome.tabs.create({ url: url });
+    });
+    
     document.getElementById("unit_button").addEventListener('click', function () {
         const url = `chrome-extension://${chrome.runtime.id}/html/units.html`
         chrome.tabs.create({ url: url });

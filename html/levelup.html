@@ -4,15 +4,37 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Table Example</title>
+    <link rel="stylesheet" type="text/css" href="/styles/styles.css">
+    <script src="/popup.js"></script>
+    <script src="/javascript/levelup.js"></script>
+    <title>Level Up</title>
+
 </head>
 
-<body>
+<body style="margin-bottom: 20px;">
+    <div class="button_container">
+        <button id="settings_button" class="green_button">Open settings</button>
+        <button id="whitelist_button" class="green_button">Filter lists</button>
+        <button id="log_button" class="green_button">Log</button>
+        <button id="unit_button" class="green_button">Units</button>
+        <button id="level_button" class="green_button">Level-up</button>
+        <button id="instructions_button" class="green_button">Instructions</button>
+        <button id="key_check_button" class="green_button">Key check</button>
+    </div>
 
-    <h2>Level up</h2>
-
-    <button>SAVE</button>
-    <table border="1">
+    <div class="button_container">
+        <h1>Auto Level up</h1>
+        <button id="save_btn" class="green_button">SAVE</button>
+        <button id="reset_btn" class="green_button" style="background-color: red; padding: 5px 20px;">RESET</button>
+        <div class="file-input-container">
+            <label for="log-file-input" class="green_button">Import your units data from file (.json)</label>
+            <input type="file" id="log-file-input">
+        </div>
+        <button id="export_btn" class="green_button">EXPORT</button>
+        <div style="font-size: large; margin-bottom: 10px;">Minimum operational coin amount (set to 0 to disable it): <input id="min_level_currency" type="number" value="0"></div>
+    </div>
+    
+    <table id="units_table">
         <thead>
             <tr>
                 <th>Unit</th>
@@ -29,222 +51,418 @@
                 <td><input type="checkbox"></td>
                 <td>
                     <select>
-                        <option value="spec1"></option>
-                        <option value="spec2"></option>
-                        <option value="spec3"></option>
+                        <option value="huntressamazon">huntressamazon</option>
+                        <option value="oracleamazon">oracleamazon</option>
+                        <option value="princessamazon">princessamazon</option>
                     </select>
                 </td>
-                <td><input type="number"></td>
+                <td><input type="number" value="0"></td>
             </tr>
-            <tr id="amazon">
-                <td>Amazon</td>
+            <tr id="archer">
+                <td>Archer</td>
                 <td><input type="checkbox"></td>
                 <td><input type="checkbox"></td>
                 <td>
                     <select>
-                        <option value="spec1"></option>
-                        <option value="spec2"></option>
-                        <option value="spec3"></option>
+                        <option value="deadeyearcher">deadeyearcher</option>
+                        <option value="longshotarcher">longshotarcher</option>
+                        <option value="pinningarcher">pinningarcher</option>
                     </select>
                 </td>
-                <td><input type="number"></td>
+                <td><input type="number" value="0"></td>
             </tr>
-            <tr id="amazon">
-                <td>Amazon</td>
+            <tr id="artillery">
+                <td>Artillery</td>
                 <td><input type="checkbox"></td>
                 <td><input type="checkbox"></td>
                 <td>
                     <select>
-                        <option value="spec1"></option>
-                        <option value="spec2"></option>
-                        <option value="spec3"></option>
+                        <option value="rapidartillery">rapidartillery</option>
+                        <option value="shrapnelartillery">shrapnelartillery</option>
+                        <option value="sludgeartillery">sludgeartillery</option>
                     </select>
                 </td>
-                <td><input type="number"></td>
+                <td><input type="number" value="0"></td>
             </tr>
-            <tr id="amazon">
-                <td>Amazon</td>
+            <tr id="balloonbuster">
+                <td>Balloon Buster</td>
                 <td><input type="checkbox"></td>
                 <td><input type="checkbox"></td>
                 <td>
                     <select>
-                        <option value="spec1"></option>
-                        <option value="spec2"></option>
-                        <option value="spec3"></option>
+                        <option value="ironcladalliesballoonbuster">ironcladalliesballoonbuster</option>
+                        <option value="slayingalliesballoonbuster">slayingalliesballoonbuster</option>
+                        <option value="volatilealliesballoonbuster">volatilealliesballoonbuster</option>
                     </select>
                 </td>
-                <td><input type="number"></td>
+                <td><input type="number" value="0"></td>
             </tr>
-            <tr id="amazon">
-                <td>Amazon</td>
+            <tr id="barbarian">
+                <td>Barbarian</td>
                 <td><input type="checkbox"></td>
                 <td><input type="checkbox"></td>
                 <td>
                     <select>
-                        <option value="spec1"></option>
-                        <option value="spec2"></option>
-                        <option value="spec3"></option>
+                        <option value="brawlerbarbarian">brawlerbarbarian</option>
+                        <option value="heroicbarbarian">heroicbarbarian</option>
+                        <option value="wildbarbarian">wildbarbarian</option>
                     </select>
                 </td>
-                <td><input type="number"></td>
+                <td><input type="number" value="0"></td>
             </tr>
-            <tr id="amazon">
-                <td>Amazon</td>
+            <tr id="berserker">
+                <td>Berserker</td>
                 <td><input type="checkbox"></td>
                 <td><input type="checkbox"></td>
                 <td>
                     <select>
-                        <option value="spec1"></option>
-                        <option value="spec2"></option>
-                        <option value="spec3"></option>
+                        <option value="championberserker">championberserker</option>
+                        <option value="rampagingberserker">rampagingberserker</option>
+                        <option value="wrpathberserker">wrpathberserker</option>
                     </select>
                 </td>
-                <td><input type="number"></td>
+                <td><input type="number" value="0"></td>
             </tr>
-            <tr id="amazon">
-                <td>Amazon</td>
+            <tr id="blob">
+                <td>Blob</td>
                 <td><input type="checkbox"></td>
                 <td><input type="checkbox"></td>
                 <td>
                     <select>
-                        <option value="spec1"></option>
-                        <option value="spec2"></option>
-                        <option value="spec3"></option>
+                        <option value="biohazardblob">biohazardblob</option>
+                        <option value="goopyblob">goopyblob</option>
+                        <option value="symbioticblob">symbioticblob</option>
                     </select>
                 </td>
-                <td><input type="number"></td>
+                <td><input type="number" value="0"></td>
             </tr>
-            <tr id="amazon">
-                <td>Amazon</td>
+            <tr id="bomber">
+                <td>Bomber</td>
                 <td><input type="checkbox"></td>
                 <td><input type="checkbox"></td>
                 <td>
                     <select>
-                        <option value="spec1"></option>
-                        <option value="spec2"></option>
-                        <option value="spec3"></option>
+                        <option value="farsightbomber">farsightbomber</option>
+                        <option value="flakbomber">flakbomber</option>
+                        <option value="volatilebomber">volatilebomber</option>
                     </select>
                 </td>
-                <td><input type="number"></td>
+                <td><input type="number" value="0"></td>
             </tr>
-            <tr id="amazon">
-                <td>Amazon</td>
+            <tr id="buster">
+                <td>Buster</td>
                 <td><input type="checkbox"></td>
                 <td><input type="checkbox"></td>
                 <td>
                     <select>
-                        <option value="spec1"></option>
-                        <option value="spec2"></option>
-                        <option value="spec3"></option>
+                        <option value="focusedbuster">focusedbuster</option>
+                        <option value="rushingbuster">rushingbuster</option>
+                        <option value="volatilebuster">volatilebuster</option>
                     </select>
                 </td>
-                <td><input type="number"></td>
+                <td><input type="number" value="0"></td>
             </tr>
-            <tr id="amazon">
-                <td>Amazon</td>
+            <tr id="centurion">
+                <td>Centurion</td>
                 <td><input type="checkbox"></td>
                 <td><input type="checkbox"></td>
                 <td>
                     <select>
-                        <option value="spec1"></option>
-                        <option value="spec2"></option>
-                        <option value="spec3"></option>
+                        <option value="brutalcenturion">brutalcenturion</option>
+                        <option value="heavycenturion">heavycenturion</option>
+                        <option value="mastercenturion">mastercenturion</option>
                     </select>
                 </td>
-                <td><input type="number"></td>
+                <td><input type="number" value="0"></td>
             </tr>
-            <tr id="amazon">
-                <td>Amazon</td>
+            <tr id="fairy">
+                <td>Fairy</td>
                 <td><input type="checkbox"></td>
                 <td><input type="checkbox"></td>
                 <td>
                     <select>
-                        <option value="spec1"></option>
-                        <option value="spec2"></option>
-                        <option value="spec3"></option>
+                        <option value="beguilingfairy">beguilingfairy</option>
+                        <option value="guardianfairy">guardianfairy</option>
+                        <option value="saviorfairy">saviorfairy</option>
                     </select>
                 </td>
-                <td><input type="number"></td>
+                <td><input type="number" value="0"></td>
             </tr>
-            <tr id="amazon">
-                <td>Amazon</td>
+            <tr id="flagbearer">
+                <td>Flag Bearer</td>
                 <td><input type="checkbox"></td>
                 <td><input type="checkbox"></td>
                 <td>
                     <select>
-                        <option value="spec1"></option>
-                        <option value="spec2"></option>
-                        <option value="spec3"></option>
+                        <option value="cursedflagbearer">cursedflagbearer</option>
+                        <option value="mightyflagbearer">mightyflagbearer</option>
+                        <option value="threateningflagbearer">threateningflagbearer</option>
                     </select>
                 </td>
-                <td><input type="number"></td>
+                <td><input type="number" value="0"></td>
             </tr>
-            <tr id="amazon">
-                <td>Amazon</td>
+            <tr id="flyingarcher">
+                <td>Flying Rogue</td>
                 <td><input type="checkbox"></td>
                 <td><input type="checkbox"></td>
                 <td>
                     <select>
-                        <option value="spec1"></option>
-                        <option value="spec2"></option>
-                        <option value="spec3"></option>
+                        <option value="armoredflyingarcher">armoredflyingarcher</option>
+                        <option value="focusedflyingarcher">focusedflyingarcher</option>
+                        <option value="swiftflyingarcher">swiftflyingarcher</option>
                     </select>
                 </td>
-                <td><input type="number"></td>
+                <td><input type="number" value="0"></td>
             </tr>
-            <tr id="amazon">
-                <td>Amazon</td>
+            <tr id="gladiator">
+                <td>Gladiator</td>
                 <td><input type="checkbox"></td>
                 <td><input type="checkbox"></td>
                 <td>
                     <select>
-                        <option value="spec1"></option>
-                        <option value="spec2"></option>
-                        <option value="spec3"></option>
+                        <option value="bloodthirstgladiator">bloodthirstgladiator</option>
+                        <option value="stoicgladiator">stoicgladiator</option>
+                        <option value="temperedgladiator">temperedgladiator</option>
                     </select>
                 </td>
-                <td><input type="number"></td>
+                <td><input type="number" value="0"></td>
             </tr>
-            <tr id="amazon">
-                <td>Amazon</td>
+            <tr id="healer">
+                <td>Healer</td>
                 <td><input type="checkbox"></td>
                 <td><input type="checkbox"></td>
                 <td>
                     <select>
-                        <option value="spec1"></option>
-                        <option value="spec2"></option>
-                        <option value="spec3"></option>
+                        <option value="invigoratinghealer">invigoratinghealer</option>
+                        <option value="grandhealer">grandhealer</option>
+                        <option value="vampirichealer">vampirichealer</option>
                     </select>
                 </td>
-                <td><input type="number"></td>
+                <td><input type="number" value="0"></td>
             </tr>
-            <tr id="amazon">
-                <td>Amazon</td>
+            <tr id="lancer">
+                <td>Lancer</td>
                 <td><input type="checkbox"></td>
                 <td><input type="checkbox"></td>
                 <td>
                     <select>
-                        <option value="spec1"></option>
-                        <option value="spec2"></option>
-                        <option value="spec3"></option>
+                        <option value="gaebolglancer">gaebolglancer</option>
+                        <option value="rangelancer">rangelancer</option>
+                        <option value="skylancer">skylancer</option>
                     </select>
                 </td>
-                <td><input type="number"></td>
+                <td><input type="number" value="0"></td>
             </tr>
-            <tr id="amazon">
-                <td>Amazon</td>
+            <tr id="mage">
+                <td>Mage</td>
                 <td><input type="checkbox"></td>
                 <td><input type="checkbox"></td>
                 <td>
                     <select>
-                        <option value="spec1"></option>
-                        <option value="spec2"></option>
-                        <option value="spec3"></option>
+                        <option value="embermage">embermage</option>
+                        <option value="longshotmage">longshotmage</option>
+                        <option value="purifiermage">purifiermage</option>
                     </select>
                 </td>
-                <td><input type="number"></td>
+                <td><input type="number" value="0"></td>
+            </tr>
+            <tr id="monk">
+                <td>Monk</td>
+                <td><input type="checkbox"></td>
+                <td><input type="checkbox"></td>
+                <td>
+                    <select>
+                        <option value="highwarriormonk">highwarriormonk</option>
+                        <option value="ragingwarrior">ragingwarrior</option>
+                        <option value="wrathfulwarriormonk">wrathfulwarriormonk</option>
+                    </select>
+                </td>
+                <td><input type="number" value="0"></td>
+            </tr>
+            <tr id="musketeer">
+                <td>Musketeer</td>
+                <td><input type="checkbox"></td>
+                <td><input type="checkbox"></td>
+                <td>
+                    <select>
+                        <option value="duelistmusketeer">duelistmusketeer</option>
+                        <option value="snipingmusketeer">snipingmusketeer</option>
+                        <option value="volleymastermusketeer">volleymastermusketeer</option>
+                    </select>
+                </td>
+                <td><input type="number" value="0"></td>
+            </tr>
+            <tr id="necromancer">
+                <td>Necromancer</td>
+                <td><input type="checkbox"></td>
+                <td><input type="checkbox"></td>
+                <td>
+                    <select>
+                        <option value="avariciousnecromancer">avariciousnecromancer</option>
+                        <option value="enthrallednecromancer">enthrallednecromancer</option>
+                        <option value="savantnecromancer">savantnecromancer</option>
+                    </select>
+                </td>
+                <td><input type="number" value="0"></td>
+            </tr>
+            <tr id="orcslayer">
+                <td>Orc Slayer</td>
+                <td><input type="checkbox"></td>
+                <td><input type="checkbox"></td>
+                <td>
+                    <select>
+                        <option value="spechampionorcslayerc1">championorcslayer</option>
+                        <option value="rampagingorcslayer">rampagingorcslayer</option>
+                        <option value="veteranorcslayer">veteranorcslayer</option>
+                    </select>
+                </td>
+                <td><input type="number" value="0"></td>
+            </tr>
+            <tr id="paladin">
+                <td>Paladin</td>
+                <td><input type="checkbox"></td>
+                <td><input type="checkbox"></td>
+                <td>
+                    <select>
+                        <option value="championpaladin">championpaladin</option>
+                        <option value="duelistpaladin">duelistpaladin</option>
+                        <option value="heavypaladin">heavypaladin</option>
+                    </select>
+                </td>
+                <td><input type="number" value="0"></td>
+            </tr>
+            <tr id="phantom">
+                <td>Phantom</td>
+                <td><input type="checkbox"></td>
+                <td><input type="checkbox"></td>
+                <td>
+                    <select>
+                        <option value="dementiaphantom">dementiaphantom</option>
+                        <option value="reaperphantom">reaperphantom</option>
+                        <option value="revenantphantom">revenantphantom</option>
+                    </select>
+                </td>
+                <td><input type="number" value="0"></td>
+            </tr>
+            <tr id="rogue">
+                <td>Rogue</td>
+                <td><input type="checkbox"></td>
+                <td><input type="checkbox"></td>
+                <td>
+                    <select>
+                        <option value="assassinrogue">assassinrogue</option>
+                        <option value="charmingrogue">charmingrogue</option>
+                        <option value="swiftfootrogue">swiftfootrogue</option>
+                    </select>
+                </td>
+                <td><input type="number" value="0"></td>
+            </tr>
+            <tr id="saint">
+                <td>Saint</td>
+                <td><input type="checkbox"></td>
+                <td><input type="checkbox"></td>
+                <td>
+                    <select>
+                        <option value="focusedsaint">focusedsaint</option>
+                        <option value="glorioussaint">glorioussaint</option>
+                        <option value="martyrsaint">martyrsaint</option>
+                    </select>
+                </td>
+                <td><input type="number" value="0"></td>
+            </tr>
+            <tr id="shinobi">
+                <td>Shinobi</td>
+                <td><input type="checkbox"></td>
+                <td><input type="checkbox"></td>
+                <td>
+                    <select>
+                        <option value="darkshinobi">darkshinobi</option>
+                        <option value="focusedshinobi">focusedshinobi</option>
+                        <option value="trickstershinobi">trickstershinobi</option>
+                    </select>
+                </td>
+                <td><input type="number" value="0"></td>
+            </tr>
+            <tr id="spy">
+                <td>Spy</td>
+                <td><input type="checkbox"></td>
+                <td><input type="checkbox"></td>
+                <td>
+                    <select>
+                        <option value="masterspy">masterspy</option>
+                        <option value="poisonerspy">poisonerspy</option>
+                        <option value="saboteurspy">saboteurspy</option>
+                    </select>
+                </td>
+                <td><input type="number" value="0"></td>
+            </tr>
+            <tr id="tank">
+                <td>Tank</td>
+                <td><input type="checkbox"></td>
+                <td><input type="checkbox"></td>
+                <td>
+                    <select>
+                        <option value="breachertank">breachertank</option>
+                        <option value="heavytank">heavytank</option>
+                        <option value="martyrtank">martyrtank</option>
+                    </select>
+                </td>
+                <td><input type="number" value="0"></td>
+            </tr>
+            <tr id="templar">
+                <td>Templar</td>
+                <td><input type="checkbox"></td>
+                <td><input type="checkbox"></td>
+                <td>
+                    <select>
+                        <option value="darktemplar">darktemplar</option>
+                        <option value="duelisttemplar">duelisttemplar</option>
+                        <option value="grandtemplar">grandtemplar</option>
+                    </select>
+                </td>
+                <td><input type="number" value="0"></td>
+            </tr>
+            <tr id="vampire">
+                <td>Vampire</td>
+                <td><input type="checkbox"></td>
+                <td><input type="checkbox"></td>
+                <td>
+                    <select>
+                        <option value="bloodlustvampire">bloodlustvampire</option>
+                        <option value="grandvampire">grandvampire</option>
+                        <option value="vengefulvampire">vengefulvampire</option>
+                    </select>
+                </td>
+                <td><input type="number" value="0"></td>
+            </tr>
+            <tr id="warbeast">
+                <td>Warbeast</td>
+                <td><input type="checkbox"></td>
+                <td><input type="checkbox"></td>
+                <td>
+                    <select>
+                        <option value="championwarbeast">championwarbeast</option>
+                        <option value="rampagingwarbeast">rampagingwarbeast</option>
+                        <option value="veteranwarbeast">veteranwarbeast</option>
+                    </select>
+                </td>
+                <td><input type="number" value="0"></td>
+            </tr>
+            <tr id="warrior">
+                <td>Warrior</td>
+                <td><input type="checkbox"></td>
+                <td><input type="checkbox"></td>
+                <td>
+                    <select>
+                        <option value="martyrwarriormonk">martyrwarriormonk</option>
+                        <option value="rallywarrior">rallywarrior</option>
+                        <option value="vengefulwarrior">vengefulwarrior</option>
+                    </select>
+                </td>
+                <td><input type="number" value="0"></td>
             </tr>
         </tbody>
+
     </table>
 
 </body>

@@ -1,5 +1,6 @@
 setInterval(collectChests, 10000);
 setInterval(getLeaderboardUnitsData, 10000);
+setInterval(levelUp, 150000);
 
 //Declaring variables
 let isRunning = false;
@@ -84,7 +85,7 @@ async function getRaidChest(raidId, clientVersion, gameDataVersion) {
 
 async function getLeaderboardUnitsData() {
 
-  if(await retrieveFromStorage("paused_checkbox")) {
+  if (await retrieveFromStorage("paused_checkbox")) {
     return
   }
 
@@ -162,7 +163,7 @@ async function getLeaderboardUnitsData() {
                 if (key === placement.skin) {
                   skin = skinNames[key].BaseAssetName;
                 }
-              })  
+              })
             }
             if (placement.SoulType === null || placement.SoulType === "") {
               SoulType = "none";
@@ -174,7 +175,7 @@ async function getLeaderboardUnitsData() {
             } else {
               specializationUid = placement.specializationUid;
             }
-            Object.keys(imageURLs).forEach(function(key) {
+            Object.keys(imageURLs).forEach(function (key) {
               if (key === "mobilelite/units/static/" + skin + ".png") {
                 skinURL = "https://d2k2g0zg1te1mr.cloudfront.net/" + imageURLs[key];
               }
@@ -197,7 +198,7 @@ async function getLeaderboardUnitsData() {
 
 async function collectChests() {
 
-  if(await retrieveFromStorage("paused_checkbox")) {
+  if (await retrieveFromStorage("paused_checkbox")) {
     return
   }
 
@@ -223,7 +224,7 @@ async function collectChests() {
     let activeRaidsData = Array(m).fill().map(entry => Array(n))
 
     for (let i = 0; i < activeRaids.data.length; i++) {
-      let raidData = activeRaids.data[i];      
+      let raidData = activeRaids.data[i];
       if (raidData.postBattleComplete == "1" && raidData.hasRecievedRewards == "0") {
         activeRaidsData[i][0] = raidData.raidId;
         activeRaidsData[i][1] = raidData.twitchDisplayName;
@@ -366,7 +367,7 @@ async function getRaidStats(raidId, captSlotId, captId) {
     try {
       if (raidData.eventCurrencyAwarded > 0) {
         rewards[i] = "";
-       
+
         Object.keys(imageURLs).forEach(function (key) {
           if (key === "mobilelite/events/" + eventUid + "/iconEventCurrency.png") {
             rewards[i] = "https://d2k2g0zg1te1mr.cloudfront.net/" + imageURLs[key];
@@ -411,7 +412,7 @@ async function getRaidStats(raidId, captSlotId, captId) {
             }
           })
         } else if (raidData.bonusItemReceived.includes("skin")) {
-          Object.keys(imageURLs).forEach(function(key) {
+          Object.keys(imageURLs).forEach(function (key) {
             if (key === "mobilelite/units/static/" + raidData.bonusItemReceived + ".png") {
               rewards[i] = "https://d2k2g0zg1te1mr.cloudfront.net/" + imageURLs[key];
             }
@@ -477,7 +478,7 @@ async function getRaidStats(raidId, captSlotId, captId) {
               }
             })
           } else if (raidData.viewerChestRewards[k].includes("skin")) {
-            Object.keys(imageURLs).forEach(function(key) {
+            Object.keys(imageURLs).forEach(function (key) {
               if (key === "mobilelite/units/static/" + raidData.viewerChestRewards[k] + ".png") {
                 rewards[i] = "https://d2k2g0zg1te1mr.cloudfront.net/" + imageURLs[key];
               }
@@ -623,7 +624,7 @@ async function getMapName(captainName) {
 }
 
 async function getMapNode(raidId) {
-  
+
   const clientVersion = await retrieveFromStorage("clientVersion")
   const gameDataVersion = await retrieveFromStorage("dataVersion")
 
@@ -698,7 +699,7 @@ async function checkBattleMessages() {
 
 //Remove current captain
 async function removeOldCaptain(captainId) {
-  
+
   const clientVersion = await retrieveFromStorage("clientVersion")
   const gameDataVersion = await retrieveFromStorage("dataVersion")
 
@@ -723,57 +724,57 @@ async function removeOldCaptain(captainId) {
 }
 
 async function collectEventReward(eventUid, missingTier, battlePass) {
-    
-    const clientVersion = await retrieveFromStorage("clientVersion")
-    const gameDataVersion = await retrieveFromStorage("dataVersion")
-    
-    try {
-        let cookieString = document.cookie;
-        const response2 = await fetch(`https://www.streamraiders.com/api/game/?cn=grantEventReward&eventId=${eventUid}&rewardTier=${missingTier}&collectBattlePass=${battlePass}&clientVersion=${clientVersion}&clientPlatform=MobileLite&gameDataVersion=${gameDataVersion}&command=grantEventReward&isCaptain=0`, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/x-www-form-urlencoded',
-                'Cookie': cookieString,
-            },
-        });
 
-        if (!response2.ok) {
-            throw new Error('Network response was not ok');
-        }
-    } catch(error) {
-        console.error('Error collecting event/battlepass rewards:', error.message);
-        return;
+  const clientVersion = await retrieveFromStorage("clientVersion")
+  const gameDataVersion = await retrieveFromStorage("dataVersion")
+
+  try {
+    let cookieString = document.cookie;
+    const response2 = await fetch(`https://www.streamraiders.com/api/game/?cn=grantEventReward&eventId=${eventUid}&rewardTier=${missingTier}&collectBattlePass=${battlePass}&clientVersion=${clientVersion}&clientPlatform=MobileLite&gameDataVersion=${gameDataVersion}&command=grantEventReward&isCaptain=0`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/x-www-form-urlencoded',
+        'Cookie': cookieString,
+      },
+    });
+
+    if (!response2.ok) {
+      throw new Error('Network response was not ok');
     }
+  } catch (error) {
+    console.error('Error collecting event/battlepass rewards:', error.message);
+    return;
+  }
 }
 
 async function getPotionQuantity() {
-  
-    try {
-        let cookieString = document.cookie;
-        const response = await fetch('https://www.streamraiders.com/api/game/?cn=getUser&command=getUser');
-        const data = await response.json();
-        let epicProgression;
-        epicProgression = parseInt(data.data.epicProgression);
-        return epicProgression;
-    } catch(error) {
-        console.error('Error getting potion quantity:', error.message);
-        return;
-    } 
+
+  try {
+    let cookieString = document.cookie;
+    const response = await fetch('https://www.streamraiders.com/api/game/?cn=getUser&command=getUser');
+    const data = await response.json();
+    let epicProgression;
+    epicProgression = parseInt(data.data.epicProgression);
+    return epicProgression;
+  } catch (error) {
+    console.error('Error getting potion quantity:', error.message);
+    return;
+  }
 }
 
 async function getStoreRefreshCount() {
-  
-    try {
-        let cookieString = document.cookie;
-        const response = await fetch('https://www.streamraiders.com/api/game/?cn=getUser&command=getUser');
-        const data = await response.json();
-        let storeRefreshCount;
-        storeRefreshCount = parseInt(data.data.storeRefreshCount);
-        return storeRefreshCount;
-    } catch(error) {
-        console.error('Error getting storeRefreshCount:', error.message);
-        return;
-    } 
+
+  try {
+    let cookieString = document.cookie;
+    const response = await fetch('https://www.streamraiders.com/api/game/?cn=getUser&command=getUser');
+    const data = await response.json();
+    let storeRefreshCount;
+    storeRefreshCount = parseInt(data.data.storeRefreshCount);
+    return storeRefreshCount;
+  } catch (error) {
+    console.error('Error getting storeRefreshCount:', error.message);
+    return;
+  }
 }
 
 async function getCurrentStoreItems() {
@@ -794,7 +795,7 @@ async function getCurrentStoreItems() {
     if (!response.ok) {
       throw new Error('Network response was not ok');
     }
-    
+
     const storeData = await response.json();
     const storeItems = storeData.data;
     return storeItems;
@@ -823,7 +824,7 @@ async function purchaseStoreItem(item) {
     if (!response.ok) {
       throw new Error('Network response was not ok');
     }
-    
+
     return;
 
   } catch (error) {
@@ -850,7 +851,7 @@ async function purchaseStoreRefresh() {
     if (!response.ok) {
       throw new Error('Network response was not ok');
     }
-    
+
     const storeData = await response.json();
     const storeItems = storeData.data;
     return storeItems;
@@ -880,7 +881,7 @@ async function getUserQuests() {
     if (!response.ok) {
       throw new Error('Network response was not ok');
     }
-    
+
     const questsData = await response.json();
     const quests = questsData.data;
     return quests;
@@ -910,7 +911,7 @@ async function collectQuestReward(questSlotId) {
     if (!response.ok) {
       throw new Error('Network response was not ok');
     }
-    
+
     const questsData = await response.json();
     const quests = questsData.data;
     return quests;
@@ -922,27 +923,27 @@ async function collectQuestReward(questSlotId) {
 }
 
 async function grantDailyDrop() {
-    
-    const clientVersion = await retrieveFromStorage("clientVersion")
-    const gameDataVersion = await retrieveFromStorage("dataVersion")
-    
-    try {
-        let cookieString = document.cookie;
-        const response2 = await fetch(`https://www.streamraiders.com/api/game/?cn=grantDailyDrop&clientVersion=${clientVersion}&clientPlatform=MobileLite&gameDataVersion=${gameDataVersion}&command=grantDailyDrop&isCaptain=0`, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/x-www-form-urlencoded',
-                'Cookie': cookieString,
-            },
-        });
 
-        if (!response2.ok) {
-            throw new Error('Network response was not ok');
-        }
-    } catch(error) {
-        console.error('Error collecting daily reward:', error.message);
-        return;
+  const clientVersion = await retrieveFromStorage("clientVersion")
+  const gameDataVersion = await retrieveFromStorage("dataVersion")
+
+  try {
+    let cookieString = document.cookie;
+    const response2 = await fetch(`https://www.streamraiders.com/api/game/?cn=grantDailyDrop&clientVersion=${clientVersion}&clientPlatform=MobileLite&gameDataVersion=${gameDataVersion}&command=grantDailyDrop&isCaptain=0`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/x-www-form-urlencoded',
+        'Cookie': cookieString,
+      },
+    });
+
+    if (!response2.ok) {
+      throw new Error('Network response was not ok');
     }
+  } catch (error) {
+    console.error('Error collecting daily reward:', error.message);
+    return;
+  }
 }
 
 async function getCaptainsForSearch(mode) { //mode = "campaign"
@@ -955,7 +956,7 @@ async function getCaptainsForSearch(mode) { //mode = "campaign"
     let cookieString = document.cookie;
     let captArray = [];
     let h = 0;
-    
+
     for (let pageNum = 1; pageNum <= 10; pageNum++) {
       const response = await fetch(`https://www.streamraiders.com/api/game/?cn=getCaptainsForSearch&userId=${userId}&isCaptain=0&gameDataVersion=${gameDataVersion}&command=getCaptainsForSearch&page=${pageNum}&resultsPerPage=24&filters={"ambassadors":"false","mode":"${mode}","favorite":"false"}&clientVersion=${clientVersion}&clientPlatform=WebLite`, {
         method: 'POST',
@@ -968,7 +969,7 @@ async function getCaptainsForSearch(mode) { //mode = "campaign"
       if (!response.ok) {
         throw new Error('Network response was not ok');
       }
-      
+
       let captData = await response.json();
       if (captData.data.captains != null) {
         let capts = captData.data.captains;
@@ -985,9 +986,9 @@ async function getCaptainsForSearch(mode) { //mode = "campaign"
       } else {
         return "";
       }
-    }    
+    }
     return captArray;
-    
+
   } catch (error) {
     console.error('Error in getCaptainsForSearch:', error);
     return "";
@@ -1011,17 +1012,17 @@ So effectively, the time between 11 and 7 is the battle time. The time between 7
 */
 
 async function getFavoriteCaptainIds() {
-  
+
   try {
-      const response = await fetch('https://www.streamraiders.com/api/game/?cn=getUser&command=getUser');
-      const data = await response.json();
-      let favoriteCaptainIds;
-      favoriteCaptainIds = data.data.favoriteCaptainIds;
-      return favoriteCaptainIds;
-  } catch(error) {
-      console.error('Error getting favorite captain Ids:', error.message);
-      return;
-  } 
+    const response = await fetch('https://www.streamraiders.com/api/game/?cn=getUser&command=getUser');
+    const data = await response.json();
+    let favoriteCaptainIds;
+    favoriteCaptainIds = data.data.favoriteCaptainIds;
+    return favoriteCaptainIds;
+  } catch (error) {
+    console.error('Error getting favorite captain Ids:', error.message);
+    return;
+  }
 }
 
 async function joinCaptain(captainId, index) {
@@ -1050,7 +1051,7 @@ async function joinCaptain(captainId, index) {
 }
 
 async function joinCaptainToAvailableSlot(captainName) {
-  
+
   try {
     let cookieString = document.cookie;
     const response = await fetch(`https://www.streamraiders.com/t/${captainName}`, {
@@ -1073,7 +1074,7 @@ async function joinCaptainToAvailableSlot(captainName) {
 
 //Get every unit the user has
 async function fetchUnits() {
-  
+
   const clientVersion = await retrieveFromStorage("clientVersion")
   const gameDataVersion = await retrieveFromStorage("dataVersion")
 
@@ -1101,7 +1102,7 @@ async function fetchUnits() {
 }
 
 async function useCooldownCurrency(unitType, unitLevel) {
-  
+
   const clientVersion = await retrieveFromStorage("clientVersion")
   const gameDataVersion = await retrieveFromStorage("dataVersion")
 
@@ -1134,7 +1135,7 @@ async function useCooldownCurrency(unitType, unitLevel) {
 }
 
 async function reviveUnit(unitType, unitLevel, captainNameFromDOM) {
-  
+
   const clientVersion = await retrieveFromStorage("clientVersion")
   const gameDataVersion = await retrieveFromStorage("dataVersion")
   const userId = await retrieveFromStorage("userId")
@@ -1194,7 +1195,7 @@ async function getUnitId(unitType, unitLevel) {
 }
 
 async function getUserDungeonInfoForRaid(captainNameFromDOM) {
-  
+
   const clientVersion = await retrieveFromStorage("clientVersion")
   const gameDataVersion = await retrieveFromStorage("dataVersion")
   const userId = await retrieveFromStorage("userId")
@@ -1232,5 +1233,210 @@ async function getUserDungeonInfoForRaid(captainNameFromDOM) {
   } catch (error) {
     console.error('Error retrieving dungeon info:', error.message);
     return;
+  }
+}
+
+async function getAvailableCurrencies() {
+
+  let levelUpCosts = {
+
+  }
+
+  const clientVersion = await retrieveFromStorage("clientVersion")
+  const gameDataVersion = await retrieveFromStorage("dataVersion")
+
+  try {
+    let cookieString = document.cookie;
+    const response = await fetch(`https://www.streamraiders.com/api/game/?cn=getAvailableCurrencies&format=object&clientVersion=${clientVersion}&clientPlatform=WebLite&gameDataVersion=${gameDataVersion}&command=getAvailableCurrencies&isCaptain=0`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/x-www-form-urlencoded',
+        'Cookie': cookieString,
+      },
+    });
+
+    if (!response.ok) {
+      throw new Error('Network response was not ok');
+    }
+
+    // Return currencies
+    return await response.json();
+
+  } catch (error) {
+    console.error('Error fetching units:', error.message);
+  }
+}
+
+async function levelUp() {
+
+  const clientVersion = await retrieveFromStorage("clientVersion")
+  const gameDataVersion = await retrieveFromStorage("dataVersion")
+  const userId = await retrieveFromStorage("userId")
+
+  let legendaries = "amazon,artillery,balloonbuster,blob,mage,necromancer,orcslayer,phantom,spy,templar,warbeast"
+  let regularCost = [
+    { lower: 1, high: 2, gold: 25, scroll: 15 },
+    { lower: 2, high: 3, gold: 35, scroll: 20 },
+    { lower: 3, high: 4, gold: 50, scroll: 25 },
+    { lower: 4, high: 5, gold: 100, scroll: 50 },
+    { lower: 5, high: 6, gold: 120, scroll: 60 },
+    { lower: 6, high: 7, gold: 140, scroll: 70 },
+    { lower: 7, high: 8, gold: 160, scroll: 80 },
+    { lower: 8, high: 9, gold: 180, scroll: 90 },
+    { lower: 9, high: 10, gold: 200, scroll: 100 },
+    { lower: 10, high: 11, gold: 220, scroll: 110 },
+    { lower: 11, high: 12, gold: 240, scroll: 120 },
+    { lower: 12, high: 13, gold: 260, scroll: 130 },
+    { lower: 13, high: 14, gold: 280, scroll: 140 },
+    { lower: 14, high: 15, gold: 300, scroll: 150 },
+    { lower: 15, high: 16, gold: 320, scroll: 160 },
+    { lower: 16, high: 17, gold: 340, scroll: 170 },
+    { lower: 17, high: 18, gold: 360, scroll: 180 },
+    { lower: 18, high: 19, gold: 380, scroll: 190 },
+    { lower: 19, high: 20, gold: 400, scroll: 200 },
+    { lower: 20, high: 21, gold: 450, scroll: 220 },
+    { lower: 21, high: 22, gold: 500, scroll: 240 },
+    { lower: 22, high: 23, gold: 550, scroll: 260 },
+    { lower: 23, high: 24, gold: 600, scroll: 280 },
+    { lower: 24, high: 25, gold: 675, scroll: 300 },
+    { lower: 25, high: 26, gold: 750, scroll: 320 },
+    { lower: 26, high: 27, gold: 825, scroll: 340 },
+    { lower: 27, high: 28, gold: 900, scroll: 360 },
+    { lower: 28, high: 29, gold: 1000, scroll: 380 },
+    { lower: 29, high: 30, gold: 1200, scroll: 400 }]
+  let legendaryCost = [
+    { lower: 2, high: 3, gold: 70, scroll: 10 },
+    { lower: 3, high: 4, gold: 100, scroll: 10 },
+    { lower: 4, high: 5, gold: 200, scroll: 10 },
+    { lower: 5, high: 6, gold: 240, scroll: 10 },
+    { lower: 6, high: 7, gold: 280, scroll: 10 },
+    { lower: 7, high: 8, gold: 320, scroll: 10 },
+    { lower: 8, high: 9, gold: 360, scroll: 10 },
+    { lower: 9, high: 10, gold: 400, scroll: 10 },
+    { lower: 10, high: 11, gold: 440, scroll: 15 },
+    { lower: 11, high: 12, gold: 480, scroll: 15 },
+    { lower: 12, high: 13, gold: 520, scroll: 15 },
+    { lower: 13, high: 14, gold: 560, scroll: 15 },
+    { lower: 14, high: 15, gold: 600, scroll: 15 },
+    { lower: 15, high: 16, gold: 640, scroll: 15 },
+    { lower: 16, high: 17, gold: 680, scroll: 15 },
+    { lower: 17, high: 18, gold: 720, scroll: 15 },
+    { lower: 18, high: 19, gold: 760, scroll: 15 },
+    { lower: 19, high: 20, gold: 800, scroll: 15 },
+    { lower: 20, high: 21, gold: 850, scroll: 20 },
+    { lower: 21, high: 22, gold: 900, scroll: 20 },
+    { lower: 22, high: 23, gold: 950, scroll: 20 },
+    { lower: 23, high: 24, gold: 1000, scroll: 20 },
+    { lower: 24, high: 25, gold: 1100, scroll: 20 },
+    { lower: 25, high: 26, gold: 1200, scroll: 20 },
+    { lower: 26, high: 27, gold: 1300, scroll: 20 },
+    { lower: 27, high: 28, gold: 1500, scroll: 20 },
+    { lower: 28, high: 29, gold: 1600, scroll: 20 },
+    { lower: 29, high: 30, gold: 2000, scroll: 20 }];
+
+  if (await retrieveFromStorage("paused_checkbox")) {
+    return
+  }
+
+  let minCur = await retrieveNumberFromStorage("minCurrency");
+  if (minCur <= 0) {
+    return
+  }
+
+  let u = await fetchUnits()
+  let units = u.data
+
+  let uC = await getAvailableCurrencies()
+  let userCurrencies = uC.data
+  let gold = userCurrencies.gold
+  if (gold < minCur) {
+    return
+  }
+
+  let unitsData = await new Promise((resolve, reject) => {
+    chrome.storage.local.get('unitsData', function (result) {
+      if (chrome.runtime.lastError) {
+        reject(chrome.runtime.lastError);
+      } else {
+        resolve(result.unitsData);
+      }
+    });
+  });
+
+  const filteredUnits = Object.entries(unitsData)
+    .filter(([key, value]) => value.priority !== 0)
+    .reduce((obj, [key, value]) => {
+      obj[key] = value;
+      return obj;
+    }, {});
+
+  let unitsArray = Object.entries(filteredUnits);
+  unitsArray.sort((a, b) => a[1].priority - b[1].priority);
+
+  for (let i = 0; i < unitsArray.length; i++) {
+    let unit = unitsArray[i]
+    let unitName = unit[0]
+    let canLevelUp = unit[1].canLevelUp
+    //let canSpec = unit[1].canSpec
+
+    if (!canLevelUp) {
+      continue
+    }
+    // Get amount of scrolls available.
+    let scrolls = userCurrencies[unitName]
+    if (unitName == "paladin") {
+      unitName = "alliespaladin"
+    } else if (unitName == "balloonbuster") {
+      unitName = "alliesballoonbuster"
+    }
+    for (let j = 0; j < units.length; j++) {
+      let gameUnit = units[j]
+      let gameUnitName = gameUnit.unitType
+      let unitId = gameUnit.unitId
+      if (gameUnitName != unitName) {
+        continue
+      }
+      let level = gameUnit.level
+      if (level == 30) {
+        continue
+      }
+
+      let priceArray = legendaries.includes(unitName) ? legendaryCost : regularCost;
+      for (let k = 0; k < priceArray.length; k++) {
+        let price = priceArray[k]
+        let lowerBound = price.lower
+        if (level == lowerBound) {
+          let scrollCost = price.scroll
+          let goldCost = price.gold
+          if (scrolls >= scrollCost && gold >= goldCost) {
+
+            //Make the api call to level up
+            let upgradeUrl = `https://www.streamraiders.com/api/game/?cn=upgradeUnit&userId=${userId}&isCaptain=0&gameDataVersion=${gameDataVersion}&command=upgradeUnit&unitType=${unitName}&unitLevel=${level}&unitId=${unitId}&clientVersion=${clientVersion}&clientPlatform=MobileLite`
+
+            try {
+              let cookieString = document.cookie;
+              const response = await fetch(upgradeUrl, {
+                method: 'POST',
+                headers: {
+                  'Content-Type': 'application/x-www-form-urlencoded',
+                  'Cookie': cookieString,
+                },
+              });
+
+              if (!response.ok) {
+                throw new Error('Network response was not ok');
+              }
+
+              break;
+
+            } catch (error) {
+              console.error('Error reviving unit:', error.message);
+              return;
+            }
+             break;
+          }
+        }
+      }
+    }
   }
 }
