@@ -35,9 +35,9 @@ function makeMarkers() {
                     imaginaryMarker.style.height = dimension + "px";
                     imaginaryMarker.style.backgroundImage = "url('1EPFWIYQTQRB9OWOGAAAABJRU5ERKJGGG')";
                     //For testing uncomment
-                    imaginaryMarker.style.backgroundColor = "blue";
-                    imaginaryMarker.style.backgroundSize = "0";
-                    imaginaryMarker.style.border = "0.1px solid black";
+                    //imaginaryMarker.style.backgroundColor = "blue";
+                    //imaginaryMarker.style.backgroundSize = "0";
+                    //imaginaryMarker.style.border = "0.1px solid black";
                     const battlefieldElement = document.querySelector(".battlefield");
                     if (battlefieldElement) {
                         battlefieldElement.appendChild(imaginaryMarker);
