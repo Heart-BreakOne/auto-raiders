@@ -33,7 +33,7 @@ function makeMarkers() {
                     imaginaryMarker.style.left = proposedMarkerLeft + "px";
                     imaginaryMarker.style.width = dimension + "px";
                     imaginaryMarker.style.height = dimension + "px";
-                    imaginaryMarker.style.backgroundImage = "url('1EPFWIYQTQRB9OWOGAAAABJRU5ERKJGGG')";
+                    //imaginaryMarker.style.backgroundImage = "url('1EPFWIYQTQRB9OWOGAAAABJRU5ERKJGGG')";
                     //For testing uncomment
                     //imaginaryMarker.style.backgroundColor = "blue";
                     //imaginaryMarker.style.backgroundSize = "0";
