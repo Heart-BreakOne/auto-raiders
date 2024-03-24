@@ -1086,33 +1086,17 @@ async function placeTheUnit() {
       if (confirmPlacement) {
         confirmPlacement.click();
         await delay(2000);
-        if (isDungeon == true && currentMarkerKey == "FLAG") {
-          let allPlaceAnywayButtons = document.querySelectorAll('.actionButton.actionButtonSecondary')
-          let placeAnywayButton;
-          allPlaceAnywayButtons.forEach(button => {
-            if (button.innerText === "PLACE ANYWAY") {
-              placeAnywayButton = button;
-              return true;
-            }
-          });
-          let allPlaceAnywayBackButtons = document.querySelectorAll('.actionButton.actionButtonPrimary')
-          let placeAnywayBackButton;
-          allPlaceAnywayBackButtons.forEach(button => {
-            if (button.innerText === "BACK") {
-              placeAnywayBackButton = button;
-            }
-          });
-          if (placeAnywayButton) {
-            if (dungeonPlaceAnywaySwitch) {
-              placeAnywayButton.click();
-              await delay(1000);
-              goHome();
-              return true;
-            } else {
-              placeAnywayBackButton.click();
-              return true;
-            }
+        //Rarely, it attempts to place incorrectly. If the Place Anyway pop up appears, click BACK
+        let allPlaceAnywayBackButtons = document.querySelectorAll('.actionButton.actionButtonPrimary')
+        let placeAnywayBackButton;
+        allPlaceAnywayBackButtons.forEach(button => {
+          if (button.innerText === "BACK") {
+            placeAnywayBackButton = button;
           }
+        });
+        if (placeAnywayBackButton) {
+            placeAnywayBackButton.click();
+            return true;
         }
       }
     }
