@@ -27,6 +27,7 @@ function makeMarkers() {
                 if (!id_string) {
                     const imaginaryMarker = document.createElement("div");
                     imaginaryMarker.classList.add("planIcon");
+                    imaginaryMarker.classList.add("custom");
                     imaginaryMarker.setAttribute("id", "VIBE");
                     imaginaryMarker.style.position = "absolute";
                     imaginaryMarker.style.top = proposedMarkerTop + "px";
@@ -274,4 +275,13 @@ function getMapMatrix(arrayOfMarkers) {
     }
     return sortedArray.map(item => item.marker);
 
+}
+
+function bumpVibeMarkers(arrayOfMarkers) {
+
+    const customMarkers = arrayOfMarkers.filter(marker => marker.classList.contains('custom'));
+    const nonCustomMarkers = arrayOfMarkers.filter(marker => !marker.classList.contains('custom'));
+    const updatedMarkers = nonCustomMarkers.concat(customMarkers);
+
+    return updatedMarkers;
 }

@@ -122,7 +122,7 @@ const loyaltyArray = [{ key: 1, value: "Wood" },
 // This is the start, it selects a captain placement as well as collect any rewards to proceed
 async function start() {
 
-  if(await retrieveFromStorage("paused_checkbox")) {
+  if (await retrieveFromStorage("paused_checkbox")) {
     return
   }
 
@@ -528,7 +528,7 @@ async function performCollection() {
 }
 
 async function performCollectionInterval() {
-  if(await retrieveFromStorage("paused_checkbox")) {
+  if (await retrieveFromStorage("paused_checkbox")) {
     return
   }
   await buyScrolls();
@@ -685,6 +685,7 @@ async function getValidUnits(captainNameFromDOM, slotOption, diamondLoyalty, bat
   makeMarkers();
   let arrayOfMarkers = Array.of(document.querySelectorAll(".planIcon"))
   arrayOfMarkers = getMapMatrix(arrayOfMarkers)
+  arrayOfMarkers = bumpVibeMarkers(arrayOfMarkers)
 
 
 
@@ -1134,10 +1135,10 @@ async function placeTheUnit() {
 
 const obsv = new MutationObserver(async function (mutations) {
 
-  if(await retrieveFromStorage("paused_checkbox")) {
+  if (await retrieveFromStorage("paused_checkbox")) {
     return
   }
-  
+
   mutations.forEach(async function (mutation) {
     if (mutation.type === 'childList') {
       // Check if the added nodes contain an element with the desired class
