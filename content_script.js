@@ -987,7 +987,7 @@ async function getValidUnits(captainNameFromDOM, slotOption, diamondLoyalty, bat
       //}
       const markerId = marker.id;
       let hasPlaced;
-      if (markerId === "VIBE" || markerId.includes(unitId)) {
+      if (markerId === "VIBE" || markerId.includes(unitId.split("#")[0]) || markerId.includes(unitId.split("#")[1])) {
         hasPlaced = await attemptPlacement(unit, marker);
         if (hasPlaced == undefined || hasPlaced) {
           goHome()
