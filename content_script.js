@@ -678,6 +678,7 @@ async function getValidUnits(captainNameFromDOM, slotOption, diamondLoyalty, bat
   makeMarkers();
   let arrayOfMarkers = Array.of(document.querySelectorAll(".planIcon"))
   arrayOfMarkers = getMapMatrix(arrayOfMarkers)
+  arrayOfMarkers = bumpVibeMarkers(arrayOfMarkers)
 
 
 
