@@ -290,5 +290,5 @@ function bumpVibeMarkers(arrayOfMarkers) {
         });
     }
     
-    return nonCustomMarkers.concat(customMarkers);
+    return arrayOfMarkers
 }
