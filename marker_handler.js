@@ -278,10 +278,17 @@ function getMapMatrix(arrayOfMarkers) {
 }
 
 function bumpVibeMarkers(arrayOfMarkers) {
-
     const customMarkers = arrayOfMarkers.filter(marker => marker.classList.contains('custom'));
     const nonCustomMarkers = arrayOfMarkers.filter(marker => !marker.classList.contains('custom'));
-    const updatedMarkers = nonCustomMarkers.concat(customMarkers);
 
-    return updatedMarkers;
+    if (nonCustomMarkers.length > 0) {
+        customMarkers.forEach(marker => {
+            const index = arrayOfMarkers.indexOf(marker);
+            if (index !== -1) {
+                arrayOfMarkers.splice(index, 1);
+            }
+        });
+    }
+    
+    return arrayOfMarkers
 }
