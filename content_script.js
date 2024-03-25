@@ -1300,7 +1300,7 @@ async function moveScreen(marker) {
     //Move screen so the current marker gets centered
     await delay(1000);
     if (marker && marker !== undefined && marker !== null) {
-      marker.scrollIntoView({ block: 'center', inline: "center" });
+      scrollToMarker(marker)
       return true
     } else {
       goHome();
@@ -1361,5 +1361,25 @@ async function getUserWaitTime(battleType) {
     }
   } catch (error) {
     return 2830
+  }
+}
+
+
+function isInView(element) {
+  const rect = element.getBoundingClientRect();
+  return (
+      rect.top >= 0 &&
+      rect.left >= 0 &&
+      rect.bottom <= (window.innerHeight || document.documentElement.clientHeight) &&
+      rect.right <= (window.innerWidth || document.documentElement.clientWidth)
+  );
+}
+
+function scrollToMarker(marker) {
+  if (!isInView(marker)) {
+      marker.scrollIntoView({ block: 'center', inline: 'center' });
+      setTimeout(() => {
+          scrollToMarker(marker);
+      }, 100);
   }
 }
