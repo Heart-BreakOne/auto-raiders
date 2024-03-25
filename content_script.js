@@ -122,7 +122,7 @@ const loyaltyArray = [{ key: 1, value: "Wood" },
 // This is the start, it selects a captain placement as well as collect any rewards to proceed
 async function start() {
 
-  if(await retrieveFromStorage("paused_checkbox")) {
+  if (await retrieveFromStorage("paused_checkbox")) {
     return
   }
 
@@ -526,7 +526,7 @@ async function performCollection() {
 }
 
 async function performCollectionInterval() {
-  if(await retrieveFromStorage("paused_checkbox")) {
+  if (await retrieveFromStorage("paused_checkbox")) {
     return
   }
   await buyScrolls();
@@ -865,7 +865,7 @@ async function getValidUnits(captainNameFromDOM, slotOption, diamondLoyalty, bat
   unitsToRemove.forEach(unit => unit.remove());
   unitsToRemove = undefined
   unitDrawer = [...document.querySelectorAll(".unitSelectionCont")];
-  
+
   let priorityListSwitchSlot = await retrieveFromStorage("priorityListSwitch" + slotOption);
   let priorityListSwitchAll = await retrieveFromStorage("priorityListSwitch0");
   let shuffleSwitchSlot = await retrieveFromStorage("shuffleSwitch" + slotOption);
@@ -878,7 +878,7 @@ async function getValidUnits(captainNameFromDOM, slotOption, diamondLoyalty, bat
     //If unit priority list for the slot is selected, use the list for the slot
     if (priorityListSwitchSlot) {
       unitDrawer = await sortPriorityUnits(unitDrawer, slotOption, shuffleSwitch);
-    //If unit priority list for the slot is not selected and unit priority list for all slots is selected, use the list for all slots
+      //If unit priority list for the slot is not selected and unit priority list for all slots is selected, use the list for all slots
     } else if (!priorityListSwitchSlot && priorityListSwitchAll) {
       unitDrawer = await sortPriorityUnits(unitDrawer, "0", shuffleSwitch);
     } else if (shuffleSwitch) {
@@ -978,7 +978,7 @@ async function getValidUnits(captainNameFromDOM, slotOption, diamondLoyalty, bat
       //}
       const markerId = marker.id;
       let hasPlaced;
-      if (markerId === "VIBE" || markerId.includes(unitId)) {
+      if (markerId === "VIBE" || markerId.includes(unitId.split("#")[0]) || markerId.includes(unitId.split("#")[1])) {
         hasPlaced = await attemptPlacement(unit, marker);
         if (hasPlaced == undefined || hasPlaced) {
           goHome()
@@ -1141,10 +1141,10 @@ async function placeTheUnit() {
 
 const obsv = new MutationObserver(async function (mutations) {
 
-  if(await retrieveFromStorage("paused_checkbox")) {
+  if (await retrieveFromStorage("paused_checkbox")) {
     return
   }
-  
+
   mutations.forEach(async function (mutation) {
     if (mutation.type === 'childList') {
       // Check if the added nodes contain an element with the desired class
