@@ -281,6 +281,7 @@ function bumpVibeMarkers(arrayOfMarkers) {
     const customMarkers = arrayOfMarkers.filter(marker => marker.classList.contains('custom'));
     const nonCustomMarkers = arrayOfMarkers.filter(marker => !marker.classList.contains('custom'));
 
+    // If nonCustomMarkers is not empty, delete customMarkers from arrayOfMarkers
     if (nonCustomMarkers.length > 0) {
         customMarkers.forEach(marker => {
             const index = arrayOfMarkers.indexOf(marker);
@@ -290,5 +291,7 @@ function bumpVibeMarkers(arrayOfMarkers) {
         });
     }
 
-    return nonCustomMarkers;
+    // Merge customMarkers and nonCustomMarkers and return the result
+    
+    return nonCustomMarkers.concat(customMarkers);
 }
