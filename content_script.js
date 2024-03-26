@@ -291,41 +291,41 @@ async function start() {
         }
 
         // Calculate placements odds
-        const bSlot = button.closest('.capSlot')
-        const closeBtn = bSlot.querySelector(".capSlotClose")
-        const oddKey = "oddId" + bSlot.querySelector(".offlineButton").id
-        let canPlace = false
-        const currentTime = new Date();
-        await new Promise((resolve, reject) => {
-          chrome.storage.local.get(oddKey, function (result) {
-            if (chrome.runtime.lastError) {
-              canPlace = true;
-              resolve();
-            } else {
-              const enableTimeString = result[oddKey];
-              if (enableTimeString) {
-                const enableTime = new Date(enableTimeString);
-
-                if (currentTime > enableTime) {
-                  canPlace = true;
-                } else {
-                  canPlace = false;
-                }
-              } else {
-                canPlace = true;
-              }
-              resolve();
-            }
-          });
-        });
-        if (!canPlace) {
-          continue
-        }
         let placementOdds = await retrieveNumberFromStorage("placementOddsInput")
         if (placementOdds == -100 || placementOdds == undefined || placementOdds > 100) {
           placementOdds = 100
-        }
-        else if (placementOdds <= 0) {
+        } else if (placementOdds > 0 && placementOdds < 100) {
+          const bSlot = button.closest('.capSlot')
+          const closeBtn = bSlot.querySelector(".capSlotClose")
+          const oddKey = "oddId" + bSlot.querySelector(".offlineButton").id
+          let canPlace = false
+          const currentTime = new Date();
+          await new Promise((resolve, reject) => {
+            chrome.storage.local.get(oddKey, function (result) {
+              if (chrome.runtime.lastError) {
+                canPlace = true;
+                resolve();
+              } else {
+                const enableTimeString = result[oddKey];
+                if (enableTimeString) {
+                  const enableTime = new Date(enableTimeString);
+
+                  if (currentTime > enableTime) {
+                    canPlace = true;
+                  } else {
+                    canPlace = false;
+                  }
+                } else {
+                  canPlace = true;
+                }
+                resolve();
+              }
+            });
+          });
+          if (!canPlace) {
+            continue
+          }
+        } else if (placementOdds <= 0) {
           continue
         }
 
