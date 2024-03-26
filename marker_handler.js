@@ -212,15 +212,6 @@ function setUpMarkers(mrkrs) {
 }
 
 
-async function closeAll() {
-    const closeButton = document.querySelectorAll(".far.fa-times");
-    if (closeButton.length > 0) {
-        closeButton.forEach(button => {
-            button.click();
-        })
-    }
-}
-
 function checkOverlapWithMarkers(mrkrs, top, left, dimension) {
     for (let i = 0; i < mrkrs.length; i++) {
         const mrkr = mrkrs[i];

@@ -19,7 +19,7 @@ let firstReload;
 //let captainNameFromDOM;
 let reload = 0;
 let isContentRunning;
-let isContentRunning2;
+let isContentRunning2 = false;
 let unfinishedQuests = null;
 const blue = 'rgb(185, 242, 255)';
 const red = 'rgb(255, 204, 203)';
@@ -126,6 +126,10 @@ async function start() {
     return
   }
 
+  if (isContentRunning2) {
+    return
+  }
+  isContentRunning2 = true;
   //Reload tracker
   if (firstReload === undefined) {
     firstReload = new Date();
@@ -164,6 +168,7 @@ async function start() {
   let battleButton;
   if (navItems.length === 0 || navItems === undefined) {
     isContentRunning = false;
+    isContentRunning2 = false;
     return;
   } else {
     //If navItem exists, open main menu
@@ -246,6 +251,7 @@ async function start() {
   //If there are no place unit buttons, invoke the collection function then return.
   if (placeUnitButtons.length == 0 || (placeUnitButtons.length == 1 && placeUnitButtons[0].innerText === "SUBMIT")) {
     await performCollection();
+    isContentRunning2 = false;
     return;
   }
   //If placement buttons exist, validate them
@@ -499,16 +505,13 @@ async function start() {
 
         //If place unit exists, click it and call the openBattlefield function
         if (placeUnit) {
-          if (isContentRunning2) {
-            return
-          }
-          isContentRunning2 = true;
           placeUnit.click();
           await delay(1000);
           await openBattlefield(captainNameFromDOM, slotOption, diamondLoyalty, battleType);
-          isContentRunning2 = false;
+          break;
         } else {
           await performCollection();
+          isContentRunning2 = false;
           return;
         }
       } else {
@@ -646,13 +649,13 @@ async function openBattlefield(captainNameFromDOM, slotOption, diamondLoyalty, b
     } else {
       //Current chest is not special, close chest info and zoom
       closeAll();
-      getValidUnits(captainNameFromDOM, slotOption, diamondLoyalty, battleType);
+      await getValidUnits(captainNameFromDOM, slotOption, diamondLoyalty, battleType);
     }
     //diamondLoyalty = null;
   } else {
     //User doesn't want to preserve diamond loyalty
     closeAll();
-    getValidUnits(captainNameFromDOM, slotOption, diamondLoyalty, battleType);
+    await getValidUnits(captainNameFromDOM, slotOption, diamondLoyalty, battleType);
   }
 }
 
@@ -1003,7 +1006,7 @@ async function getValidUnits(captainNameFromDOM, slotOption, diamondLoyalty, bat
     }
   }
   goHome()
-  closeAll
+  closeAll()
 }
 
 async function cancelPlacement() {
@@ -1032,7 +1035,7 @@ async function attemptPlacement(unit, marker) {
     return true
   }
   await delay(500);
-  placeTheUnit();
+  await placeTheUnit();
   await delay(1000);
   reloadRoot();
   await delay(1000);
@@ -1128,6 +1131,7 @@ async function placeTheUnit() {
     if (disabledButton || negativeButton) {
       disabledButton?.click();
       negativeButton?.click();
+      isContentRunning2 = false;
       return false;
     }
   }, 5000);
@@ -1239,6 +1243,7 @@ obsv.observe(tgtNode, conf);
 
 //This function resets the running state and closes the battlefield back to home.
 function goHome() {
+  isContentRunning2 = false;
   const backHome = document.querySelector(".selectorBack");
   if (backHome) {
     backHome.click();
