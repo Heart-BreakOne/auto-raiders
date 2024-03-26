@@ -982,6 +982,9 @@ async function getValidUnits(captainNameFromDOM, slotOption, diamondLoyalty, bat
   outer_loop: for (const unit of unitDrawer[0].children) {
     const unitId = unit.id;
     for (const marker of arrayOfMarkers) {
+      if (marker.offsetLeft == 0 && marker.offsetTop == 0) {
+        continue;
+      }
       //if(counter > 40) {
       //break outer_loop
       //}
@@ -1376,7 +1379,9 @@ function isInView(element) {
   );
 }
 
-function scrollToMarker(marker) {
+async function scrollToMarker(marker) {
+  marker.scrollIntoView({ block: 'center', inline: 'center' });
+  await delay(100);
   if (!isInView(marker)) {
       marker.scrollIntoView({ block: 'center', inline: 'center' });
       setTimeout(() => {
