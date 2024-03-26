@@ -130,316 +130,331 @@ async function loadLogData() {
     if (isTable) {
         isTable.remove();
     }
+    
+    while (logRunning == true) {
+      await delay(10);
+    }
+    logRunning = true;
+    let arrayData = await chrome.storage.local.get(['logData']);
+    arrayData = arrayData.logData;
+    logRunning = false;
+    
+    //Sort the array based on the time they were added.
+    const sortedData = arrayData.sort((a, b) => new Date(b.currentTime) - new Date(a.currentTime));
 
-    //Retrieve data from local storage
-    chrome.storage.local.get(['logData'], async function (result) {
-        const arrayData = result.logData || [];
+    //Get current event start time for chest count comparison
+    const currentEventStartTime = await getCurrentEventStartTime();
+    
+    //Get the data container div
+    const dataContainer = document.getElementById('dataContainer');
+    dataContainer.style.textAlign = "justify";
 
-        //Sort the array based on the time they were added.
-        const sortedData = arrayData.sort((a, b) => new Date(b.currentTime) - new Date(a.currentTime));
+    //Create a table 
+    const tableElement = document.createElement('table');
+    tableElement.id = "logTable";
 
-        //Get current event start time for chest count comparison
-        const currentEventStartTime = await getCurrentEventStartTime();
-        
-        //Get the data container div
-        const dataContainer = document.getElementById('dataContainer');
-        dataContainer.style.textAlign = "justify";
+    //Create table header row
+    const headerRow = document.createElement('tr');
+    if (logSwitch) {
+        const headerString1 = '<th>#</th><th>Slot</th><th>Captain Name</th><th>Mode</th><th>Color Code</th><th>Start time</th><th>End time</th><th>Duration</th><th>Result</th><th>Awarded Chest</th><th>Initial Chest</th>'
+        const headerString2 = '<th>Rewards</th><th>Leaderboard Rank</th><th>Kills</th><th>Assists</th><th>Units Placed</th>'
+        if (raidIdSwitch) {
+            headerRow.innerHTML = headerString1 + '<th>Raid ID</th>' + headerString2
+        } else {
+            headerRow.innerHTML = headerString1 + headerString2;
+        }
+    } else {
+        headerRow.innerHTML = '<th>#</th><th>Slot</th><th>Captain Name</th><th>Mode</th><th>Color Code</th><th>Start time</th><th>End time</th><th>Duration</th><th>Result</th><th>Awarded Chest</th><th>Initial Chest</th>';
+    }
 
-        //Create a table 
-        const tableElement = document.createElement('table');
-        tableElement.id = "logTable";
+    //Append header row to the table
+    tableElement.appendChild(headerRow);
 
-        //Create table header row
-        const headerRow = document.createElement('tr');
-        if (logSwitch) {
-            const headerString1 = '<th>#</th><th>Slot</th><th>Captain Name</th><th>Mode</th><th>Color Code</th><th>Start time</th><th>End time</th><th>Duration</th><th>Result</th><th>Awarded Chest</th><th>Initial Chest</th>'
-            const headerString2 = '<th>Rewards</th><th>Leaderboard Rank</th><th>Kills</th><th>Assists</th><th>Units Placed</th>'
-            if (raidIdSwitch) {
-                headerRow.innerHTML = headerString1 + '<th>Raid ID</th>' + headerString2
-            } else {
-                headerRow.innerHTML = headerString1 + headerString2;
+    //Populate the table with array data
+    let counter = 1;
+    for (let i = 0; i < sortedData.length; i++) {
+        const entry = sortedData[i];
+
+        let res;
+        let chestName;
+        let url;
+        let outcome;
+        let initialChestName;
+        let initialUrl;
+        let leaderboardRank;
+        let kills;
+        let assists;
+        let units;
+        let unitsList;
+        let raidId;
+        let rewards;
+        let rewardsList;
+
+        //Convert the string to a Date object and get hour and minutes.
+        const startingTime = getTimeString(new Date(entry.currentTime));
+
+        //Getting human-readable colors
+        let color = colorCodeMap[entry.colorCode] || "Normal";
+
+        //Make changes to some of the values to be display to make them user-friendly
+        if (entry.elapsedTime === undefined) {
+            elapsed = 'tbd';
+            if (!pendingSwitch) {
+                continue;
             }
         } else {
-            headerRow.innerHTML = '<th>#</th><th>Slot</th><th>Captain Name</th><th>Mode</th><th>Color Code</th><th>Start time</th><th>End time</th><th>Duration</th><th>Result</th><th>Awarded Chest</th><th>Initial Chest</th>';
+            elapsed = entry.elapsedTime;
         }
 
-        //Append header row to the table
-        tableElement.appendChild(headerRow);
+        if (entry.result === undefined) {
+            outcome = 'tbd';
+            if (!pendingSwitch) {
+                continue;
+            }
+        } else {
+            outcome = entry.result;
+        }
 
-        //Populate the table with array data
-        let counter = 1;
-        for (let i = 0; i < sortedData.length; i++) {
-            const entry = sortedData[i];
+        if (entry.currentTime === entry.elapsedTime) {
+            elapsed = "Unknown";
+        }
 
-            let res;
-            let chestName;
-            let url;
-            let outcome;
-            let initialChestName;
-            let initialUrl;
-            let leaderboardRank;
-            let kills;
-            let assists;
-            let units;
-            let unitsList;
-            let raidId;
-            let rewards;
-            let rewardsList;
+        if (entry.leaderboardRank === undefined) {
+            leaderboardRank = "Unknown";
+        } else {
+            leaderboardRank = entry.leaderboardRank;
+        }
 
-            //Convert the string to a Date object and get hour and minutes.
-            const startingTime = getTimeString(new Date(entry.currentTime));
+        if (entry.kills === undefined) {
+            kills = "Unknown";
+        } else {
+            kills = entry.kills;
+        }
 
-            //Getting human-readable colors
-            let color = colorCodeMap[entry.colorCode] || "Normal";
+        if (entry.assists === undefined) {
+            assists = "Unknown";
+        } else {
+            assists = entry.assists;
+        }
 
-            //Make changes to some of the values to be display to make them user-friendly
-            if (entry.elapsedTime === undefined) {
-                elapsed = 'tbd';
-                if (!pendingSwitch) {
-                    continue;
+        if (entry.raidId === undefined) {
+            raidId = "Unknown"
+        } else {
+            raidId = entry.raidId
+        }
+
+        if (entry.units2 === undefined) {
+            units = "Unknown";
+        } else {
+            unitsList = entry.units2.split(",");
+            units = "";
+            let tempUnits;
+            for (let i = 0; i < unitsList.length; i++) {
+                const unit = unitsList[i].split(" ");
+                if (unit[1] !== undefined) {
+                    tempUnits = '<div class="crop"><img src="' + unit[0] + '" title="Skin: ' + unit[1]
+                    if (unit[2] !== 'none') {
+                        tempUnits += '&#013;Type: ' + unit[2];
+                    }
+                    if (unit[4] !== 'none') {
+                        tempUnits += '&#013;Spec: ' + unit[4];
+                    }
+                    if (unit[3] !== 'none') {
+                        tempUnits += '&#013;Soul: ' + unit[3];
+                    }
+                    units = tempUnits + '"></div>' + units;
                 }
-            } else {
-                elapsed = entry.elapsedTime;
             }
+        }
 
-            if (entry.result === undefined) {
-                outcome = 'tbd';
-                if (!pendingSwitch) {
-                    continue;
-                }
-            } else {
-                outcome = entry.result;
-            }
-
-            if (entry.currentTime === entry.elapsedTime) {
-                elapsed = "Unknown";
-            }
-
-            if (entry.leaderboardRank === undefined) {
-                leaderboardRank = "Unknown";
-            } else {
-                leaderboardRank = entry.leaderboardRank;
-            }
-
-            if (entry.kills === undefined) {
-                kills = "Unknown";
-            } else {
-                kills = entry.kills;
-            }
-
-            if (entry.assists === undefined) {
-                assists = "Unknown";
-            } else {
-                assists = entry.assists;
-            }
-
-            if (entry.raidId === undefined) {
-                raidId = "Unknown"
-            } else {
-                raidId = entry.raidId
-            }
-
-            if (entry.units2 === undefined) {
-                units = "Unknown";
-            } else {
-                unitsList = entry.units2.split(",");
-                units = "";
-                let tempUnits;
-                for (let i = 0; i < unitsList.length; i++) {
-                    const unit = unitsList[i].split(" ");
-                    if (unit[1] !== undefined) {
-                        tempUnits = '<div class="crop"><img src="' + unit[0] + '" title="Skin: ' + unit[1]
-                        if (unit[2] !== 'none') {
-                            tempUnits += '&#013;Type: ' + unit[2];
-                        }
-                        if (unit[4] !== 'none') {
-                            tempUnits += '&#013;Spec: ' + unit[4];
-                        }
-                        if (unit[3] !== 'none') {
-                            tempUnits += '&#013;Soul: ' + unit[3];
-                        }
-                        units = tempUnits + '"></div>' + units;
+        if (entry.rewards === undefined) {
+            rewards = "Unknown";
+        } else {
+            rewardsList = entry.rewards.split(",");
+            rewards = "";
+            for (let i = 0; i < rewardsList.length; i++) {
+                const reward = rewardsList[i].split(" ");
+                if (reward[1] !== undefined) {
+                    if (reward[1].includes("scroll")) {
+                        rewards = '<div class="crop"><img src="' + reward[0] + '" title="' + reward[1] + '"></div>' + rewards;
+                    } else {
+                        rewards = '<img src="' + reward[0] + '" title="' + reward[1] + '" style="height: 30px; width: auto">' + rewards;
                     }
                 }
             }
+        }
 
-            if (entry.rewards === undefined) {
-                rewards = "Unknown";
-            } else {
-                rewardsList = entry.rewards.split(",");
-                rewards = "";
-                for (let i = 0; i < rewardsList.length; i++) {
-                    const reward = rewardsList[i].split(" ");
-                    if (reward[1] !== undefined) {
-                        if (reward[1].includes("scroll")) {
-                            rewards = '<div class="crop"><img src="' + reward[0] + '" title="' + reward[1] + '"></div>' + rewards;
-                        } else {
-                            rewards = '<img src="' + reward[0] + '" title="' + reward[1] + '" style="height: 30px; width: auto">' + rewards;
-                        }
-                    }
-                }
-            }
+        //Getting human-readable chest name and picture
+        try {
+            let entryStartDateTime = new Date(entry.currentTime);
+            let entryEndDateTime = new Date(entryStartDateTime.getTime() + (entry.elapsedTime*60000))
+            for (const battleChest of battleChests) {
+              if (entry.chest == undefined){
+                  chestName = tbd;
+                  url = "/icons/tbd.png";
+              } else if (entry.chest.startsWith(battleChest.key)) {
+                  chestName = battleChest.name;
+                  //outcome = battleChest.outcome;
+                  url = battleChest.url;
 
-            //Getting human-readable chest name and picture
-            try {
-              for (const battleChest of battleChests) {
-                  if (entry.chest == undefined){
-                      chestName = tbd;
-                      url = "/icons/tbd.png";
-                  } else if (entry.chest.startsWith(battleChest.key)) {
-                      chestName = battleChest.name;
-                      //outcome = battleChest.outcome;
-                      url = battleChest.url;
 
-                      //Increment chest quantity
+                  //Get latest value for chest count
+                  if (entry.raidChest !== undefined) {
+                    try {
+                      let chestCount = parseInt(entry.chestCount);
                       for (const loyaltyChest of chestCounter) {
-                          if ((loyaltyChest.key != "chestboss" && entry.chest.includes(loyaltyChest.key)) || loyaltyChest.key === "chestboss" && loyaltyChest.key.includes(entry.chest)) {
-                              loyaltyChest.quantity += 1;
+                          if ((loyaltyChest.key != "chestboss" && entry.raidChest.includes(loyaltyChest.key)) || loyaltyChest.key === "chestboss" && loyaltyChest.key.includes(entry.raidChest)) {
+                              if (entryEndDateTime >= currentEventStartTime) {
+                                  if (chestCount > loyaltyChest.count) {
+                                      loyaltyChest.count = entry.chestCount;
+                                  }
+                              }
                               break;
                           }
                       }
-                      //Get latest value for chest count
-                      if (entry.raidChest !== undefined) {
-                        try {
-                          let chestCount = parseInt(entry.chestCount);
-                          for (const loyaltyChest of chestCounter) {
-                              if ((loyaltyChest.key != "chestboss" && entry.raidChest.includes(loyaltyChest.key)) || loyaltyChest.key === "chestboss" && loyaltyChest.key.includes(entry.raidChest)) {
-                                  let entryStartDateTime = new Date(entry.currentTime);
-                                  let entryEndDateTime = new Date(entryStartDateTime.getTime() + (entry.elapsedTime*60000))
-                                  if (entryEndDateTime >= currentEventStartTime) {
-                                    if (chestCount > loyaltyChest.count) {
-                                      loyaltyChest.count = entry.chestCount;
-                                    }
-                                  }
-                                  break;
-                              }
-                          }
-                        } catch (error) {}
-                      }
-                      break;
+                    } catch (error) {}
                   }
+                    //Increment chest quantity
+                    for (const loyaltyChest of chestCounter) {
+                        if (loyaltyChest.quantity < loyaltyChest.count && ((loyaltyChest.key != "chestboss" && entry.chest.includes(loyaltyChest.key)) || loyaltyChest.key === "chestboss" && loyaltyChest.key.includes(entry.chest))) {
+                            loyaltyChest.quantity += 1;
+                            break;
+                        }
+                    }
+                    break;
               }
-            } catch(error) {
-              console.log(entry)
-              console.log(error)
             }
-
-            //Getting human-readable initial chest name and picture
-            if (entry.initialchest !== undefined) {
-                for (const battleChest of battleChests) {
-                    if (entry.initialchest.startsWith(battleChest.key)) {
-                        initialChestName = battleChest.name;
-                        initialUrl = battleChest.url;
+            if (entry.chest == "Unknown" && entry.units2 != undefined) {
+                // Increment chest quantity if units have been placed because even if the battle is abandoned, the chest still counts
+                for (const loyaltyChest of chestCounter) {
+                    if (entryStartDateTime >= currentEventStartTime && loyaltyChest.quantity < loyaltyChest.count && ((loyaltyChest.key != "chestboss" && entry.initialchest.includes(loyaltyChest.key)) || loyaltyChest.key === "chestboss" && loyaltyChest.key.includes(entry.initialchest))) {
+                        loyaltyChest.quantity += 1;
                         break;
                     }
                 }
             }
-
-            if (color !== "Normal" && outcome === "Unknown") {
-                outcome = "Possible color status";
-            } else {
-                color = "Normal";
-            }
-
-            //Get ending time
-            try {
-                endingTime = ""
-                if (elapsed !== "Unknown") {
-                    let tempTime = new Date(entry.currentTime);
-                    tempTime.setMinutes(tempTime.getMinutes() + parseInt(elapsed));
-                    endingTime = getTimeString(tempTime);
-                    if (endingTime == "NaN:NaN") {
-                      endingTime = tbd;
-                    }
-                } else {
-                    endingTime = "Unknown";
-                }
-            } catch (error) {
-                console.log("log", error);
-                endingTime = "Unknown"
-            }
-            // Create a table row
-            const row = document.createElement('tr');
-            row.id = `${i}`;
-            row.setAttribute('title', raidId);
-            let initialchestHTML;
-            if (entry.initialchest !== undefined) {
-                initialchestHTML = `<td style="text-align: center; vertical-align: middle;">
-                        <div style="display: flex; flex-direction: column; align-items: center;">
-                            ${initialChestName}
-                            <img src="${initialUrl}" alt="Initial Chest Image" style="height: 30px; width: auto">
-                        </div>
-                    </td>`
-            } else {
-                initialchestHTML = `<td style="text-align: center; vertical-align: middle;">
-                        <div style="display: flex; flex-direction: column; align-items: center;">
-                        </div>
-                    </td>`
-            }
-            let logRewards;
-            if (logSwitch) {
-                logRewards = `<td>${rewards}</td>
-                    <td>${leaderboardRank}</td>
-                    <td>${kills}</td>
-                    <td>${assists}</td>
-                    <td>${units}</td>`
-                if (raidIdSwitch) {
-                    logRewards = `<td>${raidId}</td>${logRewards}`
-                }
-            } else {
-                logRewards = ``
-            }
-            row.innerHTML = `<td>${counter}</td>
-                <td>${entry.logId}</td>
-                <td>${entry.logCapName}</td>
-                <td>${entry.logMode}</td>
-                <td style="border: 1px solid #ddd; padding: 8px; color: ${color};">${color}</td>
-                <td>${startingTime}</td>
-                <td>${endingTime}</td>
-                <td>${elapsed}</td>
-                <td>${outcome}</td>
-                <td style="text-align: center; vertical-align: middle;">
-                    <div style="display: flex; flex-direction: column; align-items: center;">
-                        ${chestName}
-                        <img src="${url}" alt="Chest Image" style="height: 30px; width: auto">
-                    </div>
-                </td>
-                ` + initialchestHTML + `
-                ` + logRewards + `
-                <td style="text-align: center; vertical-align: middle;"><button id="btn_${i}">DEL</button></td>`;
-
-            // Append the row to the table
-            tableElement.appendChild(row);
-
-            //Because of the continue, the index can get desynced. So a counter gives a more precise counting
-            counter++;
+        } catch(error) {
+          console.log(entry)
+          console.log(error)
         }
 
-        // Append the table to the data container
-        dataContainer.appendChild(tableElement);
-
-        //Get all buttons from the individual rows
-        const numberButtons = document.querySelectorAll('[id^="btn_"]');
-        //Listen for click events on each butotn
-        numberButtons.forEach(function (button) {
-            button.addEventListener("click", function () {
-
-                //Confirm what you all to do
-                const userOption = window.confirm("Are you sure you want to delete the row?");
-                if (userOption) {
-                    //Get id of the button which is the index number of the entry saved on storage
-                    const index = parseInt(button.id.replace("btn_", ""));
-                    //Invoke function to delete the entry
-                    removeEntry(index);
-                    //Remove the row from the table
-                    const row = document.getElementById(index);
-                    row.remove();
-                    loadLogData();
+        //Getting human-readable initial chest name and picture
+        if (entry.initialchest !== undefined) {
+            for (const battleChest of battleChests) {
+                if (entry.initialchest.startsWith(battleChest.key)) {
+                    initialChestName = battleChest.name;
+                    initialUrl = battleChest.url;
+                    break;
                 }
-            });
+            }
+        }
+
+        if (color !== "Normal" && outcome === "Unknown") {
+            outcome = "Possible color status";
+        } else {
+            color = "Normal";
+        }
+
+        //Get ending time
+        try {
+            endingTime = ""
+            if (elapsed !== "Unknown") {
+                let tempTime = new Date(entry.currentTime);
+                tempTime.setMinutes(tempTime.getMinutes() + parseInt(elapsed));
+                endingTime = getTimeString(tempTime);
+                if (endingTime == "NaN:NaN") {
+                  endingTime = tbd;
+                }
+            } else {
+                endingTime = "Unknown";
+            }
+        } catch (error) {
+            console.log("log", error);
+            endingTime = "Unknown"
+        }
+        // Create a table row
+        const row = document.createElement('tr');
+        row.id = `${i}`;
+        row.setAttribute('title', raidId);
+        let initialchestHTML;
+        if (entry.initialchest !== undefined) {
+            initialchestHTML = `<td style="text-align: center; vertical-align: middle;">
+                    <div style="display: flex; flex-direction: column; align-items: center;">
+                        ${initialChestName}
+                        <img src="${initialUrl}" alt="Initial Chest Image" style="height: 30px; width: auto">
+                    </div>
+                </td>`
+        } else {
+            initialchestHTML = `<td style="text-align: center; vertical-align: middle;">
+                    <div style="display: flex; flex-direction: column; align-items: center;">
+                    </div>
+                </td>`
+        }
+        let logRewards;
+        if (logSwitch) {
+            logRewards = `<td>${rewards}</td>
+                <td>${leaderboardRank}</td>
+                <td>${kills}</td>
+                <td>${assists}</td>
+                <td>${units}</td>`
+            if (raidIdSwitch) {
+                logRewards = `<td>${raidId}</td>${logRewards}`
+            }
+        } else {
+            logRewards = ``
+        }
+        row.innerHTML = `<td>${counter}</td>
+            <td>${entry.logId}</td>
+            <td>${entry.logCapName}</td>
+            <td>${entry.logMode}</td>
+            <td style="border: 1px solid #ddd; padding: 8px; color: ${color};">${color}</td>
+            <td>${startingTime}</td>
+            <td>${endingTime}</td>
+            <td>${elapsed}</td>
+            <td>${outcome}</td>
+            <td style="text-align: center; vertical-align: middle;">
+                <div style="display: flex; flex-direction: column; align-items: center;">
+                    ${chestName}
+                    <img src="${url}" alt="Chest Image" style="height: 30px; width: auto">
+                </div>
+            </td>
+            ` + initialchestHTML + `
+            ` + logRewards + `
+            <td style="text-align: center; vertical-align: middle;"><button id="btn_${i}">DEL</button></td>`;
+
+        // Append the row to the table
+        tableElement.appendChild(row);
+
+        //Because of the continue, the index can get desynced. So a counter gives a more precise counting
+        counter++;
+    }
+
+    // Append the table to the data container
+    dataContainer.appendChild(tableElement);
+
+    //Get all buttons from the individual rows
+    const numberButtons = document.querySelectorAll('[id^="btn_"]');
+    //Listen for click events on each butotn
+    numberButtons.forEach(function (button) {
+        button.addEventListener("click", function () {
+
+            //Confirm what you all to do
+            const userOption = window.confirm("Are you sure you want to delete the row?");
+            if (userOption) {
+                //Get id of the button which is the index number of the entry saved on storage
+                const index = parseInt(button.id.replace("btn_", ""));
+                const raidId = document.getElementById(index).title;
+                //Invoke function to delete the entry
+                removeEntry(raidId);
+                //Remove the row from the table
+                const row = document.getElementById(index);
+                row.remove();
+                loadLogData();
+            }
         });
-        loadChestCounter();
     });
+    loadChestCounter();
+    // });
 }
 
 async function getCurrentEventStartTime() {
@@ -470,17 +485,26 @@ async function getChestMaximumCanEarn(key) {
 }
 
 //Get entry from the stored array and remove the entry with the matching index.
-function removeEntry(sortedIndex) {
+function removeEntry(raidId) {
     chrome.storage.local.get(["logData"], function (result) {
         let loggedData = result["logData"] || [];
 
-        //Sort array based on time
-        const sortedArray = loggedData.slice().sort((a, b) => new Date(b.currentTime) - new Date(a.currentTime));
-
+        // Sort array based on time
+        // const sortedArray = loggedData.slice().sort((a, b) => new Date(b.currentTime) - new Date(a.currentTime));
+        
+        let foundEntry;
+        let i;
+        //Find entry based on raidId
+        for (i = loggedData.length - 1; i >= 0; i--) {
+          if (loggedData[i].raidId == raidId) {
+            foundEntry = loggedData[i];
+            break;
+          }
+        }
         //Check if the index is valid
-        if (sortedIndex >= 0 && sortedIndex < sortedArray.length) {
+        if (i >= 0 && i < loggedData.length) {
             //Find index entry from the sorted array on the original array
-            const originalIndex = loggedData.findIndex(entry => entry === sortedArray[sortedIndex]);
+            const originalIndex = loggedData.findIndex(entry => entry === foundEntry);
 
             //Remove from the original array without sorting it
             if (originalIndex !== -1) {

@@ -1,4 +1,5 @@
 const logDelay = ms => new Promise(res => setTimeout(res, ms));
+let logRunning = false;
 
 //Observer for changes on the dom
 const logObserverCallback = async function (mutations) {
@@ -53,6 +54,10 @@ async function setLogCaptain(logId, logCapName, logMode, currentTime, colorCode,
     if (colorCode === "rgb(185, 242, 255)" || colorCode === "rgb(255, 204, 203" || colorCode === "rgb(203, 195, 227)") {
         updateColor = true;
     }
+    while (logRunning == true) {
+      await delay(10);
+    }
+    logRunning = true;
     return new Promise((resolve, reject) => {
         // Retrieve existing data from local storage
         chrome.storage.local.get(["logData"], function (result) {
@@ -104,40 +109,16 @@ async function setLogCaptain(logId, logCapName, logMode, currentTime, colorCode,
                 resolve(loggedData);
             });
         });
-    });
-}
-
-//Saves initial chest information on storage
-async function setLogInitialChest(logCapName, raidId, initialchest) {
-
-    return new Promise((resolve, reject) => {
-        // Retrieve existing data from local storage
-        chrome.storage.local.get(["logData"], async function (result) {
-            let loggedData = result["logData"] || [];
-
-            // Add final battle time, result, and chest type
-            for (let i = loggedData.length - 1; i >= 0; i--) {
-                let entry = loggedData[i];
-                if (entry.logCapName === logCapName &&
-                    (entry.currentTime !== null && entry.currentTime !== undefined) &&
-                    entry.elapsedTime === undefined && entry.initialchest === undefined && entry.raidId === undefined) {
-                    entry.initialchest = initialchest;
-                    entry.raidId = raidId;
-                    break;
-                }
-            };
-
-            // Update the loggedData object in storage
-            chrome.storage.local.set({ "logData": loggedData }, function () {
-                resolve(loggedData);
-            });
-        });
+        logRunning = false;
     });
 }
 
 //Saves initial chest information on storage
 async function setLogInitialChest2(logCapName, raidId, initialchest2) {
-
+    while (logRunning == true) {
+      await delay(10);
+    }
+    logRunning = true;
     return new Promise((resolve, reject) => {
         // Retrieve existing data from local storage
         chrome.storage.local.get(["logData"], async function (result) {
@@ -159,12 +140,16 @@ async function setLogInitialChest2(logCapName, raidId, initialchest2) {
                 resolve(loggedData);
             });
         });
+        logRunning = false;
     });
 }
 
 //Saves units list on storage
 async function setLogUnitsData(logCapName, raidId, unitsData) {
-
+    while (logRunning == true) {
+      await delay(10);
+    }
+    logRunning = true;
     return new Promise((resolve, reject) => {
         // Retrieve existing data from local storage
         chrome.storage.local.get(["logData"], async function (result) {
@@ -184,6 +169,7 @@ async function setLogUnitsData(logCapName, raidId, unitsData) {
                 resolve(loggedData);
             });
         });
+        logRunning = false;
     });
 }
 
@@ -203,7 +189,10 @@ async function setLogResults(conclusion, logCapName, chest, leaderboardRank, kil
     } else {
         resolution = unknown;
     }
-
+    while (logRunning == true) {
+      await delay(10);
+    }
+    logRunning = true;
     return new Promise((resolve, reject) => {
         // Retrieve existing data from local storage
         chrome.storage.local.get(["logData"], async function (result) {
@@ -264,5 +253,6 @@ async function setLogResults(conclusion, logCapName, chest, leaderboardRank, kil
                 resolve(loggedData);
             });
         });
+        logRunning = false;
     });
 }

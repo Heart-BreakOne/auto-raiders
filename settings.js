@@ -29,6 +29,7 @@ document.addEventListener("DOMContentLoaded", function () {
     initializeSwitch("shuffleSwitch2");
     initializeSwitch("shuffleSwitch3");
     initializeSwitch("shuffleSwitch4");
+    initializeSwitch("shuffleSwitch5");
     initializeSwitch("offlineSwitch");
     initializeSwitch("setMarkerSwitch");
     initializeSwitch("skipSwitch");
@@ -47,6 +48,7 @@ document.addEventListener("DOMContentLoaded", function () {
     initializeSwitch("priorityListSwitch2");
     initializeSwitch("priorityListSwitch3");
     initializeSwitch("priorityListSwitch4");
+    initializeSwitch("priorityListSwitch5");
     initializeSwitch("lgoldSwitch");
     initializeSwitch("lskinSwitch");
     initializeSwitch("lscrollSwitch");
@@ -337,6 +339,7 @@ function exportSettingsToFile() {
         "shuffleSwitch2",
         "shuffleSwitch3",
         "shuffleSwitch4",
+        "shuffleSwitch5",
         "equipSwitch",
         "equipNoDiamondSwitch",
         "moreSkinsSwitch",
@@ -346,6 +349,7 @@ function exportSettingsToFile() {
         "priorityListSwitch2",
         "priorityListSwitch3",
         "priorityListSwitch4",
+        "priorityListSwitch5",
         "commonSwitch",
         "uncommonSwitch",
         "rareSwitch",

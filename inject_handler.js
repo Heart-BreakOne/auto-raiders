@@ -166,6 +166,7 @@ document.addEventListener("click", function (event) {
                     slot.querySelector(".offlineButton").innerText = "ENABLED";
                     slot.querySelector(".offlineButton").style.backgroundColor = "#5fa695";
                 });
+                isContentRunning2 = false;
                 start();
             });
         }

@@ -21,6 +21,7 @@ setInterval(checkBattle, 15000);
 
 //Send a message to the background to reload the streamraiders tab.
 function locationReload() {
+  isContentRunning2 = false;
   let reloadPort = chrome.runtime.connect({ name: "content-script" });
   reloadPort.postMessage({ action: "reloadCleanCache", });
   return
@@ -101,13 +102,14 @@ async function checkAndReload(selector, battleDelayTimer) {
 function reloadRoot() {
   const rootElement = document.getElementById('root');
   if (rootElement && rootElement.childElementCount === 0) {
+    isContentRunning2 = false;
     locationReload();
     return;
   }
 }
 
 //When invoked, this function clicks on all close buttons to close any popup that may exist
-async function closeAll() {
+function closeAll() {
   const closeButton = document.querySelectorAll(".far.fa-times");
   if (closeButton.length > 0) {
     closeButton.forEach(button => {

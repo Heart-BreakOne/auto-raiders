@@ -33,6 +33,7 @@
             "idle_handler.js",
             "rotation_handler.js",
             "log_handler.js",
+            "/javascript/log.js",
             "settings.js",
             "marker_handler.js",
             "masterlist_handler.js",
