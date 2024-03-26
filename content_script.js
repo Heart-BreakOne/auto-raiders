@@ -125,11 +125,6 @@ async function start() {
   if (await retrieveFromStorage("paused_checkbox")) {
     return
   }
-
-  if (isContentRunning2) {
-    return
-  }
-  isContentRunning2 = true;
   //Reload tracker
   if (firstReload === undefined) {
     firstReload = new Date();
@@ -159,10 +154,11 @@ async function start() {
   }
 
   //Initialized nav items, if they don't exist it means the extension is already executing.
-  if (isContentRunning) {
+  if (isContentRunning || isContentRunning2) {
     return
   }
   isContentRunning = true;
+  isContentRunning2 = true;
   const navItems = document.querySelectorAll('.mainNavItemText');
   let storeButton;
   let battleButton;
