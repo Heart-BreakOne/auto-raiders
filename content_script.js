@@ -995,6 +995,7 @@ async function getValidUnits(captainNameFromDOM, slotOption, diamondLoyalty, bat
       if (markerId === "VIBE" || markerId.includes(unitId.split("#")[0]) || markerId.includes(unitId.split("#")[1])) {
         hasPlaced = await attemptPlacement(unit, marker);
         if (hasPlaced == undefined || hasPlaced) {
+      getLeaderboardUnitsData();
           goHome()
           closeAll()
           return
@@ -1116,7 +1117,6 @@ async function placeTheUnit() {
     return true;
   }
 
-  await getLeaderboardUnitsData()
   //Unit was placed successfully, returns to main menu and the process restarts.
   setTimeout(() => {
     const placementSuccessful = document.querySelector(".actionButton.actionButtonDisabled.placeUnitButton");
