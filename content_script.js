@@ -470,16 +470,18 @@ async function start() {
         if (battleType == "Clash") {
           multiClashSwitch = await getSwitchState("multiClashSwitch");
         }
+        let modeChangeSwitch = await getSwitchState("modeChangeSwitch");
         if (((dungeonCaptainNameFromStorage != captainNameFromDOM) && battleType == "Dungeons") ||
-          (!multiClashSwitch && (clashCaptainNameFromStorage != captainNameFromDOM) && battleType == "Clash") ||
+          (!multiClashSwitch && (clashCaptainNameFromStorage.includes(captainNameFromDOM)) && battleType == "Clash") ||
           ((duelsCaptainNameFromStorage != captainNameFromDOM) && battleType == "Duel")) {
           continue
         }
         /* Checks if the captain saved on storage running a special mode is still running the same mode, if they change they might lock
         the slot for 30 minutes so if a captain switches to campaign they are skipped and colored red */
-        else if ((dungeonCaptainNameFromStorage == captainNameFromDOM && battleType != "Dungeons") ||
-          (!multiClashSwitch && clashCaptainNameFromStorage == captainNameFromDOM && battleType != "Clash") ||
-          (duelsCaptainNameFromStorage == captainNameFromDOM && battleType != "Duel")) {
+        else if (!modeChangeSwitch && 
+          ((dungeonCaptainNameFromStorage == captainNameFromDOM && battleType != "Dungeons") ||
+          (!multiClashSwitch && clashCaptainNameFromStorage.includes(captainNameFromDOM) && battleType != "Clash") ||
+          (duelsCaptainNameFromStorage == captainNameFromDOM && battleType != "Duel"))) {
           captainSlot.style.backgroundColor = red;
           continue
         }
@@ -1197,10 +1199,10 @@ const obsv = new MutationObserver(async function (mutations) {
         capSlot.style.backgroundColor = purple
       }
       else if (((dungeonCaptainNameFromStorage != capNameDOM) && capSlot.innerText.includes("Dungeons")) ||
-        (!multiClashSwitch && (clashCaptainNameFromStorage != capNameDOM) && capSlot.innerText.includes("Clash")) ||
+        (!multiClashSwitch && (!clashCaptainNameFromStorage.includes(capNameDOM)) && capSlot.innerText.includes("Clash")) ||
         ((duelsCaptainNameFromStorage != capNameDOM) && capSlot.innerText.includes("Duel")) ||
         ((dungeonCaptainNameFromStorage == capNameDOM) && !capSlot.innerText.includes("Dungeons")) ||
-        ((clashCaptainNameFromStorage == capNameDOM) && !capSlot.innerText.includes("Clash")) ||
+        ((clashCaptainNameFromStorage.includes(capNameDOM)) && !capSlot.innerText.includes("Clash")) ||
         ((duelsCaptainNameFromStorage == capNameDOM) && !capSlot.innerText.includes("Duel"))) {
         capSlot.style.backgroundColor = red;
       }

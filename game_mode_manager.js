@@ -20,11 +20,11 @@ async function manageCaptain(captainType, keyword) {
         });
     }
     //If counter is one it means there is only one captain running the mode,
-    if (counter === 1) {
+    if (counter === 1 || (counter > 1 && keyword == "Clash")) {
         captains.forEach((capSlotContent) => {
             //Gets the captain's name running the mode of interest
             if (capSlotContent.innerText.includes(keyword)) {
-                captainName = capSlotContent.querySelector(".capSlotName").innerText;
+                captainName += capSlotContent.querySelector(".capSlotName").innerText;
             }
         });
         //Saves the game mode and the captain's name on storage so they are flagged as running that mode.
