@@ -567,7 +567,7 @@ async function openBattlefield(captainNameFromDOM, raidId, slotOption, diamondLo
   
   arrayOfMarkers = null;
   unitDrawer = null;
-  await delay(6000)
+  await delay(3000)
 
   // Attempts to check if battlefield is open
   let battleInfo
@@ -643,7 +643,7 @@ async function openBattlefield(captainNameFromDOM, raidId, slotOption, diamondLo
       return;
     }
 
-    await delay(2000);
+    //await delay(2000);
     let chest;
     try {
       chest = document.querySelector(".mapInfoRewardsName").innerText;
@@ -740,7 +740,7 @@ async function getValidUnits(captainNameFromDOM, raidId, slotOption, diamondLoya
     }
   }
 
-  await delay(500)
+  //await delay(500)
   await doPotions()
 
   //Get all units from the drawer
@@ -1024,7 +1024,7 @@ async function cancelPlacement() {
   const cancelBtn = document.querySelector(".actionButton.actionButtonNegative.placerButton");
   if (cancelBtn) {
     cancelBtn.click();
-    await delay(1000);
+    await delay(500);
   }
 
   const unitDrawer = document.querySelector(".actionButton.actionButtonPrimary.placeUnitButton");
