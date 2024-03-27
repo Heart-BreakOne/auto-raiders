@@ -744,27 +744,21 @@ async function getValidUnits(captainNameFromDOM, raidId, slotOption, diamondLoya
 
   // Check dungeon
   const dungeonLevelSwitch = await retrieveFromStorage("dungeonLevelSwitch");
-  isDungeon = false;
-  let dungeonLevel;
-  let userDunLevel;
   let battleInfo = "";
+  let dungeonLevel;
+  isDungeon = false;
+  let userUnitLevel = 0, userDunLevel;
   try {
-    userDunLevel = await retrieveNumberFromStorage("maxDungeonLvlInput")
-  } catch (error) { }
-  let userUnitLevel = 0;
-  try {
-    userUnitLevel = await retrieveNumberFromStorage("maxUnitLvlDungInput")
-  } catch (error) { }
-
-  if (dungeonLevelSwitch) {
-    try {
-      battleInfo = document.querySelector(".battleInfo").innerText;
-      if (battleInfo.includes("Level")) {
-        dungeonLevel = parseInt(battleInfo.substr(battleInfo.length - 2));
-        isDungeon = true;
+    battleInfo = document.querySelector(".battleInfo").innerText;
+    if (battleInfo.includes("Level")) {
+      dungeonLevel = parseInt(battleInfo.substr(battleInfo.length - 2));
+      isDungeon = true;
+      if (dungeonLevelSwitch) {
+          userDunLevel = await retrieveNumberFromStorage("maxDungeonLvlInput")
+          userUnitLevel = await retrieveNumberFromStorage("maxUnitLvlDungInput")
       }
-    } catch (error) { }
-  }
+    }
+  } catch (error) { }
 
   // Remove cooldown units, dead units, exhausted units, unavailable units and rarity check units
   if (unitDrawer[0].children == null) {
