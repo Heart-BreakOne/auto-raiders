@@ -348,15 +348,6 @@ async function start() {
           }
         }
 
-        //Check if the captain is the one running a game mode
-        const dungeonCaptainNameFromStorage = await retrieveFromStorage('dungeonCaptain');
-        const clashCaptainNameFromStorage = await retrieveFromStorage('clashCaptain');
-        const duelsCaptainNameFromStorage = await retrieveFromStorage('duelCaptain');
-        //Check if the user wants multiple units to be placed on special modes
-        const clashSwitch = await retrieveFromStorage('clashSwitch');
-        const dungeonSwitch = await retrieveFromStorage('dungeonSwitch');
-        const duelSwitch = await retrieveFromStorage('duelSwitch');
-        const campaignSwitch = await retrieveFromStorage('campaignSwitch');
         diamondLoyalty = null;
 
         let captainFlag, captainLoyalty;
@@ -370,6 +361,53 @@ async function start() {
         } catch (error) {
           captainFlag = false
         }
+        let captKeysArray = ['dungeonCaptain', 'clashCaptain', 'duelCaptain', 'clashSwitch', 'dungeonSwitch', 'duelSwitch', 'campaignSwitch', 'modeChangeSwitch', 'multiClashSwitch'];
+        let captKeys = await retrieveMultipleFromStorage(captKeysArray);
+        let dungeonCaptainNameFromStorage = captKeys.dungeonCaptain;
+        let clashCaptainNameFromStorage = captKeys.clashCaptain;
+        if (clashCaptainNameFromStorage == null) {
+          clashCaptainNameFromStorage = "";
+        }
+        let duelsCaptainNameFromStorage = captKeys.duelCaptain;
+        let clashSwitch = captKeys.clashSwitch;
+        let duelSwitch = captKeys.duelSwitch;
+        let dungeonSwitch = captKeys.dungeonSwitch;
+        let campaignSwitch = captKeys.campaignSwitch;
+        let modeChangeSwitch = captKeys.modeChangeSwitch;
+        let multiClashSwitch
+        if (battleType == "Clash") {
+          multiClashSwitch = captKeys.multiClashSwitch;
+        }
+        /* Check if the captain is running a special game mode and if the same captain is the one in storage.
+        So if the dungeon captain on storage is Mike and there is another captain name John also running a dungeon
+        the captain John will be skipped, this is done so only one captain runs a special mode at any given time and keys don't get reset.  */
+        if (((dungeonCaptainNameFromStorage != captainNameFromDOM) && battleType == "Dungeons") ||
+          (!multiClashSwitch && (clashCaptainNameFromStorage.includes(captainNameFromDOM)) && battleType == "Clash") ||
+          ((duelsCaptainNameFromStorage != captainNameFromDOM) && battleType == "Duel")) {
+          continue
+        }
+        /* Checks if the captain saved on storage running a special mode is still running the same mode, if they change they might lock
+        the slot for 30 minutes so if a captain switches to campaign they are skipped and colored red */
+        else if (!modeChangeSwitch && 
+          ((dungeonCaptainNameFromStorage == captainNameFromDOM && battleType != "Dungeons") ||
+          (!multiClashSwitch && clashCaptainNameFromStorage.includes(captainNameFromDOM) && battleType != "Clash") ||
+          (duelsCaptainNameFromStorage == captainNameFromDOM && battleType != "Duel"))) {
+          captainSlot.style.backgroundColor = red;
+          continue
+        }
+        /* Checks if the slot is a special game mode and if a unit has already been placed it check if the user wants to place
+        multiple units on special modes */
+        else if (((battleType == "Dungeons" && !dungeonSwitch) || (battleType == "Clash" && !clashSwitch) ||
+          ((battleType == "Duel" && !duelSwitch)) || !campaignSwitch) &&
+          captainSlot.querySelector('.capSlotClose') == null) {
+          continue
+        }
+        //If all is clear, it checks if the captain is diamond loyalty for future comparison.
+        //Assigns the placeUnit button and breaks.
+        else {
+          diamondLoyalty = null;
+          diamondLoyalty = captainSlot.outerHTML;
+        }
         //Pass captain name and check if the captain has a loyalty flag.
         const loyaltyRadio = await getRadioButton("loyalty");
         let loyaltyRadioInt = 0
@@ -378,23 +416,25 @@ async function start() {
         } catch (error) {
           loyaltyRadioInt = 0
         }
-        if (loyaltyRadioInt != 0 && loyaltyRadio != undefined) {
+        let lResults = await getCaptainLoyalty(captainNameFromDOM);
+        let raidId = lResults[0];
+        let chestType = lResults[1];
+        if (battleType == "Campaign" && loyaltyRadioInt != 0 && loyaltyRadio != undefined) {
           try {
             captainLoyalty = await getCaptainFlag(captainNameFromDOM, 'captainLoyalty');
             if (!captainLoyalty || captainLoyalty == undefined) {
 
-              const lgold = await retrieveFromStorage("lgoldSwitch")
-              const lskin = await retrieveFromStorage("lskinSwitch")
-              const lscroll = await retrieveFromStorage("lscrollSwitch")
-              const ltoken = await retrieveFromStorage("ltokenSwitch")
-              const lboss = await retrieveFromStorage("lbossSwitch")
-              const lsuperboss = await retrieveFromStorage("lsuperbossSwitch")
-
-              let lResults = await getCaptainLoyalty(captainNameFromDOM);
-              let chestType = lResults[1]
-              if ((!lgold && chestType.includes("chestboostedgold")) || (!lskin && chestType.includes("chestboostedskin")) || (!lscroll && chestType.includes("chestboostedscroll")) || (!ltoken && chestType.includes("chestboostedtoken")) || (!lboss && chestType.includes("chestboss") && !chestType.includes("chestbosssuper")) || (!lsuperboss && chestType.includes("chestbosssuper"))) {
+              let chestKeysArray = ['lgoldSwitch', 'lskinSwitch', 'lscrollSwitch', 'ltokenSwitch', 'lbossSwitch', 'lsuperbossSwitch'];
+              let chestKeys = await retrieveMultipleFromStorage(chestKeysArray);
+              let lgold = chestKeys.lgoldSwitch;
+              let lskin = chestKeys.lskinSwitch;
+              let lscroll = chestKeys.lscrollSwitch;
+              let ltoken = chestKeys.ltokenSwitch;
+              let lboss = chestKeys.lbossSwitch;
+              let lsuperboss = chestKeys.lsuperbossSwitch;
+              if ((!lgold && chestType == "chestboostedgold") || (!lskin && chestType == "chestboostedskin") || (!lscroll && chestType == "chestboostedscroll") || (!ltoken && chestType == "chestboostedtoken") || (!lboss && chestType == "chestboss") || (!lsuperboss && chestType == "chestbosssuper")) {
                 captainLoyalty = true;
-              } else if (chestType.includes("bonechest") || chestType.includes("dungeonchest") || chestType.includes("chestbronze") || chestType.includes("chestsilver") || chestType.includes("chestgold")) {
+              } else if (chestType == "bonechest" || chestType == "dungeonchest" || chestType == "chestbronze" || chestType == "chestsilver" || chestType == "chestgold") {
                 captainLoyalty = false;
               } else {
                 captainLoyalty = false;
@@ -471,49 +511,13 @@ async function start() {
           captainSlot.style.backgroundColor = gameBlue;
         }
 
-        /* Check if the captain is running a special game mode and if the same captain is the one in storage.
-        So if the dungeon captain on storage is Mike and there is another captain name John also running a dungeon
-        the captain John will be skipped, this is done so only one captain runs a special mode at any given time and keys don't get reset.  */
-        let multiClashSwitch;
-        if (battleType == "Clash") {
-          multiClashSwitch = await getSwitchState("multiClashSwitch");
-        }
-        let modeChangeSwitch = await getSwitchState("modeChangeSwitch");
-        if (((dungeonCaptainNameFromStorage != captainNameFromDOM) && battleType == "Dungeons") ||
-          (!multiClashSwitch && (clashCaptainNameFromStorage.includes(captainNameFromDOM)) && battleType == "Clash") ||
-          ((duelsCaptainNameFromStorage != captainNameFromDOM) && battleType == "Duel")) {
-          continue
-        }
-        /* Checks if the captain saved on storage running a special mode is still running the same mode, if they change they might lock
-        the slot for 30 minutes so if a captain switches to campaign they are skipped and colored red */
-        else if (!modeChangeSwitch && 
-          ((dungeonCaptainNameFromStorage == captainNameFromDOM && battleType != "Dungeons") ||
-          (!multiClashSwitch && clashCaptainNameFromStorage.includes(captainNameFromDOM) && battleType != "Clash") ||
-          (duelsCaptainNameFromStorage == captainNameFromDOM && battleType != "Duel"))) {
-          captainSlot.style.backgroundColor = red;
-          continue
-        }
-        /* Checks if the slot is a special game mode and if a unit has already been placed it check if the user wants to place
-        multiple units on special modes */
-        else if (((battleType == "Dungeons" && !dungeonSwitch) || (battleType == "Clash" && !clashSwitch) ||
-          ((battleType == "Duel" && !duelSwitch)) || !campaignSwitch) &&
-          captainSlot.querySelector('.capSlotClose') == null) {
-          continue
-        }
-        //If all is clear, it checks if the captain is diamond loyalty for future comparison.
-        //Assigns the placeUnit button and breaks.
-        else {
-          diamondLoyalty = null;
-          diamondLoyalty = captainSlot.outerHTML;
-          placeUnit = button
-          //break;
-        }
+        placeUnit = button
 
         //If place unit exists, click it and call the openBattlefield function
         if (placeUnit) {
           placeUnit.click();
           await delay(1000);
-          await openBattlefield(captainNameFromDOM, slotOption, diamondLoyalty, battleType);
+          await openBattlefield(captainNameFromDOM, raidId, slotOption, diamondLoyalty, battleType);
           break;
         } else {
           await performCollection();
@@ -545,7 +549,7 @@ async function performCollectionInterval() {
 }
 
 // This function checks if the battlefield is present, the current chest type, then zooms into it.
-async function openBattlefield(captainNameFromDOM, slotOption, diamondLoyalty, battleType) {
+async function openBattlefield(captainNameFromDOM, raidId, slotOption, diamondLoyalty, battleType) {
   let chestKeysArray = ['lgoldSwitch', 'lskinSwitch', 'lscrollSwitch', 'ltokenSwitch', 'lbossSwitch', 'lsuperbossSwitch'];
   let chestKeys = await retrieveMultipleFromStorage(chestKeysArray);
   let lgold = chestKeys.lgoldSwitch;
@@ -643,11 +647,9 @@ async function openBattlefield(captainNameFromDOM, slotOption, diamondLoyalty, b
       return;
     }
 
-    let requestLoyaltyResults = await getCaptainLoyalty(captainNameFromDOM);
-    let raidId = requestLoyaltyResults[0];
     await setLogInitialChest2(captainNameFromDOM, raidId, chest);
 
-    if (!acceptableLoyalty && ((!lgold && chest.includes("Loyalty Gold")) || (!lskin && chest.includes("Loyalty Skin")) || (!lscroll && chest.includes("Loyalty Scroll")) || (!ltoken && chest.includes("Loyalty Token")) || (!lboss && chest.includes("Loyalty Boss")) || (!lsuperboss && chest.includes("Loyalty Super")))) {
+    if (!acceptableLoyalty && ((!lgold && chest == "Loyalty Gold Chest") || (!lskin && chest == "Loyalty Skin Chest") || (!lscroll && chest == "Loyalty Scroll Chest") || (!ltoken && chest == "Loyalty Token Chest") || (!lboss && chest == "Loyalty Boss Chest") || (!lsuperboss && chest == "Loyalty Super Boss Chest"))) {
       //if (chest.includes("Loyalty")) {
       //Flag the captain loyalty since the current map is to be skipped
       await flagCaptain('captainLoyalty');
@@ -658,17 +660,17 @@ async function openBattlefield(captainNameFromDOM, slotOption, diamondLoyalty, b
     } else {
       //Current chest is not special, close chest info and zoom
       closeAll();
-      await getValidUnits(captainNameFromDOM, slotOption, diamondLoyalty, battleType);
+      await getValidUnits(captainNameFromDOM, raidId, slotOption, diamondLoyalty, battleType);
     }
     //diamondLoyalty = null;
   } else {
     //User doesn't want to preserve diamond loyalty
     closeAll();
-    await getValidUnits(captainNameFromDOM, slotOption, diamondLoyalty, battleType);
+    await getValidUnits(captainNameFromDOM, raidId, slotOption, diamondLoyalty, battleType);
   }
 }
 
-async function getValidUnits(captainNameFromDOM, slotOption, diamondLoyalty, battleType) {
+async function getValidUnits(captainNameFromDOM, raidId, slotOption, diamondLoyalty, battleType) {
   currentMarker = null;
   unitDrawer = null;
   //Function to check for a frozen state
