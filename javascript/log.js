@@ -317,37 +317,37 @@ async function loadLogData() {
                     //Increment chest quantity
                     for (const loyaltyChest of chestCounter) {
                         if (loyaltyChest.quantity < loyaltyChest.count && ((loyaltyChest.key != "chestboss" && entry.chest.includes(loyaltyChest.key)) || loyaltyChest.key === "chestboss" && loyaltyChest.key.includes(entry.chest))) {
+                                loyaltyChest.quantity += 1;
+                                break;
+                            }
+                        }
+                        break;
+                    }
+                }
+                if (entry.chest == "Unknown" && entry.units2 != undefined) {
+                    // Increment chest quantity if units have been placed because even if the battle is abandoned, the chest still counts
+                    for (const loyaltyChest of chestCounter) {
+                        if (entryStartDateTime >= currentEventStartTime && loyaltyChest.quantity < loyaltyChest.count && ((loyaltyChest.key != "chestboss" && entry.initialchest.includes(loyaltyChest.key)) || loyaltyChest.key === "chestboss" && loyaltyChest.key.includes(entry.initialchest))) {
                             loyaltyChest.quantity += 1;
                             break;
                         }
                     }
-                    break;
-              }
+                }
+            } catch(error) {
+                console.log(entry)
+                console.log(error)
             }
-            if (entry.chest == "Unknown" && entry.units2 != undefined) {
-                // Increment chest quantity if units have been placed because even if the battle is abandoned, the chest still counts
-                for (const loyaltyChest of chestCounter) {
-                    if (entryStartDateTime >= currentEventStartTime && loyaltyChest.quantity < loyaltyChest.count && ((loyaltyChest.key != "chestboss" && entry.initialchest.includes(loyaltyChest.key)) || loyaltyChest.key === "chestboss" && loyaltyChest.key.includes(entry.initialchest))) {
-                        loyaltyChest.quantity += 1;
+
+            //Getting human-readable initial chest name and picture
+            if (entry.initialchest !== undefined) {
+                for (const battleChest of battleChests) {
+                    if (entry.initialchest.startsWith(battleChest.key)) {
+                        initialChestName = battleChest.name;
+                        initialUrl = battleChest.url;
                         break;
                     }
                 }
             }
-        } catch(error) {
-          console.log(entry)
-          console.log(error)
-        }
-
-        //Getting human-readable initial chest name and picture
-        if (entry.initialchest !== undefined) {
-            for (const battleChest of battleChests) {
-                if (entry.initialchest.startsWith(battleChest.key)) {
-                    initialChestName = battleChest.name;
-                    initialUrl = battleChest.url;
-                    break;
-                }
-            }
-        }
 
         if (color !== "Normal" && outcome === "Unknown") {
             outcome = "Possible color status";
@@ -453,8 +453,6 @@ async function loadLogData() {
             }
         });
     });
-    loadChestCounter();
-    // });
 }
 
 async function getCurrentEventStartTime() {
