@@ -643,7 +643,7 @@ async function openBattlefield(captainNameFromDOM, raidId, slotOption, diamondLo
       return;
     }
 
-    //await delay(2000);
+    await delay(1000);
     let chest;
     try {
       chest = document.querySelector(".mapInfoRewardsName").innerText;
