@@ -160,23 +160,21 @@ async function start() {
   }
   contentRunningLoopCount = 0;
   isContentRunning = true;
-  const navItems = document.querySelectorAll('.mainNavItemText');
-  let storeButton;
-  let battleButton;
+  let navItems = document.querySelectorAll('.mainNavItemText');
   if (navItems.length === 0 || navItems === undefined) {
     isContentRunning = false;
     return;
   } else {
-    //If navItem exists, open main menu
-    for (let i = navItems.length - 1; i >= 0; i--) {
-      let navItem = navItems[i];
-      if (navItem.innerText === "Store") {
-        storeButton = navItem;
-      }
-      if (navItem.innerText === "Battle") {
-        battleButton = navItem;
-        navItem.click();
-        await delay(2000);
+    const selectedNavItem = document.querySelector(".mainNavItem.mainNavItemSelected");
+    if (selectedNavItem.innerText !== "Battle") {
+      //If navItem exists, open main menu
+      for (let i = navItems.length - 1; i >= 0; i--) {
+        let navItem = navItems[i];
+        if (navItem.innerText === "Battle") {
+          navItem.click();
+          await delay(1000);
+          break;
+        }
       }
     }
   }
@@ -219,6 +217,24 @@ async function start() {
   if (forceMaster || replaceMaster) {
     await switchToMasterList(forceMaster, replaceMaster);
     await delay(10000);
+    navItems = document.querySelectorAll('.mainNavItemText');
+    let storeButton;
+    let battleButton;
+    if (navItems.length === 0 || navItems === undefined) {
+      isContentRunning = false;
+      return;
+    } else {
+      //If navItem exists, open main menu
+      for (let i = navItems.length - 1; i >= 0; i--) {
+        let navItem = navItems[i];
+        if (navItem.innerText === "Store") {
+          storeButton = navItem;
+        }
+        if (navItem.innerText === "Battle") {
+          battleButton = navItem;
+        }
+      }
+    }
     storeButton.click();
     battleButton.click();
     await delay(5000);
