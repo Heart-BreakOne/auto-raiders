@@ -212,8 +212,10 @@ async function start() {
   }
 
   //Checks masterlist to switch
-  const forceMaster = await getSwitchState("liveMasterSwitch");
-  const replaceMaster = await getSwitchState("priorityMasterSwitch");
+  let masterSwitchkeysArray = ['liveMasterSwitch', 'priorityMasterSwitch'];
+  let masterSwitchkeys = await retrieveMultipleFromStorage(masterSwitchkeysArray);
+  let forceMaster = masterSwitchkeys.liveMasterSwitch;
+  let replaceMaster = masterSwitchkeys.priorityMasterSwitch;
   if (forceMaster || replaceMaster) {
     await switchToMasterList(forceMaster, replaceMaster);
     await delay(10000);
@@ -544,6 +546,15 @@ async function performCollectionInterval() {
 
 // This function checks if the battlefield is present, the current chest type, then zooms into it.
 async function openBattlefield(captainNameFromDOM, slotOption, diamondLoyalty, battleType) {
+  let chestKeysArray = ['lgoldSwitch', 'lskinSwitch', 'lscrollSwitch', 'ltokenSwitch', 'lbossSwitch', 'lsuperbossSwitch'];
+  let chestKeys = await retrieveMultipleFromStorage(chestKeysArray);
+  let lgold = chestKeys.lgoldSwitch;
+  let lskin = chestKeys.lskinSwitch;
+  let lscroll = chestKeys.lscrollSwitch;
+  let ltoken = chestKeys.ltokenSwitch;
+  let lboss = chestKeys.lbossSwitch;
+  let lsuperboss = chestKeys.lsuperbossSwitch;
+  
   arrayOfMarkers = null;
   unitDrawer = null;
   await delay(6000)
@@ -631,12 +642,6 @@ async function openBattlefield(captainNameFromDOM, slotOption, diamondLoyalty, b
       goHome();
       return;
     }
-    const lgold = await retrieveFromStorage("lgoldSwitch")
-    const lskin = await retrieveFromStorage("lskinSwitch")
-    const lscroll = await retrieveFromStorage("lscrollSwitch")
-    const ltoken = await retrieveFromStorage("ltokenSwitch")
-    const lboss = await retrieveFromStorage("lbossSwitch")
-    const lsuperboss = await retrieveFromStorage("lsuperbossSwitch")
 
     let requestLoyaltyResults = await getCaptainLoyalty(captainNameFromDOM);
     let raidId = requestLoyaltyResults[0];
@@ -776,6 +781,14 @@ async function getValidUnits(captainNameFromDOM, slotOption, diamondLoyalty, bat
       exhaustedUnitInfo = await getUnitInfo(dungeonInfo[4]);
     }
   }
+  let unitKeysArray = ['legendarySwitch', 'rareSwitch', 'uncommonSwitch', 'commonSwitch', 'pvpSpecSwitch'];
+  let unitKeys = await retrieveMultipleFromStorage(unitKeysArray);
+  let legendaryAllowed = unitKeys.legendarySwitch;
+  let rareAllowed = unitKeys.rareSwitch;
+  let uncommonAllowed = unitKeys.uncommonSwitch;
+  let commonAllowed = unitKeys.commonSwitch;
+  let pvpSpecAllowed = unitKeys.pvpSpecSwitch;
+  
   for (let i = 0; i < unitDrawer[0].children.length; i++) {
     let unit = unitDrawer[0].children[i];
 
@@ -834,22 +847,22 @@ async function getValidUnits(captainNameFromDOM, slotOption, diamondLoyalty, bat
       unitsToRemove.push(unit)
       continue
     }
-    if (legendaryCheck && !await getSwitchState("legendarySwitch") && !canCompleteQuests) {
+    if (legendaryCheck && !legendaryAllowed && !canCompleteQuests) {
       unitsToRemove.push(unit)
       continue
-    } else if (rareCheck && !await getSwitchState("rareSwitch") && !canCompleteQuests) {
+    } else if (rareCheck && !rareAllowed && !canCompleteQuests) {
       unitsToRemove.push(unit)
       continue
-    } else if (uncommonCheck && !await getSwitchState("uncommonSwitch") && !canCompleteQuests) {
+    } else if (uncommonCheck && !uncommonAllowed && !canCompleteQuests) {
       unitsToRemove.push(unit)
       continue
-    } else if (commonCheck && !await getSwitchState("commonSwitch") && !canCompleteQuests) {
+    } else if (commonCheck && !commonAllowed && !canCompleteQuests) {
       unitsToRemove.push(unit)
       continue
     } else if ((unitDead || unitExhausted || unitKnocked) && isDungeon && !canCompleteQuests) {
       unitsToRemove.push(unit)
       continue
-    } else if ((battleType == "Clash" || battleType == "Duel") && specCheck == null && await getSwitchState("pvpSpecSwitch")) {
+    } else if ((battleType == "Clash" || battleType == "Duel") && specCheck == null && pvpSpecAllowed) {
       unitsToRemove.push(unit)
       continue
     }
@@ -1157,9 +1170,16 @@ const obsv = new MutationObserver(async function (mutations) {
     //Using the game mode key retrieves captainName from storage
     const firstCapSlot = captainSlots[0];
     const capSlotChildren = firstCapSlot.querySelectorAll('.capSlot');
-    const dungeonCaptainNameFromStorage = await retrieveFromStorage('dungeonCaptain');
-    const clashCaptainNameFromStorage = await retrieveFromStorage('clashCaptain');
-    const duelsCaptainNameFromStorage = await retrieveFromStorage('duelCaptain');
+
+    let captKeysArray = ['dungeonCaptain', 'clashCaptain', 'duelCaptain', 'clashSwitch', 'dungeonSwitch', 'duelSwitch', 'campaignSwitch', 'modeChangeSwitch', 'multiClashSwitch'];
+    let captKeys = await retrieveMultipleFromStorage(captKeysArray);
+    let dungeonCaptainNameFromStorage = captKeys.dungeonCaptain;
+    let clashCaptainNameFromStorage = captKeys.clashCaptain;
+    if (clashCaptainNameFromStorage == null) {
+      clashCaptainNameFromStorage = "";
+    }
+    let duelsCaptainNameFromStorage = captKeys.duelCaptain;
+
     let capNameDOM;
     let multiClashSwitch;
 
