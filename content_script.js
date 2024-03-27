@@ -291,41 +291,41 @@ async function start() {
         }
 
         // Calculate placements odds
-        const bSlot = button.closest('.capSlot')
-        const closeBtn = bSlot.querySelector(".capSlotClose")
-        const oddKey = "oddId" + bSlot.querySelector(".offlineButton").id
-        let canPlace = false
-        const currentTime = new Date();
-        await new Promise((resolve, reject) => {
-          chrome.storage.local.get(oddKey, function (result) {
-            if (chrome.runtime.lastError) {
-              canPlace = true;
-              resolve();
-            } else {
-              const enableTimeString = result[oddKey];
-              if (enableTimeString) {
-                const enableTime = new Date(enableTimeString);
-
-                if (currentTime > enableTime) {
-                  canPlace = true;
-                } else {
-                  canPlace = false;
-                }
-              } else {
-                canPlace = true;
-              }
-              resolve();
-            }
-          });
-        });
-        if (!canPlace) {
-          continue
-        }
         let placementOdds = await retrieveNumberFromStorage("placementOddsInput")
         if (placementOdds == -100 || placementOdds == undefined || placementOdds > 100) {
           placementOdds = 100
-        }
-        else if (placementOdds <= 0) {
+        } else if (placementOdds > 0 && placementOdds < 100) {
+          const bSlot = button.closest('.capSlot')
+          const closeBtn = bSlot.querySelector(".capSlotClose")
+          const oddKey = "oddId" + bSlot.querySelector(".offlineButton").id
+          let canPlace = false
+          const currentTime = new Date();
+          await new Promise((resolve, reject) => {
+            chrome.storage.local.get(oddKey, function (result) {
+              if (chrome.runtime.lastError) {
+                canPlace = true;
+                resolve();
+              } else {
+                const enableTimeString = result[oddKey];
+                if (enableTimeString) {
+                  const enableTime = new Date(enableTimeString);
+
+                  if (currentTime > enableTime) {
+                    canPlace = true;
+                  } else {
+                    canPlace = false;
+                  }
+                } else {
+                  canPlace = true;
+                }
+                resolve();
+              }
+            });
+          });
+          if (!canPlace) {
+            continue
+          }
+        } else if (placementOdds <= 0) {
           continue
         }
 
@@ -470,16 +470,18 @@ async function start() {
         if (battleType == "Clash") {
           multiClashSwitch = await getSwitchState("multiClashSwitch");
         }
+        let modeChangeSwitch = await getSwitchState("modeChangeSwitch");
         if (((dungeonCaptainNameFromStorage != captainNameFromDOM) && battleType == "Dungeons") ||
-          (!multiClashSwitch && (clashCaptainNameFromStorage != captainNameFromDOM) && battleType == "Clash") ||
+          (!multiClashSwitch && (clashCaptainNameFromStorage.includes(captainNameFromDOM)) && battleType == "Clash") ||
           ((duelsCaptainNameFromStorage != captainNameFromDOM) && battleType == "Duel")) {
           continue
         }
         /* Checks if the captain saved on storage running a special mode is still running the same mode, if they change they might lock
         the slot for 30 minutes so if a captain switches to campaign they are skipped and colored red */
-        else if ((dungeonCaptainNameFromStorage == captainNameFromDOM && battleType != "Dungeons") ||
-          (!multiClashSwitch && clashCaptainNameFromStorage == captainNameFromDOM && battleType != "Clash") ||
-          (duelsCaptainNameFromStorage == captainNameFromDOM && battleType != "Duel")) {
+        else if (!modeChangeSwitch && 
+          ((dungeonCaptainNameFromStorage == captainNameFromDOM && battleType != "Dungeons") ||
+          (!multiClashSwitch && clashCaptainNameFromStorage.includes(captainNameFromDOM) && battleType != "Clash") ||
+          (duelsCaptainNameFromStorage == captainNameFromDOM && battleType != "Duel"))) {
           captainSlot.style.backgroundColor = red;
           continue
         }
@@ -993,6 +995,7 @@ async function getValidUnits(captainNameFromDOM, slotOption, diamondLoyalty, bat
       if (markerId === "VIBE" || markerId.includes(unitId.split("#")[0]) || markerId.includes(unitId.split("#")[1])) {
         hasPlaced = await attemptPlacement(unit, marker);
         if (hasPlaced == undefined || hasPlaced) {
+      getLeaderboardUnitsData();
           goHome()
           closeAll()
           return
@@ -1114,7 +1117,6 @@ async function placeTheUnit() {
     return true;
   }
 
-  await getLeaderboardUnitsData()
   //Unit was placed successfully, returns to main menu and the process restarts.
   setTimeout(() => {
     const placementSuccessful = document.querySelector(".actionButton.actionButtonDisabled.placeUnitButton");
@@ -1197,10 +1199,10 @@ const obsv = new MutationObserver(async function (mutations) {
         capSlot.style.backgroundColor = purple
       }
       else if (((dungeonCaptainNameFromStorage != capNameDOM) && capSlot.innerText.includes("Dungeons")) ||
-        (!multiClashSwitch && (clashCaptainNameFromStorage != capNameDOM) && capSlot.innerText.includes("Clash")) ||
+        (!multiClashSwitch && (!clashCaptainNameFromStorage.includes(capNameDOM)) && capSlot.innerText.includes("Clash")) ||
         ((duelsCaptainNameFromStorage != capNameDOM) && capSlot.innerText.includes("Duel")) ||
         ((dungeonCaptainNameFromStorage == capNameDOM) && !capSlot.innerText.includes("Dungeons")) ||
-        ((clashCaptainNameFromStorage == capNameDOM) && !capSlot.innerText.includes("Clash")) ||
+        ((clashCaptainNameFromStorage.includes(capNameDOM)) && !capSlot.innerText.includes("Clash")) ||
         ((duelsCaptainNameFromStorage == capNameDOM) && !capSlot.innerText.includes("Duel"))) {
         capSlot.style.backgroundColor = red;
       }
