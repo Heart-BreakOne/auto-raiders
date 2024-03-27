@@ -198,7 +198,7 @@ function setUpMarkers(mrkrs) {
                 for (let k = 0; k < arrTypes.length; k++) {
                     if (arrTypes[k].key === key) {
                         mrkr.id = arrTypes[k].units;
-                        console.log(key);
+                        // console.log(key);
                         break;
                     }
                 }
@@ -230,6 +230,8 @@ function checkOverlapWithMarkers(mrkrs, top, left, dimension) {
 }
 
 function getMapMatrix(arrayOfMarkers) {
+    arrayOfMarkers = arrayOfMarkers.filter(marker => marker.id !== "NO");
+    
     const captainUnit = getCaptainUnit();
 
     const elementSize = captainUnit.offsetWidth;
