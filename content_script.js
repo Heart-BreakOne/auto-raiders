@@ -1169,12 +1169,20 @@ const obsv = new MutationObserver(async function (mutations) {
 
     //Gets captain name from the dom
     for (const capSlot of capSlotChildren) {
+      let battleType;
+      if (!capSlot.innerText.includes("Dungeons") && !capSlot.innerText.includes("Clash") && !capSlot.innerText.includes("Duel")) {
+        battleType = "Campaign";
+      } else if (capSlot.innerText.includes("Dungeons")) {
+        battleType = "Dungeons";
+      } else if (capSlot.innerText.includes("Clash")) {
+        battleType = "Clash";
+        multiClashSwitch = captKeys.multiClashSwitch;
+      } else if (capSlot.innerText.includes("Duel")) {
+        battleType = "Duel";
+      }
       //Attemps to get the captain name from the current slot
       try {
         capNameDOM = capSlot.querySelector('.capSlotName').innerText;
-        if (capSlot.innerText.includes("Clash")) {
-          multiClashSwitch = await getSwitchState("multiClashSwitch");
-        }
       } catch (error) {
         continue;
       }
@@ -1196,12 +1204,12 @@ const obsv = new MutationObserver(async function (mutations) {
       else if (purpleFlag) {
         capSlot.style.backgroundColor = purple
       }
-      else if (((dungeonCaptainNameFromStorage != capNameDOM) && capSlot.innerText.includes("Dungeons")) ||
-        (!multiClashSwitch && (!clashCaptainNameFromStorage.includes(capNameDOM)) && capSlot.innerText.includes("Clash")) ||
-        ((duelsCaptainNameFromStorage != capNameDOM) && capSlot.innerText.includes("Duel")) ||
-        ((dungeonCaptainNameFromStorage == capNameDOM) && !capSlot.innerText.includes("Dungeons")) ||
-        ((clashCaptainNameFromStorage.includes(capNameDOM)) && !capSlot.innerText.includes("Clash")) ||
-        ((duelsCaptainNameFromStorage == capNameDOM) && !capSlot.innerText.includes("Duel"))) {
+      else if (((dungeonCaptainNameFromStorage != capNameDOM) && battleType == "Dungeons") ||
+        (!multiClashSwitch && (!clashCaptainNameFromStorage.includes(capNameDOM)) && battleType == "Clash") ||
+        ((duelsCaptainNameFromStorage != capNameDOM) && battleType == "Duel") ||
+        ((dungeonCaptainNameFromStorage == capNameDOM) && battleType != "Dungeons") ||
+        ((clashCaptainNameFromStorage.includes(capNameDOM)) && battleType != "Clash") ||
+        ((duelsCaptainNameFromStorage == capNameDOM) && battleType != "Duel")) {
         capSlot.style.backgroundColor = red;
       }
       else {
