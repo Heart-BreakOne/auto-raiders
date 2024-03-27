@@ -246,13 +246,6 @@ async function start() {
     await checkIdleCaptains()
   }
 
-  // Collects rewards if there are any
-  // const rewardButton = document.querySelector(".actionButton.actionButtonPrimary.rewardsButton");
-
-  // if (rewardButton) {
-  // rewardButton.click();
-  // }
-
   let captainNameFromDOM = "";
 
   //Initialized a node list with placeable buttons
@@ -363,9 +356,8 @@ async function start() {
         const duelSwitch = await retrieveFromStorage('duelSwitch');
         const campaignSwitch = await retrieveFromStorage('campaignSwitch');
         diamondLoyalty = null;
-        let captainFlag
-        let captainLoyalty
 
+        let captainFlag, captainLoyalty;
         //Pass captain name and check if the captain is flagged
         try {
           if (!captainNameFromDOM) {
@@ -745,7 +737,6 @@ async function getValidUnits(captainNameFromDOM, slotOption, diamondLoyalty, bat
 
   // Check dungeon
   const dungeonLevelSwitch = await retrieveFromStorage("dungeonLevelSwitch");
-  //const dungeonPlaceAnywaySwitch = await retrieveFromStorage("dungeonPlaceAnywaySwitch");
   isDungeon = false;
   let dungeonLevel;
   let userDunLevel;
@@ -772,9 +763,7 @@ async function getValidUnits(captainNameFromDOM, slotOption, diamondLoyalty, bat
   if (unitDrawer[0].children == null) {
     return;
   }
-  let knockedUnitInfo;
-  let deadUnitInfo;
-  let exhaustedUnitInfo;
+  let knockedUnitInfo, deadUnitInfo, exhaustedUnitInfo;
   if (isDungeon) {
     let dungeonInfo = await getUserDungeonInfoForRaid(captainNameFromDOM);
     if (dungeonInfo[1] != null) {
@@ -804,11 +793,7 @@ async function getValidUnits(captainNameFromDOM, slotOption, diamondLoyalty, bat
     let defeatedCheck = unit.querySelector('.defeatedVeil');
     //If unit has this class it's enabled, if it doesn't have it's not enabled.
     let unitDisabled = unit.querySelector('.unitItemDisabledOff');
-    let unitName;
-    let unitLevel;
-    let unitDead;
-    let unitExhausted;
-    let unitKnocked;
+    let unitName, unitLevel, unitDead, unitExhausted, unitKnocked;
     try {
       unitName = unit.querySelector('.unitClass img').getAttribute('src').slice(-50).toUpperCase();
       unitLevel = parseInt(unit.querySelector('.unitLevel').innerText);
@@ -843,11 +828,6 @@ async function getValidUnits(captainNameFromDOM, slotOption, diamondLoyalty, bat
         }
       } else {
         unitExhausted = false;
-      }
-      if (unitKnocked && getSwitchState("dungeonLowFlagMeatSwitch") && unitLevel <= 5 && unit0.key == "FLAG") {
-        let useMeat = await reviveUnit("flagbearer", unitLevel, captainNameFromDOM);
-        console.log("meat used");
-        unitKnocked = false;
       }
     }
     if (coolDownCheck || defeatedCheck || !unitDisabled) {
@@ -1072,7 +1052,7 @@ function checkPlacement() {
 //Places unit or asks for a new valid marker
 async function placeTheUnit() {
   try {
-    const dungeonPlaceAnywaySwitch = await retrieveFromStorage("dungeonPlaceAnywaySwitch");
+    //const dungeonPlaceAnywaySwitch = await retrieveFromStorage("dungeonPlaceAnywaySwitch");
     const clockText = document.querySelector('.battlePhaseTextClock .clock').innerText;
 
     if (clockText === "00:00") {
