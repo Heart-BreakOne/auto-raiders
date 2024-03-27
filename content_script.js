@@ -18,8 +18,7 @@ let diamondLoyalty;
 let firstReload;
 //let captainNameFromDOM;
 let reload = 0;
-let isContentRunning;
-let isContentRunning2 = false;
+let isContentRunning = false;
 let unfinishedQuests = null;
 const blue = 'rgb(185, 242, 255)';
 const red = 'rgb(255, 204, 203)';
@@ -34,6 +33,7 @@ let captainName;
 let chestStringAlt;
 let unitDrawer;
 let hasPlacedSkin;
+let contentRunningLoopCount = 0;
 
 //Battlefield markers.
 const arrayOfBattleFieldMarkers = [
@@ -154,17 +154,17 @@ async function start() {
   }
 
   //Initialized nav items, if they don't exist it means the extension is already executing.
-  if (isContentRunning || isContentRunning2) {
+  if (isContentRunning && contentRunningLoopCount < 10) {
+    contentRunningLoopCount++;
     return
   }
+  contentRunningLoopCount = 0;
   isContentRunning = true;
-  isContentRunning2 = true;
   const navItems = document.querySelectorAll('.mainNavItemText');
   let storeButton;
   let battleButton;
   if (navItems.length === 0 || navItems === undefined) {
     isContentRunning = false;
-    isContentRunning2 = false;
     return;
   } else {
     //If navItem exists, open main menu
@@ -184,7 +184,6 @@ async function start() {
   unfinishedQuests = null
   if (await retrieveFromStorage("completeQuests")) {
     try {
-      isContentRunning = true
       unfinishedQuests = await getUnfinishedQuests()
     } catch (error) {
       unfinishedQuests = undefined
@@ -213,7 +212,6 @@ async function start() {
       continue
     }
   }
-  isContentRunning = false;
 
   //Checks masterlist to switch
   const forceMaster = await getSwitchState("liveMasterSwitch");
@@ -247,7 +245,7 @@ async function start() {
   //If there are no place unit buttons, invoke the collection function then return.
   if (placeUnitButtons.length == 0 || (placeUnitButtons.length == 1 && placeUnitButtons[0].innerText === "SUBMIT")) {
     await performCollection();
-    isContentRunning2 = false;
+    isContentRunning = false;
     return;
   }
   //If placement buttons exist, validate them
@@ -509,7 +507,7 @@ async function start() {
           break;
         } else {
           await performCollection();
-          isContentRunning2 = false;
+          isContentRunning = false;
           return;
         }
       } else {
@@ -520,7 +518,7 @@ async function start() {
 
   // Change captains using a different device without the script freezing trying to select a captain.
   closeAll();
-  isContentRunning2 = false;
+  isContentRunning = false;
 }
 
 async function performCollection() {
@@ -1132,7 +1130,7 @@ async function placeTheUnit() {
     if (disabledButton || negativeButton) {
       disabledButton?.click();
       negativeButton?.click();
-      isContentRunning2 = false;
+      isContentRunning = false;
       return false;
     }
   }, 5000);
@@ -1244,7 +1242,7 @@ obsv.observe(tgtNode, conf);
 
 //This function resets the running state and closes the battlefield back to home.
 function goHome() {
-  isContentRunning2 = false;
+  isContentRunning = false;
   const backHome = document.querySelector(".selectorBack");
   if (backHome) {
     backHome.click();
