@@ -156,6 +156,12 @@ async function start() {
   //Initialized nav items, if they don't exist it means the extension is already executing.
   if (isContentRunning && contentRunningLoopCount < 10) {
     contentRunningLoopCount++;
+    const menuElements = document.querySelectorAll(".slideMenuCont.slideLeft.slideLeftOpen");
+    const leaderboard = Array.from(menuElements).find(element => element.innerText.includes('Leaderboard'));
+    if (leaderboard) {
+      leaderboard.classList.remove('slideLeftOpen');
+      leaderboard.classList.add('slideLeftClosed');
+    }
     return
   }
   contentRunningLoopCount = 0;
