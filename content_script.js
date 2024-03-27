@@ -1258,37 +1258,39 @@ function goHome() {
 
 async function doPotions() {
   const potionState = await getRadioButton("selectedOption");
-  const favoriteSwitch = await getSwitchState("favoriteSwitch");
+  if (potionState != 0) {
+    const favoriteSwitch = await getSwitchState("favoriteSwitch");
 
-  let favoritePotion = !favoriteSwitch;
+    let favoritePotion = !favoriteSwitch;
 
-  if (potionState != 0 && !mode && favoriteSwitch) {
-    try {
-      const potionCaptainsList = await new Promise((resolve) => {
-        chrome.storage.local.get({ 'potionlist': [] }, function (result) {
-          resolve(result["potionlist"]);
+    if (!mode && favoriteSwitch) {
+      try {
+        const potionCaptainsList = await new Promise((resolve) => {
+          chrome.storage.local.get({ 'potionlist': [] }, function (result) {
+            resolve(result["potionlist"]);
+          });
         });
-      });
 
-      if (Array.isArray(potionCaptainsList) && potionCaptainsList.length > 0) {
-        favoritePotion = potionCaptainsList.some(item => item.toUpperCase() === captainNameFromDOM.toUpperCase());
-      }
-    } catch (error) { }
-  }
-
-  if (potionState != 0 && !mode && favoritePotion) {
-    try {
-      const potions = document.querySelector("img[alt='Potion']").closest(".quantityItem");
-      const potionQuantity = parseInt(potions.querySelector(".quantityText").textContent.substring(0, 3));
-
-      if (potionQuantity >= 45 || potionQuantity === 100) {
-        const epicButton = document.querySelector(".actionButton.actionButtonPrimary.epicButton");
-        if (epicButton) {
-          epicButton.click();
+        if (Array.isArray(potionCaptainsList) && potionCaptainsList.length > 0) {
+          favoritePotion = potionCaptainsList.some(item => item.toUpperCase() === captainNameFromDOM.toUpperCase());
         }
+      } catch (error) { }
+    }
+
+    if (!mode && favoritePotion) {
+      try {
+        const potions = document.querySelector("img[alt='Potion']").closest(".quantityItem");
+        const potionQuantity = parseInt(potions.querySelector(".quantityText").textContent.substring(0, 3));
+
+        if (potionQuantity >= 45 || potionQuantity === 100) {
+          const epicButton = document.querySelector(".actionButton.actionButtonPrimary.epicButton");
+          if (epicButton) {
+            epicButton.click();
+          }
+        }
+      } catch (error) {
+        goHome();
       }
-    } catch (error) {
-      goHome();
     }
   }
 }
