@@ -11,6 +11,11 @@ async function manageCaptain(captainType, keyword) {
     let captainName = "";
     let counter = 0;
 
+    let captainNameFromStorage = await retrieveFromStorage(captainType);
+    let multiClashSwitch;
+    if (keyword == "Clash") {
+      multiClashSwitch = await retrieveFromStorage("multiClashSwitch");
+    }
     //Checks what mode the captain is running and whenever a captain is running the same mode a counter is incremented. 
     if (captains) {
         captains.forEach((captain) => {
@@ -20,15 +25,17 @@ async function manageCaptain(captainType, keyword) {
         });
     }
     //If counter is one it means there is only one captain running the mode,
-    if (counter === 1 || (counter > 1 && keyword == "Clash")) {
+    if (counter === 1 || (counter > 1 && keyword == "Clash" && multiClashSwitch)) {
         captains.forEach((capSlotContent) => {
             //Gets the captain's name running the mode of interest
-            if (capSlotContent.innerText.includes(keyword)) {
+            if (capSlotContent.innerText.includes(keyword) && (captainNameFromStorage == null || captainNameFromStorage == "" || (keyword == "Clash" && multiClashSwitch))) {
                 captainName += capSlotContent.querySelector(".capSlotName").innerText;
             }
         });
         //Saves the game mode and the captain's name on storage so they are flagged as running that mode.
-        await saveToStorage(captainType, captainName);
+        if (captainName !== "") {
+          await saveToStorage(captainType, captainName);
+        }
     }
 }
 
