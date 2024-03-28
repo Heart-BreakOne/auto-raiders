@@ -1123,6 +1123,36 @@ const obsv = new MutationObserver(async function (mutations) {
     if (captainSlots.length == 0) {
       return;
     }
+
+    //Set offline button states after load.
+    const allCapSlots = document.querySelectorAll(".capSlot");
+    for (const slot of allCapSlots) {
+      //Iterate through every button
+      try {
+        const btnOff = slot.querySelector(".capSlotStatus .offlineButton");
+        if (btnOff == null) {
+          return;
+        }
+        const btnId = btnOff.getAttribute('id');
+        //Retrieve button state from storage
+        let offstate = await getIdleState(btnId);
+        //Obtained inner text and color for the user to visually identify
+        if (offstate == 1) {
+          btnOff.textContent = "ENABLED";
+          btnOff.style.backgroundColor = "#5fa695";
+        } else if (offstate == 2) {
+          btnOff.textContent = "LEAVE AFTER";
+          btnOff.style.backgroundColor = "green";
+        } else {
+          btnOff.textContent = "DISABLED";
+          btnOff.style.backgroundColor = "red";
+        }
+      } catch (error) {
+console.log("LOG-cap slot states error, return");
+        return;
+      }
+    }
+
     //Using the game mode key retrieves captainName from storage
     const firstCapSlot = captainSlots[0];
     const capSlotChildren = firstCapSlot.querySelectorAll('.capSlot');
@@ -1186,31 +1216,6 @@ const obsv = new MutationObserver(async function (mutations) {
       }
       else {
         capSlot.style.backgroundColor = gameBlue;
-      }
-    }
-
-    //Set offline button states after load.
-    const allCapSlots = document.querySelectorAll(".capSlot");
-    for (const slot of allCapSlots) {
-      //Iterate through every button
-      try {
-        const btnOff = slot.querySelector(".capSlotStatus .offlineButton");
-        const btnId = btnOff.getAttribute('id');
-        //Retrieve button state from storage
-        let offstate = await getIdleState(btnId);
-        //Obtained inner text and color for the user to visually identify
-        if (offstate == 1) {
-          btnOff.textContent = "ENABLED";
-          btnOff.style.backgroundColor = "#5fa695";
-        } else if (offstate == 2) {
-          btnOff.textContent = "LEAVE AFTER";
-          btnOff.style.backgroundColor = "green";
-        } else {
-          btnOff.textContent = "DISABLED";
-          btnOff.style.backgroundColor = "red";
-        }
-      } catch (error) {
-        return;
       }
     }
   });
