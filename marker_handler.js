@@ -233,6 +233,9 @@ function getMapMatrix(arrayOfMarkers) {
     arrayOfMarkers = arrayOfMarkers.filter(marker => marker.id !== "NO");
     
     const captainUnit = getCaptainUnit();
+    if (!captainUnit || captainUnit == null || captainUnit == undefined) {
+        return arrayOfMarkers
+    }
 
     const elementSize = captainUnit.offsetWidth;
     const divisionSize = (elementSize / 8) * 3;
