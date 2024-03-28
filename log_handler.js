@@ -1,8 +1,10 @@
 const logDelay = ms => new Promise(res => setTimeout(res, ms));
 let logRunning = false;
 
+setInterval(addNewLogEntry, 30000);
+
 //Observer for changes on the dom
-const logObserverCallback = async function (mutations) {
+async function addNewLogEntry() {
 
     if (await retrieveFromStorage("paused_checkbox")) {
         return
@@ -35,17 +37,11 @@ const logObserverCallback = async function (mutations) {
             await setLogCaptain(logId, logCapName, logMode, currentTime, colorCode, raidId, mapName, chestType);
         }
     }
-
-    await logDelay(30000);
 };
 
 document.addEventListener("DOMContentLoaded", () => {
-    const logObserver = new MutationObserver(logObserverCallback);
-    const documentNode = document.body;
-    const logConf = { childList: true, subtree: true };
-    logObserver.observe(documentNode, logConf);
+    addNewLogEntry();
 });
-
 
 //Saves initial battle information to the local storage
 async function setLogCaptain(logId, logCapName, logMode, currentTime, colorCode, raidId, mapName, chestType) {
