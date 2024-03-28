@@ -622,8 +622,7 @@ async function openBattlefield(captainNameFromDOM, raidId, slotOption, diamondLo
       battleLog = battleLog.slice(-4);
       for (let i = battleLog.length - 1; i >= 0; i--) {
         const battleOfInterest = battleLog[i];
-        const capName = battleOfInterest["logCapName"].toLowerCase().trim();
-        if (captainNameFromDOM.toLowerCase().trim() === capName) {
+        if (battleOfInterest["raidId"].trim() === raidId) {
           const unitsPlaced = battleOfInterest["units2"].toLowerCase();
           commaCount = unitsPlaced.split(",").length - 1;
           if (unitsPlaced.includes(captainNameFromDOM.toLowerCase().trim())) {
