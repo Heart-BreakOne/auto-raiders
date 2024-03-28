@@ -307,13 +307,14 @@ async function start() {
 
         // Calculate placements odds
         const bSlot = button.closest('.capSlot')
+        const currentTime = new Date();
         let placementOdds = await retrieveNumberFromStorage("placementOddsInput")
         if (placementOdds == -100 || placementOdds == undefined || placementOdds > 100) {
           placementOdds = 100
         } else if (placementOdds > 0 && placementOdds < 100) {
           const oddKey = "oddId" + bSlot.querySelector(".offlineButton").id
           let canPlace = false
-          const currentTime = new Date();
+          
           await new Promise((resolve, reject) => {
             chrome.storage.local.get(oddKey, function (result) {
               if (chrome.runtime.lastError) {
