@@ -311,7 +311,6 @@ async function start() {
           placementOdds = 100
         } else if (placementOdds > 0 && placementOdds < 100) {
           const bSlot = button.closest('.capSlot')
-          const closeBtn = bSlot.querySelector(".capSlotClose")
           const oddKey = "oddId" + bSlot.querySelector(".offlineButton").id
           let canPlace = false
           const currentTime = new Date();
@@ -344,6 +343,7 @@ async function start() {
           continue
         }
 
+        const closeBtn = bSlot.querySelector(".capSlotClose")
         if (placementOdds != 100 && button.innerText.includes("PLACE UNIT") && !closeBtn) {
           if (!((Math.floor(Math.random() * 100) + 1) <= placementOdds)) {
             const minutes = Math.floor(Math.random() * 5) + 7;

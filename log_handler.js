@@ -39,10 +39,12 @@ const logObserverCallback = async function (mutations) {
     await logDelay(30000);
 };
 
-const logObserver = new MutationObserver(logObserverCallback);
-const documentNode = document.body;
-const logConf = { childList: true, subtree: true };
-logObserver.observe(documentNode, logConf);
+document.addEventListener("DOMContentLoaded", () => {
+    const logObserver = new MutationObserver(logObserverCallback);
+    const documentNode = document.body;
+    const logConf = { childList: true, subtree: true };
+    logObserver.observe(documentNode, logConf);
+});
 
 
 //Saves initial battle information to the local storage
