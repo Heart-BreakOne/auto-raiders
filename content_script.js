@@ -845,10 +845,14 @@ console.log("LOG-check dungeon");
   } else {
     slotNum = slotOption;
   }
-  let priorityListSwitchSlot = await retrieveFromStorage("priorityListSwitch" + slotNum);
-  let priorityListSwitchAll = await retrieveFromStorage("priorityListSwitch0");
-  let shuffleSwitchSlot = await retrieveFromStorage("shuffleSwitch" + slotNum);
-  let shuffleSwitchSlotAll = await retrieveFromStorage("shuffleSwitch0");
+console.log("LOG-priority and shuffle switches");
+  let switchKeysArray = ['priorityListSwitch' + slotNum, 'priorityListSwitch0', 'shuffleSwitch' + slotNum, 'shuffleSwitch0'];
+  let switchKeys = await retrieveMultipleFromStorage(switchKeysArray);
+  let priorityListSwitchSlot = switchKeys['priorityListSwitch' + slotNum];
+  let priorityListSwitchAll = switchKeys.priorityListSwitch0;
+  let shuffleSwitchSlot = switchKeys['shuffleSwitch' + slotNum];
+  let shuffleSwitchSlotAll = switchKeys.shuffleSwitch0;
+
   let shuffleSwitch = false;
   if (shuffleSwitchSlot || shuffleSwitchSlotAll) {
     shuffleSwitch = true;
@@ -892,9 +896,13 @@ console.log("LOG-check dungeon");
     }
   }
 
+  let skinKeysArray = ['moreSkinsSwitch', 'equipNoDiamondSwitch'];
+  let skinKeys = await retrieveMultipleFromStorage(skinKeysArray);
+  let moreSkinsSwitch = skinKeys.moreSkinsSwitch;
+  let equipNoDiamondSwitch = skinKeys.equipNoDiamondSwitch;
+
   //Put skinned units at the front if quest completer is not enabled.
-  let moreSkinsSwitch = await retrieveFromStorage("moreSkinsSwitch");
-  if (moreSkinsSwitch && hasPlacedSkin) {
+  if (hasPlacedSkin) {
     moreSkinsSwitch = false;
   } else {
     moreSkinsSwitch = true;
