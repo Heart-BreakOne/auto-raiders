@@ -26,6 +26,18 @@ async function retrieveFromStorage(key) {
     });
 }
 
+async function retrieveMultipleFromStorage(keys) {
+  return new Promise((resolve, reject) => {
+    chrome.storage.local.get(keys, (items) => {
+      if (chrome.runtime.lastError) {
+        reject(chrome.runtime.lastError);
+      } else {
+        resolve(items);
+      }
+    });
+  });
+};
+
 //Receives a string key and retrieves numbers from the chrome storage.
 async function retrieveNumberFromStorage(key) {
     return new Promise((resolve, reject) => {
