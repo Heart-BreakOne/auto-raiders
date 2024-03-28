@@ -306,11 +306,11 @@ async function start() {
         }
 
         // Calculate placements odds
+        const bSlot = button.closest('.capSlot')
         let placementOdds = await retrieveNumberFromStorage("placementOddsInput")
         if (placementOdds == -100 || placementOdds == undefined || placementOdds > 100) {
           placementOdds = 100
         } else if (placementOdds > 0 && placementOdds < 100) {
-          const bSlot = button.closest('.capSlot')
           const oddKey = "oddId" + bSlot.querySelector(".offlineButton").id
           let canPlace = false
           const currentTime = new Date();
