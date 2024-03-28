@@ -39,10 +39,12 @@ const logObserverCallback = async function (mutations) {
     await logDelay(30000);
 };
 
-const logObserver = new MutationObserver(logObserverCallback);
-const documentNode = document.body;
-const logConf = { childList: true, subtree: true };
-logObserver.observe(documentNode, logConf);
+document.addEventListener("DOMContentLoaded", () => {
+    const logObserver = new MutationObserver(logObserverCallback);
+    const documentNode = document.body;
+    const logConf = { childList: true, subtree: true };
+    logObserver.observe(documentNode, logConf);
+});
 
 
 //Saves initial battle information to the local storage
@@ -99,8 +101,8 @@ async function setLogCaptain(logId, logCapName, logMode, currentTime, colorCode,
                 }
             }
 
-            //If there's more than 500 entries, delete oldest.
-            if (loggedData.length > 10000) {
+            //If there's more than 1000 entries, delete oldest.
+            if (loggedData.length > 1000) {
                 loggedData.shift();
             }
 
@@ -195,7 +197,7 @@ async function setLogResults(conclusion, logCapName, chest, leaderboardRank, kil
     logRunning = true;
     return new Promise((resolve, reject) => {
         // Retrieve existing data from local storage
-        chrome.storage.local.get(["logData"], async function (result) {
+        chrome.storage.local.get(["logData"], function (result) {
             let loggedData = result["logData"] || [];
 
             // Add final battle time, result, and chest type
