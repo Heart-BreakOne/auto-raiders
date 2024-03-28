@@ -26,8 +26,6 @@ const purple = 'rgb(203, 195, 227)';
 const gameBlue = 'rgb(42, 96, 132)';
 const cancelButtonSelector = ".actionButton.actionButtonNegative.placerButton";
 const delay = ms => new Promise(res => setTimeout(res, ms));
-let isDungeon = false;
-let dungeonPlaceAnywaySwitch;
 let battleResult;
 let captainName;
 let chestStringAlt;
@@ -748,41 +746,31 @@ async function getValidUnits(captainNameFromDOM, raidId, slotOption, diamondLoya
   unitDrawer = [...document.querySelectorAll(".unitSelectionCont")];
   let unitsToRemove = []
 
-  // Check dungeon
-  const dungeonLevelSwitch = await retrieveFromStorage("dungeonLevelSwitch");
-  let battleInfo = "";
-  let dungeonLevel;
-  isDungeon = false;
-  let userUnitLevel = 0, userDunLevel;
-  try {
-    battleInfo = document.querySelector(".battleInfo").innerText;
-    if (battleInfo.includes("Level")) {
-      dungeonLevel = parseInt(battleInfo.substr(battleInfo.length - 2));
-      isDungeon = true;
-      if (dungeonLevelSwitch) {
-          userDunLevel = await retrieveNumberFromStorage("maxDungeonLvlInput")
-          userUnitLevel = await retrieveNumberFromStorage("maxUnitLvlDungInput")
+  let dungeonLevelSwitch, dungeonLevel, userUnitLevel = 0, userDunLevel;
+  if (battleType == "Dungeons") {
+console.log("LOG-check dungeon");
+    // Check dungeon
+    let dungeonKeysArray = ['dungeonLevelSwitch', 'maxDungeonLvlInput', 'maxUnitLvlDungInput'];
+    let dungeonKeys = await retrieveMultipleFromStorage(dungeonKeysArray);
+    dungeonLevelSwitch = dungeonKeys.dungeonLevelSwitch;
+    try {
+      userDunLevel = parseFloat(dungeonKeys.maxDungeonLvlInput, 10);
+      userUnitLevel = parseFloat(dungeonKeys.maxUnitLvlDungInput, 10);
+    } catch (error) { }
+    
+    let battleInfo = "";
+    try {
+      battleInfo = document.querySelector(".battleInfo").innerText;
+      if (battleInfo.includes("Level")) {
+        dungeonLevel = parseInt(battleInfo.substr(battleInfo.length - 2));
       }
-    }
-  } catch (error) { }
-
-  // Remove cooldown units, dead units, exhausted units, unavailable units and rarity check units
+    } catch (error) { }
+  }
+  // Remove cooldown units, unavailable units and rarity check units
   if (unitDrawer[0].children == null) {
     return;
   }
-  let knockedUnitInfo, deadUnitInfo, exhaustedUnitInfo;
-  if (isDungeon) {
-    let dungeonInfo = await getUserDungeonInfoForRaid(captainNameFromDOM);
-    if (dungeonInfo[1] != null) {
-      knockedUnitInfo = await getUnitInfo(dungeonInfo[1]);
-    }
-    if (dungeonInfo[3] != null) {
-      deadUnitInfo = await getUnitInfo(dungeonInfo[3]);
-    }
-    if (dungeonInfo[4] != null) {
-      exhaustedUnitInfo = await getUnitInfo(dungeonInfo[4]);
-    }
-  }
+
   let unitKeysArray = ['legendarySwitch', 'rareSwitch', 'uncommonSwitch', 'commonSwitch', 'pvpSpecSwitch'];
   let unitKeys = await retrieveMultipleFromStorage(unitKeysArray);
   let legendaryAllowed = unitKeys.legendarySwitch;
@@ -803,47 +791,17 @@ async function getValidUnits(captainNameFromDOM, raidId, slotOption, diamondLoya
     //Check if unit has a spec
     let specCheck = unit.querySelector('.unitSpecialized');
 
-    //Get unit status: cooldown, defeated and exhausted
+    //Get unit status: cooldown, defeated
     let coolDownCheck = unit.querySelector('.unitItemCooldown');
     let defeatedCheck = unit.querySelector('.defeatedVeil');
     //If unit has this class it's enabled, if it doesn't have it's not enabled.
     let unitDisabled = unit.querySelector('.unitItemDisabledOff');
-    let unitName, unitLevel, unitDead, unitExhausted, unitKnocked;
+    let unitName, unitLevel;
     try {
       unitName = unit.querySelector('.unitClass img').getAttribute('src').slice(-50).toUpperCase();
       unitLevel = parseInt(unit.querySelector('.unitLevel').innerText);
     } catch (error) {
       continue;
-    }
-    const unit0 = arrayOfUnits.find(unit0 => unitName.includes(unit0.icon.toUpperCase()));
-    if (isDungeon && unitLevel <= 5) {
-      if (knockedUnitInfo != null) {
-        if (unit0.name == knockedUnitInfo[0] && unitLevel == knockedUnitInfo[1]) {
-          unitKnocked = true;
-        } else {
-          unitKnocked = false;
-        }
-      } else {
-        unitKnocked = false;
-      }
-      if (deadUnitInfo != null) {
-        if (unit0.name == deadUnitInfo[0] && unitLevel == deadUnitInfo[1]) {
-          unitDead = true;
-        } else {
-          unitDead = false;
-        }
-      } else {
-        unitDead = false;
-      }
-      if (exhaustedUnitInfo != null) {
-        if (unit0.name == exhaustedUnitInfo[0] && unitLevel == exhaustedUnitInfo[1]) {
-          unitExhausted = true;
-        } else {
-          unitExhausted = false;
-        }
-      } else {
-        unitExhausted = false;
-      }
     }
     if (coolDownCheck || defeatedCheck || !unitDisabled) {
       unitsToRemove.push(unit)
@@ -861,19 +819,16 @@ async function getValidUnits(captainNameFromDOM, raidId, slotOption, diamondLoya
     } else if (commonCheck && !commonAllowed && !canCompleteQuests) {
       unitsToRemove.push(unit)
       continue
-    } else if ((unitDead || unitExhausted || unitKnocked) && isDungeon && !canCompleteQuests) {
-      unitsToRemove.push(unit)
-      continue
     } else if ((battleType == "Clash" || battleType == "Duel") && specCheck == null && pvpSpecAllowed) {
       unitsToRemove.push(unit)
       continue
     }
 
     // Remove units based on unit level
-    if (isDungeon) {
-      if (userDunLevel == null || userDunLevel == undefined || userUnitLevel == null || userUnitLevel == undefined) {
+    if (battleType == "Dungeons") {
+      if ((userDunLevel == null || userDunLevel == undefined || userUnitLevel == null || userUnitLevel == undefined) && unitName != "AMAZON") {
         continue;
-      } else if (dungeonLevel <= userDunLevel && unitLevel > userUnitLevel || unitName == "AMAZON") {// && unitName != "FLAG") {
+      } else if ((dungeonLevelSwitch && dungeonLevel <= userDunLevel && unitLevel > userUnitLevel) || unitName == "AMAZON") {
         unitsToRemove.push(unit)
         continue
       }
@@ -945,8 +900,7 @@ async function getValidUnits(captainNameFromDOM, raidId, slotOption, diamondLoya
     moreSkinsSwitch = true;
   }
 
-  if (!isDungeon && moreSkinsSwitch && await retrieveFromStorage("equipSwitch") && !canCompleteQuests) {
-    const equipNoDiamondSwitch = await retrieveFromStorage("equipNoDiamondSwitch");
+  if (battleType != "Dungeons" && moreSkinsSwitch && equipSwitch && !canCompleteQuests) {
     if (!equipNoDiamondSwitch || (equipNoDiamondSwitch && !diamondLoyalty.toString().includes("LoyaltyDiamond"))) {
       try {
         await shiftUnits(captainNameFromDOM);
