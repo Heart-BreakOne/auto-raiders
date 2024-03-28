@@ -387,17 +387,17 @@ async function start() {
         /* Check if the captain is running a special game mode and if the same captain is the one in storage.
         So if the dungeon captain on storage is Mike and there is another captain name John also running a dungeon
         the captain John will be skipped, this is done so only one captain runs a special mode at any given time and keys don't get reset.  */
-        if (((dungeonCaptainNameFromStorage != captainNameFromDOM) && battleType == "Dungeons") ||
-          (!multiClashSwitch && (clashCaptainNameFromStorage.includes(captainNameFromDOM)) && battleType == "Clash") ||
-          ((duelsCaptainNameFromStorage != captainNameFromDOM) && battleType == "Duel")) {
+        if (((dungeonCaptainNameFromStorage != ","+captainNameFromDOM+",") && battleType == "Dungeons") ||
+          (!multiClashSwitch && (clashCaptainNameFromStorage.includes(","+captainNameFromDOM+",")) && battleType == "Clash") ||
+          ((duelsCaptainNameFromStorage != ","+captainNameFromDOM+",") && battleType == "Duel")) {
           continue
         }
         /* Checks if the captain saved on storage running a special mode is still running the same mode, if they change they might lock
         the slot for 30 minutes so if a captain switches to campaign they are skipped and colored red */
         else if (!modeChangeSwitch && 
-          ((dungeonCaptainNameFromStorage == captainNameFromDOM && battleType != "Dungeons") ||
-          (!multiClashSwitch && clashCaptainNameFromStorage.includes(captainNameFromDOM) && battleType != "Clash") ||
-          (duelsCaptainNameFromStorage == captainNameFromDOM && battleType != "Duel"))) {
+          ((dungeonCaptainNameFromStorage == ","+captainNameFromDOM+"," && battleType != "Dungeons") ||
+          (!multiClashSwitch && clashCaptainNameFromStorage.includes(","+captainNameFromDOM+",") && battleType != "Clash") ||
+          (duelsCaptainNameFromStorage == ","+captainNameFromDOM+"," && battleType != "Duel"))) {
           captainSlot.style.backgroundColor = red;
           continue
         }
@@ -1222,12 +1222,12 @@ const obsv = new MutationObserver(async function (mutations) {
       else if (purpleFlag) {
         capSlot.style.backgroundColor = purple
       }
-      else if (((dungeonCaptainNameFromStorage != capNameDOM) && battleType == "Dungeons") ||
-        (!multiClashSwitch && (!clashCaptainNameFromStorage.includes(capNameDOM)) && battleType == "Clash") ||
-        ((duelsCaptainNameFromStorage != capNameDOM) && battleType == "Duel") ||
-        ((dungeonCaptainNameFromStorage == capNameDOM) && battleType != "Dungeons") ||
-        ((clashCaptainNameFromStorage.includes(capNameDOM)) && battleType != "Clash") ||
-        ((duelsCaptainNameFromStorage == capNameDOM) && battleType != "Duel")) {
+      else if (((dungeonCaptainNameFromStorage != ","+capNameDOM+",") && battleType == "Dungeons") ||
+        (!multiClashSwitch && (!clashCaptainNameFromStorage.includes(","+capNameDOM+",")) && battleType == "Clash") ||
+        ((duelsCaptainNameFromStorage != ","+capNameDOM+",") && battleType == "Duel") ||
+        ((dungeonCaptainNameFromStorage == ","+capNameDOM+",") && battleType != "Dungeons") ||
+        ((clashCaptainNameFromStorage.includes(","+capNameDOM+",")) && battleType != "Clash") ||
+        ((duelsCaptainNameFromStorage == ","+capNameDOM+",") && battleType != "Duel")) {
         capSlot.style.backgroundColor = red;
       }
       else {
