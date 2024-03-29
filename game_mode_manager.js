@@ -29,7 +29,7 @@ async function manageCaptain(captainType, keyword) {
         captains.forEach((capSlotContent) => {
             //Gets the captain's name running the mode of interest
             if (capSlotContent.innerText.includes(keyword) && (captainNameFromStorage == null || captainNameFromStorage == "" || (keyword == "Clash" && multiClashSwitch))) {
-                captainName += capSlotContent.querySelector(".capSlotName").innerText;
+                captainName += "," + capSlotContent.querySelector(".capSlotName").innerText + ",";
             }
         });
         //Saves the game mode and the captain's name on storage so they are flagged as running that mode.
