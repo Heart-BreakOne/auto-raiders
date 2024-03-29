@@ -306,11 +306,12 @@ async function start() {
         // Calculate placements odds
         const bSlot = button.closest('.capSlot')
         const currentTime = new Date();
+        const oddKey = "oddId" + bSlot.querySelector(".offlineButton").id
         let placementOdds = await retrieveNumberFromStorage("placementOddsInput")
         if (placementOdds == -100 || placementOdds == undefined || placementOdds > 100) {
           placementOdds = 100
         } else if (placementOdds > 0 && placementOdds < 100) {
-          const oddKey = "oddId" + bSlot.querySelector(".offlineButton").id
+          
           let canPlace = false
           
           await new Promise((resolve, reject) => {
@@ -767,7 +768,7 @@ console.log("LOG-check dungeon");
     } catch (error) { }
   }
   // Remove cooldown units, unavailable units and rarity check units
-  if (unitDrawer[0].children == null) {
+  if (!unitDrawer || !unitDrawer[0] || unitDrawer[0].children == null) {
     return;
   }
 
