@@ -32,6 +32,7 @@ let chestStringAlt;
 let unitDrawer;
 let hasPlacedSkin;
 let contentRunningLoopCount = 0;
+let isEventCurrencyActive;
 
 //Battlefield markers.
 const arrayOfBattleFieldMarkers = [
@@ -259,7 +260,6 @@ async function start() {
   let placeUnit = null;
   //If there are no place unit buttons, invoke the collection function then return.
   if (placeUnitButtons.length == 0 || (placeUnitButtons.length == 1 && placeUnitButtons[0].innerText === "SUBMIT")) {
-    await performCollection();
     isContentRunning = false;
     return;
   }
@@ -526,7 +526,6 @@ async function start() {
           await openBattlefield(captainNameFromDOM, raidId, slotOption, diamondLoyalty, battleType);
           break;
         } else {
-          await performCollection();
           isContentRunning = false;
           return;
         }
@@ -541,17 +540,28 @@ async function start() {
   isContentRunning = false;
 }
 
-async function performCollection() {
-  await collectEventChests();
-  await collectFreeDaily();
-}
-
 async function performCollectionInterval() {
   if (await retrieveFromStorage("paused_checkbox")) {
     return
   }
   await buyScrolls();
   await collectBattlePass();
+  if (isEventCurrencyActive == null || isEventCurrencyActive == undefined) {
+    let eventData = await retrieveFromStorage("events");
+    let currentDateTime = new Date();
+    let currentDateTimePT = new Date(currentDateTime.toLocaleString("en-US", {timeZone: "America/Los_Angeles"}));
+    isEventCurrencyActive = false;
+    for (event in eventData) {
+      if (eventData[event].StartTime <= currentDateTimePT && eventData[event].EndTime > currentDateTimePT && eventData[event].EventCurrency != "") {
+        isEventCurrencyActive = true;
+        break;
+      }
+    }
+  }
+  if (isEventCurrencyActive) { 
+    await collectEventChests();
+    await collectFreeDaily();
+  }
 }
 
 // This function checks if the battlefield is present, the current chest type, then zooms into it.
