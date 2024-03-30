@@ -234,7 +234,7 @@ async function collectChests() {
 
     for (let i = 0; i < activeRaids.data.length; i++) {
       let raidData = activeRaids.data[i];
-      if (raidData.postBattleComplete == "1" && raidData.hasRecievedRewards == "0") {
+      if (raidData.postBattleComplete == "1" && (raidData.hasRecievedRewards == null ||raidData.hasRecievedRewards == "0")) {
         activeRaidsData[i][0] = raidData.raidId;
         activeRaidsData[i][1] = raidData.twitchDisplayName;
         activeRaidsData[i][2] = raidData.captainId;
@@ -1456,5 +1456,20 @@ async function levelUp() {
         }
       }
     }
+  }
+}
+
+async function checkEventCurrencyActive() {
+  if (isEventCurrencyActive == null || isEventCurrencyActive == undefined) {
+    let eventData = await retrieveFromStorage("events");
+    let currentDateTime = new Date();
+    let currentDateTimePT = new Date(currentDateTime.toLocaleString("en-US", {timeZone: "America/Los_Angeles"}));
+    isEventCurrencyActive = false;
+    for (event in eventData) {
+      if (eventData[event].StartTime <= currentDateTimePT && eventData[event].EndTime > currentDateTimePT && eventData[event].EventCurrency != "") {
+        isEventCurrencyActive = true;
+      }
+    }
+    return isEventCurrencyActive;
   }
 }
