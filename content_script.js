@@ -704,10 +704,8 @@ async function getValidUnits(captainNameFromDOM, raidId, slotOption, diamondLoya
   arrayOfMarkers = getMapMatrix(arrayOfMarkers)
   arrayOfMarkers = bumpVibeMarkers(arrayOfMarkers)
   let isEnemyPresent = [];
-  if (isEnemyPresentNameArray.length > 0) {
-    for (let i = 0; i < isEnemyPresentNameArray.length; i++) {
-      isEnemyPresent[i] = document.querySelector('img[alt="' + isEnemyPresentNameArray[i] + '"]');
-    }
+  for (let i = 0; i < isEnemyPresentNameArray.length; i++) {
+    isEnemyPresent[i] = document.querySelector('img[alt="' + isEnemyPresentNameArray[i] + '"]');
   }
 
   // Open unit drawer and set the filter to ALL units
@@ -839,7 +837,7 @@ console.log("LOG-check dungeon");
     } 
 
     //If campaign and specified enemy is present, remove the associated units
-    if (battleType == "Campaign" && isEnemyPresent.length > 0) {
+    if (battleType == "Campaign") {
       for (let j = 0; j < isEnemyPresent.length; j++) {
         if (isEnemyPresent[j] && unit.id.includes(ifPresentAvoidUnitArray[j].toUpperCase())) {
           unitsToRemove.push(unit)
