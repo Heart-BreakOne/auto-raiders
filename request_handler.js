@@ -234,7 +234,7 @@ async function collectChests() {
 
     for (let i = 0; i < activeRaids.data.length; i++) {
       let raidData = activeRaids.data[i];
-      if (raidData.postBattleComplete == "1" && raidData.hasRecievedRewards == "0") {
+      if (raidData.postBattleComplete == "1" && (raidData.hasRecievedRewards == null ||raidData.hasRecievedRewards == "0")) {
         activeRaidsData[i][0] = raidData.raidId;
         activeRaidsData[i][1] = raidData.twitchDisplayName;
         activeRaidsData[i][2] = raidData.captainId;
