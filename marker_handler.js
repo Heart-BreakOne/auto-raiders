@@ -144,7 +144,7 @@ function setUpMarkers(mrkrs) {
     { key: "ASSASSIN", units: "BALLOON#BUSTER#FLYING#PHANTOM#ROGUE#SHINOBI#SPY" },
     { key: "MELEE", units: "AMAZON#BARBARIAN#BERSERKER#GLADIATOR#LANCER#WARBEAST#WARRIOR" },
     { key: "RANGED", units: "ARCHER#ARTILLERY#BOMBER#MAGE#MUSKETEER" },
-    { key: "SUPPORT", units: "FAIRY#FLAG#HEALER#NECROMANCER#SHINOBI#TEMPLAR" }]
+    { key: "SUPPORT", units: "FAIRY#FLAG#HEALER#NECROMANCER#MONK#SAINT#TEMPLAR" }]
 
     const arrBtMrkr = [
         { key: "NO", type: "NO", icon: "VYAAAAASUVORK5CYII=" },
