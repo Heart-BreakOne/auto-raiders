@@ -2,7 +2,7 @@
 functions to perform tasks such as replacing idle captains or buying scrolls
 */
 
-//Triggers the start function every 20 seconds
+//Triggers the start function every 10 seconds
 setInterval(start, 10000);
 setInterval(performCollectionInterval, 60000);
 
@@ -16,7 +16,6 @@ let backgroundImageValue;
 let mode;
 let diamondLoyalty;
 let firstReload;
-//let captainNameFromDOM;
 let reload = 0;
 let isContentRunning = false;
 let unfinishedQuests = null;
@@ -32,6 +31,9 @@ let chestStringAlt;
 let unitDrawer;
 let hasPlacedSkin;
 let contentRunningLoopCount = 0;
+let isEventCurrencyActive;
+let isEnemyPresentName = "Puppet Master"; //Enemy name as seen in DOM alt text (case sensitive)
+let ifPresentAvoidUnit = "RANGED"; //Unit name or type to avoid if enemy is present on the map
 
 //Battlefield markers.
 const arrayOfBattleFieldMarkers = [
@@ -259,7 +261,6 @@ async function start() {
   let placeUnit = null;
   //If there are no place unit buttons, invoke the collection function then return.
   if (placeUnitButtons.length == 0 || (placeUnitButtons.length == 1 && placeUnitButtons[0].innerText === "SUBMIT")) {
-    await performCollection();
     isContentRunning = false;
     return;
   }
@@ -526,7 +527,6 @@ async function start() {
           await openBattlefield(captainNameFromDOM, raidId, slotOption, diamondLoyalty, battleType);
           break;
         } else {
-          await performCollection();
           isContentRunning = false;
           return;
         }
@@ -541,17 +541,28 @@ async function start() {
   isContentRunning = false;
 }
 
-async function performCollection() {
-  await collectEventChests();
-  await collectFreeDaily();
-}
-
 async function performCollectionInterval() {
   if (await retrieveFromStorage("paused_checkbox")) {
     return
   }
   await buyScrolls();
   await collectBattlePass();
+  if (isEventCurrencyActive == null || isEventCurrencyActive == undefined) {
+    let eventData = await retrieveFromStorage("events");
+    let currentDateTime = new Date();
+    let currentDateTimePT = new Date(currentDateTime.toLocaleString("en-US", {timeZone: "America/Los_Angeles"}));
+    isEventCurrencyActive = false;
+    for (event in eventData) {
+      if (eventData[event].StartTime <= currentDateTimePT && eventData[event].EndTime > currentDateTimePT && eventData[event].EventCurrency != "") {
+        isEventCurrencyActive = true;
+        break;
+      }
+    }
+  }
+  if (isEventCurrencyActive) { 
+    await collectEventChests();
+    await collectFreeDaily();
+  }
 }
 
 // This function checks if the battlefield is present, the current chest type, then zooms into it.
@@ -655,7 +666,6 @@ async function openBattlefield(captainNameFromDOM, raidId, slotOption, diamondLo
     await setLogInitialChest2(captainNameFromDOM, raidId, chest);
 
     if (!acceptableLoyalty && ((!lgold && chest == "Loyalty Gold Chest") || (!lskin && chest == "Loyalty Skin Chest") || (!lscroll && chest == "Loyalty Scroll Chest") || (!ltoken && chest == "Loyalty Token Chest") || (!lboss && chest == "Loyalty Boss Chest") || (!lsuperboss && chest == "Loyalty Super Boss Chest"))) {
-      //if (chest.includes("Loyalty")) {
       //Flag the captain loyalty since the current map is to be skipped
       await flagCaptain('captainLoyalty');
       //Close the chest info popup and return to main menu
@@ -705,8 +715,7 @@ async function getValidUnits(captainNameFromDOM, raidId, slotOption, diamondLoya
   let arrayOfMarkers = Array.of(document.querySelectorAll(".planIcon"))
   arrayOfMarkers = getMapMatrix(arrayOfMarkers)
   arrayOfMarkers = bumpVibeMarkers(arrayOfMarkers)
-
-
+  let isEnemyPresent = document.querySelector('img[alt="' + isEnemyPresentName + '"]');
 
   // Open unit drawer and set the filter to ALL units
   const placeUnitBtn = document.querySelector(".actionButton.actionButtonPrimary.placeUnitButton")
@@ -772,6 +781,17 @@ console.log("LOG-check dungeon");
     return;
   }
 
+  //Add unit name and type to unit itself
+  for (const unit of unitDrawer[0].children) {
+    const unitClassImg = unit.querySelector('.unitClass img');
+    const unitType = unitClassImg.getAttribute('alt').toUpperCase();
+    const unitName = unitClassImg.getAttribute('src').slice(-50).toUpperCase();
+    const unit1 = arrayOfUnits.find(unit1 => unitName.includes(unit1.icon.toUpperCase()));
+    if (unit1) {
+      unit.id = unit1.key + "#" + unitType;
+    }
+  }
+
   let unitKeysArray = ['legendarySwitch', 'rareSwitch', 'uncommonSwitch', 'commonSwitch', 'pvpSpecSwitch'];
   let unitKeys = await retrieveMultipleFromStorage(unitKeysArray);
   let legendaryAllowed = unitKeys.legendarySwitch;
@@ -823,13 +843,16 @@ console.log("LOG-check dungeon");
     } else if ((battleType == "Clash" || battleType == "Duel") && specCheck == null && pvpSpecAllowed) {
       unitsToRemove.push(unit)
       continue
+    } else if (battleType == "Campaign" && isEnemyPresent && unit.id.includes(ifPresentAvoidUnit.toUpperCase())) {
+      unitsToRemove.push(unit)
+      continue
     }
 
     // Remove units based on unit level
     if (battleType == "Dungeons") {
-      if ((userDunLevel == null || userDunLevel == undefined || userUnitLevel == null || userUnitLevel == undefined) && unitName != "AMAZON") {
+      if ((userDunLevel == null || userDunLevel == undefined || userUnitLevel == null || userUnitLevel == undefined) && !unit.id.includes("AMAZON")) {
         continue;
-      } else if ((dungeonLevelSwitch && dungeonLevel <= userDunLevel && unitLevel > userUnitLevel) || unitName == "AMAZON") {
+      } else if ((dungeonLevelSwitch && dungeonLevel <= userDunLevel && unitLevel > userUnitLevel) || unit.id.includes("AMAZON")) {
         unitsToRemove.push(unit)
         continue
       }
@@ -939,17 +962,6 @@ console.log("LOG-priority and shuffle switches");
     const notVibeMarkers = arrayOfMarkers.filter(marker => marker.id !== "VIBE");
 
     arrayOfMarkers = notVibeMarkers.concat(arrayOfVibeMarkers);
-  }
-
-  //Add unit name and type to unit itself
-  for (const unit of unitDrawer[0].children) {
-    const unitClassImg = unit.querySelector('.unitClass img');
-    const unitType = unitClassImg.getAttribute('alt').toUpperCase();
-    const unitName = unitClassImg.getAttribute('src').slice(-50).toUpperCase();
-    const unit1 = arrayOfUnits.find(unit1 => unitName.includes(unit1.icon.toUpperCase()));
-    if (unit1) {
-      unit.id = unit1.key + "#" + unitType;
-    }
   }
 
   let counter = 0
