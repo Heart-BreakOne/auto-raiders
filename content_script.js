@@ -32,8 +32,8 @@ let unitDrawer;
 let hasPlacedSkin;
 let contentRunningLoopCount = 0;
 let isEventCurrencyActive;
-let isEnemyPresentName = "Puppet Master"; //Enemy name as seen in DOM alt text (case sensitive)
-let ifPresentAvoidUnit = "RANGED"; //Unit name or type to avoid if enemy is present on the map
+let isEnemyPresentNameArray = ['Puppet Master']; //Enemy name as seen in DOM alt text (case sensitive)
+let ifPresentAvoidUnitArray = ['RANGED']; //Unit name or type to avoid if enemy is present on the map. Pairs with the enemy name at the same index in the array (isEnemyPresentNameArray[0] - ifPresentAvoidUnitArray[0])
 
 //Battlefield markers.
 const arrayOfBattleFieldMarkers = [
@@ -715,7 +715,12 @@ async function getValidUnits(captainNameFromDOM, raidId, slotOption, diamondLoya
   let arrayOfMarkers = Array.of(document.querySelectorAll(".planIcon"))
   arrayOfMarkers = getMapMatrix(arrayOfMarkers)
   arrayOfMarkers = bumpVibeMarkers(arrayOfMarkers)
-  let isEnemyPresent = document.querySelector('img[alt="' + isEnemyPresentName + '"]');
+  let isEnemyPresent = [];
+  if (isEnemyPresentNameArray.length > 0) {
+    for (let i = 0; i < isEnemyPresentNameArray.length; i++) {
+      isEnemyPresent[i] = document.querySelector('img[alt="' + isEnemyPresentNameArray[i] + '"]');
+    }
+  }
 
   // Open unit drawer and set the filter to ALL units
   const placeUnitBtn = document.querySelector(".actionButton.actionButtonPrimary.placeUnitButton")
@@ -843,9 +848,16 @@ console.log("LOG-check dungeon");
     } else if ((battleType == "Clash" || battleType == "Duel") && specCheck == null && pvpSpecAllowed) {
       unitsToRemove.push(unit)
       continue
-    } else if (battleType == "Campaign" && isEnemyPresent && unit.id.includes(ifPresentAvoidUnit.toUpperCase())) {
-      unitsToRemove.push(unit)
-      continue
+    } 
+
+    //If campaign and specified enemy is present, remove the associated units
+    if (battleType == "Campaign" && isEnemyPresent.length > 0) {
+      for (let j = 0; j < isEnemyPresent.length; j++) {
+        if (isEnemyPresent[j] && unit.id.includes(ifPresentAvoidUnitArray[j].toUpperCase())) {
+          unitsToRemove.push(unit)
+          continue
+        }
+      }
     }
 
     // Remove units based on unit level
