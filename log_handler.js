@@ -33,8 +33,24 @@ async function addNewLogEntry() {
             const requestLoyaltyResults = await getCaptainLoyalty(logCapName);
             const raidId = requestLoyaltyResults[0];
             const chestType = requestLoyaltyResults[1];
-            const mapName = await getMapName(logCapName);
-            await setLogCaptain(logId, logCapName, logMode, currentTime, colorCode, raidId, mapName, chestType);
+            const captainId = requestLoyaltyResults[2];
+            let pvpOpponent;
+            if (logMode == "Clash" || logMode == "Duel") {
+              pvpOpponent = requestLoyaltyResults[4];
+            } else {
+              pvpOpponent = undefined;
+            }
+            const mapName = requestLoyaltyResults[5];
+            let dungeonLevel;
+            if (logMode == "Dungeons") {
+              let dungeonInfo = await getUserDungeonInfoForRaid(logCapName);
+              try {
+                dungeonLevel = parseInt(dungeonInfo[8]) + 1;
+              } catch (error) {}
+            } else {
+              dungeonLevel = undefined;
+            }
+            await setLogCaptain(logId, logCapName, logMode, currentTime, colorCode, raidId, mapName, chestType, captainId, dungeonLevel, pvpOpponent);
         }
     }
 };
@@ -44,7 +60,7 @@ document.addEventListener("DOMContentLoaded", () => {
 });
 
 //Saves initial battle information to the local storage
-async function setLogCaptain(logId, logCapName, logMode, currentTime, colorCode, raidId, mapName, chestType) {
+async function setLogCaptain(logId, logCapName, logMode, currentTime, colorCode, raidId, mapName, chestType, captainId, dungeonLevel, pvpOpponent) {
 
     // default rgb(42, 96, 132) 
     //Check if color needs to be updated on storage.
@@ -85,7 +101,10 @@ async function setLogCaptain(logId, logCapName, logMode, currentTime, colorCode,
                     raidId: raidId,
                     units2: undefined,
                     raidChest: undefined,
-                    chestCount: undefined
+                    chestCount: undefined,
+                    captainId: captainId,
+                    dungeonLevel: dungeonLevel,
+                    pvpOpponent: pvpOpponent
                 });
             } else {
                 //If no battle data exists, check if the color needs to be updated on existing slots.

@@ -39,15 +39,14 @@ async function getCaptainLoyalty(captainName) {
     let loyaltyResults = new Object();
     for (let i = 0; i < activeRaids.data.length; i++) {
       const position = activeRaids.data[i];
-      const raidId = position.raidId;
-      const cptId = position.captainId;
-      const cptName = position.twitchDisplayName;
-      if (cptName === captainName) {
-        loyaltyResults[0] = raidId;
-        const mapLoyalty = await getRaidChest(raidId, clientVersion, gameDataVersion);
+      if (position.twitchDisplayName === captainName) {
+        loyaltyResults[0] = position.raidId;
+        const mapLoyalty = await getRaidChest(position.raidId, clientVersion, gameDataVersion);
         loyaltyResults[1] = mapLoyalty;
-        loyaltyResults[2] = cptId;
-        loyaltyResults[3] = cptName;
+        loyaltyResults[2] = position.captainId;
+        loyaltyResults[3] = position.twitchDisplayName;
+        loyaltyResults[4] = position.opponentTwitchDisplayName;
+        loyaltyResults[5] = position.nodeId;
         return loyaltyResults;
       }
     }
