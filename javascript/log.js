@@ -48,9 +48,11 @@ let chestCounter = [
 //Event listener for when the page loads
 document.addEventListener('DOMContentLoaded', async function () {
 
+    initializeSwitch("captIdSwitch")
     initializeSwitch("raidIdSwitch")
     initializeSwitch("pendingSwitch")
     initializeSwitch("logSwitch")
+    initializeSwitch("dungeonPVPSwitch")
     const scrollToTopBtn = document.getElementById("scrollBtn");
 
     // Show or hide the button based on scroll position
@@ -62,6 +64,10 @@ document.addEventListener('DOMContentLoaded', async function () {
         }
     };
 
+    document.getElementById('captIdSwitch').addEventListener('change', function () {
+        location.reload()
+    });
+
     document.getElementById('raidIdSwitch').addEventListener('change', function () {
         location.reload()
     });
@@ -71,6 +77,10 @@ document.addEventListener('DOMContentLoaded', async function () {
     });
 
     document.getElementById('logSwitch').addEventListener('change', function () {
+        location.reload()
+    });
+
+    document.getElementById('dungeonPVPSwitch').addEventListener('change', function () {
         location.reload()
     });
 
@@ -122,8 +132,10 @@ document.addEventListener('DOMContentLoaded', async function () {
 
 async function loadLogData() {
     const logSwitch = await retrieveFromStorage("logSwitch");
+    const captIdSwitch = await retrieveFromStorage("captIdSwitch")
     const raidIdSwitch = await retrieveFromStorage("raidIdSwitch")
     const pendingSwitch = await retrieveFromStorage("pendingSwitch")
+    const dungeonPVPSwitch = await retrieveFromStorage("dungeonPVPSwitch")
 
     //If table already exists, remove it so a new one can be injected
     const isTable = document.getElementById("logTable");
@@ -155,16 +167,19 @@ async function loadLogData() {
 
     //Create table header row
     const headerRow = document.createElement('tr');
-    if (logSwitch) {
-        const headerString1 = '<th>#</th><th>Slot</th><th>Captain Name</th><th>Mode</th><th>Color Code</th><th>Start time</th><th>End time</th><th>Duration</th><th>Result</th><th>Awarded Chest</th><th>Initial Chest</th>'
-        const headerString2 = '<th>Rewards</th><th>Leaderboard Rank</th><th>Kills</th><th>Assists</th><th>Units Placed</th>'
-        if (raidIdSwitch) {
-            headerRow.innerHTML = headerString1 + '<th>Raid ID</th>' + headerString2
-        } else {
-            headerRow.innerHTML = headerString1 + headerString2;
-        }
+    if (captIdSwitch) {
+        headerRow.innerHTML = '<th>#</th><th>Slot</th><th>Captain Name</th><th>Captain ID</th><th>Mode</th><th>Color Code</th><th>Start time</th><th>End time</th><th>Duration</th><th>Result</th><th>Awarded Chest</th><th>Initial Chest</th>'
     } else {
-        headerRow.innerHTML = '<th>#</th><th>Slot</th><th>Captain Name</th><th>Mode</th><th>Color Code</th><th>Start time</th><th>End time</th><th>Duration</th><th>Result</th><th>Awarded Chest</th><th>Initial Chest</th>';
+        headerRow.innerHTML ='<th>#</th><th>Slot</th><th>Captain Name</th><th>Mode</th><th>Color Code</th><th>Start time</th><th>End time</th><th>Duration</th><th>Result</th><th>Awarded Chest</th><th>Initial Chest</th>'
+    }
+    if (raidIdSwitch) {
+        headerRow.innerHTML += '<th>Raid ID</th>';
+    }
+    if (dungeonPVPSwitch) {
+        headerRow.innerHTML += '<th>Dungeon Level</th><th>Opponent</th>';
+    }
+    if (logSwitch) {
+        headerRow.innerHTML += '<th>Rewards</th><th>Leaderboard Rank</th><th>Kills</th><th>Assists</th><th>Units Placed</th>';
     }
 
     //Append header row to the table
@@ -189,6 +204,8 @@ async function loadLogData() {
         let raidId;
         let rewards;
         let rewardsList;
+        let dungeonLevel;
+        let pvpOpponent;
 
         //Convert the string to a Date object and get hour and minutes.
         const startingTime = getTimeString(new Date(entry.currentTime));
@@ -243,6 +260,26 @@ async function loadLogData() {
             raidId = entry.raidId
         }
 
+        if (entry.logMode == "Dungeons") {
+            if (entry.dungeonLevel === undefined) {
+                dungeonLevel = "Unknown"
+            } else {
+                dungeonLevel = entry.dungeonLevel
+            }
+        } else {
+            dungeonLevel = ""
+        }
+
+        if (entry.logMode == "Clash" || entry.logMode == "Duel") {
+            if (entry.pvpOpponent === undefined) {
+                pvpOpponent = "Unknown"
+            } else {
+                pvpOpponent = entry.pvpOpponent
+            }
+        } else {
+            pvpOpponent = ""
+        }
+        
         if (entry.units2 === undefined) {
             units = "Unknown";
         } else {
@@ -297,13 +334,12 @@ async function loadLogData() {
                   //outcome = battleChest.outcome;
                   url = battleChest.url;
 
-
                   //Get latest value for chest count
                   if (entry.raidChest !== undefined) {
                     try {
                       let chestCount = parseInt(entry.chestCount);
                       for (const loyaltyChest of chestCounter) {
-                          if ((loyaltyChest.key != "chestboss" && entry.raidChest.includes(loyaltyChest.key)) || loyaltyChest.key === "chestboss" && loyaltyChest.key.includes(entry.raidChest)) {
+                          if ((loyaltyChest.key != "chestboss" && entry.raidChest.includes(loyaltyChest.key)) || (loyaltyChest.key === "chestboss" && entry.raidChest === "chestboss")) {
                               if (entryEndDateTime >= currentEventStartTime) {
                                   if (chestCount > loyaltyChest.count) {
                                       loyaltyChest.count = entry.chestCount;
@@ -316,7 +352,7 @@ async function loadLogData() {
                   }
                     //Increment chest quantity
                     for (const loyaltyChest of chestCounter) {
-                        if (loyaltyChest.quantity < loyaltyChest.count && ((loyaltyChest.key != "chestboss" && entry.chest.includes(loyaltyChest.key)) || loyaltyChest.key === "chestboss" && loyaltyChest.key.includes(entry.chest))) {
+                        if ((loyaltyChest.quantity == 0 || loyaltyChest.quantity < loyaltyChest.count) && ((loyaltyChest.key != "chestboss" && entry.chest.includes(loyaltyChest.key)) || (loyaltyChest.key === "chestboss" && entry.chest === "chestboss"))) {
                                 loyaltyChest.quantity += 1;
                                 break;
                             }
@@ -327,7 +363,7 @@ async function loadLogData() {
                 if (entry.chest == "Unknown" && entry.units2 != undefined) {
                     // Increment chest quantity if units have been placed because even if the battle is abandoned, the chest still counts
                     for (const loyaltyChest of chestCounter) {
-                        if (entryStartDateTime >= currentEventStartTime && loyaltyChest.quantity < loyaltyChest.count && ((loyaltyChest.key != "chestboss" && entry.initialchest.includes(loyaltyChest.key)) || loyaltyChest.key === "chestboss" && loyaltyChest.key.includes(entry.initialchest))) {
+                        if (entryStartDateTime >= currentEventStartTime && (loyaltyChest.quantity == 0 || loyaltyChest.quantity < loyaltyChest.count) && ((loyaltyChest.key != "chestboss" && entry.initialchest.includes(loyaltyChest.key)) || (loyaltyChest.key === "chestboss" && entry.initialchest === "chestboss"))) {
                             loyaltyChest.quantity += 1;
                             break;
                         }
@@ -390,6 +426,12 @@ async function loadLogData() {
                     </div>
                 </td>`
         }
+        let logCaptId;
+        if (captIdSwitch) {
+            logCaptId = `<td>${entry.captainId}</td>`
+        } else {
+            logCaptId = ``
+        }
         let logRewards;
         if (logSwitch) {
             logRewards = `<td>${rewards}</td>
@@ -397,15 +439,26 @@ async function loadLogData() {
                 <td>${kills}</td>
                 <td>${assists}</td>
                 <td>${units}</td>`
-            if (raidIdSwitch) {
-                logRewards = `<td>${raidId}</td>${logRewards}`
-            }
         } else {
             logRewards = ``
         }
+        let logRaidId;
+        if (raidIdSwitch) {
+            logRaidId = `<td>${raidId}</td>`
+        } else {
+            logRaidId = ``
+        }
+        let logDungeonPVP;
+        if (dungeonPVPSwitch) {
+            logDungeonPVP = `<td>${dungeonLevel}</td>
+                <td>${pvpOpponent}</td>`
+        } else {
+            logDungeonPVP = ``
+        }
         row.innerHTML = `<td>${counter}</td>
             <td>${entry.logId}</td>
-            <td>${entry.logCapName}</td>
+            <td title="${entry.captainId}">${entry.logCapName}</td>
+            ` + logCaptId + `
             <td>${entry.logMode}</td>
             <td style="border: 1px solid #ddd; padding: 8px; color: ${color};">${color}</td>
             <td>${startingTime}</td>
@@ -419,6 +472,8 @@ async function loadLogData() {
                 </div>
             </td>
             ` + initialchestHTML + `
+            ` + logRaidId + `
+            ` + logDungeonPVP + `
             ` + logRewards + `
             <td style="text-align: center; vertical-align: middle;"><button id="btn_${i}">DEL</button></td>`;
 
@@ -483,13 +538,14 @@ async function getChestMaximumCanEarn(key) {
 }
 
 //Get entry from the stored array and remove the entry with the matching index.
-function removeEntry(raidId) {
-    chrome.storage.local.get(["logData"], function (result) {
+async function removeEntry(raidId) {
+    while (logRunning == true) {
+      await delay(10);
+    }
+    logRunning = true;
+    await chrome.storage.local.get(["logData"], async function (result) {
         let loggedData = result["logData"] || [];
 
-        // Sort array based on time
-        // const sortedArray = loggedData.slice().sort((a, b) => new Date(b.currentTime) - new Date(a.currentTime));
-        
         let foundEntry;
         let i;
         //Find entry based on raidId
@@ -514,6 +570,7 @@ function removeEntry(raidId) {
             }
         }
     });
+    logRunning = false;
 }
 
 async function updateChestMaximumValues() {
