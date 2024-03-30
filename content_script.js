@@ -33,6 +33,8 @@ let unitDrawer;
 let hasPlacedSkin;
 let contentRunningLoopCount = 0;
 let isEventCurrencyActive;
+let isEnemyPresentName = "Puppet Master"; //Enemy name as seen in DOM alt text (case sensitive)
+let ifPresentAvoidUnit = "RANGED"; //Unit name or type to avoid if enemy is present on the map
 
 //Battlefield markers.
 const arrayOfBattleFieldMarkers = [
@@ -715,8 +717,7 @@ async function getValidUnits(captainNameFromDOM, raidId, slotOption, diamondLoya
   let arrayOfMarkers = Array.of(document.querySelectorAll(".planIcon"))
   arrayOfMarkers = getMapMatrix(arrayOfMarkers)
   arrayOfMarkers = bumpVibeMarkers(arrayOfMarkers)
-
-
+  let isEnemyPresent = document.querySelector('img[alt="' + isEnemyPresentName + '"]');
 
   // Open unit drawer and set the filter to ALL units
   const placeUnitBtn = document.querySelector(".actionButton.actionButtonPrimary.placeUnitButton")
@@ -782,6 +783,17 @@ console.log("LOG-check dungeon");
     return;
   }
 
+  //Add unit name and type to unit itself
+  for (const unit of unitDrawer[0].children) {
+    const unitClassImg = unit.querySelector('.unitClass img');
+    const unitType = unitClassImg.getAttribute('alt').toUpperCase();
+    const unitName = unitClassImg.getAttribute('src').slice(-50).toUpperCase();
+    const unit1 = arrayOfUnits.find(unit1 => unitName.includes(unit1.icon.toUpperCase()));
+    if (unit1) {
+      unit.id = unit1.key + "#" + unitType;
+    }
+  }
+
   let unitKeysArray = ['legendarySwitch', 'rareSwitch', 'uncommonSwitch', 'commonSwitch', 'pvpSpecSwitch'];
   let unitKeys = await retrieveMultipleFromStorage(unitKeysArray);
   let legendaryAllowed = unitKeys.legendarySwitch;
@@ -833,13 +845,16 @@ console.log("LOG-check dungeon");
     } else if ((battleType == "Clash" || battleType == "Duel") && specCheck == null && pvpSpecAllowed) {
       unitsToRemove.push(unit)
       continue
+    } else if (battleType == "Campaign" && isEnemyPresent && unit.id.includes(ifPresentAvoidUnit.toUpperCase())) {
+      unitsToRemove.push(unit)
+      continue
     }
 
     // Remove units based on unit level
     if (battleType == "Dungeons") {
-      if ((userDunLevel == null || userDunLevel == undefined || userUnitLevel == null || userUnitLevel == undefined) && unitName != "AMAZON") {
+      if ((userDunLevel == null || userDunLevel == undefined || userUnitLevel == null || userUnitLevel == undefined) && !unit.id.includes("AMAZON")) {
         continue;
-      } else if ((dungeonLevelSwitch && dungeonLevel <= userDunLevel && unitLevel > userUnitLevel) || unitName == "AMAZON") {
+      } else if ((dungeonLevelSwitch && dungeonLevel <= userDunLevel && unitLevel > userUnitLevel) || unit.id.includes("AMAZON")) {
         unitsToRemove.push(unit)
         continue
       }
@@ -949,17 +964,6 @@ console.log("LOG-priority and shuffle switches");
     const notVibeMarkers = arrayOfMarkers.filter(marker => marker.id !== "VIBE");
 
     arrayOfMarkers = notVibeMarkers.concat(arrayOfVibeMarkers);
-  }
-
-  //Add unit name and type to unit itself
-  for (const unit of unitDrawer[0].children) {
-    const unitClassImg = unit.querySelector('.unitClass img');
-    const unitType = unitClassImg.getAttribute('alt').toUpperCase();
-    const unitName = unitClassImg.getAttribute('src').slice(-50).toUpperCase();
-    const unit1 = arrayOfUnits.find(unit1 => unitName.includes(unit1.icon.toUpperCase()));
-    if (unit1) {
-      unit.id = unit1.key + "#" + unitType;
-    }
   }
 
   let counter = 0
