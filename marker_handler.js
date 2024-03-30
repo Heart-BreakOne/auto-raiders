@@ -144,7 +144,7 @@ function setUpMarkers(mrkrs) {
     { key: "ASSASSIN", units: "BALLOON#BUSTER#FLYING#PHANTOM#ROGUE#SHINOBI#SPY" },
     { key: "MELEE", units: "AMAZON#BARBARIAN#BERSERKER#GLADIATOR#LANCER#WARBEAST#WARRIOR" },
     { key: "RANGED", units: "ARCHER#ARTILLERY#BOMBER#MAGE#MUSKETEER" },
-    { key: "SUPPORT", units: "FAIRY#FLAG#HEALER#NECROMANCER#SHINOBI#TEMPLAR" }]
+    { key: "SUPPORT", units: "FAIRY#FLAG#HEALER#NECROMANCER#MONK#SAINT#TEMPLAR" }]
 
     const arrBtMrkr = [
         { key: "NO", type: "NO", icon: "VYAAAAASUVORK5CYII=" },
@@ -275,16 +275,11 @@ function getMapMatrix(arrayOfMarkers) {
 
 function bumpVibeMarkers(arrayOfMarkers) {
     const customMarkers = arrayOfMarkers.filter(marker => marker.classList.contains('custom'));
-    const nonCustomMarkers = arrayOfMarkers.filter(marker => !marker.classList.contains('custom'));
+    const nonCustomMarkers = arrayOfMarkers.filter(marker => !marker.classList.contains('custom') && !marker.id.includes('NO'));
 
-    if (nonCustomMarkers.length > 0) {
-        customMarkers.forEach(marker => {
-            const index = arrayOfMarkers.indexOf(marker);
-            if (index !== -1) {
-                arrayOfMarkers.splice(index, 1);
-            }
-        });
+    if (nonCustomMarkers.length > 10) {
+        return nonCustomMarkers;
+    } else {
+        return nonCustomMarkers.concat(customMarkers);
     }
-    
-    return arrayOfMarkers
 }
