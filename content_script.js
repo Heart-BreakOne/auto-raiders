@@ -2,7 +2,7 @@
 functions to perform tasks such as replacing idle captains or buying scrolls
 */
 
-//Triggers the start function every 20 seconds
+//Triggers the start function every 10 seconds
 setInterval(start, 10000);
 setInterval(performCollectionInterval, 60000);
 
@@ -16,7 +16,6 @@ let backgroundImageValue;
 let mode;
 let diamondLoyalty;
 let firstReload;
-//let captainNameFromDOM;
 let reload = 0;
 let isContentRunning = false;
 let unfinishedQuests = null;
@@ -667,7 +666,6 @@ async function openBattlefield(captainNameFromDOM, raidId, slotOption, diamondLo
     await setLogInitialChest2(captainNameFromDOM, raidId, chest);
 
     if (!acceptableLoyalty && ((!lgold && chest == "Loyalty Gold Chest") || (!lskin && chest == "Loyalty Skin Chest") || (!lscroll && chest == "Loyalty Scroll Chest") || (!ltoken && chest == "Loyalty Token Chest") || (!lboss && chest == "Loyalty Boss Chest") || (!lsuperboss && chest == "Loyalty Super Boss Chest"))) {
-      //if (chest.includes("Loyalty")) {
       //Flag the captain loyalty since the current map is to be skipped
       await flagCaptain('captainLoyalty');
       //Close the chest info popup and return to main menu
