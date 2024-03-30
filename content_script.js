@@ -547,19 +547,7 @@ async function performCollectionInterval() {
   }
   await buyScrolls();
   await collectBattlePass();
-  if (isEventCurrencyActive == null || isEventCurrencyActive == undefined) {
-    let eventData = await retrieveFromStorage("events");
-    let currentDateTime = new Date();
-    let currentDateTimePT = new Date(currentDateTime.toLocaleString("en-US", {timeZone: "America/Los_Angeles"}));
-    isEventCurrencyActive = false;
-    for (event in eventData) {
-      if (eventData[event].StartTime <= currentDateTimePT && eventData[event].EndTime > currentDateTimePT && eventData[event].EventCurrency != "") {
-        isEventCurrencyActive = true;
-        break;
-      }
-    }
-  }
-  if (isEventCurrencyActive) { 
+  if (await checkEventCurrencyActive()) { 
     await collectEventChests();
     await collectFreeDaily();
   }
