@@ -209,6 +209,9 @@ async function collectChests() {
     return
   }
   
+  if (chestRunning) {
+    return;
+  }
   chestsRunning = true;
 
   const clientVersion = await retrieveFromStorage("clientVersion")
