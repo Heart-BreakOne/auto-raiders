@@ -291,12 +291,15 @@ async function collectChests() {
         }
         //If join Duel switch is selected, user is not currently in a Duel already, and target slot is Campaign, check for an ongoing Duel and join
         if (await retrieveFromStorage("joinDuelSwitch") && duelJoined == false && activeRaidsData[j][4] == "1") {
-          if (slotState != 2) {
-            await backgroundDelay(3000);
-            await removeOldCaptain(cptId);
+          let duelCapt = await checkForDuel();
+          if (duelCapt) {
+            if (slotState != 2) {
+              await backgroundDelay(3000);
+              await removeOldCaptain(cptId);
+            }
+            await switchToDuel(duelCapt, slotNo - 1);
+            setIdleState("offlineButton_" + slotNo, 1)
           }
-          await switchToDuel(slotNo - 1);
-          setIdleState("offlineButton_" + slotNo, 1)
         }
       }
     }
@@ -1488,17 +1491,21 @@ async function checkEventCurrencyActive() {
   }
 }
 
-async function switchToDuel(index) {
+async function checkForDuel() {
   let captArray = await getCaptainsForSearch("duel");
   for (let i = 0; i < captArray.length; i++) {
     let capt = captArray[i];
     if (capt[3] == false) {
-      await joinCaptain(capt[0], index);
-      await saveToStorage("duelCaptain", "," + capt[1] + ",");
-      return true;
+      return capt;
     }
   }
   return false;
+}
+
+async function switchToDuel(capt, index) {
+  await joinCaptain(capt[0], index);
+  await saveToStorage("duelCaptain", "," + capt[1] + ",");
+  return true;
 }
 
 //Switch captains to a higher one if available

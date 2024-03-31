@@ -259,7 +259,10 @@ async function start() {
       }
       //If slot is available and user is not currently in a Duel already, switch to a Duel (if one exists)
       if (slotAvailable && !duelJoined) {
-        duelSwitchSuccessful = await switchToDuel(slotAvailable);
+        let duelCapt = await checkForDuel();
+        if (duelCapt) {
+          duelSwitchSuccessful = await switchToDuel(duelCapt, slotAvailable);
+        }
       }
     }
     if (forceMaster || replaceMaster) {
