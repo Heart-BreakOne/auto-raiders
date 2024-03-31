@@ -218,34 +218,73 @@ async function start() {
   }
 
   //Checks masterlist to switch
-  let masterSwitchkeysArray = ['liveMasterSwitch', 'priorityMasterSwitch'];
+  let masterSwitchkeysArray = ['joinDuelSwitch', 'liveMasterSwitch', 'priorityMasterSwitch'];
   let masterSwitchkeys = await retrieveMultipleFromStorage(masterSwitchkeysArray);
+  let joinDuelSwitch = masterSwitchkeys.joinDuelSwitch;
   let forceMaster = masterSwitchkeys.liveMasterSwitch;
   let replaceMaster = masterSwitchkeys.priorityMasterSwitch;
-  if (forceMaster || replaceMaster) {
-    await switchToMasterList(forceMaster, replaceMaster);
-    await delay(10000);
-    navItems = document.querySelectorAll('.mainNavItemText');
-    let storeButton;
-    let battleButton;
-    if (navItems.length === 0 || navItems === undefined) {
-      isContentRunning = false;
-      return;
-    } else {
-      //If navItem exists, open main menu
-      for (let i = navItems.length - 1; i >= 0; i--) {
-        let navItem = navItems[i];
-        if (navItem.innerText === "Store") {
-          storeButton = navItem;
-        }
-        if (navItem.innerText === "Battle") {
-          battleButton = navItem;
-        }
+  if (joinDuelSwitch || forceMaster || replaceMaster) {
+    let duelSwitchSuccessful;
+    let masterlistSwitchSuccessful;
+    if (joinDuelSwitch) {
+      let slotAvailable = false;
+      let duelJoined = false;
+      //Initialized a node list with all the captain slots
+      const capSlots = document.querySelectorAll('.capSlot');
+
+      //Iterates through the list of slots
+      for (let index = 0; index < capSlots.length; index++) {
+          //Gets the current slot
+          const slot = capSlots[index];
+          //Gets button id form the current slot
+          try {
+              const btn = slot.querySelector(".capSlotStatus .offlineButton");
+              const buttonId = btn.getAttribute('id');
+              //Checks if the user wants to switch idle captains by passing the button id
+              const currentIdleState = await getIdleState(buttonId);
+              if (!currentIdleState) {
+                  continue;
+              }
+          } catch (error) {
+              return;
+          }
+          if (slot.innerText.includes("Duel")) {
+            duelJoined = true;
+          }
+          //Select button signals that the slot is empty.
+          const selectButton = slot.querySelector(".actionButton.actionButtonPrimary.capSlotButton.capSlotButtonAction");
+          if (selectButton && selectButton.innerText == "SELECT") {
+            slotAvailable = index;
+          }
+      }
+      //If slot is available and user is not currently in a Duel already, switch to a Duel (if one exists)
+      if (slotAvailable && !duelJoined) {
+        duelSwitchSuccessful = await switchToDuel(slotAvailable);
       }
     }
-    storeButton.click();
-    battleButton.click();
-    await delay(5000);
+    if (forceMaster || replaceMaster) {
+      masterlistSwitchSuccessful = await switchToMasterList(forceMaster, replaceMaster);
+    }
+    if (duelSwitchSuccessful || masterlistSwitchSuccessful) {
+      navItems = document.querySelectorAll('.mainNavItemText');
+      let storeButton;
+      let battleButton;
+      if (navItems.length !== 0 || navItems !== undefined) {
+        //If navItem exists, open main menu
+        for (let i = navItems.length - 1; i >= 0; i--) {
+          let navItem = navItems[i];
+          if (navItem.innerText === "Store") {
+            storeButton = navItem;
+          }
+          if (navItem.innerText === "Battle") {
+            battleButton = navItem;
+          }
+        }
+        storeButton.click();
+        battleButton.click();
+        await delay(5000);
+      }
+    }
   }
 
   //Checks if the user wants to replace idle captains and invoke the function to check and replace them.

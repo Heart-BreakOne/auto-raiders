@@ -21,6 +21,7 @@ document.addEventListener("DOMContentLoaded", function () {
     initializeSwitch("clashSwitch");
     initializeSwitch("multiClashSwitch");
     initializeSwitch("pvpSpecSwitch");
+    initializeSwitch("joinDuelSwitch");
     initializeSwitch("modeChangeSwitch");
     initializeSwitch("campaignSwitch");
     initializeSwitch("battlepassSwitch");
@@ -361,6 +362,7 @@ function exportSettingsToFile() {
         "clashSwitch",
         "multiClashSwitch",
         "pvpSpecSwitch",
+        "joinDuelSwitch",
         "modeChangeSwitch",
         "dungeonSwitch",
         "dungeonsSlot0Switch",
