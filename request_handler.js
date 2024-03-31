@@ -986,7 +986,7 @@ async function getCaptainsForSearch(mode) { //mode = "campaign"
     let h = 0;
 
     for (let pageNum = 1; pageNum <= 10; pageNum++) {
-      const response = await fetch(`https://www.streamraiders.com/api/game/?cn=getCaptainsForSearch&userId=${userId}&isCaptain=0&gameDataVersion=${gameDataVersion}&command=getCaptainsForSearch&page=${pageNum}&resultsPerPage=24&filters={"ambassadors":"false","mode":"${mode}","favorite":"false","isPlaying":1}&clientVersion=${clientVersion}&clientPlatform=WebLite`, {
+      const response = await fetch(`https://www.streamraiders.com/api/game/?cn=getCaptainsForSearch&userId=${userId}&isCaptain=0&gameDataVersion=${gameDataVersion}&command=getCaptainsForSearch&page=${pageNum}&resultsPerPage=24&filters={"ambassadors":"false","mode":"${mode}","favorite":"false","roomCodes":"false","isPlaying":1}&clientVersion=${clientVersion}&clientPlatform=WebLite`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/x-www-form-urlencoded',
@@ -1519,7 +1519,7 @@ async function switchCaptains(currentCaptain, masterList, index) {
   for (let i = 1; i < 6; i++) {
     try {
       let cookieString = document.cookie;
-      const response = await fetch(`https://www.streamraiders.com/api/game/?cn=getCaptainsForSearch&isPlayingS=desc&isLiveS=desc&page=${i}&format=normalized&seed=4140&resultsPerPage=30&filters={"favorite":"false","ambassadors":"false","isPlaying":1}&clientVersion=${clientVersion}&clientPlatform=MobileLite&gameDataVersion=${gameDataVersion}&command=getCaptainsForSearch&isCaptain=0`, {
+      const response = await fetch(`https://www.streamraiders.com/api/game/?cn=getCaptainsForSearch&isPlayingS=desc&isLiveS=desc&page=${i}&format=normalized&seed=4140&resultsPerPage=30&filters={"favorite":"false","ambassadors":"false","roomCodes":"false","isPlaying":1}&clientVersion=${clientVersion}&clientPlatform=MobileLite&gameDataVersion=${gameDataVersion}&command=getCaptainsForSearch&isCaptain=0`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/x-www-form-urlencoded',
