@@ -231,14 +231,19 @@ async function collectChests() {
     let m = 4 // rows
     let n = 4 // columns
     let activeRaidsData = Array(m).fill().map(entry => Array(n))
-
+    let duelJoined = false;
+    
     for (let i = 0; i < activeRaids.data.length; i++) {
       let raidData = activeRaids.data[i];
+      if (raidData.type == "5") {
+        duelJoined = true;
+      }
       if (raidData.postBattleComplete == "1" && (raidData.hasRecievedRewards == null ||raidData.hasRecievedRewards == "0")) {
         activeRaidsData[i][0] = raidData.raidId;
         activeRaidsData[i][1] = raidData.twitchDisplayName;
         activeRaidsData[i][2] = raidData.captainId;
         activeRaidsData[i][3] = raidData.userSortIndex;
+        activeRaidsData[i][4] = raidData.type;
       }
     }
 
@@ -270,6 +275,32 @@ async function collectChests() {
         assists = null;
         unitIconList = null;
         rewards = null;
+        
+        //Leave after collecting chest and logging results if user selected the option to do so
+        let slotState;
+        let slotNo = parseInt(userSortIndex) + 1;
+        slotState = await getIdleState("offlineButton_" + slotNo);
+        if (slotState == 2) {
+          await backgroundDelay(3000);
+          await removeOldCaptain(cptId);
+          if (await retrieveFromStorage('afterSwitch')) {
+            setIdleState("offlineButton_" + slotNo, 1)
+          } else {
+            setIdleState("offlineButton_" + slotNo, 0)
+          }
+        }
+        //If join Duel switch is selected, user is not currently in a Duel already, and target slot is Campaign, check for an ongoing Duel and join
+        if (await retrieveFromStorage("joinDuelSwitch") && duelJoined == false && activeRaidsData[j][4] == "1") {
+          let duelCapt = await checkForDuel();
+          if (duelCapt) {
+            if (slotState != 2) {
+              await backgroundDelay(3000);
+              await removeOldCaptain(cptId);
+            }
+            await switchToDuel(duelCapt, slotNo - 1);
+            setIdleState("offlineButton_" + slotNo, 1)
+          }
+        }
       }
     }
     chestsRunning = false;
@@ -280,7 +311,7 @@ async function collectChests() {
   }
 }
 
-async function getRaidStats(raidId, captSlotId, captId) {
+async function getRaidStats(raidId, captId) {
 
   const clientVersion = await retrieveFromStorage("clientVersion")
   const gameDataVersion = await retrieveFromStorage("dataVersion")
@@ -539,20 +570,6 @@ async function getRaidStats(raidId, captSlotId, captId) {
     //raidStats[5] = raidData.chestAwarded; //this value is set earlier in this function
     raidStats[6] = raidData.raidChest;
     raidStats[7] = raidData.chestCount;
-
-    let slotState;
-    let slotNo = parseInt(captSlotId) + 1;
-    slotState = await getIdleState("offlineButton_" + slotNo);
-    if (slotState == 2) {
-      await backgroundDelay(3000);
-      await removeOldCaptain(captId);
-      const afterSwitch = await retrieveFromStorage('afterSwitch');
-      if (afterSwitch) {
-        setIdleState("offlineButton_" + slotNo, 1)
-      } else {
-        setIdleState("offlineButton_" + slotNo, 0)
-      }
-    }
 
     return raidStats;
 
@@ -969,7 +986,7 @@ async function getCaptainsForSearch(mode) { //mode = "campaign"
     let h = 0;
 
     for (let pageNum = 1; pageNum <= 10; pageNum++) {
-      const response = await fetch(`https://www.streamraiders.com/api/game/?cn=getCaptainsForSearch&userId=${userId}&isCaptain=0&gameDataVersion=${gameDataVersion}&command=getCaptainsForSearch&page=${pageNum}&resultsPerPage=24&filters={"ambassadors":"false","mode":"${mode}","favorite":"false"}&clientVersion=${clientVersion}&clientPlatform=WebLite`, {
+      const response = await fetch(`https://www.streamraiders.com/api/game/?cn=getCaptainsForSearch&userId=${userId}&isCaptain=0&gameDataVersion=${gameDataVersion}&command=getCaptainsForSearch&page=${pageNum}&resultsPerPage=24&filters={"ambassadors":"false","mode":"${mode}","favorite":"false","roomCodes":"false","isPlaying":1}&clientVersion=${clientVersion}&clientPlatform=WebLite`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/x-www-form-urlencoded',
@@ -1472,4 +1489,91 @@ async function checkEventCurrencyActive() {
     }
     return isEventCurrencyActive;
   }
+}
+
+async function checkForDuel() {
+  let captArray = await getCaptainsForSearch("duel");
+  for (let i = 0; i < captArray.length; i++) {
+    let capt = captArray[i];
+    if (capt[3] == false) {
+      return capt;
+    }
+  }
+  return false;
+}
+
+async function switchToDuel(capt, index) {
+  await joinCaptain(capt[0], index);
+  await saveToStorage("duelCaptain", "," + capt[1] + ",");
+  return true;
+}
+
+//Switch captains to a higher one if available
+async function switchCaptains(currentCaptain, masterList, index) {
+  let captainsArray = [];
+  let currentId;
+
+  const clientVersion = await retrieveFromStorage("clientVersion")
+  const gameDataVersion = await retrieveFromStorage("dataVersion")
+
+  for (let i = 1; i < 6; i++) {
+    try {
+      let cookieString = document.cookie;
+      const response = await fetch(`https://www.streamraiders.com/api/game/?cn=getCaptainsForSearch&isPlayingS=desc&isLiveS=desc&page=${i}&format=normalized&seed=4140&resultsPerPage=30&filters={"favorite":"false","ambassadors":"false","roomCodes":"false","isPlaying":1}&clientVersion=${clientVersion}&clientPlatform=MobileLite&gameDataVersion=${gameDataVersion}&command=getCaptainsForSearch&isCaptain=0`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/x-www-form-urlencoded',
+          'Cookie': cookieString,
+        },
+      });
+
+      if (!response.ok) {
+        throw new Error('Network response was not ok');
+      }
+
+      // get unit id and name.
+      const captainsData = await response.json();
+
+      for (let i = 0; i < captainsData.data.captains.length; i++) {
+        const current = captainsData.data.captains[i];
+        const name = current.twitchUserName.toUpperCase();
+        const pvp = current.isPvp;
+        const id = current.userId;
+
+        const type = current.type;
+
+        if (currentCaptain === name) {
+          currentId = id;
+        }
+        captainsArray.push({
+          name, pvp, id, type
+        });
+      }
+    } catch (error) {
+      console.error('Error fetching captains:', error.message);
+      return false;
+    }
+  }
+
+  // Filter live captains so only masterlist, no pvp and no dungeon remains
+  //type 1 = campaign. type 3 = dungeon.
+  captainsArray = captainsArray.filter(captain => {
+    return captain.name !== currentCaptain && masterList.includes(captain.name) && !captain.pvp && captain.type != 3;
+  });
+
+  // Sort live captains based on their order on the masterlist
+  captainsArray.sort((a, b) => {
+    return masterList.indexOf(a.name) - masterList.indexOf(b.name);
+  });
+
+  // Extract the ids from the sorted captains
+  const firstCaptainId = captainsArray.length > 0 ? captainsArray[0].id : null;
+
+  if (currentId != undefined && firstCaptainId != undefined) {
+    await removeOldCaptain(currentId);
+    await joinCaptain(firstCaptainId, index);
+    await delay(5000);
+    return true;
+  }
+  return false;
 }

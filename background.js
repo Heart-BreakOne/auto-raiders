@@ -112,16 +112,6 @@ chrome.runtime.onConnect.addListener((port) => {
       const response = await fetchUnits();
       port.postMessage({ response });
     }
-
-    //Switch captains based on the masterlist priorities
-    if (msg.action === "switchCaptain") {
-      const currentCaptain = msg.msg;
-      const higherPriorityCaptains = msg.higherPriorityCaptains;
-      const index = msg.i
-      await getCookies();
-      const response = await switchCaptains(currentCaptain, higherPriorityCaptains, index);
-      port.postMessage({ response });
-    }
   });
 });
 
@@ -151,114 +141,6 @@ async function getCookies() {
     }
   });
 }
-
-//Switch captains to a higher one if available
-async function switchCaptains(currentCaptain, masterList, index) {
-  let captainsArray = [];
-  let currentId
-
-  for (let i = 1; i < 6; i++) {
-    try {
-      const response = await fetch(`https://www.streamraiders.com/api/game/?cn=getCaptainsForSearch&isPlayingS=desc&isLiveS=desc&page=${i}&format=normalized&seed=4140&resultsPerPage=30&filters={%22favorite%22:false,%22isLive%22:1,%22ambassadors%22:%22false%22}&clientVersion=${clientVersion}&clientPlatform=MobileLite&gameDataVersion=${gameDataVersion}&command=getCaptainsForSearch&isCaptain=0`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/x-www-form-urlencoded',
-          'Cookie': cookieString,
-        },
-      });
-
-      if (!response.ok) {
-        throw new Error('Network response was not ok');
-      }
-
-      // get unit id and name.
-      const captainsData = await response.json();
-
-      for (let i = 0; i < captainsData.data.captains.length; i++) {
-        const current = captainsData.data.captains[i];
-        const name = current.twitchUserName.toUpperCase();
-        const pvp = current.isPvp;
-        const id = current.userId;
-
-        const type = current.type;
-
-        if (currentCaptain === name) {
-          currentId = id;
-        }
-        captainsArray.push({
-          name, pvp, id, type
-        });
-      }
-    } catch (error) {
-      console.error('Error fetching captains:', error.message);
-      return false;
-    }
-  }
-
-  // Filter live captains so only masterlist, no pvp and no dungeon remains
-  //type 1 = campaign. type 3 = dungeon.
-  captainsArray = captainsArray.filter(captain => {
-    return captain.name !== currentCaptain && masterList.includes(captain.name) && !captain.pvp && captain.type != 3;
-  });
-
-  // Sort live captains based on their order on the masterlist
-  captainsArray.sort((a, b) => {
-    return masterList.indexOf(a.name) - masterList.indexOf(b.name);
-  });
-
-  // Extract the ids from the sorted captains
-  const firstCaptainId = captainsArray.length > 0 ? captainsArray[0].id : null;
-
-  if (currentId != undefined && firstCaptainId != undefined) {
-    await removeCaptain(currentId, firstCaptainId, index);
-    return true;
-  }
-  return false;
-}
-
-//Remove current captain
-async function removeCaptain(currentId, firstCaptainId, index) {
-  try {
-    const response = await fetch(`https://www.streamraiders.com/api/game/?cn=leaveCaptain&captainId=${currentId}&clientVersion=${clientVersion}&clientPlatform=WebLite&gameDataVersion=${gameDataVersion}&command=leaveCaptain&isCaptain=0`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/x-www-form-urlencoded',
-        'Cookie': cookieString,
-      },
-    });
-
-    if (!response.ok) {
-      throw new Error('Network response was not ok');
-    }
-    await backgroundDelay(1500);
-    await selectCaptain(firstCaptainId, index);
-  } catch (error) {
-    console.error('Error fetching skins:', error.message);
-    return;
-  }
-}
-
-//Select new captain
-async function selectCaptain(firstCaptainId, index) {
-  try {
-    const response = await fetch(`https://www.streamraiders.com/api/game/?cn=addPlayerToRaid&captainId=${firstCaptainId}&userSortIndex=${index}&clientVersion=${clientVersion}&clientPlatform=WebLite&gameDataVersion=${gameDataVersion}&command=addPlayerToRaid&isCaptain=0`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/x-www-form-urlencoded',
-        'Cookie': cookieString,
-      },
-    });
-
-    if (!response.ok) {
-      throw new Error('Network response was not ok');
-    }
-    return;
-  } catch (error) {
-    console.error('Error fetching skins:', error.message);
-    return;
-  }
-}
-
 
 /*
 11       In Captain Planning Period
