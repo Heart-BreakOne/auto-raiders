@@ -1442,7 +1442,7 @@ async function checkForDuel() {
   let captArray = await getCaptainsForSearch("duel");
   for (let i = 0; i < captArray.length; i++) {
     let capt = captArray[i];
-    if (capt[3] == false) {
+    if (capt[3] == false) { //capt[3] is whether the user has already joined the captain
       return capt;
     }
   }
@@ -1450,8 +1450,8 @@ async function checkForDuel() {
 }
 
 async function switchToDuel(capt, index) {
-  await joinCaptain(capt[0], index);
-  await saveToStorage("duelCaptain", "," + capt[1] + ",");
+  await joinCaptain(capt[0], index); //capt[0] is captainId
+  await saveToStorage("duelCaptain", "," + capt[1] + ","); //capt[1] is twitchDisplayName
   return true;
 }
 
@@ -1657,7 +1657,6 @@ async function checkDungeons(cptId, type) {
     }
   }
 }
-
 
 async function getActiveRaids() {
   const clientVersion = await retrieveFromStorage("clientVersion")
