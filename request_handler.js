@@ -262,14 +262,14 @@ async function collectChests() {
           }
         }
         //If join Duel switch is selected, user is not currently in a Duel already, and target slot is Campaign, check for an ongoing Duel and join
-        if (await retrieveFromStorage("joinDuelSwitch") && duelJoined == false && activeRaidsData[j][4] == "1") {
+        if (await retrieveFromStorage("joinDuelSwitch") && duelJoined == false && type == "1") {
           let duelCapt = await checkForDuel();
           if (duelCapt) {
             if (slotState != 2) {
               await backgroundDelay(3000);
               await removeOldCaptain(cptId);
             }
-            await switchToDuel(duelCapt, slotNo - 1);
+            duelJoined = await switchToDuel(duelCapt, slotNo - 1);
             setIdleState("offlineButton_" + slotNo, 1)
           }
         }
@@ -1465,7 +1465,7 @@ async function switchCaptains(currentCaptain, masterList, index) {
   for (let i = 1; i < 6; i++) {
     try {
       let cookieString = document.cookie;
-      const response = await fetch(`https://www.streamraiders.com/api/game/?cn=getCaptainsForSearch&isPlayingS=desc&isLiveS=desc&page=${i}&format=normalized&resultsPerPage=30&filters={"favorite":"false","ambassadors":"false","roomCodes":"false","isPlaying":1}&clientVersion=${clientVersion}&clientPlatform=MobileLite&gameDataVersion=${gameDataVersion}&command=getCaptainsForSearch&isCaptain=0`, {
+      const response = await fetch(`https://www.streamraiders.com/api/game/?cn=getCaptainsForSearch&isPlayingS=desc&isLiveS=desc&page=${i}&format=normalized&resultsPerPage=30&filters={"isPlaying":1}&clientVersion=${clientVersion}&clientPlatform=MobileLite&gameDataVersion=${gameDataVersion}&command=getCaptainsForSearch&isCaptain=0`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/x-www-form-urlencoded',
@@ -1491,9 +1491,11 @@ async function switchCaptains(currentCaptain, masterList, index) {
         if (currentCaptain === name) {
           currentId = id;
         }
-        captainsArray.push({
-          name, pvp, id, type
-        });
+        if (isSelected == false) {
+          captainsArray.push({
+            name, pvp, id, type, isSelected
+          });
+        }
       }
     } catch (error) {
       console.error('Error fetching captains:', error.message);
@@ -1519,6 +1521,24 @@ async function switchCaptains(currentCaptain, masterList, index) {
     await removeOldCaptain(currentId);
     await joinCaptain(firstCaptainId, index);
     await delay(5000);
+    try {
+      let response = await getActiveRaids();
+
+      // Get unit id and name.
+      const activeRaids = await response.json();
+      let activeRaidsData = new Object();
+      for (let i = 0; i < activeRaids.data.length; i++) {
+        const position = activeRaids.data[i];
+        if (position.captainId === firstCaptainId && position.isCodeLocked == true) {
+          for (let j = 0; j < masterList.length; j++) {
+            if (masterList[j].id == firstCaptainId) {
+              delete masterList[j];
+            }
+          }
+          await switchCaptains(currentCaptain, masterList, index)
+        }
+      }
+    } catch (error) { }
     return true;
   }
   return false;

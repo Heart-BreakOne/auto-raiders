@@ -260,11 +260,12 @@ async function start() {
         let duelCapt = await checkForDuel();
         if (duelCapt) {
           duelSwitchSuccessful = await switchToDuel(duelCapt, slotAvailable);
+          duelJoined = true;
         }
       }
     }
     if (forceMaster || replaceMaster) {
-      masterlistSwitchSuccessful = await switchToMasterList(forceMaster, replaceMaster);
+      masterlistSwitchSuccessful = await switchToMasterList(forceMaster, replaceMaster, joinDuelSwitch);
     }
     if (duelSwitchSuccessful || masterlistSwitchSuccessful) {
       navItems = document.querySelectorAll('.mainNavItemText');

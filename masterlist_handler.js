@@ -8,7 +8,7 @@ const readyToPlace = "Unit ready to place!";
 let masterPort;
 let masterlistRunning;
 
-async function switchToMasterList(forceMaster, replaceMaster) {
+async function switchToMasterList(forceMaster, replaceMaster, joinDuelSwitch) {
     if (masterlistRunning) {
       return
     }
@@ -24,6 +24,10 @@ async function switchToMasterList(forceMaster, replaceMaster) {
 
         const slot = allCaptains[i];
 
+        if (joinDuelSwitch && slot.innerText.includes("Duel")) {
+            continue;
+        }
+        
         if (slot.innerHTML.includes("DISABLED")) {
             continue;
         }
