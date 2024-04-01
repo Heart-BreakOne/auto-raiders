@@ -413,18 +413,18 @@ async function start() {
         let captKeys = await retrieveMultipleFromStorage(captKeysArray);
         let dungeonCaptainNameFromStorage = captKeys.dungeonCaptain;
         if (dungeonCaptainNameFromStorage) {
-          dungeonCaptainNameFromStorage.toLowerCase();
+          dungeonCaptainNameFromStorage = dungeonCaptainNameFromStorage.toLowerCase();
         }
         let clashCaptainNameFromStorage = captKeys.clashCaptain;
         if (clashCaptainNameFromStorage) {
-          clashCaptainNameFromStorage.toLowerCase();
+          clashCaptainNameFromStorage = clashCaptainNameFromStorage.toLowerCase();
         }
         if (clashCaptainNameFromStorage == null) {
           clashCaptainNameFromStorage = "";
         }
         let duelsCaptainNameFromStorage = captKeys.duelCaptain;
         if (duelsCaptainNameFromStorage) {
-          duelsCaptainNameFromStorage.toLowerCase();
+          duelsCaptainNameFromStorage = duelsCaptainNameFromStorage.toLowerCase();
         }
         let clashSwitch = captKeys.clashSwitch;
         let duelSwitch = captKeys.duelSwitch;
@@ -1229,18 +1229,18 @@ console.log("LOG-cap slot states error, return");
     let captKeys = await retrieveMultipleFromStorage(captKeysArray);
     let dungeonCaptainNameFromStorage = captKeys.dungeonCaptain
     if (dungeonCaptainNameFromStorage) {
-      dungeonCaptainNameFromStorage.toLowerCase();
-      }
+      dungeonCaptainNameFromStorage = dungeonCaptainNameFromStorage.toLowerCase();
+    }
     let clashCaptainNameFromStorage = captKeys.clashCaptain;
     if (clashCaptainNameFromStorage) {
-      clashCaptainNameFromStorage.toLowerCase();
-      }
+      clashCaptainNameFromStorage = clashCaptainNameFromStorage.toLowerCase();
+    }
     if (clashCaptainNameFromStorage == null) {
       clashCaptainNameFromStorage = "";
     }
     let duelsCaptainNameFromStorage = captKeys.duelCaptain;
     if (duelsCaptainNameFromStorage) {
-      duelsCaptainNameFromStorage.toLowerCase();
+      duelsCaptainNameFromStorage = duelsCaptainNameFromStorage.toLowerCase();
     }
 
     let capNameDOM;
