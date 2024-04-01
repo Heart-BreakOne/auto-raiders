@@ -13,8 +13,6 @@ document.addEventListener("DOMContentLoaded", function () {
     initializeSwitch("rareSwitch");
     initializeSwitch("legendarySwitch");
     initializeSwitch("dungeonSwitch");
-    initializeSwitch("dungeonsSlot0Switch");
-    initializeSwitch("dungeonsEmptySlot0Switch");
     initializeSwitch("dungeonLevelSwitch");
     initializeSwitch("duelSwitch");
     initializeSwitch("clashSwitch");
@@ -365,8 +363,6 @@ function exportSettingsToFile() {
         "joinDuelSwitch",
         "modeChangeSwitch",
         "dungeonSwitch",
-        "dungeonsSlot0Switch",
-        "dungeonsEmptySlot0Switch",
         "dungeonLevelSwitch",
         "liveMasterSwitch",
         "priorityMasterSwitch",
