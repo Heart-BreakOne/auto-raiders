@@ -19,20 +19,8 @@ async function getCaptainLoyalty(captainName) {
 
   const clientVersion = await retrieveFromStorage("clientVersion")
   const gameDataVersion = await retrieveFromStorage("dataVersion")
-
   try {
-    let cookieString = document.cookie;
-    // Post request to get all units
-    const response = await fetch(`https://www.streamraiders.com/api/game/?cn=getActiveRaids&clientVersion=${clientVersion}&clientPlatform=MobileLite&gameDataVersion=${gameDataVersion}&command=getActiveRaidsLite&isCaptain=0`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/x-www-form-urlencoded',
-        'Cookie': cookieString,
-      },
-    });
-    if (!response.ok) {
-      throw new Error('Network response was not ok');
-    }
+    let response = await getActiveRaids()
 
     // Get unit id and name.
     const activeRaids = await response.json();
@@ -107,19 +95,7 @@ async function getLeaderboardUnitsData() {
 
   try {
     let cookieString = document.cookie;
-    // Post request to get all units
-    const response = await fetch(`https://www.streamraiders.com/api/game/?cn=getActiveRaids&clientVersion=${clientVersion}&clientPlatform=MobileLite&gameDataVersion=${gameDataVersion}&command=getActiveRaidsLite&isCaptain=0`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/x-www-form-urlencoded',
-        'Cookie': cookieString,
-      },
-    });
-
-    if (!response.ok) {
-      throw new Error('Network response was not ok');
-    }
-
+    let response = await getActiveRaids()
     // Get unit id and name.
     const activeRaids = await response.json();
 
@@ -205,40 +181,32 @@ async function getLeaderboardUnitsData() {
 
 async function collectChests() {
 
-  if (await retrieveFromStorage("paused_checkbox")) {
+  if (await retrieveFromStorage("paused_checkbox") || chestsRunning) {
     return
   }
-  
+
   chestsRunning = true;
 
-  const clientVersion = await retrieveFromStorage("clientVersion")
-  const gameDataVersion = await retrieveFromStorage("dataVersion")
-
   try {
-    let cookieString = document.cookie;
-    const response = await fetch(`https://www.streamraiders.com/api/game/?cn=getActiveRaids&clientVersion=${clientVersion}&clientPlatform=MobileLite&gameDataVersion=${gameDataVersion}&command=getActiveRaidsLite&isCaptain=0`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/x-www-form-urlencoded',
-        'Cookie': cookieString,
-      },
-    });
-    if (!response.ok) {
-      throw new Error('Network response was not ok');
-    }
+    let response = await getActiveRaids()
 
     const activeRaids = await response.json();
     let m = 4 // rows
-    let n = 4 // columns
+    let n = 5 // columns
     let activeRaidsData = Array(m).fill().map(entry => Array(n))
     let duelJoined = false;
-    
+    let dungeonJoined = false
+
     for (let i = 0; i < activeRaids.data.length; i++) {
       let raidData = activeRaids.data[i];
       if (raidData.type == "5") {
         duelJoined = true;
       }
-      if (raidData.postBattleComplete == "1" && (raidData.hasRecievedRewards == null ||raidData.hasRecievedRewards == "0")) {
+      if (raidData.type == "3") {
+        dungeonJoined = true;
+      }
+
+      if (raidData.postBattleComplete == "1" && (raidData.hasRecievedRewards == null || raidData.hasRecievedRewards == "0")) {
         activeRaidsData[i][0] = raidData.raidId;
         activeRaidsData[i][1] = raidData.twitchDisplayName;
         activeRaidsData[i][2] = raidData.captainId;
@@ -253,6 +221,7 @@ async function collectChests() {
         let captainName = activeRaidsData[j][1];
         let cptId = activeRaidsData[j][2];
         let userSortIndex = activeRaidsData[j][3];
+        let type = activeRaidsData[j][4];
         let raidStats = await getRaidStats(raidId, userSortIndex, cptId);
         let battleResult = raidStats[0];
         let leaderboardRank = raidStats[1];
@@ -275,7 +244,7 @@ async function collectChests() {
         assists = null;
         unitIconList = null;
         rewards = null;
-        
+
         //Leave after collecting chest and logging results if user selected the option to do so
         let slotState;
         let slotNo = parseInt(userSortIndex) + 1;
@@ -300,6 +269,11 @@ async function collectChests() {
             await switchToDuel(duelCapt, slotNo - 1);
             setIdleState("offlineButton_" + slotNo, 1)
           }
+        }
+
+        // Join dungeons if user wants to.
+        if (!dungeonJoined && await retrieveFromStorage("dungeonSlotSwitch")) {
+          dungeonJoined = await checkDungeons(cptId, captainName, type)
         }
       }
     }
@@ -609,24 +583,8 @@ async function getEventProgressionLite() {
 
 async function getMapName(captainName) {
 
-  const clientVersion = await retrieveFromStorage("clientVersion")
-  const gameDataVersion = await retrieveFromStorage("dataVersion")
-
   try {
-    let cookieString = document.cookie;
-
-    // Post request to get all units
-    const response = await fetch(`https://www.streamraiders.com/api/game/?cn=getActiveRaids&clientVersion=${clientVersion}&clientPlatform=MobileLite&gameDataVersion=${gameDataVersion}&command=getActiveRaidsLite&isCaptain=0`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/x-www-form-urlencoded',
-        'Cookie': cookieString,
-      },
-    });
-
-    if (!response.ok) {
-      throw new Error('Network response was not ok');
-    }
+    let response = await getActiveRaids()
 
     // Get unit id and name.
     const activeRaids = await response.json();
@@ -688,23 +646,9 @@ async function checkBattleMessages() {
   }
   isRunning = true;
 
-  const clientVersion = await retrieveFromStorage("clientVersion")
-  const gameDataVersion = await retrieveFromStorage("dataVersion")
-
   //Logic to check battle for messages here
   try {
-    let cookieString = document.cookie;
-    const response = await fetch(`https://www.streamraiders.com/api/game/?cn=getActiveRaidsLitecn=getActiveRaidsLite&clientVersion=${clientVersion}&clientPlatform=MobileLite&gameDataVersion=${gameDataVersion}&command=getActiveRaidsLite&isCaptain=0`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/x-www-form-urlencoded',
-        'Cookie': cookieString,
-      },
-    });
-
-    if (!response.ok) {
-      throw new Error('Network response was not ok');
-    }
+    let response = await getActiveRaids()
 
     //Get relevant data from activeRaids and save on storage so it can be displayed to the user
     const activeRaids = await response.json();
@@ -793,7 +737,6 @@ async function getPotionQuantity() {
 async function getStoreRefreshCount() {
 
   try {
-    let cookieString = document.cookie;
     const response = await fetch('https://www.streamraiders.com/api/game/?cn=getUser&command=getUser');
     const data = await response.json();
     let storeRefreshCount;
@@ -986,7 +929,7 @@ async function getCaptainsForSearch(mode) { //mode = "campaign"
     let h = 0;
 
     for (let pageNum = 1; pageNum <= 10; pageNum++) {
-      const response = await fetch(`https://www.streamraiders.com/api/game/?cn=getCaptainsForSearch&userId=${userId}&isCaptain=0&gameDataVersion=${gameDataVersion}&command=getCaptainsForSearch&page=${pageNum}&resultsPerPage=24&filters={"ambassadors":"false","mode":"${mode}","favorite":"false","roomCodes":"false","isPlaying":1}&clientVersion=${clientVersion}&clientPlatform=WebLite`, {
+      const response = await fetch(`https://www.streamraiders.com/api/game/?cn=getCaptainsForSearch&userId=${userId}&isCaptain=0&gameDataVersion=${gameDataVersion}&command=getCaptainsForSearch&page=${pageNum}&resultsPerPage=24&filters={"mode":"${mode}","roomCodes":"false","isPlaying":1}&clientVersion=${clientVersion}&clientPlatform=WebLite`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/x-www-form-urlencoded',
@@ -1440,9 +1383,9 @@ async function levelUp() {
           let scrollCost = price.scroll
           let goldCost = price.gold
           if (scrolls >= scrollCost && gold >= goldCost) {
-            
+
             //Make the api call to level up
-            let upgradeUrl =  ""
+            let upgradeUrl = ""
             if (level == 19 && canSpec) {
               upgradeUrl = `https://www.streamraiders.com/api/game/?cn=specializeUnit&unitId=${unitId}&specializationUid=${spec}&clientVersion=${clientVersion}&clientPlatform=MobileLite&gameDataVersion=${gameDataVersion}&command=specializeUnit&isCaptain=0`
             } else {
@@ -1468,7 +1411,7 @@ async function levelUp() {
               console.error('Error reviving unit:', error.message);
               return;
             }
-             break;
+            break;
           }
         }
       }
@@ -1480,7 +1423,7 @@ async function checkEventCurrencyActive() {
   if (isEventCurrencyActive == null || isEventCurrencyActive == undefined) {
     let eventData = await retrieveFromStorage("events");
     let currentDateTime = new Date();
-    let currentDateTimePT = new Date(currentDateTime.toLocaleString("en-US", {timeZone: "America/Los_Angeles"}));
+    let currentDateTimePT = new Date(currentDateTime.toLocaleString("en-US", { timeZone: "America/Los_Angeles" }));
     isEventCurrencyActive = false;
     for (event in eventData) {
       if (eventData[event].StartTime <= currentDateTimePT && eventData[event].EndTime > currentDateTimePT && eventData[event].EventCurrency != "") {
@@ -1519,7 +1462,7 @@ async function switchCaptains(currentCaptain, masterList, index) {
   for (let i = 1; i < 6; i++) {
     try {
       let cookieString = document.cookie;
-      const response = await fetch(`https://www.streamraiders.com/api/game/?cn=getCaptainsForSearch&isPlayingS=desc&isLiveS=desc&page=${i}&format=normalized&seed=4140&resultsPerPage=30&filters={"favorite":"false","ambassadors":"false","roomCodes":"false","isPlaying":1}&clientVersion=${clientVersion}&clientPlatform=MobileLite&gameDataVersion=${gameDataVersion}&command=getCaptainsForSearch&isCaptain=0`, {
+      const response = await fetch(`https://www.streamraiders.com/api/game/?cn=getCaptainsForSearch&isPlayingS=desc&isLiveS=desc&page=${i}&format=normalized&resultsPerPage=30&filters={"favorite":"false","ambassadors":"false","roomCodes":"false","isPlaying":1}&clientVersion=${clientVersion}&clientPlatform=MobileLite&gameDataVersion=${gameDataVersion}&command=getCaptainsForSearch&isCaptain=0`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/x-www-form-urlencoded',
@@ -1576,4 +1519,156 @@ async function switchCaptains(currentCaptain, masterList, index) {
     return true;
   }
   return false;
+}
+
+
+async function checkDungeons(cptId, type) {
+  // No need to check pause state because collectChests already does that.
+
+  // Check if pvp can be over
+  let canOverwritePVP = await retrieveFromStorage("dungeonSlotOverwrite")
+  if (!canOverwritePVP && (type == "2" || type == "5" || type == "4")) {
+    return
+  }
+
+  let mustSkipIfNoDungeon = await retrieveFromStorage("dungeonSlotSkip")
+
+  let sD = await chrome.storage.local.get(['dungeonblocklist']);
+  let dgnBlockList = Object.values(sD.dungeonblocklist) || [];
+
+  sD = await chrome.storage.local.get(['dungeonlist']);
+  let dungeonList = Object.values(sD.dungeonlist) || [];
+
+
+  // User wants to skip if there are no dungeons from the list, but the list wasn't set.
+  if (mustSkipIfNoDungeon && dungeonList.length == 0) {
+    return
+  }
+
+  // Get active raids
+  const clientVersion = await retrieveFromStorage("clientVersion")
+  const gameDataVersion = await retrieveFromStorage("dataVersion")
+
+  // Get uncoded dungeons captains here before handling slots as an empty result means any further processing is useless
+  let dungeonCaptains = []
+  for (let i = 1; i < 6; i++) {
+    try {
+      let cookieString = document.cookie;
+      const response = await fetch(`https://www.streamraiders.com/api/game/?cn=getCaptainsForSearch&isPlayingS=desc&isLiveS=desc&page=${i}&format=normalized&resultsPerPage=30&filters={"roomCodes":"false","isPlaying":1,"mode":"dungeons"}&clientVersion=${clientVersion}&clientPlatform=MobileLite&gameDataVersion=${gameDataVersion}&command=getCaptainsForSearch&isCaptain=0`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/x-www-form-urlencoded',
+          'Cookie': cookieString,
+        },
+      });
+      if (!response.ok) {
+        return
+      }
+
+      let parsedResponse = await response.json()
+      let dungeonCaptainData = parsedResponse.data.captains
+      dungeonCaptains.push(...dungeonCaptainData);
+    } catch (error) {
+      return
+    }
+  }
+
+  // Remove captains that are not listed
+  if (mustSkipIfNoDungeon) {
+    dungeonCaptains = dungeonCaptains.filter(captain => {
+      let captainName = captain.twitchUserName.toLowerCase();
+      return dungeonList.includes(captainName);
+    });
+  }
+
+  // Remove block listed captains
+  for (let i = 0; i < dungeonCaptains.length; i++) {
+    let captainName = dungeonCaptains[i].twitchUserName.toLowerCase();
+    if (dgnBlockList.includes(captainName)) {
+      dungeonCaptains.splice(i, 1);
+      i--;
+    }
+  }
+
+  // Sort the online captains based on the dungeon list.
+  dungeonCaptains.sort((a, b) => {
+    let c1 = dungeonList.indexOf(a.twitchUserName.toLowerCase());
+    let c2 = dungeonList.indexOf(b.twitchUserName.toLowerCase());
+    return c1 - c2;
+  });
+
+  // Join the first captain on the list
+  let captainName = dungeonCaptains[0].twitchUserName
+  if (captainName) {
+    try {
+      await removeOldCaptain(cptId)
+      let cookieString = document.cookie;
+      const response = await fetch(`https://www.streamraiders.com/t/${captainName}`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/x-www-form-urlencoded',
+          'Cookie': cookieString,
+        },
+      });
+
+      if (!response.ok) {
+        return false
+      }
+      return true;
+    } catch (error) {
+      console.error('Error joining captain:', error.message);
+      return false
+    }
+  }
+}
+
+
+async function getActiveRaids() {
+  const clientVersion = await retrieveFromStorage("clientVersion")
+  const gameDataVersion = await retrieveFromStorage("dataVersion")
+
+  //Logic to check battle for messages here
+  try {
+    let cookieString = document.cookie;
+    const response = await fetch(`https://www.streamraiders.com/api/game/?cn=getActiveRaidsLitecn=getActiveRaidsLite&clientVersion=${clientVersion}&clientPlatform=MobileLite&gameDataVersion=${gameDataVersion}&command=getActiveRaidsLite&isCaptain=0`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/x-www-form-urlencoded',
+        'Cookie': cookieString,
+      },
+    });
+
+    if (!response.ok) {
+      throw new Error('Network response was not ok');
+    }
+
+    return response
+
+  } catch (error) {
+    return null
+  }
+}
+
+
+async function makeRequest(url) {
+
+  try {
+    let cookieString = document.cookie;
+    const response = await fetch(url, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/x-www-form-urlencoded',
+        'Cookie': cookieString,
+      },
+    });
+
+    if (!response.ok) {
+      throw new Error('Network response was not ok');
+    }
+
+    return response
+
+  } catch (error) {
+    return null
+  }
 }

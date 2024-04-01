@@ -16,7 +16,6 @@ document.addEventListener("DOMContentLoaded", function () {
     initializeSwitch("dungeonsSlot0Switch");
     initializeSwitch("dungeonsEmptySlot0Switch");
     initializeSwitch("dungeonLevelSwitch");
-    initializeSwitch("dungeonPlaceAnywaySwitch");
     initializeSwitch("duelSwitch");
     initializeSwitch("clashSwitch");
     initializeSwitch("multiClashSwitch");
@@ -58,7 +57,8 @@ document.addEventListener("DOMContentLoaded", function () {
     initializeSwitch("lsuperbossSwitch");
     initializeSwitch("afterSwitch");
     initializeSwitch("dungeonSlotSwitch");
-    initializeSwitch("skipDungeonSlotSwitch");
+    initializeSwitch("dungeonSlotOverwrite");
+    initializeSwitch("dungeonSlotSkip");
     initializeSwitch("duelsSlotSwitch");
     initializeSwitch("skipDuelsSlotSwitch");
     initializeSwitch("clashSlotSwitch");
@@ -368,7 +368,6 @@ function exportSettingsToFile() {
         "dungeonsSlot0Switch",
         "dungeonsEmptySlot0Switch",
         "dungeonLevelSwitch",
-        "dungeonPlaceAnywaySwitch",
         "liveMasterSwitch",
         "priorityMasterSwitch",
         "idleMasterSwitch",
@@ -403,7 +402,8 @@ function exportSettingsToFile() {
         "BossInput",
         "sBossInput",
         "dungeonSlotSwitch",
-        "skipDungeonSlotSwitch",
+        "dungeonSlotOverwrite",
+        "dungeonSlotSkip",
         "duelsSlotSwitch",
         "skipDuelsSlotSwitch",
         "clashSlotSwitch",
