@@ -1632,6 +1632,10 @@ async function checkDungeons(cptId, type) {
     return c1 - c2;
   });
 
+  await joinDungeon(dungeonCaptains);
+}
+
+async function joinDungeon(dungeonCaptains) {
   // Join the first captain on the list
   let captainName = dungeonCaptains[0].twitchUserName
   if (captainName) {
@@ -1649,6 +1653,16 @@ async function checkDungeons(cptId, type) {
       if (!response.ok) {
         return false
       }
+      
+      if (await checkIfCodeLocked(captainName)) {
+        for (let j = 0; j < dungeonCaptains.length; j++) {
+          if (dungeonCaptains[j].twitchUserName.toLowerCase() == captainName.toLowerCase()) {
+            delete dungeonCaptains[j];
+          }
+        }
+        await joinDungeon(dungeonCaptains);
+      }
+      
       await saveToStorage("dungeonCaptain", "," + captainName + ",");
       return true;
     } catch (error) {
