@@ -39,7 +39,6 @@
             "masterlist_handler.js",
             "units_handler.js",
             "battle_message_handler.js",
-            "dungeon_slot_manager.js",
             "quest_handler.js",
             "request_handler.js",
             "mouse_events.js",
