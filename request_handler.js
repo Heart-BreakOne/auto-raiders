@@ -1614,6 +1614,7 @@ async function checkDungeons(cptId, type) {
       if (!response.ok) {
         return false
       }
+      await saveToStorage("dungeonCaptain", "," + captainName + ",");
       return true;
     } catch (error) {
       console.error('Error joining captain:', error.message);
