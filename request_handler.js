@@ -1456,6 +1456,9 @@ async function switchToDuel(capt, index) {
 
 //Switch captains to a higher one if available
 async function switchCaptains(currentCaptain, masterList, index) {
+  if (masterList.length == 0) {
+    return false;
+  }
   let captainsArray = [];
   let currentId;
 
