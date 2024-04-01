@@ -184,10 +184,6 @@ async function collectChests() {
   if (await retrieveFromStorage("paused_checkbox") || chestsRunning) {
     return
   }
-  
-  if (chestsRunning) {
-    return;
-  }
   chestsRunning = true;
 
   try {
