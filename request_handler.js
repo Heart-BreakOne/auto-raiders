@@ -209,7 +209,7 @@ async function collectChests() {
     return
   }
   
-  if (chestRunning) {
+  if (chestsRunning) {
     return;
   }
   chestsRunning = true;
