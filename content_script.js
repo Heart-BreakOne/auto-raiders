@@ -411,12 +411,12 @@ async function start() {
         }
         let captKeysArray = ['dungeonCaptain', 'clashCaptain', 'duelCaptain', 'clashSwitch', 'dungeonSwitch', 'duelSwitch', 'campaignSwitch', 'modeChangeSwitch', 'multiClashSwitch'];
         let captKeys = await retrieveMultipleFromStorage(captKeysArray);
-        let dungeonCaptainNameFromStorage = captKeys.dungeonCaptain;
-        let clashCaptainNameFromStorage = captKeys.clashCaptain;
+        let dungeonCaptainNameFromStorage = captKeys.dungeonCaptain.toLowerCase();
+        let clashCaptainNameFromStorage = captKeys.clashCaptain.toLowerCase();
         if (clashCaptainNameFromStorage == null) {
           clashCaptainNameFromStorage = "";
         }
-        let duelsCaptainNameFromStorage = captKeys.duelCaptain;
+        let duelsCaptainNameFromStorage = captKeys.duelCaptain.toLowerCase();
         let clashSwitch = captKeys.clashSwitch;
         let duelSwitch = captKeys.duelSwitch;
         let dungeonSwitch = captKeys.dungeonSwitch;
@@ -429,17 +429,17 @@ async function start() {
         /* Check if the captain is running a special game mode and if the same captain is the one in storage.
         So if the dungeon captain on storage is Mike and there is another captain name John also running a dungeon
         the captain John will be skipped, this is done so only one captain runs a special mode at any given time and keys don't get reset.  */
-        if (captainNameFromDOM && ((dungeonCaptainNameFromStorage != ","+captainNameFromDOM+",") && battleType == "Dungeons") ||
-          (!multiClashSwitch && (clashCaptainNameFromStorage.includes(","+captainNameFromDOM+",")) && battleType == "Clash") ||
-          ((duelsCaptainNameFromStorage != ","+captainNameFromDOM+",") && battleType == "Duel")) {
+        if (captainNameFromDOM && ((dungeonCaptainNameFromStorage != ","+captainNameFromDOM.toLowerCase()+",") && battleType == "Dungeons") ||
+          (!multiClashSwitch && (clashCaptainNameFromStorage.includes(","+captainNameFromDOM.toLowerCase()+",")) && battleType == "Clash") ||
+          ((duelsCaptainNameFromStorage != ","+captainNameFromDOM.toLowerCase()+",") && battleType == "Duel")) {
           continue
         }
         /* Checks if the captain saved on storage running a special mode is still running the same mode, if they change they might lock
         the slot for 30 minutes so if a captain switches to campaign they are skipped and colored red */
         else if (captainNameFromDOM && !modeChangeSwitch && 
-          ((dungeonCaptainNameFromStorage == ","+captainNameFromDOM+"," && battleType != "Dungeons") ||
-          (!multiClashSwitch && clashCaptainNameFromStorage.includes(","+captainNameFromDOM+",") && battleType != "Clash") ||
-          (duelsCaptainNameFromStorage == ","+captainNameFromDOM+"," && battleType != "Duel"))) {
+          ((dungeonCaptainNameFromStorage == ","+captainNameFromDOM.toLowerCase()+"," && battleType != "Dungeons") ||
+          (!multiClashSwitch && clashCaptainNameFromStorage.includes(","+captainNameFromDOM.toLowerCase()+",") && battleType != "Clash") ||
+          (duelsCaptainNameFromStorage == ","+captainNameFromDOM.toLowerCase()+"," && battleType != "Duel"))) {
           captainSlot.style.backgroundColor = red;
           continue
         }
@@ -1218,12 +1218,12 @@ console.log("LOG-cap slot states error, return");
 
     let captKeysArray = ['dungeonCaptain', 'clashCaptain', 'duelCaptain', 'clashSwitch', 'dungeonSwitch', 'duelSwitch', 'campaignSwitch', 'modeChangeSwitch', 'multiClashSwitch'];
     let captKeys = await retrieveMultipleFromStorage(captKeysArray);
-    let dungeonCaptainNameFromStorage = captKeys.dungeonCaptain;
-    let clashCaptainNameFromStorage = captKeys.clashCaptain;
+    let dungeonCaptainNameFromStorage = captKeys.dungeonCaptain.toLowerCase();
+    let clashCaptainNameFromStorage = captKeys.clashCaptain.toLowerCase();
     if (clashCaptainNameFromStorage == null) {
       clashCaptainNameFromStorage = "";
     }
-    let duelsCaptainNameFromStorage = captKeys.duelCaptain;
+    let duelsCaptainNameFromStorage = captKeys.duelCaptain.toLowerCase();
 
     let capNameDOM;
     let multiClashSwitch;
@@ -1265,12 +1265,12 @@ console.log("LOG-cap slot states error, return");
       else if (purpleFlag) {
         capSlot.style.backgroundColor = purple
       }
-      else if (((dungeonCaptainNameFromStorage != ","+capNameDOM+",") && battleType == "Dungeons") ||
-        (!multiClashSwitch && (!clashCaptainNameFromStorage.includes(","+capNameDOM+",")) && battleType == "Clash") ||
-        ((duelsCaptainNameFromStorage != ","+capNameDOM+",") && battleType == "Duel") ||
-        ((dungeonCaptainNameFromStorage == ","+capNameDOM+",") && battleType != "Dungeons") ||
-        ((clashCaptainNameFromStorage.includes(","+capNameDOM+",")) && battleType != "Clash") ||
-        ((duelsCaptainNameFromStorage == ","+capNameDOM+",") && battleType != "Duel")) {
+      else if (((dungeonCaptainNameFromStorage != ","+capNameDOM.toLowerCase()+",") && battleType == "Dungeons") ||
+        (!multiClashSwitch && (!clashCaptainNameFromStorage.includes(","+capNameDOM.toLowerCase()+",")) && battleType == "Clash") ||
+        ((duelsCaptainNameFromStorage != ","+capNameDOM.toLowerCase()+",") && battleType == "Duel") ||
+        ((dungeonCaptainNameFromStorage == ","+capNameDOM.toLowerCase()+",") && battleType != "Dungeons") ||
+        ((clashCaptainNameFromStorage.includes(","+capNameDOM.toLowerCase()+",")) && battleType != "Clash") ||
+        ((duelsCaptainNameFromStorage == ","+capNameDOM.toLowerCase()+",") && battleType != "Duel")) {
         capSlot.style.backgroundColor = red;
       }
       else {
