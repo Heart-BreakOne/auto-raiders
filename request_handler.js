@@ -1488,6 +1488,7 @@ async function switchCaptains(currentCaptain, masterList, index) {
         const name = current.twitchUserName.toUpperCase();
         const pvp = current.isPvp;
         const id = current.userId;
+        const isSelected = current.isSelected;
 
         const type = current.type;
 
