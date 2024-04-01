@@ -411,12 +411,21 @@ async function start() {
         }
         let captKeysArray = ['dungeonCaptain', 'clashCaptain', 'duelCaptain', 'clashSwitch', 'dungeonSwitch', 'duelSwitch', 'campaignSwitch', 'modeChangeSwitch', 'multiClashSwitch'];
         let captKeys = await retrieveMultipleFromStorage(captKeysArray);
-        let dungeonCaptainNameFromStorage = captKeys.dungeonCaptain.toLowerCase();
-        let clashCaptainNameFromStorage = captKeys.clashCaptain.toLowerCase();
+        let dungeonCaptainNameFromStorage = captKeys.dungeonCaptain;
+        if (dungeonCaptainNameFromStorage) {
+          dungeonCaptainNameFromStorage.toLowerCase();
+        }
+        let clashCaptainNameFromStorage = captKeys.clashCaptain;
+        if (clashCaptainNameFromStorage) {
+          clashCaptainNameFromStorage.toLowerCase();
+        }
         if (clashCaptainNameFromStorage == null) {
           clashCaptainNameFromStorage = "";
         }
-        let duelsCaptainNameFromStorage = captKeys.duelCaptain.toLowerCase();
+        let duelsCaptainNameFromStorage = captKeys.duelCaptain;
+        if (duelsCaptainNameFromStorage) {
+          duelsCaptainNameFromStorage.toLowerCase();
+        }
         let clashSwitch = captKeys.clashSwitch;
         let duelSwitch = captKeys.duelSwitch;
         let dungeonSwitch = captKeys.dungeonSwitch;
@@ -1218,12 +1227,21 @@ console.log("LOG-cap slot states error, return");
 
     let captKeysArray = ['dungeonCaptain', 'clashCaptain', 'duelCaptain', 'clashSwitch', 'dungeonSwitch', 'duelSwitch', 'campaignSwitch', 'modeChangeSwitch', 'multiClashSwitch'];
     let captKeys = await retrieveMultipleFromStorage(captKeysArray);
-    let dungeonCaptainNameFromStorage = captKeys.dungeonCaptain.toLowerCase();
-    let clashCaptainNameFromStorage = captKeys.clashCaptain.toLowerCase();
+    let dungeonCaptainNameFromStorage = captKeys.dungeonCaptain
+    if (dungeonCaptainNameFromStorage) {
+      dungeonCaptainNameFromStorage.toLowerCase();
+      }
+    let clashCaptainNameFromStorage = captKeys.clashCaptain;
+    if (clashCaptainNameFromStorage) {
+      clashCaptainNameFromStorage.toLowerCase();
+      }
     if (clashCaptainNameFromStorage == null) {
       clashCaptainNameFromStorage = "";
     }
-    let duelsCaptainNameFromStorage = captKeys.duelCaptain.toLowerCase();
+    let duelsCaptainNameFromStorage = captKeys.duelCaptain;
+    if (duelsCaptainNameFromStorage) {
+      duelsCaptainNameFromStorage.toLowerCase();
+    }
 
     let capNameDOM;
     let multiClashSwitch;

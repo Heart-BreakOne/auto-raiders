@@ -1541,7 +1541,7 @@ async function switchCaptains(currentCaptain, masterList, index) {
   return false;
 }
 
-async function checkIfCodeLocked(captainName)) {
+async function checkIfCodeLocked(captainName) {
   try {
     let response = await getActiveRaids();
 
