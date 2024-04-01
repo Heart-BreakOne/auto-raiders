@@ -266,6 +266,11 @@ async function collectChests() {
               await removeOldCaptain(cptId);
             }
             duelJoined = await switchToDuel(duelCapt, slotNo - 1);
+            if (await checkIfCodeLocked(duelCapt[1])) {
+              await backgroundDelay(3000);
+              await removeOldCaptain(duelCapt[0]);
+              duelJoined = true; //Set to true to avoid trying to join it again if there's another chest to collect
+            }
             setIdleState("offlineButton_" + slotNo, 1)
           }
         }
@@ -1516,34 +1521,41 @@ async function switchCaptains(currentCaptain, masterList, index) {
 
   // Extract the ids from the sorted captains
   const firstCaptainId = captainsArray.length > 0 ? captainsArray[0].id : null;
+  const firstCaptainName = captainsArray.length > 0 ? captainsArray[0].name : null;
 
   if (currentId != undefined && firstCaptainId != undefined) {
     await removeOldCaptain(currentId);
     await joinCaptain(firstCaptainId, index);
     await delay(5000);
-    try {
-      let response = await getActiveRaids();
-
-      // Get unit id and name.
-      const activeRaids = await response.json();
-      let activeRaidsData = new Object();
-      for (let i = 0; i < activeRaids.data.length; i++) {
-        const position = activeRaids.data[i];
-        if (position.captainId === firstCaptainId && position.isCodeLocked == true) {
-          for (let j = 0; j < masterList.length; j++) {
-            if (masterList[j].id == firstCaptainId) {
-              delete masterList[j];
-            }
-          }
-          await switchCaptains(currentCaptain, masterList, index)
+    //Check if the battle has a code. If it does, delete the captain from the masterList array and try again
+    if (await checkIfCodeLocked(firstCaptainName)) {
+      for (let j = 0; j < masterList.length; j++) {
+        if (masterList[j].id == firstCaptainId) {
+          delete masterList[j];
         }
       }
-    } catch (error) { }
+      await switchCaptains(firstCaptainId, masterList, index)
+    }
     return true;
   }
   return false;
 }
 
+async function checkIfCodeLocked(captainName)) {
+  try {
+    let response = await getActiveRaids();
+
+    const activeRaids = await response.json();
+    let activeRaidsData = new Object();
+    for (let i = 0; i < activeRaids.data.length; i++) {
+      const position = activeRaids.data[i];
+      if (position.twitchUserName.toLowerCase() === captainName.toLowerCase() && position.isCodeLocked == true) {
+        return true;
+      }
+    }
+  } catch (error) { }
+  return false;
+}
 
 async function checkDungeons(cptId, type) {
   // No need to check pause state because collectChests already does that.
