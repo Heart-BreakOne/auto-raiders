@@ -1660,7 +1660,8 @@ async function joinDungeon(dungeonCaptains) {
             delete dungeonCaptains[j];
           }
         }
-        await joinDungeon(dungeonCaptains);
+        let result = await joinDungeon(dungeonCaptains);
+        return result;
       }
       
       await saveToStorage("dungeonCaptain", "," + captainName + ",");
