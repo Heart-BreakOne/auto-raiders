@@ -225,7 +225,7 @@ async function start() {
     let duelSwitchSuccessful;
     let masterlistSwitchSuccessful;
     if (joinDuelSwitch) {
-      let slotAvailable = false;
+      let slotAvailable = -1;
       let duelJoined = false;
       //Initialized a node list with all the captain slots
       const capSlots = document.querySelectorAll('.capSlot');
@@ -256,15 +256,16 @@ async function start() {
           }
       }
       //If slot is available and user is not currently in a Duel already, switch to a Duel (if one exists)
-      if (slotAvailable && !duelJoined) {
+      if (slotAvailable != -1 && !duelJoined) {
         let duelCapt = await checkForDuel();
         if (duelCapt) {
           duelSwitchSuccessful = await switchToDuel(duelCapt, slotAvailable);
+          duelJoined = true;
         }
       }
     }
     if (forceMaster || replaceMaster) {
-      masterlistSwitchSuccessful = await switchToMasterList(forceMaster, replaceMaster);
+      masterlistSwitchSuccessful = await switchToMasterList(forceMaster, replaceMaster, joinDuelSwitch);
     }
     if (duelSwitchSuccessful || masterlistSwitchSuccessful) {
       navItems = document.querySelectorAll('.mainNavItemText');
