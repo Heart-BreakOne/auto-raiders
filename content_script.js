@@ -833,13 +833,14 @@ console.log("LOG-check dungeon");
     }
   }
 
-  let unitKeysArray = ['legendarySwitch', 'rareSwitch', 'uncommonSwitch', 'commonSwitch', 'pvpSpecSwitch'];
+  let unitKeysArray = ['legendarySwitch', 'rareSwitch', 'uncommonSwitch', 'commonSwitch', 'pvpSpecSwitch', 'pvpSoulSwitch'];
   let unitKeys = await retrieveMultipleFromStorage(unitKeysArray);
   let legendaryAllowed = unitKeys.legendarySwitch;
   let rareAllowed = unitKeys.rareSwitch;
   let uncommonAllowed = unitKeys.uncommonSwitch;
   let commonAllowed = unitKeys.commonSwitch;
   let pvpSpecAllowed = unitKeys.pvpSpecSwitch;
+  let pvpSoulSwitch = unitKeys.pvpSoulSwitch;
   
   for (let i = 0; i < unitDrawer[0].children.length; i++) {
     let unit = unitDrawer[0].children[i];
@@ -884,7 +885,7 @@ console.log("LOG-check dungeon");
     } else if ((battleType == "Clash" || battleType == "Duel") && specCheck == null && pvpSpecAllowed) {
       unitsToRemove.push(unit)
       continue
-    } 
+    }
 
     //If campaign and specified enemy is present, remove the associated units
     if (battleType == "Campaign") {
@@ -918,16 +919,22 @@ console.log("LOG-check dungeon");
     slotNum = slotOption;
   }
 console.log("LOG-priority and shuffle switches");
-  let switchKeysArray = ['priorityListSwitch' + slotNum, 'priorityListSwitch0', 'shuffleSwitch' + slotNum, 'shuffleSwitch0'];
+  let switchKeysArray = ['priorityListSwitch' + slotNum, 'priorityListSwitch0', 'shuffleSwitch' + slotNum, 'shuffleSwitch0', 'soulSwitch' + slotNum, 'soulSwitch0'];
   let switchKeys = await retrieveMultipleFromStorage(switchKeysArray);
   let priorityListSwitchSlot = switchKeys['priorityListSwitch' + slotNum];
   let priorityListSwitchAll = switchKeys.priorityListSwitch0;
   let shuffleSwitchSlot = switchKeys['shuffleSwitch' + slotNum];
   let shuffleSwitchSlotAll = switchKeys.shuffleSwitch0;
+  let soulSwitchSlot = switchKeys['soulSwitch' + slotNum];
+  let soulSwitchSlotAll = switchKeys.soulSwitch0;
 
   let shuffleSwitch = false;
   if (shuffleSwitchSlot || shuffleSwitchSlotAll) {
     shuffleSwitch = true;
+  }
+  let soulSwitch = false;
+  if (soulSwitchSlot || soulSwitchSlotAll) {
+    soulSwitch = true;
   }
   if (!canCompleteQuests) {
     //If unit priority list for the slot is selected, use the list for the slot
@@ -953,6 +960,25 @@ console.log("LOG-priority and shuffle switches");
     return;
   }
 
+  //Sort the array so units with souls are put on the front.
+  if ((soulSwitch) || ((battleType == "Clash" || battleType == "Duel") && pvpSoulSwitch) && !canCompleteQuests) {
+    const soulSwitcher = document.querySelector('.unitFilterSoulSwitch input[type="checkbox"]');
+    soulSwitcher.click()
+    for (let i = 1; i <= unitsQuantity; i++) {
+      const unit = unitDrawer[0].querySelector(".unitSelectionItemCont:nth-child(" + i + ") .unitItem:nth-child(1)");
+      // Check if unit has a soul
+      let soulCheck = unit.querySelector('img[alt="UnitSoulIcon"]');
+      if (soulCheck) {
+        const unitIndex = Array.from(unitDrawer[0].children).findIndex(item => item === unit.parentElement);
+        if (unitIndex === -1) {
+          continue;
+        } else {
+          unitDrawer[0].insertBefore(unitDrawer[0].children[unitIndex], unitDrawer[0].children[0]);
+        }
+      }
+    }
+  } 
+  
   //Sort the array so units that match the captain skin are put on the front.
   async function shiftUnits(captainNameFromDOM) {
     for (let i = 1; i <= unitsQuantity; i++) {
@@ -980,7 +1006,7 @@ console.log("LOG-priority and shuffle switches");
     moreSkinsSwitch = true;
   }
 
-  if (battleType != "Dungeons" && moreSkinsSwitch && equipSwitch && !canCompleteQuests) {
+  if (!soulSwitch && !pvpSoulSwitch && battleType != "Dungeons" && moreSkinsSwitch && equipSwitch && !canCompleteQuests) {
     if (!equipNoDiamondSwitch || (equipNoDiamondSwitch && !diamondLoyalty.toString().includes("LoyaltyDiamond"))) {
       try {
         await shiftUnits(captainNameFromDOM);

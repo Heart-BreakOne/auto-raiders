@@ -18,6 +18,13 @@ document.addEventListener("DOMContentLoaded", function () {
     initializeSwitch("clashSwitch");
     initializeSwitch("multiClashSwitch");
     initializeSwitch("pvpSpecSwitch");
+    initializeSwitch("pvpSoulSwitch");
+    initializeSwitch("soulSwitch0");
+    initializeSwitch("soulSwitch1");
+    initializeSwitch("soulSwitch2");
+    initializeSwitch("soulSwitch3");
+    initializeSwitch("soulSwitch4");
+    initializeSwitch("soulSwitch5");
     initializeSwitch("joinDuelSwitch");
     initializeSwitch("modeChangeSwitch");
     initializeSwitch("campaignSwitch");
@@ -360,6 +367,13 @@ function exportSettingsToFile() {
         "clashSwitch",
         "multiClashSwitch",
         "pvpSpecSwitch",
+        "pvpSoulSwitch",
+        "soulSwitch0",
+        "soulSwitch1",
+        "soulSwitch2",
+        "soulSwitch3",
+        "soulSwitch4",
+        "soulSwitch5",
         "joinDuelSwitch",
         "modeChangeSwitch",
         "dungeonSwitch",

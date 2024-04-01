@@ -118,6 +118,10 @@
                                                 <div title="Randomly shuffle your units so the placement varies.">
                                                         &nbsp;&nbsp;&nbsp;Enable shuffle:</div>
                                         </td>
+                                        <td>
+                                                <div title="Prioritize units with souls over units without souls.">
+                                                        &nbsp;&nbsp;&nbsp;Prioritize souls:</div>
+                                        </td>
                                 </tr>
                                 <tr>
                                         <td><label for="priorityListSwitch0"
@@ -128,7 +132,10 @@
                                                         title="Randomly shuffle your units in all slots so the placement varies."><input
                                                                 type="checkbox" id="shuffleSwitch0">All slots</label>
                                         </td>
-                                        <td></td>
+                                        <td><label for="soulSwitch0"
+                                                        title="Prioritize units with souls in all slots."><input
+                                                                type="checkbox" id="shuffleSwitch0">All slots</label>
+                                        </td>
                                 </tr>
                                 <tr>
                                         <td><label for="priorityListSwitch1"
@@ -138,7 +145,9 @@
                                         <td><label for="shuffleSwitch1"
                                                         title="Randomly shuffle your units in slot 1 so the placement varies."><input
                                                                 type="checkbox" id="shuffleSwitch1">Slot 1</label></td>
-                                        <td></td>
+                                        <td><label for="soulSwitch1"
+                                                        title="Prioritize units with souls in slot 1 so the placement varies."><input
+                                                                type="checkbox" id="shuffleSwitch1">Slot 1</label></td>
                                 </tr>
                                 <tr>
                                         <td><label for="priorityListSwitch2"
@@ -146,9 +155,11 @@
                                                                 type="checkbox" id="priorityListSwitch2">Slot 2</label>
                                         </td>
                                         <td><label for="shuffleSwitch2"
-                                                        title="Randomly shuffle your units in slot 1 so the placement varies."><input
+                                                        title="Randomly shuffle your units in slot 2 so the placement varies."><input
                                                                 type="checkbox" id="shuffleSwitch2">Slot 2</label></td>
-                                        <td></td>
+                                        <td><label for="soulSwitch2"
+                                                        title="Prioritize units with souls in slot 2 so the placement varies."><input
+                                                                type="checkbox" id="shuffleSwitch2">Slot 2</label></td>
                                 </tr>
                                 <tr>
                                         <td><label for="priorityListSwitch3"
@@ -156,9 +167,11 @@
                                                                 type="checkbox" id="priorityListSwitch3">Slot 3</label>
                                         </td>
                                         <td><label for="shuffleSwitch3"
-                                                        title="Randomly shuffle your units in slot 1 so the placement varies."><input
+                                                        title="Randomly shuffle your units in slot 3 so the placement varies."><input
                                                                 type="checkbox" id="shuffleSwitch3">Slot 3</label></td>
-                                        <td></td>
+                                        <td><label for="soulSwitch3"
+                                                        title="Prioritize units with souls in slot 3 so the placement varies."><input
+                                                                type="checkbox" id="shuffleSwitch3">Slot 3</label></td>
                                 </tr>
                                 <tr>
                                         <td><label for="priorityListSwitch4"
@@ -166,9 +179,11 @@
                                                                 type="checkbox" id="priorityListSwitch4">Slot 4</label>
                                         </td>
                                         <td><label for="shuffleSwitch4"
-                                                        title="Randomly shuffle your units in slot 1 so the placement varies."><input
+                                                        title="Randomly shuffle your units in slot 4 so the placement varies."><input
                                                                 type="checkbox" id="shuffleSwitch4">Slot 4</label></td>
-                                        <td></td>
+                                        <td><label for="soulSwitch4"
+                                                        title="Prioritize units with souls in slot 4 so the placement varies."><input
+                                                                type="checkbox" id="shuffleSwitch4">Slot 4</label></td>
                                 </tr>
                                 <tr>
                                         <td><label for="priorityListSwitch5"
@@ -180,7 +195,10 @@
                                                         title="Randomly shuffle your units in dungeons so the placement varies."><input
                                                                 type="checkbox" id="shuffleSwitch5">Dungeons</label>
                                         </td>
-                                        <td></td>
+                                        <td><label for="soulSwitch5"
+                                                        title="Prioritize units with souls in dungeons so the placement varies."><input
+                                                                type="checkbox" id="shuffleSwitch5">Dungeons</label>
+                                        </td>
                                 </tr>
                                 <tr>
                                         <td>
@@ -397,6 +415,10 @@
                                                         title="If a Duel is available, leave the next Campaign battle and join the Duel."><input
                                                                 type="checkbox" id="joinDuelSwitch"> Join Duels
                                                         ASAP</label>
+                                        </td>
+                                        <td><label for="pvpSoulSwitch"
+                                                        title="If a unit has a soul, it will be higher in the list of units to place than those without souls."><input
+                                                                type="checkbox" id="pvpSoulSwitch"> Prioritize units with souls</label>
                                         </td>
                                 </tr>
                         </tbody>
