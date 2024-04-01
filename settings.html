@@ -173,11 +173,13 @@
                                 <tr>
                                         <td><label for="priorityListSwitch5"
                                                         title="When enabled, the unit list for dungeons will be sorted based on the unit priority list."><input
-                                                                type="checkbox" id="priorityListSwitch5">Dungeons</label>
+                                                                type="checkbox"
+                                                                id="priorityListSwitch5">Dungeons</label>
                                         </td>
                                         <td><label for="shuffleSwitch5"
                                                         title="Randomly shuffle your units in dungeons so the placement varies."><input
-                                                                type="checkbox" id="shuffleSwitch5">Dungeons</label></td>
+                                                                type="checkbox" id="shuffleSwitch5">Dungeons</label>
+                                        </td>
                                         <td></td>
                                 </tr>
                                 <tr>
@@ -393,7 +395,8 @@
                                 <tr>
                                         <td><label for="joinDuelSwitch"
                                                         title="If a Duel is available, leave the next Campaign battle and join the Duel."><input
-                                                                type="checkbox" id="joinDuelSwitch"> Join Duels ASAP</label>
+                                                                type="checkbox" id="joinDuelSwitch"> Join Duels
+                                                        ASAP</label>
                                         </td>
                                 </tr>
                         </tbody>
@@ -457,17 +460,6 @@
                 <table width="100%">
                         <tbody>
                                 <tr>
-                                        <td><label for="dungeonsSlot0Switch"
-                                                        title="Place more than one unit in dungeons"><input
-                                                                type="checkbox" id="dungeonsSlot0Switch"> Force slot 0
-                                                        to
-                                                        Dungeons</label>
-                                        </td>
-                                        <td><label for="dungeonsEmptySlot0Switch"
-                                                        title="Place more than one unit in dungeons"><input
-                                                                type="checkbox" id="dungeonsEmptySlot0Switch"> Leave slot 0 if no Dungeons</label>
-                                        </td>
-                                
                                         <td><label for="dungeonSwitch"
                                                         title="Place more than one unit in dungeons"><input
                                                                 type="checkbox" id="dungeonSwitch"> Unlimited
@@ -478,13 +470,20 @@
                                                                 type="checkbox" id="dungeonLevelSwitch">
                                                         Place units with a
                                                         maximum custom level on dungeons</label></td>
-                                        <td class="x"><label for="dungeonPlaceAnywaySwitch"
-                                                        title="This bypasses the flag marker and places the unit regardless on dungeons."><input
-                                                                type="checkbox" id="dungeonPlaceAnywaySwitch"> Allow
-                                                        Place Anyway on flag markers in Dungeons (must turn on custom
-                                                        level on
-                                                        dungeons) - BE CAREFUL - Place Anyway can get you banned</label>
-                                        </td>
+                                </tr>
+                                <tr>
+                                        <td><label for="dungeonSlotSwitch"
+                                                        title="Switch to a dungeon as soon as a slot becomes available"><input
+                                                                type="checkbox" id="dungeonSlotSwitch">
+                                                        Always have a dungeon</label></td>
+                                        <td><label for="dungeonSlotOverwrite"
+                                                        title="Replace a PvP slot with Dungeons"><input
+                                                                type="checkbox" id="dungeonSlotOverwrite">
+                                                        Overwrite PvP with dungeon</label></td>
+                                        <td><label for="dungeonSlotSkip"
+                                                        title="Skip dungeons if there aren't dungeon listed captains"><input
+                                                                type="checkbox" id="dungeonSlotSkip">
+                                                        Skip if no dungeon list</label></td>
                                 </tr>
                                 <tr>
                                         <td>
@@ -583,15 +582,6 @@
         <br>
         <table>
                 <tbody>
-                        <tr>
-                                <td><label for="dungeonSlotSwitch" class="x"><input type="checkbox"
-                                                        id="dungeonSlotSwitch" class="x"> Use slot 0 for
-                                                dungeons</label>
-                                </td>
-                                <td><label for="skipDungeonSlotSwitch" class="x"><input type="checkbox"
-                                                        id="skipDungeonSlotSwitch" class="x"> Leave slot 0 empty if
-                                                there are no dungeons</label></td>
-                        </tr>
                         <tr>
                                 <td><label for="duelsSlotSwitch" class="x"><input type="checkbox" id="duelsSlotSwitch"
                                                         class="x"> Use

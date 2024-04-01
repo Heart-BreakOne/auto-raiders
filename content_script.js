@@ -194,8 +194,6 @@ async function start() {
     }
   }
 
-  //await manageDungeonSlot()
-
   const capSlots = document.querySelectorAll(".capSlot")
   for (i in capSlots) {
     try {
@@ -1082,7 +1080,6 @@ function checkPlacement() {
 //Places unit or asks for a new valid marker
 async function placeTheUnit() {
   try {
-    //const dungeonPlaceAnywaySwitch = await retrieveFromStorage("dungeonPlaceAnywaySwitch");
     const clockText = document.querySelector('.battlePhaseTextClock .clock').innerText;
 
     if (clockText === "00:00") {
