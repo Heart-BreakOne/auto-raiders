@@ -447,7 +447,7 @@ async function start() {
         the slot for 30 minutes so if a captain switches to campaign they are skipped and colored red */
         else if (captainNameFromDOM && !modeChangeSwitch && 
           ((dungeonCaptainNameFromStorage == ","+captainNameFromDOM.toLowerCase()+"," && battleType != "Dungeons") ||
-          (!multiClashSwitch && clashCaptainNameFromStorage.includes(","+captainNameFromDOM.toLowerCase()+",") && battleType != "Clash") ||
+          (clashCaptainNameFromStorage.includes(","+captainNameFromDOM.toLowerCase()+",") && battleType != "Clash") ||
           (duelsCaptainNameFromStorage == ","+captainNameFromDOM.toLowerCase()+"," && battleType != "Duel"))) {
           captainSlot.style.backgroundColor = red;
           continue
