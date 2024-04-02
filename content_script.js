@@ -354,18 +354,24 @@ async function start() {
                 var slotToCompare = placeButton.closest('.capSlot');
                 //If another slot has clash, check the time and compare to the original
                 if (slotToCompare.innerText.includes("Clash")) {
-                  try {
-                    const batClockToCompare = slotToCompare.querySelector(".capSlotTimer").lastChild.innerText.replace(':', '')
-                    const batTimeToCompare = parseInt(batClockToCompare, 10);
-                    //If the time of the other slot is more than or equal to the original minus 2 seconds (for delay), skip to the next one to compare
-                    //If it's less, skip the original button altogether and go to the next available place button
-                    if (batTimeToCompare >= batTime - 2) {
-                      continue compareLoop;
-                    } else {
-                      continue placeButtonLoop;
+                  //Retrieve the slot pause state
+                  const btnToCompare = slotToCompare.querySelector(".capSlotStatus .offlineButton");
+                  const buttonIdToCompare = btnToCompare.getAttribute('id');
+                  const slotStateToCompare = await getIdleState(buttonIdToCompare);
+                  if (slotStateToCompare == 1) {
+                    try {
+                      const batClockToCompare = slotToCompare.querySelector(".capSlotTimer").lastChild.innerText.replace(':', '')
+                      const batTimeToCompare = parseInt(batClockToCompare, 10);
+                      //If the time of the other slot is more than or equal to the original minus 2 seconds (for delay), skip to the next one to compare
+                      //If it's less, skip the original button altogether and go to the next available place button
+                      if (batTimeToCompare >= batTime - 2) {
+                        continue compareLoop;
+                      } else {
+                        continue placeButtonLoop;
+                      }
+                    } catch (error) {
+                      console.log("")
                     }
-                  } catch (error) {
-                    console.log("")
                   }
                 }
               }
