@@ -308,7 +308,7 @@ async function start() {
   //If placement buttons exist, validate them
   else if (placeUnitButtons.length != 0) {
     //Iterate through every button
-    for (var button of placeUnitButtons) {
+    placeButtonLoop: for (var button of placeUnitButtons) {
       //If the button has the inner text PLACE UNIT it's a valid button
       if (button.innerText.includes("PLACE UNIT")) {
         //Get captain name from the slot
@@ -335,14 +335,42 @@ async function start() {
         if (slotState == 0) {
           continue
         }
+        let userWaitTime = await getUserWaitTime(battleType);
+        let batTime;
         try {
           const batClock = captainSlot.querySelector(".capSlotTimer").lastChild.innerText.replace(':', '')
-          const batTime = parseInt(batClock, 10);
-          if (batTime > await getUserWaitTime(battleType)) {
+          batTime = parseInt(batClock, 10);
+          if (batTime > userWaitTime) {
             continue
           }
         } catch (error) {
           console.log("")
+        }
+
+        if (battleType == "Clash" && placeUnitButtons.length > 1) {
+          if (await retrieveFromStorage("nextClashSwitch")) {
+            compareLoop: for (var placeButton of placeUnitButtons) {
+              if (placeButton.innerText.includes("PLACE UNIT")) {
+                var slotToCompare = placeButton.closest('.capSlot');
+                //If another slot has clash, check the time and compare to the original
+                if (slotToCompare.innerText.includes("Clash")) {
+                  try {
+                    const batClockToCompare = slotToCompare.querySelector(".capSlotTimer").lastChild.innerText.replace(':', '')
+                    const batTimeToCompare = parseInt(batClockToCompare, 10);
+                    //If the time of the other slot is more than or equal to the original minus 2 seconds (for delay), skip to the next one to compare
+                    //If it's less, skip the original button altogether and go to the next available place button
+                    if (batTimeToCompare >= batTime - 2) {
+                      continue compareLoop;
+                    } else {
+                      continue placeButtonLoop;
+                    }
+                  } catch (error) {
+                    console.log("")
+                  }
+                }
+              }
+            }
+          }
         }
 
         // Calculate placements odds
