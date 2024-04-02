@@ -146,6 +146,22 @@ async function getUnits() {
               unitType: item.unitType
           }
           unitsArrayList.push(unitsArrayListSlot5);
+          let unitsArrayListSlot6 = {
+              index: item.index,
+              level: item.level,
+              priority: item.priority,
+              slotOption: 6,
+              unitType: item.unitType
+          }
+          unitsArrayList.push(unitsArrayListSlot6);
+          let unitsArrayListSlot7 = {
+              index: item.index,
+              level: item.level,
+              priority: item.priority,
+              slotOption: 7,
+              unitType: item.unitType
+          }
+          unitsArrayList.push(unitsArrayListSlot7);
       }
       let newUnitsArrayList = [];
       for (let i = 0; i < unitsArrayList.length; i++) {

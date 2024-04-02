@@ -18,13 +18,14 @@ document.addEventListener("DOMContentLoaded", function () {
     initializeSwitch("clashSwitch");
     initializeSwitch("multiClashSwitch");
     initializeSwitch("pvpSpecSwitch");
-    initializeSwitch("pvpSoulSwitch");
     initializeSwitch("soulSwitch0");
     initializeSwitch("soulSwitch1");
     initializeSwitch("soulSwitch2");
     initializeSwitch("soulSwitch3");
     initializeSwitch("soulSwitch4");
     initializeSwitch("soulSwitch5");
+    initializeSwitch("soulSwitch6");
+    initializeSwitch("soulSwitch7");
     initializeSwitch("joinDuelSwitch");
     initializeSwitch("modeChangeSwitch");
     initializeSwitch("campaignSwitch");
@@ -35,6 +36,8 @@ document.addEventListener("DOMContentLoaded", function () {
     initializeSwitch("shuffleSwitch3");
     initializeSwitch("shuffleSwitch4");
     initializeSwitch("shuffleSwitch5");
+    initializeSwitch("shuffleSwitch6");
+    initializeSwitch("shuffleSwitch7");
     initializeSwitch("offlineSwitch");
     initializeSwitch("setMarkerSwitch");
     initializeSwitch("skipSwitch");
@@ -54,6 +57,8 @@ document.addEventListener("DOMContentLoaded", function () {
     initializeSwitch("priorityListSwitch3");
     initializeSwitch("priorityListSwitch4");
     initializeSwitch("priorityListSwitch5");
+    initializeSwitch("priorityListSwitch6");
+    initializeSwitch("priorityListSwitch7");
     initializeSwitch("lgoldSwitch");
     initializeSwitch("lskinSwitch");
     initializeSwitch("lscrollSwitch");
@@ -348,6 +353,8 @@ function exportSettingsToFile() {
         "shuffleSwitch3",
         "shuffleSwitch4",
         "shuffleSwitch5",
+        "shuffleSwitch6",
+        "shuffleSwitch7",
         "equipSwitch",
         "equipNoDiamondSwitch",
         "moreSkinsSwitch",
@@ -358,6 +365,8 @@ function exportSettingsToFile() {
         "priorityListSwitch3",
         "priorityListSwitch4",
         "priorityListSwitch5",
+        "priorityListSwitch6",
+        "priorityListSwitch7",
         "commonSwitch",
         "uncommonSwitch",
         "rareSwitch",
@@ -367,13 +376,14 @@ function exportSettingsToFile() {
         "clashSwitch",
         "multiClashSwitch",
         "pvpSpecSwitch",
-        "pvpSoulSwitch",
         "soulSwitch0",
         "soulSwitch1",
         "soulSwitch2",
         "soulSwitch3",
         "soulSwitch4",
         "soulSwitch5",
+        "soulSwitch6",
+        "soulSwitch7",
         "joinDuelSwitch",
         "modeChangeSwitch",
         "dungeonSwitch",

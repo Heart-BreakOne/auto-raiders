@@ -833,14 +833,13 @@ console.log("LOG-check dungeon");
     }
   }
 
-  let unitKeysArray = ['legendarySwitch', 'rareSwitch', 'uncommonSwitch', 'commonSwitch', 'pvpSpecSwitch', 'pvpSoulSwitch'];
+  let unitKeysArray = ['legendarySwitch', 'rareSwitch', 'uncommonSwitch', 'commonSwitch', 'pvpSpecSwitch'];
   let unitKeys = await retrieveMultipleFromStorage(unitKeysArray);
   let legendaryAllowed = unitKeys.legendarySwitch;
   let rareAllowed = unitKeys.rareSwitch;
   let uncommonAllowed = unitKeys.uncommonSwitch;
   let commonAllowed = unitKeys.commonSwitch;
   let pvpSpecAllowed = unitKeys.pvpSpecSwitch;
-  let pvpSoulSwitch = unitKeys.pvpSoulSwitch;
   
   for (let i = 0; i < unitDrawer[0].children.length; i++) {
     let unit = unitDrawer[0].children[i];
@@ -915,6 +914,10 @@ console.log("LOG-check dungeon");
   let slotNum;
   if (battleType == "Dungeons") {
     slotNum = '5';
+  } else if (battleType == "Clash") {
+    slotNum = '6';
+  } else if (battleType == "Duel") {
+    slotNum = '7';
   } else {
     slotNum = slotOption;
   }
@@ -961,7 +964,7 @@ console.log("LOG-priority and shuffle switches");
   }
 
   //Sort the array so units with souls are put on the front.
-  if ((soulSwitch) || ((battleType == "Clash" || battleType == "Duel") && pvpSoulSwitch) && !canCompleteQuests) {
+  if (soulSwitch && !canCompleteQuests) {
     const soulSwitcher = document.querySelector('.unitFilterSoulSwitch input[type="checkbox"]');
     soulSwitcher.click()
     for (let i = 1; i <= unitsQuantity; i++) {
@@ -1006,7 +1009,7 @@ console.log("LOG-priority and shuffle switches");
     moreSkinsSwitch = true;
   }
 
-  if (!soulSwitch && !pvpSoulSwitch && battleType != "Dungeons" && moreSkinsSwitch && equipSwitch && !canCompleteQuests) {
+  if (!soulSwitch && battleType != "Dungeons" && moreSkinsSwitch && equipSwitch && !canCompleteQuests) {
     if (!equipNoDiamondSwitch || (equipNoDiamondSwitch && !diamondLoyalty.toString().includes("LoyaltyDiamond"))) {
       try {
         await shiftUnits(captainNameFromDOM);

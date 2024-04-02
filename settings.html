@@ -108,98 +108,182 @@
                                                 <div class="x">&nbsp;</div>
                                         </td>
                                 </tr>
+                        </tbody>
+                </table>
+                <table width="100%">
+                        <tbody>
+                                <tr>
+                                        <td width="20%">
+                                                <div></div>
+                                        </td>
+                                        <td width="10%" title="If any other Slot #, Clash, Duels, or Dungeons are selected, this will affect only the slots not selected.">
+                                                <div>All Slots</div>
+                                        </td>
+                                        <td width="10%">
+                                                <div>Slot 1</div>
+                                        </td>
+                                        <td width="10%">
+                                                <div>Slot 2</div>
+                                        </td>
+                                        <td width="10%">
+                                                <div>Slot 3</div>
+                                        </td>
+                                        <td width="10%">
+                                                <div>Slot 4</div>
+                                        </td>
+                                        <td width="10%" title="This will override All Slots for Clash battles">
+                                                <div>Clash</div>
+                                        </td>
+                                        <td width="10%" title="This will override All Slots for Duel battles">
+                                                <div>Duels</div>
+                                        </td>
+                                        <td width="10%" title="This will override All Slots for Dungeon battles">
+                                                <div>Dungeons</div>
+                                        </td>
+                                </tr>
                                 <tr>
                                         <td>
                                                 <div
                                                         title="When enabled, the unit list for the selected slots will be sorted based on the unit priority list.">
-                                                        &nbsp;&nbsp;&nbsp;Enable unit priority list:</div>
+                                                        Enable unit priority list:</div>
                                         </td>
+                                        <td>
+                                                <label for="priorityListSwitch0"
+                                                        title="When enabled, the unit list for all slots (excluding any additional slots selected) will be sorted based on the unit priority list."><input
+                                                                type="checkbox" id="priorityListSwitch0"></label>
+                                        </td>
+                                        <td>
+                                                <label for="priorityListSwitch1"
+                                                        title="When enabled, the unit list for slot 1 will be sorted based on the unit priority list."><input
+                                                                type="checkbox" id="priorityListSwitch1"></label>
+                                        </td>
+                                        <td>
+                                                <label for="priorityListSwitch2"
+                                                        title="When enabled, the unit list for slot 2 will be sorted based on the unit priority list."><input
+                                                                type="checkbox" id="priorityListSwitch2"></label>
+                                        </td>
+                                        <td>
+                                                <label for="priorityListSwitch3"
+                                                        title="When enabled, the unit list for slot 3 will be sorted based on the unit priority list."><input
+                                                                type="checkbox" id="priorityListSwitch3"></label>
+                                        </td>
+                                        <td>
+                                                <label for="priorityListSwitch4"
+                                                        title="When enabled, the unit list for slot 4 will be sorted based on the unit priority list."><input
+                                                                type="checkbox" id="priorityListSwitch4"></label>
+                                        </td>
+                                        <td>
+                                                <label for="priorityListSwitch5"
+                                                        title="When enabled, the unit list for dungeons will be sorted based on the unit priority list. This will override All Slots for Dungeon battles."><input
+                                                                type="checkbox" id="priorityListSwitch5"></label>
+                                        </td>
+                                        <td>
+                                                <label for="priorityListSwitch6"
+                                                        title="When enabled, the unit list for clash will be sorted based on the unit priority list. This will override All Slots for Clash battles."><input
+                                                                type="checkbox" id="priorityListSwitch6"></label>
+                                        </td>
+                                        <td>
+                                                <label for="priorityListSwitch7"
+                                                        title="When enabled, the unit list for duels will be sorted based on the unit priority list. This will override All Slots for Duel battles."><input
+                                                                type="checkbox" id="priorityListSwitch7"></label>
+                                        </td>
+                                </tr>
+                                <tr>
                                         <td>
                                                 <div title="Randomly shuffle your units so the placement varies.">
-                                                        &nbsp;&nbsp;&nbsp;Enable shuffle:</div>
+                                                        Enable shuffle:</div>
                                         </td>
                                         <td>
-                                                <div title="Prioritize units with souls over units without souls.">
-                                                        &nbsp;&nbsp;&nbsp;Prioritize souls:</div>
+                                                <label for="shuffleSwitch0"
+                                                        title="Randomly shuffle your units in all slots (excluding any additional slots selected) so the placement varies."><input
+                                                                type="checkbox" id="shuffleSwitch0"></label>
                                         </td>
-                                </tr>
-                                <tr>
-                                        <td><label for="priorityListSwitch0"
-                                                        title="When enabled, the unit list for all slots (excluding any additional slots selected) will be sorted based on the unit priority list."><input
-                                                                type="checkbox" id="priorityListSwitch0">All
-                                                        slots</label></td>
-                                        <td><label for="shuffleSwitch0"
-                                                        title="Randomly shuffle your units in all slots so the placement varies."><input
-                                                                type="checkbox" id="shuffleSwitch0">All slots</label>
-                                        </td>
-                                        <td><label for="soulSwitch0"
-                                                        title="Prioritize units with souls in all slots."><input
-                                                                type="checkbox" id="soulSwitch0">All slots</label>
-                                        </td>
-                                </tr>
-                                <tr>
-                                        <td><label for="priorityListSwitch1"
-                                                        title="When enabled, the unit list for slot 1 will be sorted based on the unit priority list."><input
-                                                                type="checkbox" id="priorityListSwitch1">Slot 1</label>
-                                        </td>
-                                        <td><label for="shuffleSwitch1"
+                                        <td>
+                                                <label for="shuffleSwitch1"
                                                         title="Randomly shuffle your units in slot 1 so the placement varies."><input
-                                                                type="checkbox" id="shuffleSwitch1">Slot 1</label></td>
-                                        <td><label for="soulSwitch1"
-                                                        title="Prioritize units with souls in slot 1."><input
-                                                                type="checkbox" id="soulSwitch1">Slot 1</label></td>
-                                </tr>
-                                <tr>
-                                        <td><label for="priorityListSwitch2"
-                                                        title="When enabled, the unit list for slot 2 will be sorted based on the unit priority list."><input
-                                                                type="checkbox" id="priorityListSwitch2">Slot 2</label>
+                                                                type="checkbox" id="shuffleSwitch1"></label>
                                         </td>
-                                        <td><label for="shuffleSwitch2"
+                                        <td>
+                                                <label for="shuffleSwitch2"
                                                         title="Randomly shuffle your units in slot 2 so the placement varies."><input
-                                                                type="checkbox" id="shuffleSwitch2">Slot 2</label></td>
-                                        <td><label for="soulSwitch2"
-                                                        title="Prioritize units with souls in slot 2."><input
-                                                                type="checkbox" id="soulSwitch2">Slot 2</label></td>
-                                </tr>
-                                <tr>
-                                        <td><label for="priorityListSwitch3"
-                                                        title="When enabled, the unit list for slot 3 will be sorted based on the unit priority list."><input
-                                                                type="checkbox" id="priorityListSwitch3">Slot 3</label>
+                                                                type="checkbox" id="shuffleSwitch2"></label>
                                         </td>
-                                        <td><label for="shuffleSwitch3"
+                                        <td>
+                                                <label for="shuffleSwitch3"
                                                         title="Randomly shuffle your units in slot 3 so the placement varies."><input
-                                                                type="checkbox" id="shuffleSwitch3">Slot 3</label></td>
-                                        <td><label for="soulSwitch3"
-                                                        title="Prioritize units with souls in slot 3."><input
-                                                                type="checkbox" id="soulSwitch3">Slot 3</label></td>
-                                </tr>
-                                <tr>
-                                        <td><label for="priorityListSwitch4"
-                                                        title="When enabled, the unit list for slot 4 will be sorted based on the unit priority list."><input
-                                                                type="checkbox" id="priorityListSwitch4">Slot 4</label>
+                                                                type="checkbox" id="shuffleSwitch3"></label>
                                         </td>
-                                        <td><label for="shuffleSwitch4"
+                                        <td>
+                                                <label for="shuffleSwitch4"
                                                         title="Randomly shuffle your units in slot 4 so the placement varies."><input
-                                                                type="checkbox" id="shuffleSwitch4">Slot 4</label></td>
-                                        <td><label for="soulSwitch4"
-                                                        title="Prioritize units with souls in slot 4."><input
-                                                                type="checkbox" id="soulSwitch4">Slot 4</label></td>
+                                                                type="checkbox" id="shuffleSwitch4"></label>
+                                        </td>
+                                        <td>
+                                                <label for="shuffleSwitch5"
+                                                        title="Randomly shuffle your units in dungeons so the placement varies. This will override All Slots for Dungeon battles."><input
+                                                                type="checkbox" id="shuffleSwitch5"></label>
+                                        </td>
+                                        <td>
+                                                <label for="shuffleSwitch6"
+                                                        title="Randomly shuffle your units in clash so the placement varies. This will override All Slots for Clash battles."><input
+                                                                type="checkbox" id="shuffleSwitch6"></label>
+                                        </td>
+                                        <td>
+                                                <label for="shuffleSwitch7"
+                                                        title="Randomly shuffle your units in duels so the placement varies. This will override All Slots for Duel battles."><input
+                                                                type="checkbox" id="shuffleSwitch7"></label>
+                                        </td>
                                 </tr>
                                 <tr>
-                                        <td><label for="priorityListSwitch5"
-                                                        title="When enabled, the unit list for dungeons will be sorted based on the unit priority list."><input
-                                                                type="checkbox"
-                                                                id="priorityListSwitch5">Dungeons</label>
+                                        <td>
+                                                <div title="Prioritize units with souls over units without souls.">
+                                                        Prioritize souls:</div>
                                         </td>
-                                        <td><label for="shuffleSwitch5"
-                                                        title="Randomly shuffle your units in dungeons so the placement varies."><input
-                                                                type="checkbox" id="shuffleSwitch5">Dungeons</label>
+                                        <td>
+                                                <label for="soulSwitch0"
+                                                        title="Prioritize units with souls in all slots (excluding any additional slots selected)."><input
+                                                                type="checkbox" id="soulSwitch0"></label>
                                         </td>
-                                        <td><label for="soulSwitch5"
-                                                        title="Prioritize units with souls in dungeons."><input
-                                                                type="checkbox" id="soulSwitch5">Dungeons</label>
+                                        <td>
+                                                <label for="soulSwitch1"
+                                                        title="Prioritize units with souls in slot 1."><input
+                                                                type="checkbox" id="soulSwitch1"></label>
+                                        </td>
+                                        <td>
+                                                <label for="soulSwitch2"
+                                                        title="Prioritize units with souls in slot 2."><input
+                                                                type="checkbox" id="soulSwitch2"></label>
+                                        </td>
+                                        <td>
+                                                <label for="soulSwitch3"
+                                                        title="Prioritize units with souls in slot 3."><input
+                                                                type="checkbox" id="soulSwitch3"></label>
+                                        </td>
+                                        <td>
+                                                <label for="soulSwitch4"
+                                                        title="Prioritize units with souls in slot 4."><input
+                                                                type="checkbox" id="soulSwitch4"></label>
+                                        </td>
+                                        <td>
+                                                <label for="soulSwitch5"
+                                                        title="Prioritize units with souls in dungeons. This will override All Slots for Dungeon battles."><input
+                                                                type="checkbox" id="soulSwitch5"></label>
+                                        </td>
+                                        <td>
+                                                <label for="soulSwitch6"
+                                                        title="Prioritize units with souls in clash. This will override All Slots for Clash battles."><input
+                                                                type="checkbox" id="soulSwitch6"></label>
+                                        </td>
+                                        <td>
+                                                <label for="soulSwitch7"
+                                                        title="Prioritize units with souls in duels. This will override All Slots for Duel battles."><input
+                                                                type="checkbox" id="soulSwitch7"></label>
                                         </td>
                                 </tr>
+                        </tbody>
+                </table>
+                <table width="100%">
+                        <tbody>
                                 <tr>
                                         <td>
                                                 <div class="x">&nbsp;</div>
@@ -416,9 +500,6 @@
                                                                 type="checkbox" id="joinDuelSwitch"> Join Duels
                                                         ASAP</label>
                                         </td>
-                                        <td><label for="pvpSoulSwitch"
-                                                        title="If a unit has a soul, it will be higher in the list of units to place than those without souls."><input
-                                                                type="checkbox" id="pvpSoulSwitch"> Prioritize units with souls</label>
                                         </td>
                                 </tr>
                         </tbody>
@@ -464,7 +545,7 @@
                                         <td width="85%"><label for="maxUnitLvlDungInput"
                                                         title="Enable custom levels for dungeons below. This option sets the maximum level for units placed in dungeons.">Maximum
                                                         unit level for
-                                                        dungeons&nbsp;&nbsp;&nbsp;</td>
+                                                        dungeons</td>
                                 </tr>
                                 <tr>
                                         <td width="15%" style="white-space: nowrap;">&nbsp;&nbsp;&nbsp;<input
@@ -474,8 +555,7 @@
                                         </td>
                                         <td width="85%"><label for="maxDungeonLvlInput"
                                                         title="Enable custom levels for dungeons below. This option determines the maximum dungeon level at which the maximum unit level will take effect.">Maximum
-                                                        dungeon level for custom unit level
-                                                        &nbsp;&nbsp;&nbsp;</td>
+                                                        dungeon level for custom unit level</td>
                                 </tr>
                         </tbody>
                 </table>
@@ -502,6 +582,8 @@
                                                         title="Replace a PvP slot with Dungeons"><input
                                                                 type="checkbox" id="dungeonSlotOverwrite">
                                                         Overwrite PvP with dungeon</label></td>
+                                </tr>
+                                <tr>
                                         <td><label for="dungeonSlotSkip"
                                                         title="Skip dungeons if there aren't dungeon listed captains"><input
                                                                 type="checkbox" id="dungeonSlotSkip">
