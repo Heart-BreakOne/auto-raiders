@@ -40,6 +40,24 @@ document.addEventListener("DOMContentLoaded", function () {
     initializeSwitch("shuffleSwitch6");
     initializeSwitch("shuffleSwitch7");
     initializeSwitch("offlineSwitch");
+    initializeSwitch("idleSwitch0_Campaign");
+    initializeSwitch("idleSwitch1_Campaign");
+    initializeSwitch("idleSwitch2_Campaign");
+    initializeSwitch("idleSwitch3_Campaign");
+    initializeSwitch("idleSwitch4_Campaign");
+    initializeSwitch("idleSwitch1_Dungeon");
+    initializeSwitch("idleSwitch2_Dungeon");
+    initializeSwitch("idleSwitch3_Dungeon");
+    initializeSwitch("idleSwitch4_Dungeon");
+    initializeSwitch("idleSwitch0_Clash");
+    initializeSwitch("idleSwitch1_Clash");
+    initializeSwitch("idleSwitch2_Clash");
+    initializeSwitch("idleSwitch3_Clash");
+    initializeSwitch("idleSwitch4_Clash");
+    initializeSwitch("idleSwitch1_Duel");
+    initializeSwitch("idleSwitch2_Duel");
+    initializeSwitch("idleSwitch3_Duel");
+    initializeSwitch("idleSwitch4_Duel");
     initializeSwitch("setMarkerSwitch");
     initializeSwitch("skipSwitch");
     initializeSwitch("completeQuests");
@@ -222,6 +240,202 @@ document.addEventListener("DOMContentLoaded", async function () {
         }
     });
 
+    // Get every check box by using querySelectorAll
+    document.querySelectorAll(".idleCampaignCheckbox0").forEach(
+    // For each check box add on click event listener
+      input => input.addEventListener('click', function(event) {
+      // get number of check boxes by passing :check attribute to the query selector
+        let checkedBoxes = document.querySelectorAll(".idleCampaignCheckbox:checked");
+        
+        // check if the number of ticked boxes are more than allowed limit
+        if(checkedBoxes.length > 0){
+          for (let checkedBox in checkedBoxes) {
+            checkedBoxes[checkedBox].checked = false;
+          }
+        }
+      })
+    );
+
+    // Get every check box by using querySelectorAll
+    document.querySelectorAll(".idleCampaignCheckbox").forEach(
+    // For each check box add on click event listener
+      input => input.addEventListener('click', function(event) {
+      // get number of check boxes by passing :check attribute to the query selector
+        let checkedBoxes = document.querySelectorAll(".idleCampaignCheckbox0:checked");
+        
+        // check if the number of ticked boxes are more than allowed limit
+        if(checkedBoxes.length > 0){
+          for (let checkedBox in checkedBoxes) {
+            checkedBoxes[checkedBox].checked = false;
+          }
+        }
+      })
+    );
+
+    // Get every check box by using querySelectorAll
+    document.querySelectorAll(".idleDungeonCheckbox").forEach(
+    // For each check box add on click event listener
+      input => input.addEventListener('click', function(event) {
+      // get number of check boxes by passing :check attribute to the query selector
+        let checkedBoxes = document.querySelectorAll(".idleDungeonCheckbox:checked");
+        
+        // check if the number of ticked boxes are more than allowed limit
+        if(checkedBoxes.length > 1){
+          for (let checkedBox in checkedBoxes) {
+            if (checkedBoxes[checkedBox] != event.currentTarget) {
+              checkedBoxes[checkedBox].checked = false;
+              chrome.storage.local.set({ [checkedBoxes[checkedBox].id]: false });
+            }
+          }
+        }
+      })
+    );
+
+    // Get every check box by using querySelectorAll
+    document.querySelectorAll(".idleClashCheckbox0").forEach(
+    // For each check box add on click event listener
+      input => input.addEventListener('click', function(event) {
+      // get number of check boxes by passing :check attribute to the query selector
+        let checkedBoxes = document.querySelectorAll(".idleClashCheckbox:checked");
+        
+        // check if the number of ticked boxes are more than allowed limit
+        if(checkedBoxes.length > 0){
+          for (let checkedBox in checkedBoxes) {
+            checkedBoxes[checkedBox].checked = false;
+          }
+        }
+      })
+    );
+
+    // Get every check box by using querySelectorAll
+    document.querySelectorAll(".idleClashCheckbox").forEach(
+    // For each check box add on click event listener
+      input => input.addEventListener('click', function(event) {
+      // get number of check boxes by passing :check attribute to the query selector
+        let checkedBoxes = document.querySelectorAll(".idleClashCheckbox0:checked");
+        
+        // check if the number of ticked boxes are more than allowed limit
+        if(checkedBoxes.length > 0){
+          for (let checkedBox in checkedBoxes) {
+            checkedBoxes[checkedBox].checked = false;
+          }
+        }
+      })
+    );
+
+    // Get every check box by using querySelectorAll
+    document.querySelectorAll(".idleDuelCheckbox").forEach(
+    // For each check box add on click event listener
+      input => input.addEventListener('click', function(event) {
+      // get number of check boxes by passing :check attribute to the query selector
+        let checkedBoxes = document.querySelectorAll(".idleDuelCheckbox:checked");
+        
+        // check if the number of ticked boxes are more than allowed limit
+        if(checkedBoxes.length > 1){
+          for (let checkedBox in checkedBoxes) {
+            if (checkedBoxes[checkedBox] != event.currentTarget) {
+              checkedBoxes[checkedBox].checked = false;
+              chrome.storage.local.set({ [checkedBoxes[checkedBox].id]: false });
+            }
+          }
+        }
+      })
+    );
+
+    // Get every check box by using querySelectorAll
+    document.querySelectorAll(".idleSlot0Checkbox").forEach(
+    // For each check box add on click event listener
+      input => input.addEventListener('click', function(event) {
+      // get number of check boxes by passing :check attribute to the query selector
+        let checkedBoxes = document.querySelectorAll(".idleSlot0Checkbox:checked");
+        
+        // check if the number of checked boxes are more than allowed limit
+        if(checkedBoxes.length > 1){
+          for (let checkedBox in checkedBoxes) {
+            if (checkedBoxes[checkedBox] != event.currentTarget) {
+              checkedBoxes[checkedBox].checked = false;
+              chrome.storage.local.set({ [checkedBoxes[checkedBox].id]: false });
+            }
+          }
+        }
+      })
+    );
+
+    // Get every check box by using querySelectorAll
+    document.querySelectorAll(".idleSlot1Checkbox").forEach(
+    // For each check box add on click event listener
+      input => input.addEventListener('click', function(event) {
+      // get number of check boxes by passing :check attribute to the query selector
+        let checkedBoxes = document.querySelectorAll(".idleSlot1Checkbox:checked");
+        
+        // check if the number of checked boxes are more than allowed limit
+        if(checkedBoxes.length > 1){
+          for (let checkedBox in checkedBoxes) {
+            if (checkedBoxes[checkedBox] != event.currentTarget) {
+              checkedBoxes[checkedBox].checked = false;
+              chrome.storage.local.set({ [checkedBoxes[checkedBox].id]: false });
+            }
+          }
+        }
+      })
+    );
+
+    // Get every check box by using querySelectorAll
+    document.querySelectorAll(".idleSlot2Checkbox").forEach(
+    // For each check box add on click event listener
+      input => input.addEventListener('click', function(event) {
+      // get number of check boxes by passing :check attribute to the query selector
+        let checkedBoxes = document.querySelectorAll(".idleSlot2Checkbox:checked");
+        
+        // check if the number of checked boxes are more than allowed limit
+        if(checkedBoxes.length > 1){
+          for (let checkedBox in checkedBoxes) {
+            if (checkedBoxes[checkedBox] != event.currentTarget) {
+              checkedBoxes[checkedBox].checked = false;
+              chrome.storage.local.set({ [checkedBoxes[checkedBox].id]: false });
+            }
+          }
+        }
+      })
+    );
+
+    // Get every check box by using querySelectorAll
+    document.querySelectorAll(".idleSlot3Checkbox").forEach(
+    // For each check box add on click event listener
+      input => input.addEventListener('click', function(event) {
+      // get number of check boxes by passing :check attribute to the query selector
+        let checkedBoxes = document.querySelectorAll(".idleSlot3Checkbox:checked");
+        
+        // check if the number of checked boxes are more than allowed limit
+        if(checkedBoxes.length > 1){
+          for (let checkedBox in checkedBoxes) {
+            if (checkedBoxes[checkedBox] != event.currentTarget) {
+              checkedBoxes[checkedBox].checked = false;
+              chrome.storage.local.set({ [checkedBoxes[checkedBox].id]: false });
+            }
+          }
+        }
+      })
+    );
+
+    // Get every check box by using querySelectorAll
+    document.querySelectorAll(".idleSlot4Checkbox").forEach(
+    // For each check box add on click event listener
+      input => input.addEventListener('click', function(event) {
+      // get number of check boxes by passing :check attribute to the query selector
+        let checkedBoxes = document.querySelectorAll(".idleSlot4Checkbox:checked");
+        
+        // check if the number of checked boxes are more than allowed limit
+        if(checkedBoxes.length > 1){
+          for (let checkedBox in checkedBoxes) {
+            if (checkedBoxes[checkedBox] != event.currentTarget) {
+              checkedBoxes[checkedBox].checked = false;
+              chrome.storage.local.set({ [checkedBoxes[checkedBox].id]: false });
+            }
+          }
+        }
+      })
+    );
 });
 
 function setInputButtonListener(buttonId, inputId) {
@@ -335,6 +549,24 @@ function exportSettingsToFile() {
         "userWaitTimeInputPVP",
         "placementOddsInput",
         "offlineSwitch",
+        "idleSwitch0_Campaign",
+        "idleSwitch1_Campaign",
+        "idleSwitch2_Campaign",
+        "idleSwitch3_Campaign",
+        "idleSwitch4_Campaign",
+        "idleSwitch1_Dungeon",
+        "idleSwitch2_Dungeon",
+        "idleSwitch3_Dungeon",
+        "idleSwitch4_Dungeon",
+        "idleSwitch0_Clash",
+        "idleSwitch1_Clash",
+        "idleSwitch2_Clash",
+        "idleSwitch3_Clash",
+        "idleSwitch4_Clash",
+        "idleSwitch1_Duel",
+        "idleSwitch2_Duel",
+        "idleSwitch3_Duel",
+        "idleSwitch4_Duel",
         "skipSwitch",
         "setMarkerSwitch",
         "scrollSwitch",
