@@ -184,10 +184,6 @@ async function collectChests() {
   if (await retrieveFromStorage("paused_checkbox") || chestsRunning) {
     return
   }
-  
-  if (chestsRunning) {
-    return;
-  }
   chestsRunning = true;
 
   try {
@@ -270,6 +266,11 @@ async function collectChests() {
               await removeOldCaptain(cptId);
             }
             duelJoined = await switchToDuel(duelCapt, slotNo - 1);
+            if (await checkIfCodeLocked(duelCapt[1])) {
+              await backgroundDelay(3000);
+              await removeOldCaptain(duelCapt[0]);
+              duelJoined = true; //Set to true to avoid trying to join it again if there's another chest to collect
+            }
             setIdleState("offlineButton_" + slotNo, 1)
           }
         }
@@ -1441,7 +1442,7 @@ async function checkForDuel() {
   let captArray = await getCaptainsForSearch("duel");
   for (let i = 0; i < captArray.length; i++) {
     let capt = captArray[i];
-    if (capt[3] == false) {
+    if (capt[3] == false) { //capt[3] is whether the user has already joined the captain
       return capt;
     }
   }
@@ -1449,8 +1450,8 @@ async function checkForDuel() {
 }
 
 async function switchToDuel(capt, index) {
-  await joinCaptain(capt[0], index);
-  await saveToStorage("duelCaptain", "," + capt[1] + ",");
+  await joinCaptain(capt[0], index); //capt[0] is captainId
+  await saveToStorage("duelCaptain", "," + capt[1] + ","); //capt[1] is twitchDisplayName
   return true;
 }
 
@@ -1520,34 +1521,41 @@ async function switchCaptains(currentCaptain, masterList, index) {
 
   // Extract the ids from the sorted captains
   const firstCaptainId = captainsArray.length > 0 ? captainsArray[0].id : null;
+  const firstCaptainName = captainsArray.length > 0 ? captainsArray[0].name : null;
 
   if (currentId != undefined && firstCaptainId != undefined) {
     await removeOldCaptain(currentId);
     await joinCaptain(firstCaptainId, index);
     await delay(5000);
-    try {
-      let response = await getActiveRaids();
-
-      // Get unit id and name.
-      const activeRaids = await response.json();
-      let activeRaidsData = new Object();
-      for (let i = 0; i < activeRaids.data.length; i++) {
-        const position = activeRaids.data[i];
-        if (position.captainId === firstCaptainId && position.isCodeLocked == true) {
-          for (let j = 0; j < masterList.length; j++) {
-            if (masterList[j].id == firstCaptainId) {
-              delete masterList[j];
-            }
-          }
-          await switchCaptains(currentCaptain, masterList, index)
+    //Check if the battle has a code. If it does, delete the captain from the masterList array and try again
+    if (await checkIfCodeLocked(firstCaptainName)) {
+      for (let j = 0; j < masterList.length; j++) {
+        if (masterList[j].id == firstCaptainId) {
+          delete masterList[j];
         }
       }
-    } catch (error) { }
+      await switchCaptains(firstCaptainId, masterList, index)
+    }
     return true;
   }
   return false;
 }
 
+async function checkIfCodeLocked(captainName) {
+  try {
+    let response = await getActiveRaids();
+
+    const activeRaids = await response.json();
+    let activeRaidsData = new Object();
+    for (let i = 0; i < activeRaids.data.length; i++) {
+      const position = activeRaids.data[i];
+      if (position.twitchUserName.toLowerCase() === captainName.toLowerCase() && position.isCodeLocked == true) {
+        return true;
+      }
+    }
+  } catch (error) { }
+  return false;
+}
 
 async function checkDungeons(cptId, type) {
   // No need to check pause state because collectChests already does that.
@@ -1624,6 +1632,10 @@ async function checkDungeons(cptId, type) {
     return c1 - c2;
   });
 
+  await joinDungeon(dungeonCaptains);
+}
+
+async function joinDungeon(dungeonCaptains) {
   // Join the first captain on the list
   let captainName = dungeonCaptains[0].twitchUserName
   if (captainName) {
@@ -1641,6 +1653,17 @@ async function checkDungeons(cptId, type) {
       if (!response.ok) {
         return false
       }
+      
+      if (await checkIfCodeLocked(captainName)) {
+        for (let j = 0; j < dungeonCaptains.length; j++) {
+          if (dungeonCaptains[j].twitchUserName.toLowerCase() == captainName.toLowerCase()) {
+            delete dungeonCaptains[j];
+          }
+        }
+        let result = await joinDungeon(dungeonCaptains);
+        return result;
+      }
+      
       await saveToStorage("dungeonCaptain", "," + captainName + ",");
       return true;
     } catch (error) {
@@ -1649,7 +1672,6 @@ async function checkDungeons(cptId, type) {
     }
   }
 }
-
 
 async function getActiveRaids() {
   const clientVersion = await retrieveFromStorage("clientVersion")
