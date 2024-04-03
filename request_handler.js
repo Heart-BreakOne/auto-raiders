@@ -1440,10 +1440,12 @@ async function checkEventCurrencyActive() {
 
 async function checkForDuel() {
   let captArray = await getCaptainsForSearch("duel");
-  for (let i = 0; i < captArray.length; i++) {
-    let capt = captArray[i];
-    if (capt[3] == false) { //capt[3] is whether the user has already joined the captain
-      return capt;
+  if (captArray.length > 1) {
+    for (let i = 0; i < captArray.length; i++) {
+      let capt = captArray[i];
+      if (capt[3] == false) { //capt[3] is whether the user has already joined the captain
+        return capt;
+      }
     }
   }
   return false;
