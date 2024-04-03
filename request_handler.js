@@ -1178,20 +1178,24 @@ async function getUserDungeonInfoForRaid(captainNameFromDOM) {
       throw new Error('Network response was not ok');
     }
     let dungeonRaidResponse = await response.json();
-    let dungeonRaid = dungeonRaidResponse.data;
-    let dungeonRaidInfo = [];
+    if (dungeonRaidResponse) {
+      let dungeonRaid = dungeonRaidResponse.data;
+      let dungeonRaidInfo = [];
 
-    dungeonRaidInfo[0] = dungeonRaid.streak;
-    dungeonRaidInfo[1] = dungeonRaid.knockedUnits;
-    dungeonRaidInfo[2] = dungeonRaid.recoveredUnits;
-    dungeonRaidInfo[3] = dungeonRaid.deadUnits;
-    dungeonRaidInfo[4] = dungeonRaid.exhaustedUnits;
-    dungeonRaidInfo[5] = dungeonRaid.epicChargesUsed;
-    dungeonRaidInfo[6] = dungeonRaid.captainBoons;
-    dungeonRaidInfo[7] = dungeonRaid.enemyBoons;
-    dungeonRaidInfo[8] = dungeonRaid.completedLevels;
+      // dungeonRaidInfo[0] = "" ?? dungeonRaid.streak;
+      // dungeonRaidInfo[1] = "" ?? dungeonRaid.knockedUnits;
+      // dungeonRaidInfo[2] = "" ?? dungeonRaid.recoveredUnits;
+      // dungeonRaidInfo[3] = "" ?? dungeonRaid.deadUnits;
+      // dungeonRaidInfo[4] = "" ?? dungeonRaid.exhaustedUnits;
+      // dungeonRaidInfo[5] = "" ?? dungeonRaid.epicChargesUsed;
+      // dungeonRaidInfo[6] = "" ?? dungeonRaid.captainBoons;
+      // dungeonRaidInfo[7] = "" ?? dungeonRaid.enemyBoons;
+      dungeonRaidInfo[8] = dungeonRaid.completedLevels;
 
-    return dungeonRaidInfo;
+      return dungeonRaidInfo;
+    } else {
+      return;
+    }
   } catch (error) {
     console.error('Error retrieving dungeon info:', error.message);
     return;
