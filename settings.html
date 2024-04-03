@@ -35,7 +35,7 @@
                         <tbody>
                                 <tr>
                                         <td width="15%" style="white-space: nowrap;">&nbsp;&nbsp;&nbsp;<input
-                                                        type="number" id="reloaderInput"></label>&nbsp;<button
+                                                        type="number" id="reloaderInput" min="0"></label>&nbsp;<button
                                                         id="reloaderButton"
                                                         style="width: fit-content; height: fit-content; text-align: center; background-color: #5fa695;">Set</button>
                                         </td>
@@ -45,7 +45,7 @@
                                 </tr>
                                 <tr>
                                         <td width="15%" style="white-space: nowrap;">&nbsp;&nbsp;&nbsp;<input
-                                                        type="number" id="userIdleTimeInput"></label>&nbsp;<button
+                                                        type="number" id="userIdleTimeInput" min="0"></label>&nbsp;<button
                                                         id="idleTimeButton"
                                                         style="width: fit-content; height: fit-content; text-align: center; background-color: #5fa695;">Set</button>
                                         </td>
@@ -442,7 +442,7 @@
                         <tbody>
                                 <tr>
                                         <td width="15%" style="white-space: nowrap;">&nbsp;&nbsp;&nbsp;<input
-                                                        type="number" id="minimumCurrencyInput"></label>&nbsp;<button
+                                                        type="number" id="minimumCurrencyInput" min="0"></label>&nbsp;<button
                                                         id="minimumCurrencyButton"
                                                         style="width: fit-content; height: fit-content; text-align: center; background-color: #5fa695;">Set</button>
                                         </td>
@@ -526,7 +526,7 @@
                                 <tr>
                                         <td width="15%" style="white-space: nowrap;">&nbsp;&nbsp;&nbsp;<input
                                                         type="number"
-                                                        id="userWaitTimeInputCampaign"></label>&nbsp;<button
+                                                        id="userWaitTimeInputCampaign" min="0" max="1800"></label>&nbsp;<button
                                                         id="waitTimeCampaignButton"
                                                         style="width: fit-content; height: fit-content; text-align: center; background-color: #5fa695;">Set</button>
                                         </td>
@@ -538,7 +538,7 @@
                                 </tr>
                                 <tr>
                                         <td width="15%" style="white-space: nowrap;">&nbsp;&nbsp;&nbsp;<input
-                                                        type="number" id="placementOddsInput"></label>&nbsp;<button
+                                                        type="number" id="placementOddsInput" min="0" max="100"></label>&nbsp;<button
                                                         id="placeOddButton"
                                                         style="width: fit-content; height: fit-content; text-align: center; background-color: #5fa695;">Set</button>
                                         </td>
@@ -602,7 +602,7 @@
                         <tbody>
                                 <tr>
                                         <td width="15%" style="white-space: nowrap;">&nbsp;&nbsp;&nbsp;<input
-                                                        type="number" id="userWaitTimeInputPVP"></label>&nbsp;<button
+                                                        type="number" id="userWaitTimeInputPVP" min="0" max="360"></label>&nbsp;<button
                                                         id="waitTimePvpButton"
                                                         style="width: fit-content; height: fit-content; text-align: center; background-color: #5fa695;">Set</button>
                                         </td>
@@ -671,7 +671,7 @@
                                 <tr>
                                         <td width="15%" style="white-space: nowrap;">&nbsp;&nbsp;&nbsp;<input
                                                         type="number"
-                                                        id="userWaitTimeInputDungeons"></label>&nbsp;<button
+                                                        id="userWaitTimeInputDungeons" min="0" max="300"></label>&nbsp;<button
                                                         id="waitTimeDungeonButton"
                                                         style="width: fit-content; height: fit-content; text-align: center; background-color: #5fa695;">Set</button>
                                         </td>
@@ -683,7 +683,7 @@
                                 </tr>
                                 <tr>
                                         <td width="15%" style="white-space: nowrap;">&nbsp;&nbsp;&nbsp;<input
-                                                        type="number" id="maxUnitLvlDungInput"></label>&nbsp;<button
+                                                        type="number" id="maxUnitLvlDungInput" min="0" max="30"></label>&nbsp;<button
                                                         id="minUnitLvlButton"
                                                         style="width: fit-content; height: fit-content; text-align: center; background-color: #5fa695;">Set</button>
                                         </td>
@@ -694,7 +694,7 @@
                                 </tr>
                                 <tr>
                                         <td width="15%" style="white-space: nowrap;">&nbsp;&nbsp;&nbsp;<input
-                                                        type="number" id="maxDungeonLvlInput"></label>&nbsp;<button
+                                                        type="number" id="maxDungeonLvlInput" min="0"></label>&nbsp;<button
                                                         id="minDungeonLvlButton"
                                                         style="width: fit-content; height: fit-content; text-align: center; background-color: #5fa695;">Set</button>
                                         </td>
@@ -868,46 +868,46 @@
                         </tr>
                         <tr>
                                 <td><label for="veInput">Very Easy&nbsp;</td>
-                                <td><input type="number" id="veInput"></label></td>
+                                <td><input type="number" id="veInput" min="0" max="6"></label></td>
                                 <td><button id="veButton"
                                                 style="width: fit-content; height: fit-content; text-align: center; background-color: #5fa695;">Set</button>
                                 </td>
                                 <td><label for="eInput">Easy&nbsp;</td>
-                                <td><input type="number" id="eInput"></label></td>
+                                <td><input type="number" id="eInput" min="0" max="6"></label></td>
                                 <td><button id="eButton"
                                                 style="width: fit-content; height: fit-content; text-align: center; background-color: #5fa695;">Set</button>
                                 </td>
                                 <td><label for="mInput">Moderate&nbsp;</td>
-                                <td><input type="number" id="mInput"></label></td>
+                                <td><input type="number" id="mInput" min="0" max="6"></label></td>
                                 <td><button id="mButton"
                                                 style="width: fit-content; height: fit-content; text-align: center; background-color: #5fa695;">Set</button>
                                 </td>
                         </tr>
                         <tr>
                                 <td><label for="hInput">Hard&nbsp;</td>
-                                <td><input type="number" id="hInput"></label></td>
+                                <td><input type="number" id="hInput" min="0" max="6"></label></td>
                                 <td><button id="hButton"
                                                 style="width: fit-content; height: fit-content; text-align: center; background-color: #5fa695;">Set</button>
                                 </td>
                                 <td><label for="vhInput">Very Hard&nbsp;</td>
-                                <td><input type="number" id="vhInput"></label></td>
+                                <td><input type="number" id="vhInput" min="0" max="6"></label></td>
                                 <td><button id="vhButton"
                                                 style="width: fit-content; height: fit-content; text-align: center; background-color: #5fa695;">Set</button>
                                 </td>
                                 <td><label for="iInput">Insane&nbsp;</td>
-                                <td><input type="number" id="iInput"></label></td>
+                                <td><input type="number" id="iInput" min="0" max="6"></label></td>
                                 <td><button id="iButton"
                                                 style="width: fit-content; height: fit-content; text-align: center; background-color: #5fa695;">Set</button>
                                 </td>
                         </tr>
                         <tr>
                                 <td><label for="bInput">Boss&nbsp;</td>
-                                <td><input type="number" id="bInput"></label></td>
+                                <td><input type="number" id="bInput" min="0" max="6"></label></td>
                                 <td><button id="bButton"
                                                 style="width: fit-content; height: fit-content; text-align: center; background-color: #5fa695;">Set</button>
                                 </td>
                                 <td><label for="ebInput">Extreme Boss&nbsp;</td>
-                                <td><input type="number" id="ebInput"></label></td>
+                                <td><input type="number" id="ebInput" min="0" max="6"></label></td>
                                 <td><button id="ebButton"
                                                 style="width: fit-content; height: fit-content; text-align: center; background-color: #5fa695;">Set</button>
                                 </td>
@@ -921,34 +921,34 @@
                         </tr>
                         <tr>
                                 <td><label for="bronzeInput">Bronze&nbsp;</td>
-                                <td><input type="number" id="bronzeInput"></label></td>
+                                <td><input type="number" id="bronzeInput" min="0" max="6"></label></td>
                                 <td><button id="bronzeButton"
                                                 style="width: fit-content; height: fit-content; text-align: center; background-color: #5fa695;">Set</button>
                                 </td>
                                 <td><label for="silverInput">Silver&nbsp;</td>
-                                <td><input type="number" id="silverInput"></label></td>
+                                <td><input type="number" id="silverInput" min="0" max="6"></label></td>
                                 <td><button id="silverButton"
                                                 style="width: fit-content; height: fit-content; text-align: center; background-color: #5fa695;">Set</button>
                                 </td>
                                 <td><label for="goldInput">Gold&nbsp;</td>
-                                <td><input type="number" id="goldInput"></label></td>
+                                <td><input type="number" id="goldInput" min="0" max="6"></label></td>
                                 <td><button id="goldButton"
                                                 style="width: fit-content; height: fit-content; text-align: center; background-color: #5fa695;">Set</button>
                                 </td>
                         </tr>
                         <tr>
                                 <td><label for="lGoldInput">L Gold&nbsp;</td>
-                                <td><input type="number" id="lGoldInput"></label></td>
+                                <td><input type="number" id="lGoldInput" min="0" max="6"></label></td>
                                 <td><button id="lGoldButton"
                                                 style="width: fit-content; height: fit-content; text-align: center; background-color: #5fa695;">Set</button>
                                 </td>
                                 <td><label for="lSkinInput">L Skin&nbsp;</td>
-                                <td><input type="number" id="lSkinInput"></label></td>
+                                <td><input type="number" id="lSkinInput" min="0" max="6"></label></td>
                                 <td><button id="lSkinButton"
                                                 style="width: fit-content; height: fit-content; text-align: center; background-color: #5fa695;">Set</button>
                                 </td>
                                 <td><label for="lTokenInput">L Token&nbsp;</td>
-                                <td><input type="number" id="lTokenInput"> </label>
+                                <td><input type="number" id="lTokenInput" min="0" max="6"> </label>
                                 </td>
                                 <td><button id="lTokenButton"
                                                 style="width: fit-content; height: fit-content; text-align: center; background-color: #5fa695;">Set</button>
@@ -956,18 +956,18 @@
                         </tr>
                         <tr>
                                 <td><label for="lScrollInput">L Scroll&nbsp;</td>
-                                <td><input type="number" id="lScrollInput"></label>
+                                <td><input type="number" id="lScrollInput" min="0" max="6"></label>
                                 </td>
                                 <td><button id="lScrollButton"
                                                 style="width: fit-content; height: fit-content; text-align: center; background-color: #5fa695;">Set</button>
                                 </td>
                                 <td><label for="BossInput">Boss&nbsp;</td>
-                                <td><input type="number" id="BossInput"></label></td>
+                                <td><input type="number" id="BossInput" min="0" max="6"></label></td>
                                 <td><button id="BossButton"
                                                 style="width: fit-content; height: fit-content; text-align: center; background-color: #5fa695;">Set</button>
                                 </td>
                                 <td><label for="sBossInput">Super Boss&nbsp;</td>
-                                <td><input type="number" id="sBossInput"></label></td>
+                                <td><input type="number" id="sBossInput" min="0" max="6"></label></td>
                                 <td><button id="sBossButton"
                                                 style="width: fit-content; height: fit-content; text-align: center; background-color: #5fa695;">Set</button>
                                 </td>
