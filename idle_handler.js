@@ -225,23 +225,10 @@ async function switchIdleCaptain(index) {
       const acceptableList = fullCaptainList.filter(
           entry => !blackList.includes(entry)
       );
-      if (mode != "campaign") {
-        for (let i = 0; i < acceptableList.length; i++) {
-            //Iterates through the list of captains
-            const captain = acceptableList[i];
-            //Gets the already joined from the current captain
-            let alreadyJoined = captain[3];
-            //If the captain is running campaign and has not been joined yet
-            if (!alreadyJoined) {
-                //If user wants to select any captain, the first captain from the list is clicked
-                captainId = captain[0];
-                captainName = captain[1];
-                await joinCaptain(captainId, index);
-                await delay(3000);
-                await checkCodeAndRetry(mode, captainName, acceptableList);                
-                break;
-            }
-        }
+      if (mode == "duel") {
+        await attemptToJoinDuel(index, "");
+      } else if (mode == "dungeons") {
+        await joinCaptCheckCodeRetry(mode, acceptableList, index, "")
       } else {
         let whiteList = await filterCaptainList('whitelist', acceptableList);
         let masterList = await filterCaptainList('masterlist', acceptableList);
@@ -340,20 +327,6 @@ async function switchIdleCaptain(index) {
         }
       }
     }
-}
-
-async function checkCodeAndRetry(mode, captainName, acceptableList) {
-  if (await checkIfCodeLocked(captainName)) {
-    for (let j = 0; j < acceptableList.length; j++) {
-      if (acceptableList[j][1].toLowerCase() == captainName.toLowerCase()) {
-        delete acceptableList[j];
-      }
-    }
-    let result = await checkCodeAndRetry(mode, captainName, acceptableList);
-    return result;
-  }
-  
-  await saveToStorage(mode + "Captain", "," + captainName + ",");
 }
 
 //Returns a random index number for the captains special list

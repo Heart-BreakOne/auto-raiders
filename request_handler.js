@@ -257,22 +257,9 @@ async function collectChests() {
             setIdleState("offlineButton_" + slotNo, 0)
           }
         }
-        //If join Duel switch is selected, user is not currently in a Duel already, and target slot is Campaign, check for an ongoing Duel and join
-        if (await retrieveFromStorage("joinDuelSwitch") && duelJoined == false && type == "1") {
-          let duelCapt = await checkForDuel();
-          if (duelCapt) {
-            if (slotState != 2) {
-              await backgroundDelay(3000);
-              await removeOldCaptain(cptId);
-            }
-            duelJoined = await switchToDuel(duelCapt, slotNo - 1);
-            if (await checkIfCodeLocked(duelCapt[1])) {
-              await backgroundDelay(3000);
-              await removeOldCaptain(duelCapt[0]);
-              duelJoined = true; //Set to true to avoid trying to join it again if there's another chest to collect
-            }
-            setIdleState("offlineButton_" + slotNo, 1)
-          }
+        //If join Duel switch is selected, user is not currently in a Duel already, target slot is Campaign, and target slot is enabled, check for an ongoing Duel and join
+        if (await retrieveFromStorage("joinDuelSwitch") && !duelJoined && type == "1" && slotState == 1) {
+          duelJoined = await attemptToJoinDuel(slotNo - 1, cptId);
         }
 
         // Join dungeons if user wants to.
@@ -692,7 +679,7 @@ async function removeOldCaptain(captainId) {
     if (!response.ok) {
       throw new Error('Network response was not ok');
     }
-    await backgroundDelay(1500);
+    await backgroundDelay(3000);
   } catch (error) {
     console.error('Error removing captain:', error.message);
     return;
@@ -933,7 +920,7 @@ async function getCaptainsForSearch(mode) { //mode = "campaign"
     let h = 0;
 
     for (let pageNum = 1; pageNum <= 10; pageNum++) {
-      const response = await fetch(`https://www.streamraiders.com/api/game/?cn=getCaptainsForSearch&userId=${userId}&isCaptain=0&gameDataVersion=${gameDataVersion}&command=getCaptainsForSearch&page=${pageNum}&resultsPerPage=24&filters={"mode":"${mode}","roomCodes":"false","isPlaying":1}&clientVersion=${clientVersion}&clientPlatform=WebLite`, {
+      const response = await fetch(`https://www.streamraiders.com/api/game/?cn=getCaptainsForSearch&userId=${userId}&isCaptain=0&gameDataVersion=${gameDataVersion}&command=getCaptainsForSearch&page=${pageNum}&resultsPerPage=24&filters={"mode":"${mode}","isPlaying":1}&clientVersion=${clientVersion}&clientPlatform=WebLite`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/x-www-form-urlencoded',
@@ -1191,20 +1178,24 @@ async function getUserDungeonInfoForRaid(captainNameFromDOM) {
       throw new Error('Network response was not ok');
     }
     let dungeonRaidResponse = await response.json();
-    let dungeonRaid = dungeonRaidResponse.data;
-    let dungeonRaidInfo = [];
+    if (dungeonRaidResponse) {
+      let dungeonRaid = dungeonRaidResponse.data;
+      let dungeonRaidInfo = [];
 
-    dungeonRaidInfo[0] = dungeonRaid.streak;
-    dungeonRaidInfo[1] = dungeonRaid.knockedUnits;
-    dungeonRaidInfo[2] = dungeonRaid.recoveredUnits;
-    dungeonRaidInfo[3] = dungeonRaid.deadUnits;
-    dungeonRaidInfo[4] = dungeonRaid.exhaustedUnits;
-    dungeonRaidInfo[5] = dungeonRaid.epicChargesUsed;
-    dungeonRaidInfo[6] = dungeonRaid.captainBoons;
-    dungeonRaidInfo[7] = dungeonRaid.enemyBoons;
-    dungeonRaidInfo[8] = dungeonRaid.completedLevels;
+      // dungeonRaidInfo[0] = "" ?? dungeonRaid.streak;
+      // dungeonRaidInfo[1] = "" ?? dungeonRaid.knockedUnits;
+      // dungeonRaidInfo[2] = "" ?? dungeonRaid.recoveredUnits;
+      // dungeonRaidInfo[3] = "" ?? dungeonRaid.deadUnits;
+      // dungeonRaidInfo[4] = "" ?? dungeonRaid.exhaustedUnits;
+      // dungeonRaidInfo[5] = "" ?? dungeonRaid.epicChargesUsed;
+      // dungeonRaidInfo[6] = "" ?? dungeonRaid.captainBoons;
+      // dungeonRaidInfo[7] = "" ?? dungeonRaid.enemyBoons;
+      dungeonRaidInfo[8] = dungeonRaid.completedLevels;
 
-    return dungeonRaidInfo;
+      return dungeonRaidInfo;
+    } else {
+      return;
+    }
   } catch (error) {
     console.error('Error retrieving dungeon info:', error.message);
     return;
@@ -1441,20 +1432,9 @@ async function checkEventCurrencyActive() {
 async function checkForDuel() {
   let captArray = await getCaptainsForSearch("duel");
   if (captArray.length > 1) {
-    for (let i = 0; i < captArray.length; i++) {
-      let capt = captArray[i];
-      if (capt[3] == false) { //capt[3] is whether the user has already joined the captain
-        return capt;
-      }
-    }
+    return captArray;
   }
   return false;
-}
-
-async function switchToDuel(capt, index) {
-  await joinCaptain(capt[0], index); //capt[0] is captainId
-  await saveToStorage("duelCaptain", "," + capt[1] + ","); //capt[1] is twitchDisplayName
-  return true;
 }
 
 //Switch captains to a higher one if available
@@ -1531,9 +1511,10 @@ async function switchCaptains(currentCaptain, masterList, index) {
     await delay(5000);
     //Check if the battle has a code. If it does, delete the captain from the masterList array and try again
     if (await checkIfCodeLocked(firstCaptainName)) {
-      for (let j = 0; j < masterList.length; j++) {
+      captLoop: for (let j = 0; j < masterList.length; j++) {
         if (masterList[j].id == firstCaptainId) {
-          delete masterList[j];
+          masterList.splice(j, 1);
+          break captLoop;
         }
       }
       await switchCaptains(firstCaptainId, masterList, index)
@@ -1557,6 +1538,71 @@ async function checkIfCodeLocked(captainName) {
     }
   } catch (error) { }
   return false;
+}
+
+async function attemptToJoinDuel(index, originalCaptainId) {
+  let duelCapt = await checkForDuel();
+  if (duelCapt) {
+    await backgroundDelay(3000);
+    await removeOldCaptain(originalCaptainId);
+    await backgroundDelay(1000);
+    return await joinCaptCheckCodeRetry("duel", duelCapt, index, originalCaptainId);
+  }
+}
+
+async function joinCaptCheckCodeRetry(mode, captainArray, index, originalCaptainId) {
+  allCaptLoop: for (let i = 0; i < captainArray.length; i++) {
+    //Iterates through the list of captains
+    const captain = captainArray[i];
+    //Gets the already joined value from the current captain
+    let alreadyJoined = captain[3];
+    //If the captain has not been joined yet, join and check for code
+    if (!alreadyJoined) {
+      captainId = captain[0];
+      captainName = captain[1];
+      await joinCaptain(captainId, index);
+      await delay(3000);
+      if (await checkIfCodeLocked(captainName)) { //If code, leave captain, delete the captain from the array, and try again
+        await removeOldCaptain(captainId);
+        captLoop: for (let j = 0; j < captainArray.length; j++) {
+          if (captainArray[j][1].toLowerCase() == captainName.toLowerCase()) {
+            captainArray.splice(j, 1);
+            break captLoop;
+          }
+        }
+        if (captainArray.length >= 0) { //Try next captain in the array
+          let result = await joinCaptCheckCodeRetry(mode, captainArray, index, originalCaptainId);
+          await cancelLeaveBattlePopup();
+          return result;
+        } else {
+          await cancelLeaveBattlePopup();
+          break allCaptLoop; //If captainArray is exhausted, break loop and join original captain
+        }
+      } else { //If no code, save the captain to storage
+        if (mode != "campaign") {
+          await saveToStorage(mode + "Captain", "," + captainName + ",");
+        }
+        return true;
+      }
+    }
+  }
+  //If unable to join any new captain, join the original again, if applicable
+  if (originalCaptainId != "") {
+    await delay(1000);
+    await joinCaptain(originalCaptainId, index);
+    await delay(3000);
+  }
+  return true;
+}
+
+async function cancelLeaveBattlePopup() {
+  let leaveBattleModal = document.querySelector(".modalContent");
+  if (leaveBattleModal && leaveBattleModal.innerText.includes("Leave battle")) {
+    try {
+      let cancelButton = document.querySelector(".actionButton.actionButtonSecondary");
+      cancelButton.click();
+    } catch (error) { }
+  }
 }
 
 async function checkDungeons(cptId, type) {
@@ -1591,7 +1637,7 @@ async function checkDungeons(cptId, type) {
   for (let i = 1; i < 6; i++) {
     try {
       let cookieString = document.cookie;
-      const response = await fetch(`https://www.streamraiders.com/api/game/?cn=getCaptainsForSearch&isPlayingS=desc&isLiveS=desc&page=${i}&format=normalized&resultsPerPage=30&filters={"roomCodes":"false","isPlaying":1,"mode":"dungeons"}&clientVersion=${clientVersion}&clientPlatform=MobileLite&gameDataVersion=${gameDataVersion}&command=getCaptainsForSearch&isCaptain=0`, {
+      const response = await fetch(`https://www.streamraiders.com/api/game/?cn=getCaptainsForSearch&isPlayingS=desc&isLiveS=desc&page=${i}&format=normalized&resultsPerPage=30&filters={"isPlaying":1,"mode":"dungeons"}&clientVersion=${clientVersion}&clientPlatform=MobileLite&gameDataVersion=${gameDataVersion}&command=getCaptainsForSearch&isCaptain=0`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/x-www-form-urlencoded',
@@ -1662,6 +1708,13 @@ async function joinDungeon(cptId, dungeonCaptains) {
       }
 
       if (await checkIfCodeLocked(captainName)) {
+        for (let j = 0; j < dungeonCaptains.length; j++) {
+          if (dungeonCaptains[j].twitchUserName.toLowerCase() == captainName.toLowerCase()) {
+            dungeonCaptains.splice(j, 1);
+          }
+        }
+        let result = await joinDungeon(dungeonCaptains);
+        return result;
         return await joinNextDungeon(cptId, dungeonCaptains.slice(1));
       }
 

@@ -14,6 +14,7 @@ document.addEventListener("DOMContentLoaded", function () {
     initializeSwitch("legendarySwitch");
     initializeSwitch("dungeonSwitch");
     initializeSwitch("dungeonLevelSwitch");
+    initializeSwitch("dungeonBossPotionSwitch");
     initializeSwitch("duelSwitch");
     initializeSwitch("clashSwitch");
     initializeSwitch("multiClashSwitch");
@@ -238,6 +239,12 @@ document.addEventListener("DOMContentLoaded", async function () {
                 radioToCheck.checked = true;
             }
         }
+    });
+    
+    document.getElementById("dungeonBossPotionSwitch").addEventListener('change', function(event) {
+      if (this.checked) {
+        alert("Use at your own risk. This increases chances of the captain banning you");
+      }
     });
 
     // Get every check box by using querySelectorAll
@@ -622,6 +629,7 @@ function exportSettingsToFile() {
         "modeChangeSwitch",
         "dungeonSwitch",
         "dungeonLevelSwitch",
+        "dungeonBossPotionSwitch",
         "liveMasterSwitch",
         "priorityMasterSwitch",
         "idleMasterSwitch",
