@@ -439,6 +439,9 @@ async function start() {
             captainNameFromDOM = ""
           }
           captainFlag = await getCaptainFlag(captainNameFromDOM, 'flaggedCaptains');
+          if (captainFlag) {
+            continue
+          }
           //Make a second attempt to set loyalty flag
         } catch (error) {
           captainFlag = false
@@ -1063,7 +1066,7 @@ console.log("LOG-priority and shuffle switches");
   }
 
   if (!arrayOfMarkers || arrayOfMarkers.length == 0) {
-    // TODO Map full of block markers, flag the captain.
+    await flagCaptain('flaggedCaptains')
     goHome();
     return;
   }
