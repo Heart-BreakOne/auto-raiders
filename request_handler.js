@@ -1676,15 +1676,20 @@ async function checkDungeons(cptId, type) {
     return c1 - c2;
   });
 
-  await joinDungeon(dungeonCaptains);
+  await joinDungeon(cptId, dungeonCaptains);
 }
 
-async function joinDungeon(dungeonCaptains) {
-  // Join the first captain on the list
-  let captainName = dungeonCaptains[0].twitchUserName
+async function joinDungeon(cptId, dungeonCaptains) {
+  if (dungeonCaptains.length === 0) {
+    return false;
+  }
+
+  let captainName = dungeonCaptains[0]?.twitchUserName;
+
   if (captainName) {
     try {
-      await removeOldCaptain(cptId)
+      await removeOldCaptain(cptId);
+      
       let cookieString = document.cookie;
       const response = await fetch(`https://www.streamraiders.com/t/${captainName}`, {
         method: 'POST',
@@ -1695,9 +1700,9 @@ async function joinDungeon(dungeonCaptains) {
       });
 
       if (!response.ok) {
-        return false
+        return await joinNextDungeon(cptId, dungeonCaptains.slice(1));
       }
-      
+
       if (await checkIfCodeLocked(captainName)) {
         for (let j = 0; j < dungeonCaptains.length; j++) {
           if (dungeonCaptains[j].twitchUserName.toLowerCase() == captainName.toLowerCase()) {
@@ -1706,14 +1711,23 @@ async function joinDungeon(dungeonCaptains) {
         }
         let result = await joinDungeon(dungeonCaptains);
         return result;
+        return await joinNextDungeon(cptId, dungeonCaptains.slice(1));
       }
-      
+
       await saveToStorage("dungeonCaptain", "," + captainName + ",");
       return true;
     } catch (error) {
       console.error('Error joining captain:', error.message);
-      return false
+      return await joinNextDungeon(cptId, dungeonCaptains.slice(1));
     }
+  }
+}
+
+async function joinNextDungeon(cptId, dungeonCaptains) {
+  if (dungeonCaptains.length > 0) {
+    return await joinDungeon(cptId, dungeonCaptains);
+  } else {
+    return false;
   }
 }
 
