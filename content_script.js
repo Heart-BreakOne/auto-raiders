@@ -822,14 +822,6 @@ async function getValidUnits(captainNameFromDOM, raidId, slotOption, diamondLoya
     }
   }
 
-  //await delay(500)
-  await doPotions()
-
-  //Get all units from the drawer
-  let canCompleteQuests = await retrieveFromStorage("completeQuests")
-  unitDrawer = [...document.querySelectorAll(".unitSelectionCont")];
-  let unitsToRemove = []
-
   let dungeonLevelSwitch, dungeonLevel, userUnitLevel = 0, userDunLevel;
   if (battleType == "Dungeons") {
 console.log("LOG-check dungeon");
@@ -846,10 +838,16 @@ console.log("LOG-check dungeon");
     try {
       battleInfo = document.querySelector(".battleInfo").innerText;
       if (battleInfo.includes("Level")) {
-        dungeonLevel = parseInt(battleInfo.substr(battleInfo.length - 2));
+        dungeonLevel = parseInt(battleInfo.substr(battleInfo.length - 3));
       }
     } catch (error) { }
   }
+
+  //Get all units from the drawer
+  let canCompleteQuests = await retrieveFromStorage("completeQuests")
+  unitDrawer = [...document.querySelectorAll(".unitSelectionCont")];
+  let unitsToRemove = []
+
   // Remove cooldown units, unavailable units and rarity check units
   if (!unitDrawer || !unitDrawer[0] || unitDrawer[0].children == null) {
     return;
@@ -1073,6 +1071,19 @@ console.log("LOG-priority and shuffle switches");
 
     arrayOfMarkers = notVibeMarkers.concat(arrayOfVibeMarkers);
   }
+  
+  let potionState = 0;
+  let dungeonBossPotionSwitch;
+  let isBossLevel = false;
+  if (battleType == "Campaign") {
+    potionState = await getRadioButton("selectedOption");
+  } else if (battleType == "Dungeons") {
+    dungeonBossPotionSwitch = await getSwitchState("dungeonBossPotionSwitch");
+    if (dungeonLevel % 3 === 0) {
+      isBossLevel = true;
+    }
+  }
+  const favoriteSwitch = await getSwitchState("favoriteSwitch");
 
   let counter = 0
   outer_loop: for (const unit of unitDrawer[0].children) {
@@ -1380,41 +1391,47 @@ function goHome() {
 }
 
 
-async function doPotions() {
-  const potionState = await getRadioButton("selectedOption");
-  if (potionState != 0) {
-    const favoriteSwitch = await getSwitchState("favoriteSwitch");
+async function doPotions(battleType, favoriteSwitch, isBossLevel) {
+  let favoritePotion = !favoriteSwitch;
 
-    let favoritePotion = !favoriteSwitch;
-
-    if (!mode && favoriteSwitch) {
-      try {
-        const potionCaptainsList = await new Promise((resolve) => {
-          chrome.storage.local.get({ 'potionlist': [] }, function (result) {
-            resolve(result["potionlist"]);
-          });
+  if (battleType == "Campaign" && favoriteSwitch) {
+    try {
+      const potionCaptainsList = await new Promise((resolve) => {
+        chrome.storage.local.get({ 'potionlist': [] }, function (result) {
+          resolve(result["potionlist"]);
         });
+      });
 
-        if (Array.isArray(potionCaptainsList) && potionCaptainsList.length > 0) {
-          favoritePotion = potionCaptainsList.some(item => item.toUpperCase() === captainNameFromDOM.toUpperCase());
-        }
-      } catch (error) { }
-    }
-
-    if (!mode && favoritePotion) {
-      try {
-        const potions = document.querySelector("img[alt='Potion']").closest(".quantityItem");
-        const potionQuantity = parseInt(potions.querySelector(".quantityText").textContent.substring(0, 3));
-
-        if (potionQuantity >= 45 || potionQuantity === 100) {
-          const epicButton = document.querySelector(".actionButton.actionButtonPrimary.epicButton");
-          if (epicButton) {
-            epicButton.click();
-          }
-        }
-      } catch (error) {
-        goHome();
+      if (Array.isArray(potionCaptainsList) && potionCaptainsList.length > 0) {
+        favoritePotion = potionCaptainsList.some(item => item.toUpperCase() === captainNameFromDOM.toUpperCase());
       }
+    } catch (error) { }
+  }
+
+  if (battleType == "Campaign" && favoritePotion) {
+    try {
+      const potions = document.querySelector("img[alt='Potion']").closest(".quantityItem");
+      const potionQuantity = parseInt(potions.querySelector(".quantityText").textContent.substring(0, 3));
+
+      if (potionQuantity >= 45 || potionQuantity === 100) {
+        const epicButton = document.querySelector(".actionButton.actionButtonPrimary.epicButton");
+        if (epicButton) {
+          epicButton.click();
+        }
+      }
+    } catch (error) {
+      goHome();
+    }
+  }
+
+  if (battleType == "Dungeons" && isBossLevel) {
+    try {
+      const epicButton = document.querySelector(".actionButton.actionButtonPrimary.epicButton");
+      if (epicButton) {
+        epicButton.click();
+      }
+    } catch (error) {
+      goHome();
     }
   }
 }
