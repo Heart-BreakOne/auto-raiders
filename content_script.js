@@ -225,6 +225,9 @@ async function start() {
     let duelSwitchSuccessful;
     let masterlistSwitchSuccessful;
     if (joinDuelSwitch) {
+      while (chestsRunning == true) {
+        await delay(10);
+      }
       let slotAvailable = -1;
       let duelJoined = false;
       //Initialized a node list with all the captain slots
@@ -257,11 +260,7 @@ async function start() {
       }
       //If slot is available and user is not currently in a Duel already, switch to a Duel (if one exists)
       if (slotAvailable != -1 && !duelJoined) {
-        let duelCapt = await checkForDuel();
-        if (duelCapt) {
-          duelSwitchSuccessful = await switchToDuel(duelCapt, slotAvailable);
-          duelJoined = true;
-        }
+        duelJoined = await attemptToJoinDuel(slotAvailable, "");
       }
     }
     if (forceMaster || replaceMaster) {
