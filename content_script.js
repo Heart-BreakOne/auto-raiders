@@ -841,7 +841,7 @@ console.log("LOG-check dungeon");
     try {
       battleInfo = document.querySelector(".battleInfo").innerText;
       if (battleInfo.includes("Level")) {
-        dungeonLevel = parseInt(battleInfo.substr(battleInfo.length - 3));
+        dungeonLevel = parseInt(battleInfo.substr(battleInfo.length - 3).replace(":",""));
       }
     } catch (error) { }
   }
