@@ -1076,18 +1076,18 @@ console.log("LOG-priority and shuffle switches");
   }
   
   let potionState = 0;
+  let favoriteSwitch = false;
   let dungeonBossPotionSwitch;
   let isBossLevel = false;
   if (battleType == "Campaign") {
     potionState = await getRadioButton("selectedOption");
+    favoriteSwitch = await getSwitchState("favoriteSwitch");
   } else if (battleType == "Dungeons") {
     dungeonBossPotionSwitch = await getSwitchState("dungeonBossPotionSwitch");
     if (dungeonLevel % 3 === 0) {
       isBossLevel = true;
     }
   }
-  const favoriteSwitch = await getSwitchState("favoriteSwitch");
-
   let counter = 0
   outer_loop: for (const unit of unitDrawer[0].children) {
     const unitId = unit.id;
