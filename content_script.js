@@ -2,9 +2,20 @@
 functions to perform tasks such as replacing idle captains or buying scrolls
 */
 
-//Triggers the start function every 10 seconds
-setInterval(start, 10000);
-setInterval(performCollectionInterval, 60000);
+//Triggers the start function every 10-15 seconds
+(function loopStart() {
+  setTimeout( () => {
+    start();
+    loopStart();  
+  }, getRandNum(10, 15) * 1000);
+}());
+//Triggers the perform collection function every 60-70 seconds
+(function loopPerformCollection() {
+  setTimeout( () => {
+    performCollectionInterval();
+    loopPerformCollection();  
+  }, getRandNum(60, 70) * 1000);
+}());
 
 //Declares/initializes variables
 let currentMarkerKey = "";
@@ -1534,4 +1545,8 @@ async function scrollToMarker(marker) {
           scrollToMarker(marker);
       }, 100);
   }
+}
+
+function getRandNum(min, max) {
+  return Math.floor(Math.random() * (max - min + 1) + min);
 }

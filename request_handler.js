@@ -1,5 +1,17 @@
-setInterval(logChestsAndUnitsInterval, 10000);
-setInterval(levelUp, 150000);
+//Triggers the logChestsAndUnits function every 10-15 seconds
+(function loopLog() {
+  setTimeout( () => {
+    logChestsAndUnitsInterval();
+    loopLog();  
+  }, getRandNum(10, 15)*1000);
+}());
+//Triggers the levelUp function every 150-200 seconds
+(function looplevelUp() {
+  setTimeout( () => {
+    levelUp();
+    looplevelUp();  
+  }, getRandNum(150, 200)*1000);
+}());
 
 //Declaring variables
 let isRunning = false;

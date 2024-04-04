@@ -16,8 +16,13 @@ let previousConfirmButtonCount = 0;
 let isBattlefield = null;
 let initialPlaceButton = null;
 let initialConfirmButton = null;
-//Runs checkBattle() every 15 seconds
-setInterval(checkBattle, 15000);
+//Triggers the checkBattle function every 15-20 seconds
+(function loopCheckBattle() {
+  setTimeout( () => {
+    checkBattle();
+    loopCheckBattle();  
+  }, getRandNum(20, 30)*1000);
+}());
 
 //Send a message to the background to reload the streamraiders tab.
 function locationReload() {

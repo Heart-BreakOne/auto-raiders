@@ -1,6 +1,12 @@
 //This file handles shopping and collection of scrolls, quests and rewards.
 
-setInterval(collectQuests, 10000);
+//Triggers the collectQuests function every 10-15 seconds
+(function loopCollectQuests() {
+  setTimeout( () => {
+    collectQuests();
+    loopCollectQuests();  
+  }, getRandNum(10, 15)*1000);
+}());
 
 //Declare variables for initialization later
 const collectDelay = (ms) => new Promise((res) => setTimeout(res, ms));
