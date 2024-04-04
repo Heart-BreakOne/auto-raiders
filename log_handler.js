@@ -1,8 +1,6 @@
 const logDelay = ms => new Promise(res => setTimeout(res, ms));
 let logRunning = false;
 
-setInterval(addNewLogEntry, 30000);
-
 //Observer for changes on the dom
 async function addNewLogEntry() {
 

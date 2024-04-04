@@ -1,6 +1,12 @@
 //This file handles shopping and collection of scrolls, quests and rewards.
 
-setInterval(collectQuests, 10000);
+//Triggers the collectQuests function every 10-15 seconds
+(function loopCollectQuests() {
+  setTimeout( () => {
+    collectQuests();
+    loopCollectQuests();  
+  }, getRandNum(10, 15)*1000);
+}());
 
 //Declare variables for initialization later
 const collectDelay = (ms) => new Promise((res) => setTimeout(res, ms));
@@ -149,22 +155,14 @@ async function collectBattlePass() {
     if (!questState) {
         return;
     }
-    const clientVersion = await retrieveFromStorage("clientVersion");
-    const gameDataVersion = await retrieveFromStorage("dataVersion");
+    const dataArray = ['clientVersion', 'dataVersion'];
+    const dataKeys = await retrieveMultipleFromStorage(dataArray);
+    const clientVersion = dataKeys.clientVersion;
+    const gameDataVersion = dataKeys.dataVersion;
 
     try {
-        let cookieString = document.cookie;
-        const response = await fetch(`https://www.streamraiders.com/api/game/?cn=getEventProgressionLite&clientVersion=${clientVersion}&clientPlatform=MobileLite&gameDataVersion=${gameDataVersion}&command=getEventProgressionLite&isCaptain=0`, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/x-www-form-urlencoded',
-                'Cookie': cookieString,
-            },
-        });
-
-        if (!response.ok) {
-            throw new Error('Network response was not ok');
-        }
+        const url = `https://www.streamraiders.com/api/game/?cn=getEventProgressionLite&clientVersion=${clientVersion}&clientPlatform=MobileLite&gameDataVersion=${gameDataVersion}&command=getEventProgressionLite&isCaptain=0`
+        const response = await makeRequest(url);
         const eventProgressionData = await response.json();
         const eventProgress = eventProgressionData.data;
         let currentTier = eventProgress.currentTier;

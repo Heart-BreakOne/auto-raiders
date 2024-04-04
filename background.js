@@ -409,4 +409,14 @@ chrome.runtime.onInstalled.addListener(function (details) {
   }
 });
 
-setInterval(checkGameData, 10000);
+//Triggers the checkGameData function every 10-15 seconds
+(function loopCheckGameData() {
+  setTimeout( () => {
+    checkGameData();
+    loopCheckGameData();  
+  }, getRandNumBackground(10, 15) * 1000);
+}());
+
+function getRandNumBackground(min, max) {
+  return Math.floor(Math.random() * (max - min + 1) + min);
+}
