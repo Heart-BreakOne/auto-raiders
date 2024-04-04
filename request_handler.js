@@ -1248,7 +1248,7 @@ async function levelUp() {
   const gameDataVersion = await retrieveFromStorage("dataVersion")
   const userId = await retrieveFromStorage("userId")
 
-  let legendaries = "amazon,artillery,balloonbuster,blob,mage,necromancer,orcslayer,phantom,spy,templar,warbeast"
+  let legendaries = ["alliesballoonbuster","alliespaladin","amazon","artillery","balloonbuster","blob","mage","necromancer","orcslayer","phantom","spy","templar","warbeast"];
   let regularCost = [
     { lower: 1, high: 2, gold: 25, scroll: 15 },
     { lower: 2, high: 3, gold: 35, scroll: 20 },
@@ -1280,6 +1280,7 @@ async function levelUp() {
     { lower: 28, high: 29, gold: 1000, scroll: 380 },
     { lower: 29, high: 30, gold: 1200, scroll: 400 }]
   let legendaryCost = [
+    { lower: 1, high: 2, gold: 50, scroll: 10 },
     { lower: 2, high: 3, gold: 70, scroll: 10 },
     { lower: 3, high: 4, gold: 100, scroll: 10 },
     { lower: 4, high: 5, gold: 200, scroll: 10 },

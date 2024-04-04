@@ -125,7 +125,7 @@ async function setBattleStatus(captainName) {
             const lastUpdateTime = idleData[existingCaptainIndex].currentTime;
             if (currentTime - new Date(lastUpdateTime).getTime() > 3600000) {
                 // Update the currentTime
-                idleData[existingCaptainIndex].currentTime = new Date(currentTime).toISOString();
+                idleData[existingCaptainIndex].currentTime = currentTime;//new Date(currentTime).toISOString();
                 // Save updated data back to local storage
                 chrome.storage.local.set({ idleData: idleData });
             }
