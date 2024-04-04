@@ -16,6 +16,13 @@ functions to perform tasks such as replacing idle captains or buying scrolls
     loopPerformCollection();  
   }, getRandNum(60, 70) * 1000);
 }());
+//Triggers the addNewLogEntry function every 10-15 seconds
+(function loopAddNewLogEntry() {
+  setTimeout( () => {
+    addNewLogEntry();
+    loopAddNewLogEntry();  
+  }, getRandNum(10, 15)*1000);
+}());
 
 //Declares/initializes variables
 let currentMarkerKey = "";

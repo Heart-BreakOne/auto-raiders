@@ -1,14 +1,6 @@
 const logDelay = ms => new Promise(res => setTimeout(res, ms));
 let logRunning = false;
 
-//Triggers the addNewLogEntry function every 10-15 seconds
-(function loopAddNewLogEntry() {
-  setTimeout( () => {
-    addNewLogEntry();
-    loopAddNewLogEntry();  
-  }, getRandNum(10, 15)*1000);
-}());
-
 //Observer for changes on the dom
 async function addNewLogEntry() {
 
