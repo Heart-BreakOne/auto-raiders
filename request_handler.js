@@ -812,6 +812,7 @@ async function getCaptainsForSearch(mode) { //mode = "campaign" or "duel" or "du
       const response = await makeRequest(url);
 
       let captData = await response.json();
+      console.log(captData)
       if (captData.data && captData.data.captains != null) {
         let capts = captData.data.captains;
         let captLoyalty = captData.data.pveLoyalty;
@@ -1469,10 +1470,9 @@ async function checkDungeons(cptId, type) {
 }
 
 async function joinDungeon(cptId, dungeonCaptains) {
-  if (dungeonCaptains.length === 0) {
+  if (!dungeonCaptains || dungeonCaptains.length === 0) {
     return false;
   }
-
   let captainName = dungeonCaptains[0]?.twitchUserName;
 
   if (captainName) {
