@@ -1,5 +1,5 @@
 /* This file is the heart of the extension, it performs the auto playing, invokes functions to set and get values as well as
-functions to perform tasks such as replacing idle captains or buying scrolls
+functions to perform tasks such as replacing idle captains or buying scrolls.
 */
 
 //Triggers the start function every 10-15 seconds
