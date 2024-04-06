@@ -1122,6 +1122,9 @@ console.log("LOG-priority and shuffle switches");
       const markerId = marker.id;
       let hasPlaced;
       if (markerId === "VIBE" || markerId.includes(unitId.split("#")[0]) || markerId.includes(unitId.split("#")[1])) {
+        if (potionState != 0 || dungeonBossPotionSwitch) {
+          await doPotions(battleType, favoriteSwitch, isBossLevel);
+        }
         hasPlaced = await attemptPlacement(unit, marker);
         if (hasPlaced == undefined || hasPlaced) {
       getLeaderboardUnitsData();
