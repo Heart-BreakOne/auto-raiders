@@ -84,6 +84,8 @@ td {
 
 .inline_block {
     display: inline-block;
+}
+
 #scrollBtn {
     display: none;
     position: fixed;
@@ -119,5 +121,4 @@ a:active {
   color: Blue;
   background-color: transparent;
   text-decoration: underline;
-}
 }
