@@ -1359,6 +1359,9 @@ async function joinCaptCheckCodeRetry(mode, captainArray, index, originalCaptain
       captainId = captain[0];
       captainName = captain[1];
       await joinCaptain(captainId, index);
+      if (mode != "campaign") {
+        await saveToStorage(mode + "Captain", "," + captainName + ",");
+      }
       await delay(3000);
       if (await checkIfCodeLocked(captainName)) { //If code, leave captain, delete the captain from the array, and try again
         await removeOldCaptain(captainId);
@@ -1376,10 +1379,7 @@ async function joinCaptCheckCodeRetry(mode, captainArray, index, originalCaptain
           await cancelLeaveBattlePopup();
           break allCaptLoop; //If captainArray is exhausted, break loop and join original captain
         }
-      } else { //If no code, save the captain to storage
-        if (mode != "campaign") {
-          await saveToStorage(mode + "Captain", "," + captainName + ",");
-        }
+      } else {
         return true;
       }
     }
@@ -1490,6 +1490,7 @@ async function joinDungeon(cptId, dungeonCaptains) {
 
       if (!response.ok) {
         return await joinNextDungeon(cptId, dungeonCaptains.slice(1));
+        await saveToStorage("dungeonCaptain", "," + captainName + ",");
       }
 
       if (await checkIfCodeLocked(captainName)) {
@@ -1503,7 +1504,6 @@ async function joinDungeon(cptId, dungeonCaptains) {
         return await joinNextDungeon(cptId, dungeonCaptains.slice(1));
       }
 
-      await saveToStorage("dungeonCaptain", "," + captainName + ",");
       return true;
     } catch (error) {
       console.error('Error joining captain:', error.message);
