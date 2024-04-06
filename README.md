@@ -15,7 +15,7 @@ Join the server: [![Static Badge](https://img.shields.io/badge/Discord-Discord?s
 ### Special thanks to contributor:
 Heather1209
 ###
-This extension runs on the client side simulating user inputs so there's no risk of having you're account banned due to botting.
+This extension runs on the client side simulating user inputs so there's no risk of having you're account banned due to botting
 
 
 The desktop version of the game uses canvas, the mobile version is built differently, this extension is built to work with the mobile version, to use it open the devtools tab and select mobile mode.<br>

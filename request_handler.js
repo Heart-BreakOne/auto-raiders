@@ -813,6 +813,7 @@ async function getCaptainsForSearch(mode) { //mode = "campaign" or "duel" or "du
       const response = await makeRequest(url, 0);
 
       let captData = await response.json();
+      console.log(captData)
       if (captData.data && captData.data.captains != null) {
         let capts = captData.data.captains;
         let captLoyalty = captData.data.pveLoyalty;
