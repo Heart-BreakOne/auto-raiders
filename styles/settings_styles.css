@@ -85,3 +85,40 @@ td {
 .inline_block {
     display: inline-block;
 }
+
+#scrollBtn {
+    display: none;
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    background-color: red;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    padding: 10px 20px;
+    cursor: pointer;
+}
+
+a:link {
+  color: Blue;
+  background-color: transparent;
+  text-decoration: none;
+}
+
+a:visited {
+  color: Blue;
+  background-color: transparent;
+  text-decoration: none;
+}
+
+a:hover {
+  color: Blue;
+  background-color: transparent;
+  text-decoration: underline;
+}
+
+a:active {
+  color: Blue;
+  background-color: transparent;
+  text-decoration: underline;
+}

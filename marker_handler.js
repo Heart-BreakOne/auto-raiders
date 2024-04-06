@@ -54,7 +54,11 @@ function makeMarkers() {
 function getCaptainUnit() {
     //Get ally units.
     const allUnits = Array.from(document.querySelectorAll(".allyUnit"))
-    const captainName = document.querySelector(".captainButtonActive.captainButtonImg").alt;
+    const captainUnit = document.querySelector(".captainButtonActive.captainButtonImg");
+    if (captainUnit == null) {
+      return;
+    }
+    const captainName = captainUnit.alt;
     let icon = "";
 
     //Open the leaderboard
@@ -274,12 +278,16 @@ function getMapMatrix(arrayOfMarkers) {
 }
 
 function bumpVibeMarkers(arrayOfMarkers) {
-    const customMarkers = arrayOfMarkers.filter(marker => marker.classList.contains('custom'));
-    const nonCustomMarkers = arrayOfMarkers.filter(marker => !marker.classList.contains('custom') && !marker.id.includes('NO'));
+    try {
+        const customMarkers = arrayOfMarkers.filter(marker => marker.classList.contains('custom'));
+        const nonCustomMarkers = arrayOfMarkers.filter(marker => !marker.classList.contains('custom') && !marker.id.includes('NO'));
 
-    if (nonCustomMarkers.length > 10) {
-        return nonCustomMarkers;
-    } else {
-        return nonCustomMarkers.concat(customMarkers);
+        if (nonCustomMarkers.length > 10) {
+            return nonCustomMarkers;
+        } else {
+            return nonCustomMarkers.concat(customMarkers);
+        }
+    } catch (error) {
+        return
     }
 }

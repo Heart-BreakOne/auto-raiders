@@ -334,6 +334,9 @@ async function start() {
         captainNameFromDOM = captainSlot.querySelector('.capSlotName').innerText;
         //Retrieve the slot pause state
         const btn = captainSlot.querySelector(".capSlotStatus .offlineButton");
+        if (btn == null || btn == undefined) {
+          return;
+        }
         const buttonId = btn.getAttribute('id');
         const slotOption = buttonId.replace("offlineButton_", "");
         const slotState = await getIdleState(buttonId);
@@ -1119,6 +1122,9 @@ console.log("LOG-priority and shuffle switches");
       const markerId = marker.id;
       let hasPlaced;
       if (markerId === "VIBE" || markerId.includes(unitId.split("#")[0]) || markerId.includes(unitId.split("#")[1])) {
+        if (potionState != 0 || dungeonBossPotionSwitch) {
+          await doPotions(battleType, favoriteSwitch, isBossLevel);
+        }
         hasPlaced = await attemptPlacement(unit, marker);
         if (hasPlaced == undefined || hasPlaced) {
       getLeaderboardUnitsData();

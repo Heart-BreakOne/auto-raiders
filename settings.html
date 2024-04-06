@@ -21,12 +21,14 @@
                 <button id="key_check_button" class="green_button">Key check</button>
         </div>
         <h1 style="font-size: xx-large;">Set your preferences here</h1>
+        <div class="center" style="width: fit-content;"><a href="#General">General</a> | <a href="#Collecting">Collecting</a> | <a href="#Skins">Skins</a> | <a href="#Campaign">Campaign</a> | <a href="#PVP">PVP</a> | <a href="#Dungeons">Dungeons</a> | <a href="#Masterlist">Masterlist</a> | <a href="#Loyalty">Loyalty</a> | <a href="#UnitsperLevelChest">Units per Level/Chest</a>
+        </div>
         <div class="center" style="max-width:1000px">
                 <table width="100%">
                         <tbody>
                                 <tr>
                                         <td>
-                                                <div style="font-size:1.25em;font-style:italic">General</div>
+                                                <div id="General" style="font-size:1.25em;font-style:italic">General</div>
                                         </td>
                                 </tr>
                         </tbody>
@@ -433,7 +435,7 @@
                                 </tr>
                                 <tr>
                                         <td>
-                                                <div style="font-size:1.25em;font-style:italic">Collecting</div>
+                                                <div id="Collecting" style="font-size:1.25em;font-style:italic">Collecting</div>
                                         </td>
                                 </tr>
                         </tbody>
@@ -489,7 +491,7 @@
                                 </tr>
                                 <tr>
                                         <td>
-                                                <div style="font-size:1.25em;font-style:italic">Skins</div>
+                                                <div id="Skins" style="font-size:1.25em;font-style:italic">Skins</div>
                                         </td>
                                 </tr>
                                 <tr>
@@ -516,7 +518,7 @@
                                 </tr>
                                 <tr>
                                         <td>
-                                                <div style="font-size:1.25em;font-style:italic">Campaign</div>
+                                                <div id="Campaign" style="font-size:1.25em;font-style:italic">Campaign</div>
                                         </td>
                                 </tr>
                         </tbody>
@@ -593,7 +595,7 @@
                                 </tr>
                                 <tr>
                                         <td>
-                                                <div style="font-size:1.25em;font-style:italic">PVP</div>
+                                                <div id="PVP" style="font-size:1.25em;font-style:italic">PVP</div>
                                         </td>
                                 </tr>
                         </tbody>
@@ -661,7 +663,7 @@
                                 </tr>
                                 <tr>
                                         <td>
-                                                <div style="font-size:1.25em;font-style:italic">Dungeons</div>
+                                                <div id="Dungeons" style="font-size:1.25em;font-style:italic">Dungeons</div>
                                         </td>
                                 </tr>
                         </tbody>
@@ -745,7 +747,7 @@
                                 </tr>
                                 <tr>
                                         <td>
-                                                <div style="font-size:1.25em;font-style:italic">Masterlist</div>
+                                                <div id="Masterlist" style="font-size:1.25em;font-style:italic">Masterlist</div>
                                         </td>
                                 </tr>
                                 <tr>
@@ -776,7 +778,7 @@
                         <tbody>
                                 <tr>
                                         <td>
-                                                <div style="font-size:1.25em;font-style:italic">Loyalty</div>
+                                                <div id="Loyalty" style="font-size:1.25em;font-style:italic">Loyalty</div>
                                         </td>
                                 </tr>
                                 <tr>
@@ -853,7 +855,7 @@
                         </tr>
                 </tbody>
         </table>
-        <table>
+        <table id="UnitsperLevelChest">
                 <tbody>
                         <tr>
                                 <td><label>How many units should be placed in specific levels, do not use
@@ -990,6 +992,7 @@
                         </div>
                 </div>
         </div>
+        <button id="scrollBtn" title="Go to top">↑</button>
 </body>
 
 </html>
