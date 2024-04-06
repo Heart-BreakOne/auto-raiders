@@ -157,7 +157,8 @@ async function checkGameData() {
 });
   const response = await fetch('https://www.streamraiders.com/api/game/?cn=getUser&command=getUser');
   if (!response.ok) {
-    throw new Error(`Failed to fetch getUser data (${response.status} ${response.statusText})`);
+    console.error(`Failed to fetch getUser data (${response.status} ${response.statusText})`);
+    return;
   }
   const data = await response.json();
   const clientVersion = data.info.version;

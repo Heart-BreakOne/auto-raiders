@@ -334,6 +334,9 @@ async function start() {
         captainNameFromDOM = captainSlot.querySelector('.capSlotName').innerText;
         //Retrieve the slot pause state
         const btn = captainSlot.querySelector(".capSlotStatus .offlineButton");
+        if (btn == null || btn == undefined) {
+          return;
+        }
         const buttonId = btn.getAttribute('id');
         const slotOption = buttonId.replace("offlineButton_", "");
         const slotState = await getIdleState(buttonId);
