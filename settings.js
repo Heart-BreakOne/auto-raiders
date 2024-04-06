@@ -156,6 +156,23 @@ function initializeSwitch(switchId) {
 
 //Event listener to initialize the radio buttons as well as update their states
 document.addEventListener("DOMContentLoaded", async function () {
+    const scrollToTopBtn = document.getElementById("scrollBtn");
+
+    // Show or hide the button based on scroll position
+    window.onscroll = function () {
+        if (document.body.scrollTop > 20 || document.documentElement.scrollTop > 20) {
+            scrollToTopBtn.style.display = "block";
+        } else {
+            scrollToTopBtn.style.display = "none";
+        }
+    };
+
+    // Scroll back to the top when the button is clicked
+    scrollToTopBtn.addEventListener("click", function () {
+        document.body.scrollTop = 0;
+        document.documentElement.scrollTop = 0;
+    });  
+  
     //Function to save the new radio button state on the storage
     function handlePotionRadioButtonChange() {
         let selectedOption = document.querySelector('input[name="potion"]:checked').value;
