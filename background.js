@@ -102,16 +102,6 @@ chrome.runtime.onConnect.addListener((port) => {
         }
       });
     }
-
-    //Message from the units_handler.js to create the unit priority list.
-    if (msg.action === "getUnits") {
-      // Handle the message, access payload with msg.payload
-      // Do something with the payload
-      //Might need async handling
-      await getCookies();
-      const response = await fetchUnits();
-      port.postMessage({ response });
-    }
   });
 });
 
@@ -166,6 +156,9 @@ async function checkGameData() {
     }
 });
   const response = await fetch('https://www.streamraiders.com/api/game/?cn=getUser&command=getUser');
+  if (!response.ok) {
+    throw new Error(`Failed to fetch getUser data (${response.status} ${response.statusText})`);
+  }
   const data = await response.json();
   const clientVersion = data.info.version;
   const dataVersion = data.info.dataVersion;
