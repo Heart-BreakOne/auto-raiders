@@ -125,6 +125,9 @@ async function loadChestData() {
 
     let dcd = await retrieveFromStorage("dungeonChestsData");
     let bcd = await retrieveFromStorage("boneChestsData");
+    if (!dcd || !bcd) {
+        return
+    }
     let mdc = dcd.concat(bcd);
     let chestContainer = document.getElementById("chest_container");
     let table = document.createElement("table");
