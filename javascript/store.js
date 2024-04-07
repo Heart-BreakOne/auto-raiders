@@ -135,13 +135,14 @@ async function loadChestData() {
     if (!dcd || !bcd) {
         return
     }
+    let userChests = await retrieveFromStorage("userChests")
     let mdc = dcd.concat(bcd);
     let chestContainer = document.getElementById("chest_container");
     let table = document.createElement("table");
 
     let thead = document.createElement("thead");
     let headerRow = document.createElement("tr");
-    let headers = ["Section", "Icon", "Uid", "Item", "BasePrice", "Max Quantity", "Amount", "Starts", "Ends", "Can Buy"];
+    let headers = ["Section", "Icon", "Uid", "Item", "BasePrice", "Max Quantity", "Amount", "Starts", "Ends", "Can Buy", "Bought so far"];
     headers.forEach(headerText => {
         let headerCell = document.createElement("th");
         headerCell.textContent = headerText;
@@ -161,6 +162,12 @@ async function loadChestData() {
         let maxPurchase = item["PurchaseLimit"];
         let quantity = item["Quantity"];
 
+        let amountBought = userChests[itemUid]
+        if (amountBought) {
+            amountBought = amountBought.amountBought
+        } else {
+            amountBought = 0
+        }
 
         let utcTimeString = item["LiveStartTime"];
 
@@ -188,7 +195,7 @@ async function loadChestData() {
         let localLiveEndTime = utcDate.toLocaleString();
 
         let row = document.createElement("tr");
-        let rowData = [section, itemUid, itemUid, itemType, cost, maxPurchase, quantity, localLiveStartTime, localLiveEndTime];
+        let rowData = [section, itemUid, itemUid, itemType, cost, maxPurchase, quantity, localLiveStartTime, localLiveEndTime, amountBought];
         rowData.forEach((data, index) => {
             let cell = document.createElement("td");
             if (index === 1) {
