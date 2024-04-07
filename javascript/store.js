@@ -142,7 +142,7 @@ async function loadChestData() {
 
     let thead = document.createElement("thead");
     let headerRow = document.createElement("tr");
-    let headers = ["Section", "Icon", "Uid", "Item", "BasePrice", "Max Quantity", "Amount", "Starts", "Ends", "Can Buy", "Bought so far"];
+    let headers = ["Section", "Icon", "Uid", "Item", "BasePrice", "Max Quantity", "Amount", "Starts", "Ends", "Bought so far", "Can Buy"];
     headers.forEach(headerText => {
         let headerCell = document.createElement("th");
         headerCell.textContent = headerText;
