@@ -66,10 +66,11 @@ async function fetchAndSaveChestData() {
                 const chest = chestsArray[j];
                 const chestSection = chest["Section"];
                 const availableTo = chest["AvailableTo"];
+                const purchaseLimit = chest["PurchaseLimit"];
 
                 if (chestSection === section && availableTo !== "Captain") {
                     const basePrice = chest["BasePrice"];
-                    if (basePrice !== -1) {
+                    if (basePrice != -1 && purchaseLimit == -1) {
                         const liveEndTime = new Date(chest["LiveEndTime"]);
                         const currentDate = new Date();
                         const currentUTCTime = Date.UTC(
@@ -294,8 +295,8 @@ async function updateCheckBox(checkboxId, checkBoxState) {
 async function loadCheckBoxData() {
 
     let checkbox = document.getElementById('chest_purchase_order');
-    
-    if(checkbox) {
+
+    if (checkbox) {
         let checkboxState = await retrieveFromStorage("chestPurchaseOrder")
         if (!checkboxState) {
             checkbox.checked = false
@@ -303,7 +304,7 @@ async function loadCheckBoxData() {
             checkbox.checked = true
         }
     }
-    
+
     let checkboxes = document.querySelectorAll('.checkbox');
 
     chrome.storage.local.get('userChests', function (data) {
