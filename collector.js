@@ -389,10 +389,10 @@ async function buyChests() {
                 if (userChestData.hasOwnProperty(uid)) {
                     userChestData[uid].amountBought++;
                 } else {
-                    console.error(`Chest with uid ${uid} not found in userChestData.`);
+                    console.log(`Chest with uid ${uid} not found in userChestData.`);
                 }
             } else {
-                console.error(`Failed to purchase chest with uid ${uid}.`);
+                console.log(`Failed to purchase chest with uid ${uid}.`);
             }
         }
         await saveToStorage("userChests", userChestData)
