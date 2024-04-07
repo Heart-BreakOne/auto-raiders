@@ -139,7 +139,6 @@ const loyaltyArray = [{ key: 1, value: "Wood" },
 
 // This is the start, it selects a captain placement as well as collect any rewards to proceed
 async function start() {
-  await buyChests()
   if (await retrieveFromStorage("paused_checkbox")) {
     return
   }
