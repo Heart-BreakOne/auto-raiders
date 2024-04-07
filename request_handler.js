@@ -1550,7 +1550,7 @@ async function makeRequest(url, retryCount) {
       },
     });
     if (!response.ok || response == null || response == undefined) {
-        console.error(new Date().toLocaleTimeString(), "Invalid response:", error, url, retryCount, response);
+        console.error(new Date().toLocaleTimeString(), "Invalid response:", url, retryCount, response);
         throw new Error('Network response was not ok');
     }
     return response

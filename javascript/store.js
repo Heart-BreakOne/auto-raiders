@@ -38,13 +38,11 @@ document.addEventListener("DOMContentLoaded", async function () {
 async function saveBoneCurrency() {
     let v = document.getElementById('min_bone_currency').value
     await chrome.storage.local.set({ 'minBoneCurrency': v });
-    location.reload()
 }
 
 async function saveKeyCurrency() {
     let v = document.getElementById('min_key_currency').value
     await chrome.storage.local.set({ 'minKeyCurrency': v });
-    location.reload()
 }
 
 async function fetchAndSaveChestData() {

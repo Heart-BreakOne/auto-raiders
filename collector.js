@@ -162,7 +162,7 @@ async function collectBattlePass() {
 
     try {
         const url = `https://www.streamraiders.com/api/game/?cn=getEventProgressionLite&clientVersion=${clientVersion}&clientPlatform=MobileLite&gameDataVersion=${gameDataVersion}&command=getEventProgressionLite&isCaptain=0`
-        const response = await makeRequest(url);
+        const response = await makeRequest(url, 0);
         const eventProgressionData = await response.json();
         const eventProgress = eventProgressionData.data;
         let currentTier = eventProgress.currentTier;
@@ -341,7 +341,7 @@ async function buyChests() {
             let uid = chest["Uid"];
             let basePrice = chest["BasePrice"];
 
-            if (basePrice > keys) {
+            if ((keys - basePrice) < minKeyCurrency) {
                 dungeonChestsData.splice(i, 1);
                 i--;
                 continue;
@@ -371,7 +371,7 @@ async function buyChests() {
             let chest = dungeonChestsData[i];
             let uid = chest["Uid"];
             let basePrice = chest["BasePrice"];
-            if (keys < basePrice) {
+            if ((keys - basePrice) < minKeyCurrency) {
                 return;
             }
             keys -= basePrice;
@@ -385,7 +385,7 @@ async function buyChests() {
             let response = await makeRequest(url, 0);
             let purchaseResponse = await response.json();
 
-            if (purchaseResponse.status == "sucsess") {
+            if (purchaseResponse.status == "success") {
                 if (userChestData.hasOwnProperty(uid)) {
                     userChestData[uid].amountBought++;
                 } else {
@@ -447,7 +447,7 @@ async function buyChests() {
             let uid = chest["Uid"];
             let basePrice = chest["BasePrice"];
 
-            if (basePrice > bones) {
+            if ((bones - basePrice) < minBoneCurrency) {
                 boneChestsData.splice(i, 1);
                 i--;
                 continue;
@@ -477,7 +477,7 @@ async function buyChests() {
             let chest = boneChestsData[i];
             let uid = chest["Uid"];
             let basePrice = chest["BasePrice"];
-            if (bones < basePrice) {
+            if ((bones - basePrice) < minBoneCurrency) {
                 return;
             }
             bones -= basePrice;
@@ -490,7 +490,7 @@ async function buyChests() {
             let response = await makeRequest(url, 0);
             let purchaseResponse = await response.json();
 
-            if (purchaseResponse.status == "sucsess") {
+            if (purchaseResponse.status == "success") {
                 if (userChestData.hasOwnProperty(uid)) {
                     userChestData[uid].amountBought++;
                 } else {
