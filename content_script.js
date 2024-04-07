@@ -654,6 +654,7 @@ async function performCollectionInterval() {
   }
   await buyScrolls();
   await collectBattlePass();
+  await buyChests();
   if (await checkEventCurrencyActive()) { 
     await collectEventChests();
     await collectFreeDaily();

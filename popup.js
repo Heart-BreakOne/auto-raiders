@@ -25,6 +25,12 @@ document.addEventListener("DOMContentLoaded", function () {
         const url = `chrome-extension://${chrome.runtime.id}/html/units.html`
         chrome.tabs.create({ url: url });
     });
+
+    document.getElementById("store_button").addEventListener('click', function () {
+        const url = `chrome-extension://${chrome.runtime.id}/html/chests.html`
+        chrome.tabs.create({ url: url });
+    });
+
     document.getElementById('settings_button').addEventListener('click', () => {
         const url = `chrome-extension://${chrome.runtime.id}/settings.html`
         chrome.tabs.create({ url: url });

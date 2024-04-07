@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chests</title>
+    <script src="/javascript/store.js"></script>
+    <script src="/storage_manager.js"></script>
+    <script src="/popup.js"></script>
+    <link rel="stylesheet" type="text/css" href="/styles/styles.css">
+</head>
+
+<body>
+    <div class="button_container">
+        <button id="settings_button" class="green_button">Open settings</button>
+        <button id="whitelist_button" class="green_button">Filter lists</button>
+        <button id="log_button" class="green_button">Log</button>
+        <button id="unit_button" class="green_button">Units</button>
+        <button id="level_button" class="green_button">Level-up</button>
+        <button id="store_button" class="green_button">Chests</button>
+        <button id="instructions_button" class="green_button">Instructions</button>
+        <button id="key_check_button" class="green_button">Key check</button>
+    </div>
+
+    <div class="center-container">
+        <h1>Auto Chests Purchases</h1>
+        <h2>Update this page periodically as new chests are added to the store</h2>
+        <h1> DO NOT SPAM CLICK THE FETCH BUTTON, IT NEEDS TO PROCESS A LARGE GAME DATA FILE</h1>
+
+        <button id="fetch_btn" class="green_button">FETCH</button>
+        <div style="font-size: large; margin-bottom: 10px;">Minimum operational KEYS amount (set to 0 to disable it):
+            <input id="min_key_currency" type="number" value="0" min="0">
+            <button id="update_key_btn" class="green_button">SAVE</button>
+        </div>
+        <div style="font-size: large; margin-bottom: 10px;">Minimum operational BONES amount (set to 0 to disable it):
+            <input id="min_bone_currency" type="number" value="0" min="0">
+            <button id="update_bone_btn" class="green_button">SAVE</button>
+        </div>
+        <div style="margin-top: 20px;" id="chest_container">Times shown in American format (MM/DD/YYYY)<br>Times shown in your local time (Probably)<br>-1 quantity means an unlimited amount can be bought</div>
+
+    </div>
+
+
+</body>
+
+</html>

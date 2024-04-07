@@ -2,10 +2,10 @@
 
 //Triggers the collectQuests function every 10-15 seconds
 (function loopCollectQuests() {
-  setTimeout( () => {
-    collectQuests();
-    loopCollectQuests();  
-  }, getRandNum(10, 15)*1000);
+    setTimeout(() => {
+        collectQuests();
+        loopCollectQuests();
+    }, getRandNum(10, 15) * 1000);
 }());
 
 //Declare variables for initialization later
@@ -278,4 +278,21 @@ function getMinimumCurrency() {
             }
         });
     });
+}
+
+
+
+async function buyChests() {
+    /* Retrieve
+    boneChestsData
+    dungeonChestsData
+    minBoneCurrency
+    minKeyCurrency
+    userChests
+    */
+
+    // Get user currencies
+
+
+    // Determine what can and can't be bought
 }
