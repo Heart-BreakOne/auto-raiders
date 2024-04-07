@@ -385,7 +385,7 @@ async function buyChests() {
             let response = await makeRequest(url, 0);
             let purchaseResponse = await response.json();
 
-            if (purchaseResponse.status == "sucsess") {
+            if (purchaseResponse.status == "success") {
                 if (userChestData.hasOwnProperty(uid)) {
                     userChestData[uid].amountBought++;
                 } else {
@@ -490,7 +490,7 @@ async function buyChests() {
             let response = await makeRequest(url, 0);
             let purchaseResponse = await response.json();
 
-            if (purchaseResponse.status == "sucsess") {
+            if (purchaseResponse.status == "success") {
                 if (userChestData.hasOwnProperty(uid)) {
                     userChestData[uid].amountBought++;
                 } else {
