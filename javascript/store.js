@@ -16,12 +16,20 @@ document.addEventListener("DOMContentLoaded", async function () {
         saveBoneCurrency()
     })
 
+    document.getElementById('chest_purchase_order').addEventListener('change', function () {
+        let checkbox = document.getElementById('chest_purchase_order');
+        let checkboxState = checkbox.checked;
+        chrome.storage.local.set({ 'chestPurchaseOrder': checkboxState });
+    });
+
     let checkboxes = document.querySelectorAll('.checkbox');
     checkboxes.forEach(checkbox => {
         checkbox.addEventListener('change', async function (event) {
             let checkboxId = event.target.id;
-            let isChecked = event.target.checked;
-            await updateCheckBox(checkboxId, isChecked);
+            if (checkboxId != "chest_purchase_order") {
+                let isChecked = event.target.checked;
+                await updateCheckBox(checkboxId, isChecked);
+            }
         });
     });
 
@@ -134,7 +142,7 @@ async function loadChestData() {
 
     let thead = document.createElement("thead");
     let headerRow = document.createElement("tr");
-    let headers = ["Section", "Uid", "Item", "BasePrice", "Max Quantity", "Amount", "Starts", "Ends", "Can Buy"];
+    let headers = ["Section", "Icon", "Uid", "Item", "BasePrice", "Max Quantity", "Amount", "Starts", "Ends", "Can Buy"];
     headers.forEach(headerText => {
         let headerCell = document.createElement("th");
         headerCell.textContent = headerText;
@@ -181,7 +189,7 @@ async function loadChestData() {
         let localLiveEndTime = utcDate.toLocaleString();
 
         let row = document.createElement("tr");
-        let rowData = [section, itemUid, itemType, cost, maxPurchase, quantity, localLiveStartTime, localLiveEndTime];
+        let rowData = [section, itemUid, itemUid, itemType, cost, maxPurchase, quantity, localLiveStartTime, localLiveEndTime];
         rowData.forEach((data, index) => {
             let cell = document.createElement("td");
             if (index === 1) {
@@ -286,6 +294,18 @@ async function updateCheckBox(checkboxId, checkBoxState) {
 }
 
 async function loadCheckBoxData() {
+
+    let checkbox = document.getElementById('chest_purchase_order');
+    
+    if(checkbox) {
+        let checkboxState = await retrieveFromStorage("chestPurchaseOrder")
+        if (!checkboxState) {
+            checkbox.checked = false
+        } else {
+            checkbox.checked = true
+        }
+    }
+    
     let checkboxes = document.querySelectorAll('.checkbox');
 
     chrome.storage.local.get('userChests', function (data) {

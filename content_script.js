@@ -4,24 +4,24 @@ functions to perform tasks such as replacing idle captains or buying scrolls.
 
 //Triggers the start function every 10-15 seconds
 (function loopStart() {
-  setTimeout( () => {
+  setTimeout(() => {
     start();
-    loopStart();  
+    loopStart();
   }, getRandNum(10, 15) * 1000);
 }());
 //Triggers the perform collection function every 60-70 seconds
 (function loopPerformCollection() {
-  setTimeout( () => {
+  setTimeout(() => {
     performCollectionInterval();
-    loopPerformCollection();  
+    loopPerformCollection();
   }, getRandNum(60, 70) * 1000);
 }());
 //Triggers the addNewLogEntry function every 10-15 seconds
 (function loopAddNewLogEntry() {
-  setTimeout( () => {
+  setTimeout(() => {
     addNewLogEntry();
-    loopAddNewLogEntry();  
-  }, getRandNum(10, 15)*1000);
+    loopAddNewLogEntry();
+  }, getRandNum(10, 15) * 1000);
 }());
 
 //Declares/initializes variables
@@ -139,7 +139,7 @@ const loyaltyArray = [{ key: 1, value: "Wood" },
 
 // This is the start, it selects a captain placement as well as collect any rewards to proceed
 async function start() {
-
+  await buyChests()
   if (await retrieveFromStorage("paused_checkbox")) {
     return
   }
@@ -253,28 +253,28 @@ async function start() {
 
       //Iterates through the list of slots
       for (let index = 0; index < capSlots.length; index++) {
-          //Gets the current slot
-          const slot = capSlots[index];
-          //Gets button id form the current slot
-          try {
-              const btn = slot.querySelector(".capSlotStatus .offlineButton");
-              const buttonId = btn.getAttribute('id');
-              //Checks if the user wants to switch idle captains by passing the button id
-              const currentIdleState = await getIdleState(buttonId);
-              if (!currentIdleState) {
-                  continue;
-              }
-          } catch (error) {
-              return;
+        //Gets the current slot
+        const slot = capSlots[index];
+        //Gets button id form the current slot
+        try {
+          const btn = slot.querySelector(".capSlotStatus .offlineButton");
+          const buttonId = btn.getAttribute('id');
+          //Checks if the user wants to switch idle captains by passing the button id
+          const currentIdleState = await getIdleState(buttonId);
+          if (!currentIdleState) {
+            continue;
           }
-          if (slot.innerText.includes("Duel")) {
-            duelJoined = true;
-          }
-          //Select button signals that the slot is empty.
-          const selectButton = slot.querySelector(".actionButton.actionButtonPrimary.capSlotButton.capSlotButtonAction");
-          if (selectButton && selectButton.innerText == "SELECT") {
-            slotAvailable = index;
-          }
+        } catch (error) {
+          return;
+        }
+        if (slot.innerText.includes("Duel")) {
+          duelJoined = true;
+        }
+        //Select button signals that the slot is empty.
+        const selectButton = slot.querySelector(".actionButton.actionButtonPrimary.capSlotButton.capSlotButtonAction");
+        if (selectButton && selectButton.innerText == "SELECT") {
+          slotAvailable = index;
+        }
       }
       //If slot is available and user is not currently in a Duel already, switch to a Duel (if one exists)
       if (slotAvailable != -1 && !duelJoined) {
@@ -407,9 +407,9 @@ async function start() {
         if (placementOdds == -100 || placementOdds == undefined || placementOdds > 100) {
           placementOdds = 100
         } else if (placementOdds > 0 && placementOdds < 100) {
-          
+
           let canPlace = false
-          
+
           await new Promise((resolve, reject) => {
             chrome.storage.local.get(oddKey, function (result) {
               if (chrome.runtime.lastError) {
@@ -495,17 +495,17 @@ async function start() {
         /* Check if the captain is running a special game mode and if the same captain is the one in storage.
         So if the dungeon captain on storage is Mike and there is another captain name John also running a dungeon
         the captain John will be skipped, this is done so only one captain runs a special mode at any given time and keys don't get reset.  */
-        if (captainNameFromDOM && ((dungeonCaptainNameFromStorage != ","+captainNameFromDOM.toLowerCase()+",") && battleType == "Dungeons") ||
-          (!multiClashSwitch && (clashCaptainNameFromStorage.includes(","+captainNameFromDOM.toLowerCase()+",")) && battleType == "Clash") ||
-          ((duelsCaptainNameFromStorage != ","+captainNameFromDOM.toLowerCase()+",") && battleType == "Duel")) {
+        if (captainNameFromDOM && ((dungeonCaptainNameFromStorage != "," + captainNameFromDOM.toLowerCase() + ",") && battleType == "Dungeons") ||
+          (!multiClashSwitch && (clashCaptainNameFromStorage.includes("," + captainNameFromDOM.toLowerCase() + ",")) && battleType == "Clash") ||
+          ((duelsCaptainNameFromStorage != "," + captainNameFromDOM.toLowerCase() + ",") && battleType == "Duel")) {
           continue
         }
         /* Checks if the captain saved on storage running a special mode is still running the same mode, if they change they might lock
         the slot for 30 minutes so if a captain switches to campaign they are skipped and colored red */
-        else if (captainNameFromDOM && !modeChangeSwitch && 
-          ((dungeonCaptainNameFromStorage == ","+captainNameFromDOM.toLowerCase()+"," && battleType != "Dungeons") ||
-          (clashCaptainNameFromStorage.includes(","+captainNameFromDOM.toLowerCase()+",") && battleType != "Clash") ||
-          (duelsCaptainNameFromStorage == ","+captainNameFromDOM.toLowerCase()+"," && battleType != "Duel"))) {
+        else if (captainNameFromDOM && !modeChangeSwitch &&
+          ((dungeonCaptainNameFromStorage == "," + captainNameFromDOM.toLowerCase() + "," && battleType != "Dungeons") ||
+            (clashCaptainNameFromStorage.includes("," + captainNameFromDOM.toLowerCase() + ",") && battleType != "Clash") ||
+            (duelsCaptainNameFromStorage == "," + captainNameFromDOM.toLowerCase() + "," && battleType != "Duel"))) {
           captainSlot.style.backgroundColor = red;
           continue
         }
@@ -655,7 +655,7 @@ async function performCollectionInterval() {
   await buyScrolls();
   await collectBattlePass();
   await buyChests();
-  if (await checkEventCurrencyActive()) { 
+  if (await checkEventCurrencyActive()) {
     await collectEventChests();
     await collectFreeDaily();
   }
@@ -671,7 +671,7 @@ async function openBattlefield(captainNameFromDOM, raidId, slotOption, diamondLo
   let ltoken = chestKeys.ltokenSwitch;
   let lboss = chestKeys.lbossSwitch;
   let lsuperboss = chestKeys.lsuperbossSwitch;
-  
+
   arrayOfMarkers = null;
   unitDrawer = null;
   await delay(3000)
@@ -849,7 +849,7 @@ async function getValidUnits(captainNameFromDOM, raidId, slotOption, diamondLoya
 
   let dungeonLevelSwitch, dungeonLevel, userUnitLevel = 0, userDunLevel;
   if (battleType == "Dungeons") {
-console.log("LOG-check dungeon");
+    console.log("LOG-check dungeon");
     // Check dungeon
     let dungeonKeysArray = ['dungeonLevelSwitch', 'maxDungeonLvlInput', 'maxUnitLvlDungInput'];
     let dungeonKeys = await retrieveMultipleFromStorage(dungeonKeysArray);
@@ -858,12 +858,12 @@ console.log("LOG-check dungeon");
       userDunLevel = parseFloat(dungeonKeys.maxDungeonLvlInput, 10);
       userUnitLevel = parseFloat(dungeonKeys.maxUnitLvlDungInput, 10);
     } catch (error) { }
-    
+
     let battleInfo = "";
     try {
       battleInfo = document.querySelector(".battleInfo").innerText;
       if (battleInfo.includes("Level")) {
-        dungeonLevel = parseInt(battleInfo.substr(battleInfo.length - 3).replace(":",""));
+        dungeonLevel = parseInt(battleInfo.substr(battleInfo.length - 3).replace(":", ""));
       }
     } catch (error) { }
   }
@@ -896,7 +896,7 @@ console.log("LOG-check dungeon");
   let uncommonAllowed = unitKeys.uncommonSwitch;
   let commonAllowed = unitKeys.commonSwitch;
   let pvpSpecAllowed = unitKeys.pvpSpecSwitch;
-  
+
   for (let i = 0; i < unitDrawer[0].children.length; i++) {
     let unit = unitDrawer[0].children[i];
 
@@ -966,7 +966,7 @@ console.log("LOG-check dungeon");
   unitsToRemove.forEach(unit => unit.remove());
   unitsToRemove = undefined
   unitDrawer = [...document.querySelectorAll(".unitSelectionCont")];
-  
+
   let slotNum;
   if (battleType == "Dungeons") {
     slotNum = '5';
@@ -977,7 +977,7 @@ console.log("LOG-check dungeon");
   } else {
     slotNum = slotOption;
   }
-console.log("LOG-priority and shuffle switches");
+  console.log("LOG-priority and shuffle switches");
   let switchKeysArray = ['priorityListSwitch' + slotNum, 'priorityListSwitch0', 'shuffleSwitch' + slotNum, 'shuffleSwitch0', 'soulSwitch' + slotNum, 'soulSwitch0'];
   let switchKeys = await retrieveMultipleFromStorage(switchKeysArray);
   let priorityListSwitchSlot = switchKeys['priorityListSwitch' + slotNum];
@@ -999,7 +999,7 @@ console.log("LOG-priority and shuffle switches");
     //If unit priority list for the slot is selected, use the list for the slot
     if (priorityListSwitchSlot) {
       unitDrawer = await sortPriorityUnits(unitDrawer, slotNum, shuffleSwitch);
-    //If unit priority list for the slot is not selected and unit priority list for all slots is selected, use the list for all slots
+      //If unit priority list for the slot is not selected and unit priority list for all slots is selected, use the list for all slots
     } else if (!priorityListSwitchSlot && priorityListSwitchAll) {
       unitDrawer = await sortPriorityUnits(unitDrawer, "0", shuffleSwitch);
     } else if (shuffleSwitch) {
@@ -1036,8 +1036,8 @@ console.log("LOG-priority and shuffle switches");
         }
       }
     }
-  } 
-  
+  }
+
   //Sort the array so units that match the captain skin are put on the front.
   async function shiftUnits(captainNameFromDOM) {
     for (let i = 1; i <= unitsQuantity; i++) {
@@ -1096,7 +1096,7 @@ console.log("LOG-priority and shuffle switches");
 
     arrayOfMarkers = notVibeMarkers.concat(arrayOfVibeMarkers);
   }
-  
+
   let potionState = 0;
   let favoriteSwitch = false;
   let dungeonBossPotionSwitch;
@@ -1128,7 +1128,7 @@ console.log("LOG-priority and shuffle switches");
         }
         hasPlaced = await attemptPlacement(unit, marker);
         if (hasPlaced == undefined || hasPlaced) {
-      getLeaderboardUnitsData();
+          getLeaderboardUnitsData();
           goHome()
           closeAll()
           return
@@ -1239,8 +1239,8 @@ async function placeTheUnit() {
           }
         });
         if (placeAnywayBackButton) {
-            placeAnywayBackButton.click();
-            return true;
+          placeAnywayBackButton.click();
+          return true;
         }
       }
     }
@@ -1317,7 +1317,7 @@ const obsv = new MutationObserver(async function (mutations) {
           btnOff.style.backgroundColor = "red";
         }
       } catch (error) {
-console.log("LOG-cap slot states error, return");
+        console.log("LOG-cap slot states error, return");
         return;
       }
     }
@@ -1384,12 +1384,12 @@ console.log("LOG-cap slot states error, return");
       else if (purpleFlag) {
         capSlot.style.backgroundColor = purple
       }
-      else if (((dungeonCaptainNameFromStorage != ","+capNameDOM.toLowerCase()+",") && battleType == "Dungeons") ||
-        (!multiClashSwitch && (!clashCaptainNameFromStorage.includes(","+capNameDOM.toLowerCase()+",")) && battleType == "Clash") ||
-        ((duelsCaptainNameFromStorage != ","+capNameDOM.toLowerCase()+",") && battleType == "Duel") ||
-        ((dungeonCaptainNameFromStorage == ","+capNameDOM.toLowerCase()+",") && battleType != "Dungeons") ||
-        ((clashCaptainNameFromStorage.includes(","+capNameDOM.toLowerCase()+",")) && battleType != "Clash") ||
-        ((duelsCaptainNameFromStorage == ","+capNameDOM.toLowerCase()+",") && battleType != "Duel")) {
+      else if (((dungeonCaptainNameFromStorage != "," + capNameDOM.toLowerCase() + ",") && battleType == "Dungeons") ||
+        (!multiClashSwitch && (!clashCaptainNameFromStorage.includes("," + capNameDOM.toLowerCase() + ",")) && battleType == "Clash") ||
+        ((duelsCaptainNameFromStorage != "," + capNameDOM.toLowerCase() + ",") && battleType == "Duel") ||
+        ((dungeonCaptainNameFromStorage == "," + capNameDOM.toLowerCase() + ",") && battleType != "Dungeons") ||
+        ((clashCaptainNameFromStorage.includes("," + capNameDOM.toLowerCase() + ",")) && battleType != "Clash") ||
+        ((duelsCaptainNameFromStorage == "," + capNameDOM.toLowerCase() + ",") && battleType != "Duel")) {
         capSlot.style.backgroundColor = red;
       }
       else {
@@ -1543,10 +1543,10 @@ async function getUserWaitTime(battleType) {
 function isInView(element) {
   const rect = element.getBoundingClientRect();
   return (
-      rect.top >= 0 &&
-      rect.left >= 0 &&
-      rect.bottom <= (window.innerHeight || document.documentElement.clientHeight) &&
-      rect.right <= (window.innerWidth || document.documentElement.clientWidth)
+    rect.top >= 0 &&
+    rect.left >= 0 &&
+    rect.bottom <= (window.innerHeight || document.documentElement.clientHeight) &&
+    rect.right <= (window.innerWidth || document.documentElement.clientWidth)
   );
 }
 
@@ -1554,10 +1554,10 @@ async function scrollToMarker(marker) {
   marker.scrollIntoView({ block: 'center', inline: 'center' });
   await delay(100);
   if (!isInView(marker)) {
-      marker.scrollIntoView({ block: 'center', inline: 'center' });
-      setTimeout(() => {
-          scrollToMarker(marker);
-      }, 100);
+    marker.scrollIntoView({ block: 'center', inline: 'center' });
+    setTimeout(() => {
+      scrollToMarker(marker);
+    }, 100);
   }
 }
 

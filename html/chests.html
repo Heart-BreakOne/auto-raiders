@@ -37,7 +37,11 @@
             <input id="min_bone_currency" type="number" value="0" min="0">
             <button id="update_bone_btn" class="green_button">SAVE</button>
         </div>
-        <div style="margin-top: 20px;" id="chest_container">Times shown in American format (MM/DD/YYYY)<br>Times shown in your local time (Probably)<br>-1 quantity means an unlimited amount can be bought</div>
+        <label for="chest_purchase_order"
+            title="By default the most expensive chest is acquired first, this overrides it."><input
+                type="checkbox" id="chest_purchase_order">Buy cheapest first</label>
+        <div style="margin-top: 20px;" id="chest_container">Times shown in American format (MM/DD/YYYY)<br>Times shown
+            in your local time (Probably)<br>-1 quantity means an unlimited amount can be bought</div>
 
     </div>
 
