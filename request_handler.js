@@ -16,6 +16,7 @@
 //Declaring variables
 let isRunning = false;
 let chestsRunning = false;
+let requestRunning = false;
 let backgroundDelay = ms => new Promise(res => setTimeout(res, ms));
 
 async function logChestsAndUnitsInterval() {
@@ -1543,6 +1544,9 @@ async function getActiveRaids() {
 }
 
 async function makeRequest(url, retryCount) {
+  if (reloadRunning) {
+    return;  
+  }
   requestRunning = true;
   try {
     let cookieString = document.cookie;

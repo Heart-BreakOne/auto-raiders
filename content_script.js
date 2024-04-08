@@ -50,6 +50,7 @@ let unitDrawer;
 let hasPlacedSkin;
 let contentRunningLoopCount = 0;
 let isEventCurrencyActive;
+let reloadRunning = false;
 let isEnemyPresentNameArray = ['Puppet Master']; //Enemy name as seen in DOM alt text (case sensitive)
 let ifPresentAvoidUnitArray = ['RANGED']; //Unit name or type to avoid if enemy is present on the map. Pairs with the enemy name at the same index in the array (isEnemyPresentNameArray[0] - ifPresentAvoidUnitArray[0])
 
@@ -166,7 +167,9 @@ async function start() {
     })
   }
   if (chestsRunning == false && requestRunning == false && ((reload != undefined && elapsedMinutes >= reload && reload > 0) || ((reload != undefined || reload != 0) && elapsedMinutes >= 60))) {
+    reloadRunning = true;
     locationReload();
+    reloadRunning = false;
     return;
   }
 
