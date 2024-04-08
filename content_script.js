@@ -1506,6 +1506,9 @@ async function getUserWaitTime(battleType) {
     let userWaitTime = await retrieveNumberFromStorage("userWaitTimeInput" + battleType);
     let secondsToMin = userWaitTime / 60;
     let min = "0" + (60 - ((secondsToMin - parseInt(secondsToMin)) * 60));
+    if (min == "060") {
+      min = "00";
+    }
     min = min.substr(min.length - 2);
 
     if (battleType == "Campaign") {
