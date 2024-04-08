@@ -819,6 +819,9 @@ async function getCaptainsForSearch(mode) { //mode = "campaign" or "duel" or "du
         let captLoyalty = captData.data.pveLoyalty;
         for (let i = 0; i < capts.length; i++) {
           captLoop: for (let j = 0; j < captLoyalty.length; j++) {
+            if (capts[i].userId == null || captLoyalty[j].captainId == null) {
+              continue;
+            }
             if (captLoyalty[j].captainId == capts[i].userId) {
               captArray.push([capts[i].userId, capts[i].twitchDisplayName, capts[i].raidState, capts[i].isSelected, parseInt(captLoyalty[j].pveWins)])
               break captLoop;
