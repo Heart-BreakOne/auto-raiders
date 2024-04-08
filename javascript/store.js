@@ -142,7 +142,7 @@ async function loadChestData() {
 
     let thead = document.createElement("thead");
     let headerRow = document.createElement("tr");
-    let headers = ["Section", "Icon", "Uid", "Item", "BasePrice", "Max Quantity", "Amount", "Starts", "Ends", "Bought so far", "Can Buy"];
+    let headers = ["Section", "Icon", "Uid", "Item", "BasePrice", "Starts", "Ends", "Bought so far", "Can Buy"];
     headers.forEach(headerText => {
         let headerCell = document.createElement("th");
         headerCell.textContent = headerText;
@@ -159,8 +159,6 @@ async function loadChestData() {
         let itemType = item["Item"];
         let [itemUrl, size] = await getItemUrl(itemUid, itemType);
         let cost = item["BasePrice"];
-        let maxPurchase = item["PurchaseLimit"];
-        let quantity = item["Quantity"];
 
         let amountBought = userChests[itemUid]
         if (amountBought) {
@@ -195,7 +193,7 @@ async function loadChestData() {
         let localLiveEndTime = utcDate.toLocaleString();
 
         let row = document.createElement("tr");
-        let rowData = [section, itemUid, itemUid, itemType, cost, maxPurchase, quantity, localLiveStartTime, localLiveEndTime, amountBought];
+        let rowData = [section, itemUid, itemUid, itemType, cost, localLiveStartTime, localLiveEndTime, amountBought];
         rowData.forEach((data, index) => {
             let cell = document.createElement("td");
             if (index === 1) {
