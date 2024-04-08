@@ -1542,7 +1542,8 @@ async function getActiveRaids() {
   }
 }
 
-async function makeRequest(url, retryCount) {  
+async function makeRequest(url, retryCount) {
+  requestRunning = true;
   try {
     let cookieString = document.cookie;
     const response = await fetch(url, {
@@ -1556,14 +1557,17 @@ async function makeRequest(url, retryCount) {
         console.error(new Date().toLocaleTimeString(), "Invalid response:", url, retryCount, response);
         throw new Error('Network response was not ok');
     }
+    requestRunning = false;
     return response
   } catch (error) {
     retryCount++;
     console.error(new Date().toLocaleTimeString(), "Error retrieving response:", error, url, retryCount);
     if (retryCount < 5) {
       response = await makeRequest(url, retryCount);
+      requestRunning = false;
       return response;
     } else {
+      requestRunning = false;
       return null;
     }
   }

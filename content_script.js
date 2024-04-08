@@ -165,7 +165,7 @@ async function start() {
       }
     })
   }
-  if (chestsRunning == false && ((reload != undefined && elapsedMinutes >= reload && reload >= 5) || ((reload != undefined || reload != 0) && elapsedMinutes >= 60))) {
+  if (chestsRunning == false && requestRunning == false && ((reload != undefined && elapsedMinutes >= reload && reload > 0) || ((reload != undefined || reload != 0) && elapsedMinutes >= 60))) {
     locationReload();
     return;
   }
