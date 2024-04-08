@@ -283,224 +283,90 @@ function getMinimumCurrency() {
 
 
 async function buyChests() {
-
-    let currentUserCurrencies = await getAvailableCurrencies()
-    if (!currentUserCurrencies && !currentUserCurrencies.data) {
-        return
+    let currentUserCurrencies = await getAvailableCurrencies();
+    if (!currentUserCurrencies || !currentUserCurrencies.data) {
+        return;
     }
 
-    let bones = currentUserCurrencies.data.bones
-    let keys = currentUserCurrencies.data.keys
-
-    let buyCheapestFirst = await retrieveFromStorage("chestPurchaseOrder")
-    let ucd = await retrieveFromStorage("userChests")
-    if (!ucd) {
-        return
-    }
-
-    let userChestData = {};
-    for (let chestType in ucd) {
-        if (ucd.hasOwnProperty(chestType)) {
-            if (ucd[chestType].canBuy) {
-                userChestData[chestType] = ucd[chestType];
-            }
-        }
-    }
-
-
-    //-----------------------KEYS----------------------//
-
-    let minKeyCurrency = await retrieveNumberFromStorage("minKeyCurrency")
-    if (minKeyCurrency > 0 && keys > minKeyCurrency) {
-        let dungeonChestsData = await retrieveFromStorage("dungeonChestsData")
-
-        // Filter out chests that can't be bought at the moment
-        for (let i = 0; i < dungeonChestsData.length; i++) {
-            let chest = dungeonChestsData[i];
-            const LiveEndTime = new Date(chest["LiveEndTime"] + ' UTC');
-            const LiveStartTime = new Date(chest["LiveStartTime"] + ' UTC');
-
-            const currentTime = new Date();
-
-            if (LiveEndTime.getTime() < currentTime.getTime() || LiveStartTime.getTime() > currentTime.getTime()) {
-                dungeonChestsData.splice(i, 1);
-                i--;
-            }
-        }
-
-        // Sort by cost
-        if (buyCheapestFirst) {
-            dungeonChestsData.sort((a, b) => a.BasePrice - b.BasePrice);
-        } else {
-            dungeonChestsData.sort((a, b) => b.BasePrice - a.BasePrice);
-        }
-
-        // Filter out chests that have been bought already or chests with not enough keys 
-        for (let i = 0; i < dungeonChestsData.length; i++) {
-            let chest = dungeonChestsData[i];
-            let uid = chest["Uid"];
-            let basePrice = chest["BasePrice"];
-
-            if ((keys - basePrice) < minKeyCurrency) {
-                dungeonChestsData.splice(i, 1);
-                i--;
-                continue;
-            }
-
-            let purchaseLimit = chest["PurchaseLimit"];
-
-            if (purchaseLimit !== -1) {
-                let userChest = userChestData[uid];
-
-                if (!userChest || userChest.amountBought >= purchaseLimit) {
-                    dungeonChestsData.splice(i, 1);
-                    i--;
-                    continue;
-                }
-            }
-
-            if (!userChestData.hasOwnProperty(uid)) {
-                dungeonChestsData.splice(i, 1);
-                i--;
-            }
-        }
-
-
-        // Buy
-        for (let i = 0; i < dungeonChestsData.length; i++) {
-            let chest = dungeonChestsData[i];
-            let uid = chest["Uid"];
-            let basePrice = chest["BasePrice"];
-            if ((keys - basePrice) < minKeyCurrency) {
-                return;
-            }
-            keys -= basePrice;
-
-            // Make the purchase request
-            const dataArray = ['clientVersion', 'dataVersion'];
-            const dataKeys = await retrieveMultipleFromStorage(dataArray);
-            const clientVersion = dataKeys.clientVersion;
-            const gameDataVersion = dataKeys.dataVersion;
-            let url = `https://www.streamraiders.com/api/game/?cn=purchaseChestItem&itemId=${uid}&clientVersion=${clientVersion}&clientPlatform=WebLite&gameDataVersion=${gameDataVersion}&command=purchaseChestItem&isCaptain=0`;
-            let response = await makeRequest(url, 0);
-            let purchaseResponse = await response.json();
-
-            if (purchaseResponse.status == "success") {
-                if (userChestData.hasOwnProperty(uid)) {
-                    userChestData[uid].amountBought++;
-                } else {
-                    console.log(`Chest with uid ${uid} not found in userChestData.`);
-                }
-            } else {
-                console.log(`Failed to purchase chest with uid ${uid}.`);
-            }
-        }
-        await saveToStorage("userChests", userChestData)
-
-    }
-
-
-    //---------------BONES------------//
+    let bones = currentUserCurrencies.data.bones;
+    let keys = currentUserCurrencies.data.keys;
     
-    ucd = await retrieveFromStorage("userChests")
-    if (!ucd) {
-        return
+    let buyCheapestFirst = await retrieveFromStorage("chestPurchaseOrder");
+    let userChestData = await retrieveFromStorage("userChests");
+
+    if (!userChestData) {
+        return;
     }
 
-    userChestData = {};
-    for (let chestType in ucd) {
-        if (ucd.hasOwnProperty(chestType)) {
-            if (ucd[chestType].canBuy) {
-                userChestData[chestType] = ucd[chestType];
-            }
-        }
-    }
+    async function buyChestsWithCurrency(currencyType, minCurrency, chestData) {
+        if (minCurrency > 0 && currencyType > minCurrency) {
+            let chestsData = await retrieveFromStorage(chestData);
 
-    let minBoneCurrency = await retrieveNumberFromStorage("minBoneCurrency")
-    if (minBoneCurrency > 0 && bones > minBoneCurrency) {
-        let boneChestsData = await retrieveFromStorage("boneChestsData")
+            for (let i = 0; i < chestsData.length; i++) {
+                let chest = chestsData[i];
+                const LiveEndTime = new Date(chest["LiveEndTime"] + ' UTC');
+                const LiveStartTime = new Date(chest["LiveStartTime"] + ' UTC');
+                const currentTime = new Date();
 
-        // Filter out chests that can't be bought at the moment
-        for (let i = 0; i < boneChestsData.length; i++) {
-            let chest = boneChestsData[i];
-            const LiveEndTime = new Date(chest["LiveEndTime"] + ' UTC');
-            const LiveStartTime = new Date(chest["LiveStartTime"] + ' UTC');
-
-            const currentTime = new Date();
-
-            if (LiveEndTime.getTime() < currentTime.getTime() || LiveStartTime.getTime() > currentTime.getTime()) {
-                boneChestsData.splice(i, 1);
-                i--;
-            }
-        }
-
-        // Sort by cost
-        if (buyCheapestFirst) {
-            boneChestsData.sort((a, b) => a.BasePrice - b.BasePrice);
-        } else {
-            boneChestsData.sort((a, b) => b.BasePrice - a.BasePrice);
-        }
-
-        // Filter out chests that have been bought already or chests with not enough bones 
-        for (let i = 0; i < boneChestsData.length; i++) {
-            let chest = boneChestsData[i];
-            let uid = chest["Uid"];
-            let basePrice = chest["BasePrice"];
-
-            if ((bones - basePrice) < minBoneCurrency) {
-                boneChestsData.splice(i, 1);
-                i--;
-                continue;
-            }
-
-            let purchaseLimit = chest["PurchaseLimit"];
-
-            if (purchaseLimit !== -1) {
-                let userChest = userChestData[uid];
-
-                if (!userChest || userChest.amountBought >= purchaseLimit) {
-                    boneChestsData.splice(i, 1);
+                if (LiveEndTime.getTime() < currentTime.getTime() || LiveStartTime.getTime() > currentTime.getTime()) {
+                    chestsData.splice(i, 1);
                     i--;
+                }
+            }
+
+            if (buyCheapestFirst) {
+                chestsData.sort((a, b) => a.BasePrice - b.BasePrice);
+            } else {
+                chestsData.sort((a, b) => b.BasePrice - a.BasePrice);
+            }
+
+            for (let i = 0; i < chestsData.length; i++) {
+                let chest = chestsData[i];
+                let uid = chest["Uid"];
+                let basePrice = chest["BasePrice"];
+
+                if ((currencyType - basePrice) < minCurrency) {
                     continue;
                 }
-            }
 
-            if (!userChestData.hasOwnProperty(uid)) {
-                boneChestsData.splice(i, 1);
-                i--;
-            }
-        }
+                let purchaseLimit = chest["PurchaseLimit"];
 
+                if (purchaseLimit !== -1) {
+                    let userChest = userChestData[uid];
 
-        // Buy
-        for (let i = 0; i < boneChestsData.length; i++) {
-            let chest = boneChestsData[i];
-            let uid = chest["Uid"];
-            let basePrice = chest["BasePrice"];
-            if ((bones - basePrice) < minBoneCurrency) {
-                return;
-            }
-            bones -= basePrice;
-
-            const dataArray = ['clientVersion', 'dataVersion'];
-            const dataKeys = await retrieveMultipleFromStorage(dataArray);
-            const clientVersion = dataKeys.clientVersion;
-            const gameDataVersion = dataKeys.dataVersion;
-            let url = `https://www.streamraiders.com/api/game/?cn=purchaseChestItem&itemId=${uid}&clientVersion=${clientVersion}&clientPlatform=WebLite&gameDataVersion=${gameDataVersion}&command=purchaseChestItem&isCaptain=0`;
-            let response = await makeRequest(url, 0);
-            let purchaseResponse = await response.json();
-
-            if (purchaseResponse.status == "success") {
-                if (userChestData.hasOwnProperty(uid)) {
-                    userChestData[uid].amountBought++;
-                } else {
-                    console.log(`Chest with uid ${uid} not found in userChestData.`);
+                    if (!userChest || userChest.amountBought >= purchaseLimit) {
+                        continue;
+                    }
                 }
-            } else {
-                console.log(`Failed to purchase chest with uid ${uid}.`);
-            }
-        }
-        await saveToStorage("userChests", userChestData)
 
+                if (!userChestData.hasOwnProperty(uid)) {
+                    continue;
+                }
+
+                currencyType -= basePrice;
+
+                const dataArray = ['clientVersion', 'dataVersion'];
+                const dataKeys = await retrieveMultipleFromStorage(dataArray);
+                const clientVersion = dataKeys.clientVersion;
+                const gameDataVersion = dataKeys.dataVersion;
+                let url = `https://www.streamraiders.com/api/game/?cn=purchaseChestItem&itemId=${uid}&clientVersion=${clientVersion}&clientPlatform=WebLite&gameDataVersion=${gameDataVersion}&command=purchaseChestItem&isCaptain=0`;
+                let response = await makeRequest(url, 0);
+                let purchaseResponse = await response.json();
+
+                if (purchaseResponse.status == "success") {
+                    if (userChestData.hasOwnProperty(uid)) {
+                        userChestData[uid].amountBought++;
+                    } else {
+                        console.log(`Chest with uid ${uid} not found in userChestData.`);
+                    }
+                } else {
+                    console.log(`Failed to purchase chest with uid ${uid}.`);
+                }
+            }
+            await saveToStorage("userChests", userChestData);
+        }
     }
+
+    await buyChestsWithCurrency(keys, await retrieveNumberFromStorage("minKeyCurrency"), "dungeonChestsData");
+    await buyChestsWithCurrency(bones, await retrieveNumberFromStorage("minBoneCurrency"), "boneChestsData");
 }
