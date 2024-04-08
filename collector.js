@@ -290,15 +290,18 @@ async function buyChests() {
 
     let bones = currentUserCurrencies.data.bones;
     let keys = currentUserCurrencies.data.keys;
-    
-    let buyCheapestFirst = await retrieveFromStorage("chestPurchaseOrder");
-    let userChestData = await retrieveFromStorage("userChests");
 
-    if (!userChestData) {
-        return;
-    }
+    let buyCheapestFirst = await retrieveFromStorage("chestPurchaseOrder");
+
 
     async function buyChestsWithCurrency(currencyType, minCurrency, chestData) {
+
+        let userChestData = await retrieveFromStorage("userChests");
+
+        if (!userChestData) {
+            return;
+        }
+
         if (minCurrency > 0 && currencyType > minCurrency) {
             let chestsData = await retrieveFromStorage(chestData);
 
