@@ -29,6 +29,9 @@ async function addNewLogEntry() {
 
         if (logCapName) {
             const requestLoyaltyResults = await getCaptainLoyalty(logCapName);
+            if (requestLoyaltyResults == undefined) {
+              return;
+            }
             const raidId = requestLoyaltyResults[0];
             const chestType = requestLoyaltyResults[1];
             const captainId = requestLoyaltyResults[2];

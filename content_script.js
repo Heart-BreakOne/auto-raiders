@@ -167,9 +167,7 @@ async function start() {
     })
   }
   if (chestsRunning == false && requestRunning == false && ((reload != undefined && elapsedMinutes >= reload && reload > 0) || ((reload != undefined || reload != 0) && elapsedMinutes >= 60))) {
-    reloadRunning = true;
-    locationReload();
-    reloadRunning = false;
+    await locationReload();
     return;
   }
 
@@ -787,7 +785,7 @@ async function getValidUnits(captainNameFromDOM, raidId, slotOption, diamondLoya
   currentMarker = null;
   unitDrawer = null;
   //Function to check for a frozen state
-  reloadRoot();
+  await reloadRoot();
   await delay(1000);
 
   // If the timer is +28:30 or above (+4:00 for dungeons), go back to the main menu as the captain may still be placing markers.
@@ -1174,8 +1172,8 @@ async function attemptPlacement(unit, marker) {
   await delay(500);
   await placeTheUnit();
   await delay(1000);
-  reloadRoot();
   await delay(1000);
+  await reloadRoot();
   return checkPlacement();
 }
 
@@ -1267,6 +1265,7 @@ async function placeTheUnit() {
       disabledButton?.click();
       negativeButton?.click();
       isContentRunning = false;
+      goHome();
       return false;
     }
   }, 5000);

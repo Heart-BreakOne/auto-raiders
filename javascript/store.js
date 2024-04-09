@@ -162,11 +162,14 @@ async function loadChestData() {
         let maxPurchase = item["PurchaseLimit"];
         let quantity = item["Quantity"];
 
-        let amountBought = userChests[itemUid]
-        if (amountBought) {
-            amountBought = amountBought.amountBought
-        } else {
-            amountBought = 0
+        let amountBought;
+        if (userChests) {
+            amountBought = userChests[itemUid]
+            if (amountBought) {
+                amountBought = amountBought.amountBought
+            } else {
+                amountBought = 0
+            }
         }
 
         let utcTimeString = item["LiveStartTime"];
