@@ -91,16 +91,10 @@ chrome.runtime.onConnect.addListener((port) => {
 
     //Force a reload if the game doesn't load with mobile mode
     if (msg.action === "reloadCleanCache") {
-      processedTabs = new Set();
-      chrome.tabs.query({}, function (tabs) {
-        for (let i = 0; i < tabs.length; i++) {
-          const tab = tabs[i];
-          if (tab.url && tab.url.startsWith("https://www.streamraiders.com")) {
-            updateUserAgent(tab);
-            break;
-          }
-        }
-      });
+      tab = getTab()
+      if (tab) {
+        updateUserAgent(tab);
+      }
     }
   });
 });
@@ -152,9 +146,9 @@ async function checkGameData() {
 
   chrome.storage.local.get("paused_checkbox", ({ paused_checkbox }) => {
     if (paused_checkbox) {
-        return
+      return
     }
-});
+  });
   const response = await fetch('https://www.streamraiders.com/api/game/?cn=getUser&command=getUser');
   if (!response.ok) {
     console.log(`Failed to fetch getUser data (${response.status} ${response.statusText})`);
@@ -407,12 +401,45 @@ chrome.runtime.onInstalled.addListener(function (details) {
 
 //Triggers the checkGameData function every 10-15 seconds
 (function loopCheckGameData() {
-  setTimeout( () => {
+  setTimeout(() => {
+    checkNetworkError();
     checkGameData();
-    loopCheckGameData();  
+    loopCheckGameData();
   }, getRandNumBackground(10, 15) * 1000);
 }());
 
 function getRandNumBackground(min, max) {
   return Math.floor(Math.random() * (max - min + 1) + min);
+}
+
+async function checkNetworkError() {
+  try {
+    const response = await fetch('https://www.streamraiders.com/api/game/?cn=getUser&command=getUser');
+    if (!response.ok) {
+      console.log(`Bad response was (${response.status} ${response.statusText})`);
+      tab = getTab()
+      if (tab) {
+        updateUserAgent(tab)
+      }
+    }
+  } catch (error) {
+    console.log("Network error:", error.message);
+    tab = getTab()
+    if (tab) {
+      updateUserAgent(tab)
+    }
+  }
+}
+
+
+function getTab() {
+  processedTabs = new Set();
+  chrome.tabs.query({}, function (tabs) {
+    for (let i = 0; i < tabs.length; i++) {
+      const tab = tabs[i];
+      if (tab.url && tab.url.startsWith("https://www.streamraiders.com")) {
+        return tab
+      }
+    }
+  });
 }

@@ -261,7 +261,7 @@ function clickGoBackButtons() {
 function hideRotateMessage() {
   const mainContainer = document.querySelector(".rotateMessageCont");
   if (mainContainer) {
-    hideContainer(mainContainer);
+    mainContainer.style.display = "none";
   }
 }
 
@@ -275,6 +275,3 @@ function resetCountersAndButtons() {
   confirmCounter = 0;
 }
 
-function hideContainer(container) {
-  container.style.display = "none";
-}
