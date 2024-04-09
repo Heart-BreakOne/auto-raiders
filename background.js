@@ -91,7 +91,7 @@ chrome.runtime.onConnect.addListener((port) => {
 
     //Force a reload if the game doesn't load with mobile mode
     if (msg.action === "reloadCleanCache") {
-      const tab = getTab()
+      const tab = await getTab()
       if (tab) {
         updateUserAgent(tab);
       }
@@ -417,14 +417,14 @@ async function checkNetworkError() {
     const response = await fetch('https://www.streamraiders.com/api/game/?cn=getUser&command=getUser');
     if (!response.ok) {
       console.log(`Bad response was (${response.status} ${response.statusText})`);
-      const tab = getTab()
+      const tab = await getTab()
       if (tab) {
         updateUserAgent(tab)
       }
     }
   } catch (error) {
     console.log("Network error:", error.message);
-    const tab = getTab()
+    const tab = await getTab()
     if (tab) {
       updateUserAgent(tab)
     }
@@ -432,14 +432,18 @@ async function checkNetworkError() {
 }
 
 
-function getTab() {
+async function getTab() {
   processedTabs = new Set();
-  chrome.tabs.query({}, function (tabs) {
-    for (let i = 0; i < tabs.length; i++) {
-      const tab = tabs[i];
-      if (tab.url && tab.url.startsWith("https://www.streamraiders.com")) {
-        return tab
+  return new Promise(resolve => {
+    chrome.tabs.query({}, function(tabs) {
+      for (let i = 0; i < tabs.length; i++) {
+        const tab = tabs[i];
+        if (tab.url && tab.url.startsWith("https://www.streamraiders.com")) {
+          resolve(tab);
+          return;
+        }
       }
-    }
+      resolve(null);
+    });
   });
 }
