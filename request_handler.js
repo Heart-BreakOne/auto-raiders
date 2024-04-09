@@ -865,7 +865,7 @@ async function getCaptainsForSearch(mode) { //mode = "campaign" or "duel" or "du
         let captLoyalty = captData.data.pveLoyalty;
         for (let i = 0; i < capts.length; i++) {
           captLoop: for (let j = 0; j < captLoyalty.length; j++) {
-            if (capts[i].userId == null || captLoyalty[j].captainId == null) {
+            if (capts[i] == null || captLoyalty[j] == null) {
               continue;
             }
             if (captLoyalty[j].captainId == capts[i].userId) {
