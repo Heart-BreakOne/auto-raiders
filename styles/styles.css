@@ -3,6 +3,62 @@ html {
   overflow-y: scroll;
 }
 
+[data-theme="light"] {
+    color-scheme: light;
+
+    a:link {
+        color: Blue;
+        background-color: transparent;
+        text-decoration: none;
+    }
+
+    a:visited {
+        color: Blue;
+        background-color: transparent;
+        text-decoration: none;
+    }
+
+    a:hover {
+        color: Blue;
+        background-color: transparent;
+        text-decoration: underline;
+    }
+
+    a:active {
+        color: Blue;
+        background-color: transparent;
+        text-decoration: underline;
+    }
+}
+
+[data-theme="dark"] {
+    color-scheme: light dark;
+
+    a:link {
+        color: LightSkyBlue;
+        background-color: transparent;
+        text-decoration: none;
+    }
+
+    a:visited {
+        color: LightSkyBlue;
+        background-color: transparent;
+        text-decoration: none;
+    }
+
+    a:hover {
+        color: LightSkyBlue;
+        background-color: transparent;
+        text-decoration: underline;
+    }
+
+    a:active {
+        color: LightSkyBlue;
+        background-color: transparent;
+        text-decoration: underline;
+    }
+}
+
 /* Spacing for heading 1, heading 2, and buttons */
 h1,
 h2,
@@ -158,7 +214,6 @@ textarea {
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
-    background-color: white;
     padding: 20px;
     border: 1px solid #ccc;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
@@ -166,6 +221,18 @@ textarea {
     max-height: 80%;
     overflow-y: auto;
     width: 60%;
+}
+
+[data-theme="light"] {
+    .popup {
+        background-color: white;
+    }
+}
+
+[data-theme="dark"] {
+    .popup {
+        background-color: black;
+    }
 }
 
 .quick_set_input {

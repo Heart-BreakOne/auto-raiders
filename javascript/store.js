@@ -160,11 +160,14 @@ async function loadChestData() {
         let [itemUrl, size] = await getItemUrl(itemUid, itemType);
         let cost = item["BasePrice"];
 
-        let amountBought = userChests[itemUid]
-        if (amountBought) {
-            amountBought = amountBought.amountBought
-        } else {
-            amountBought = 0
+        let amountBought;
+        if (userChests) {
+            amountBought = userChests[itemUid]
+            if (amountBought) {
+                amountBought = amountBought.amountBought
+            } else {
+                amountBought = 0
+            }
         }
 
         let utcTimeString = item["LiveStartTime"];

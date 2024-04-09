@@ -3,6 +3,62 @@ html {
   overflow-y: scroll;
 }
 
+[data-theme="light"] {
+    color-scheme: light;
+
+    a:link {
+        color: Blue;
+        background-color: transparent;
+        text-decoration: none;
+    }
+
+    a:visited {
+        color: Blue;
+        background-color: transparent;
+        text-decoration: none;
+    }
+
+    a:hover {
+        color: Blue;
+        background-color: transparent;
+        text-decoration: underline;
+    }
+
+    a:active {
+        color: Blue;
+        background-color: transparent;
+        text-decoration: underline;
+    }
+}
+
+[data-theme="dark"] {
+    color-scheme: light dark;
+
+    a:link {
+        color: LightSkyBlue;
+        background-color: transparent;
+        text-decoration: none;
+    }
+
+    a:visited {
+        color: LightSkyBlue;
+        background-color: transparent;
+        text-decoration: none;
+    }
+
+    a:hover {
+        color: LightSkyBlue;
+        background-color: transparent;
+        text-decoration: underline;
+    }
+
+    a:active {
+        color: LightSkyBlue;
+        background-color: transparent;
+        text-decoration: underline;
+    }
+}
+
 /* Spacing for buttons */
 /* button { */
     /* margin-bottom: 20px; */
@@ -97,28 +153,4 @@ td {
     border-radius: 5px;
     padding: 10px 20px;
     cursor: pointer;
-}
-
-a:link {
-  color: Blue;
-  background-color: transparent;
-  text-decoration: none;
-}
-
-a:visited {
-  color: Blue;
-  background-color: transparent;
-  text-decoration: none;
-}
-
-a:hover {
-  color: Blue;
-  background-color: transparent;
-  text-decoration: underline;
-}
-
-a:active {
-  color: Blue;
-  background-color: transparent;
-  text-decoration: underline;
 }

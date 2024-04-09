@@ -25,9 +25,14 @@ let initialConfirmButton = null;
 }());
 
 //Send a message to the background to reload the streamraiders tab.
-function locationReload() {
+async function locationReload() {
   isContentRunning2 = false;
-  let reloadPort = chrome.runtime.connect({ name: "content-script" });
+  reloadRunning = true;
+  await delay(100);
+  while (requestRunning) {
+    await delay(10);
+  }
+  let reloadPort = await chrome.runtime.connect({ name: "content-script" });
   reloadPort.postMessage({ action: "reloadCleanCache", });
   return
 }
@@ -63,7 +68,7 @@ async function checkBattlefield(selector, battleDelayTimer) {
     await battleDelay(3000);
     const menuView = document.querySelector(".battleView");
     if (!menuView) {
-      locationReload();
+      await locationReload();
       return;
     }
   }
@@ -98,17 +103,17 @@ async function checkAndReload(selector, battleDelayTimer) {
     await battleDelay(battleDelayTimer);
     const updatedElement = document.querySelector(selector);
     if (updatedElement === element && !domChanged) {
-      locationReload();
+      await locationReload();
     }
   }
 }
 
 //Game froze on a dark blue blank screen, reload.
-function reloadRoot() {
+async function reloadRoot() {
   const rootElement = document.getElementById('root');
   if (rootElement && rootElement.childElementCount === 0) {
     isContentRunning2 = false;
-    locationReload();
+    await locationReload();
     return;
   }
 }
@@ -138,7 +143,7 @@ const observerCallback = async function (mutations) {
   }
 
   domChanged = true;
-  reloadRoot();
+  await reloadRoot();
 
   const salesTag = document.querySelector(".saleTagCont")
   if (salesTag) {

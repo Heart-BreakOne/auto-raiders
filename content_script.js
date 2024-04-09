@@ -50,6 +50,7 @@ let unitDrawer;
 let hasPlacedSkin;
 let contentRunningLoopCount = 0;
 let isEventCurrencyActive;
+let reloadRunning = false;
 let isEnemyPresentNameArray = ['Puppet Master']; //Enemy name as seen in DOM alt text (case sensitive)
 let ifPresentAvoidUnitArray = ['RANGED']; //Unit name or type to avoid if enemy is present on the map. Pairs with the enemy name at the same index in the array (isEnemyPresentNameArray[0] - ifPresentAvoidUnitArray[0])
 
@@ -165,8 +166,8 @@ async function start() {
       }
     })
   }
-  if (chestsRunning == false && ((reload != undefined && elapsedMinutes >= reload && reload >= 5) || ((reload != undefined || reload != 0) && elapsedMinutes >= 60))) {
-    locationReload();
+  if (chestsRunning == false && requestRunning == false && ((reload != undefined && elapsedMinutes >= reload && reload > 0) || ((reload != undefined || reload != 0) && elapsedMinutes >= 60))) {
+    await locationReload();
     return;
   }
 
@@ -784,7 +785,7 @@ async function getValidUnits(captainNameFromDOM, raidId, slotOption, diamondLoya
   currentMarker = null;
   unitDrawer = null;
   //Function to check for a frozen state
-  reloadRoot();
+  await reloadRoot();
   await delay(1000);
 
   // If the timer is +28:30 or above (+4:00 for dungeons), go back to the main menu as the captain may still be placing markers.
@@ -1171,8 +1172,8 @@ async function attemptPlacement(unit, marker) {
   await delay(500);
   await placeTheUnit();
   await delay(1000);
-  reloadRoot();
   await delay(1000);
+  await reloadRoot();
   return checkPlacement();
 }
 
@@ -1264,6 +1265,7 @@ async function placeTheUnit() {
       disabledButton?.click();
       negativeButton?.click();
       isContentRunning = false;
+      goHome();
       return false;
     }
   }, 5000);
@@ -1503,6 +1505,9 @@ async function getUserWaitTime(battleType) {
     let userWaitTime = await retrieveNumberFromStorage("userWaitTimeInput" + battleType);
     let secondsToMin = userWaitTime / 60;
     let min = "0" + (60 - ((secondsToMin - parseInt(secondsToMin)) * 60));
+    if (min == "060") {
+      min = "00";
+    }
     min = min.substr(min.length - 2);
 
     if (battleType == "Campaign") {

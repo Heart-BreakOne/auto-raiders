@@ -5,6 +5,7 @@ let arrayOfFetchedUnits = [];
 
 //Event listener to initialize the switches as well as update their states
 document.addEventListener("DOMContentLoaded", function () {
+    initializeSwitch("darkSwitch");
     initializeSwitch("questSwitch");
     initializeSwitch("scrollSwitch");
     initializeSwitch("extraSwitch");
@@ -149,6 +150,9 @@ function initializeSwitch(switchId) {
                 loadBanner(failureMessage, redColor)
             } else {
                 loadBanner(successMessage, greenColor)
+                if (switchId == "darkSwitch") {
+                    location.reload();
+                }
             }
         });
     });
@@ -156,6 +160,16 @@ function initializeSwitch(switchId) {
 
 //Event listener to initialize the radio buttons as well as update their states
 document.addEventListener("DOMContentLoaded", async function () {
+    let darkTheme;
+    let switchResult = await chrome.storage.local.get(['darkSwitch'])
+    let darkSwitch = switchResult["darkSwitch"];
+    if (darkSwitch == false) {
+        darkTheme = "light";
+    } else {
+        darkTheme = "dark";
+    }
+    document.querySelector("html").setAttribute("data-theme", darkTheme);
+
     const scrollToTopBtn = document.getElementById("scrollBtn");
 
     // Show or hide the button based on scroll position
@@ -563,6 +577,7 @@ function importSettingsFromFile() {
 
 function exportSettingsToFile() {
     const keysToExport = [
+        "darkSwitch",
         "reloaderInput",
         "minimumCurrencyInput",
         "maxUnitLvlDungInput",

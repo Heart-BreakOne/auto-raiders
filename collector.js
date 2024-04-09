@@ -22,6 +22,9 @@ async function buyScrolls() {
     //Checks if the user wants to buy additional scrolls
     let extraState = await getSwitchState("extraSwitch");
     let storeItems = await getCurrentStoreItems();
+    if (storeItems == undefined) {
+      return;
+    }
 
     //loop through and purchase scrolls, then purchase store refresh and loop/purchase scrolls again
     for (let j = 0; j < 2; j++) {
@@ -163,6 +166,9 @@ async function collectBattlePass() {
     try {
         const url = `https://www.streamraiders.com/api/game/?cn=getEventProgressionLite&clientVersion=${clientVersion}&clientPlatform=MobileLite&gameDataVersion=${gameDataVersion}&command=getEventProgressionLite&isCaptain=0`
         const response = await makeRequest(url, 0);
+        if (response == undefined) {
+          return;
+        }
         const eventProgressionData = await response.json();
         const eventProgress = eventProgressionData.data;
         let currentTier = eventProgress.currentTier;
@@ -283,9 +289,10 @@ function getMinimumCurrency() {
 
 
 async function buyChests() {
-    let currentUserCurrencies = await getAvailableCurrencies();
-    if (!currentUserCurrencies || !currentUserCurrencies.data) {
-        return;
+
+    let currentUserCurrencies = await getAvailableCurrencies()
+    if (!currentUserCurrencies || !currentUserCurrencies.data || currentUserCurrencies.data == undefined) {
+        return
     }
 
     let bones = currentUserCurrencies.data.bones;

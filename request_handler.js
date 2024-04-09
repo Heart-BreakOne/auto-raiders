@@ -16,6 +16,7 @@
 //Declaring variables
 let isRunning = false;
 let chestsRunning = false;
+let requestRunning = false;
 let backgroundDelay = ms => new Promise(res => setTimeout(res, ms));
 
 async function logChestsAndUnitsInterval() {
@@ -35,6 +36,9 @@ async function getCaptainLoyalty(captainName) {
 
   try {
     let response = await getActiveRaids()
+    if (response == undefined) {
+      return;
+    }
 
     const activeRaids = await response.json();
     let loyaltyResults = new Object();
@@ -65,6 +69,9 @@ async function getRaidChest(raidId, clientVersion, gameDataVersion) {
   try {
     const url = `https://www.streamraiders.com/api/game/?cn=getRaid&raidId=${raidId}&placementStartIndex=0&maybeSendNotifs=false&clientVersion=${clientVersion}&clientPlatform=WebLite&gameDataVersion=${gameDataVersion}&command=getRaid&isCaptain=0`
     const response = await makeRequest(url, 0);
+    if (response == undefined) {
+      return;
+    }
 
     const currentRaid = await response.json();
     let chests = await retrieveFromStorage("loyaltyChests")
@@ -96,6 +103,9 @@ async function getLeaderboardUnitsData() {
 
   try {
     let response = await getActiveRaids()
+    if (response == undefined) {
+      return;
+    }
     const activeRaids = await response.json();
 
     for (let i = 0; i < activeRaids.data.length; i++) {
@@ -104,7 +114,10 @@ async function getLeaderboardUnitsData() {
       const cptName = position.twitchDisplayName;
 
       const url = `https://www.streamraiders.com/api/game/?cn=getRaid&raidId=${raidId}&placementStartIndex=0&maybeSendNotifs=false&clientVersion=${clientVersion}&clientPlatform=WebLite&gameDataVersion=${gameDataVersion}&command=getRaid&isCaptain=0`
-      const response = await makeRequest(url, 0);
+      let response = await makeRequest(url, 0);
+      if (response == undefined) {
+        continue;
+      }
       const currentRaid = await response.json();
       const placements = currentRaid.data.placements;
       let CharacterType = "";
@@ -177,6 +190,9 @@ async function collectChests() {
 
   try {
     let response = await getActiveRaids()
+    if (response == undefined) {
+      return;
+    }
 
     const activeRaids = await response.json();
     let m = 4 // rows
@@ -274,6 +290,9 @@ async function getRaidStats(raidId, captId) {
   try {
     const url = `https://www.streamraiders.com/api/game/?cn=getRaidStatsByUser&raidId=${raidId}&clientVersion=${clientVersion}&clientPlatform=WebLite&gameDataVersion=${gameDataVersion}&command=getRaidStatsByUser&isCaptain=0`
     const response = await makeRequest(url, 0);
+    if (response == undefined) {
+      return;
+    }
     const currentRaid = await response.json();
     try {
       if (currentRaid.errorMessage !== null) {
@@ -533,6 +552,9 @@ async function getEventProgressionLite() {
   try {
     const url = `https://www.streamraiders.com/api/game/?cn=getEventProgressionLite&clientVersion=${clientVersion}&clientPlatform=WebLite&gameDataVersion=${gameDataVersion}&command=getEventProgressionLite&isCaptain=0`
     const response = await makeRequest(url, 0);
+    if (response == undefined) {
+      return;
+    }
     const eventInfo = await response.json();
     const eventUid = eventInfo.data.eventUid;
     return eventUid;
@@ -578,6 +600,9 @@ async function getMapNode(raidId) {
   try {
     const url = `https://www.streamraiders.com/api/game/?cn=getRaid&raidId=${raidId}&placementStartIndex=0&maybeSendNotifs=false&clientVersion=${clientVersion}&clientPlatform=WebLite&gameDataVersion=${gameDataVersion}&command=getRaid&isCaptain=0`
     const response = await makeRequest(url, 0);
+    if (response == undefined) {
+      return;
+    }
 
     const currentRaid = await response.json();
     const nodeId = currentRaid.data.nodeId;
@@ -657,6 +682,9 @@ async function getPotionQuantity() {
   try {
     const url = `https://www.streamraiders.com/api/game/?cn=getUser&command=getUser`;
     const response = await makeRequest(url, 0);
+    if (response == undefined) {
+      return;
+    }
     const data = await response.json();
     let epicProgression;
     epicProgression = parseInt(data.data.epicProgression);
@@ -671,6 +699,9 @@ async function getStoreRefreshCount() {
   try {
     const url = `https://www.streamraiders.com/api/game/?cn=getUser&command=getUser`;
     const response = await makeRequest(url, 0);
+    if (response == undefined) {
+      return;
+    }
     const data = await response.json();
     let storeRefreshCount;
     storeRefreshCount = parseInt(data.data.storeRefreshCount);
@@ -690,6 +721,9 @@ async function getCurrentStoreItems() {
   try {
     const url = `https://www.streamraiders.com/api/game/?cn=getCurrentStoreItems&clientVersion=${clientVersion}&clientPlatform=WebLite&gameDataVersion=${gameDataVersion}&command=getCurrentStoreItems&isCaptain=0`
     const response = await makeRequest(url, 0);
+    if (response == undefined) {
+      return;
+    }
 
     const storeData = await response.json();
     const storeItems = storeData.data;
@@ -728,6 +762,9 @@ async function purchaseStoreRefresh() {
   try {
     const url = `https://www.streamraiders.com/api/game/?cn=purchaseStoreRefresh&clientVersion=${clientVersion}&clientPlatform=WebLite&gameDataVersion=${gameDataVersion}&command=purchaseStoreRefresh&isCaptain=0`
     const response = await makeRequest(url, 0);
+    if (response == undefined) {
+      return;
+    }
 
     const storeData = await response.json();
     const storeItems = storeData.data;
@@ -749,6 +786,9 @@ async function getUserQuests() {
   try {
     const url = `https://www.streamraiders.com/api/game/?cn=getUserQuests&userId=${userId}&isCaptain=0&gameDataVersion=${gameDataVersion}&command=getUserQuests&clientVersion=${clientVersion}&clientPlatform=WebLite`
     const response = await makeRequest(url, 0);
+    if (response == undefined) {
+      return;
+    }
 
     const questsData = await response.json();
     const quests = questsData.data;
@@ -770,6 +810,9 @@ async function collectQuestReward(questSlotId) {
   try {
     const url = `https://www.streamraiders.com/api/game/?cn=collectQuestReward&userId=${userId}&isCaptain=0&gameDataVersion=${gameDataVersion}&slotId=${questSlotId}&autoComplete=False&command=collectQuestReward&clientVersion=${clientVersion}&clientPlatform=WebLite`
     const response = await makeRequest(url, 0);
+    if (response == undefined) {
+      return;
+    }
 
     const questsData = await response.json();
     const quests = questsData.data;
@@ -811,6 +854,9 @@ async function getCaptainsForSearch(mode) { //mode = "campaign" or "duel" or "du
     for (let pageNum = 1; pageNum <= 10; pageNum++) {
       const url = `https://www.streamraiders.com/api/game/?cn=getCaptainsForSearch&userId=${userId}&isCaptain=0&gameDataVersion=${gameDataVersion}&command=getCaptainsForSearch&page=${pageNum}&resultsPerPage=24&filters={"mode":"${mode}","isPlaying":1}&clientVersion=${clientVersion}&clientPlatform=WebLite`
       const response = await makeRequest(url, 0);
+      if (response == undefined) {
+        return;
+      }
 
       let captData = await response.json();
       console.log(captData)
@@ -819,6 +865,9 @@ async function getCaptainsForSearch(mode) { //mode = "campaign" or "duel" or "du
         let captLoyalty = captData.data.pveLoyalty;
         for (let i = 0; i < capts.length; i++) {
           captLoop: for (let j = 0; j < captLoyalty.length; j++) {
+            if (capts[i] == null || captLoyalty[j] == null) {
+              continue;
+            }
             if (captLoyalty[j].captainId == capts[i].userId) {
               captArray.push([capts[i].userId, capts[i].twitchDisplayName, capts[i].raidState, capts[i].isSelected, parseInt(captLoyalty[j].pveWins)])
               break captLoop;
@@ -858,6 +907,9 @@ async function getFavoriteCaptainIds() {
   try {
     const url = `https://www.streamraiders.com/api/game/?cn=getUser&command=getUser`;
     const response = await makeRequest(url, 0);
+    if (response == undefined) {
+      return;
+    }
     const data = await response.json();
     let favoriteCaptainIds;
     favoriteCaptainIds = data.data.favoriteCaptainIds;
@@ -905,6 +957,9 @@ async function fetchUnits() {
   try {
     const url = `https://www.streamraiders.com/api/game/?cn=getUserUnits&clientVersion=${clientVersion}&clientPlatform=MobileLite&gameDataVersion=${gameDataVersion}&command=getUserUnits&isCaptain=0`
     const response = await makeRequest(url, 0);
+    if (response == undefined) {
+      return;
+    }
 
     // get unit id and name.
     const unitsArray = await response.json();
@@ -960,6 +1015,9 @@ async function reviveUnit(unitType, unitLevel, captainNameFromDOM) {
   try {
     const url = `https://www.streamraiders.com/api/game/?cn=reviveUnit&userId=${userId}&isCaptain=0&gameDataVersion=${gameDataVersion}&command=reviveUnit&unitId=${unitId}&raidId=${raidId}&clientVersion=${clientVersion}&clientPlatform=WebLite`
     const response = await makeRequest(url, 0);
+    if (response == undefined) {
+      return;
+    }
     let reviveStatus = await response.json();
     return;
   } catch (error) {
@@ -999,6 +1057,9 @@ async function getUserDungeonInfoForRaid(captainNameFromDOM) {
   const userId = dataKeys.userId;
 
   let requestLoyaltyResults = await getCaptainLoyalty(captainNameFromDOM);
+  if (requestLoyaltyResults == undefined) {
+    return;
+  }
   let raidId = requestLoyaltyResults[0];
 
   try {
@@ -1042,6 +1103,9 @@ async function getAvailableCurrencies() {
   try {
     const url = `https://www.streamraiders.com/api/game/?cn=getAvailableCurrencies&format=object&clientVersion=${clientVersion}&clientPlatform=WebLite&gameDataVersion=${gameDataVersion}&command=getAvailableCurrencies&isCaptain=0`
     const response = await makeRequest(url, 0);
+    if (response == undefined) {
+      return;
+    }
 
     // Return currencies
     return await response.json();
@@ -1262,6 +1326,9 @@ async function switchCaptains(currentCaptain, masterList, index) {
     try {
       const url = `https://www.streamraiders.com/api/game/?cn=getCaptainsForSearch&isPlayingS=desc&isLiveS=desc&page=${i}&format=normalized&resultsPerPage=30&filters={"isPlaying":1}&clientVersion=${clientVersion}&clientPlatform=MobileLite&gameDataVersion=${gameDataVersion}&command=getCaptainsForSearch&isCaptain=0`
       const response = await makeRequest(url, 0);
+      if (response == undefined) {
+        return;
+      }
 
       const captainsData = await response.json();
 
@@ -1439,6 +1506,9 @@ async function checkDungeons(cptId, type) {
     try {
       const url = `https://www.streamraiders.com/api/game/?cn=getCaptainsForSearch&isPlayingS=desc&isLiveS=desc&page=${i}&format=normalized&resultsPerPage=30&filters={"isPlaying":1,"mode":"dungeons"}&clientVersion=${clientVersion}&clientPlatform=MobileLite&gameDataVersion=${gameDataVersion}&command=getCaptainsForSearch&isCaptain=0`
       const response = await makeRequest(url, 0);
+      if (response == undefined) {
+        return;
+      }
 
       let parsedResponse = await response.json()
       let dungeonCaptainData = parsedResponse.data.captains
@@ -1539,10 +1609,14 @@ async function getActiveRaids() {
   }
 }
 
-async function makeRequest(url, retryCount) {  
+async function makeRequest(url, retryCount) {
+  if (reloadRunning) {
+    return;  
+  }
+  requestRunning = true;
   try {
     let cookieString = document.cookie;
-    const response = await fetch(url, {
+    let response = await fetch(url, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/x-www-form-urlencoded',
@@ -1553,14 +1627,17 @@ async function makeRequest(url, retryCount) {
         console.error(new Date().toLocaleTimeString(), "Invalid response:", url, retryCount, response);
         throw new Error('Network response was not ok');
     }
+    requestRunning = false;
     return response
   } catch (error) {
     retryCount++;
     console.error(new Date().toLocaleTimeString(), "Error retrieving response:", error, url, retryCount);
     if (retryCount < 5) {
       response = await makeRequest(url, retryCount);
+      requestRunning = false;
       return response;
     } else {
+      requestRunning = false;
       return null;
     }
   }
