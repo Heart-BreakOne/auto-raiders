@@ -91,7 +91,7 @@ chrome.runtime.onConnect.addListener((port) => {
 
     //Force a reload if the game doesn't load with mobile mode
     if (msg.action === "reloadCleanCache") {
-      tab = getTab()
+      const tab = getTab()
       if (tab) {
         updateUserAgent(tab);
       }
@@ -417,14 +417,14 @@ async function checkNetworkError() {
     const response = await fetch('https://www.streamraiders.com/api/game/?cn=getUser&command=getUser');
     if (!response.ok) {
       console.log(`Bad response was (${response.status} ${response.statusText})`);
-      tab = getTab()
+      const tab = getTab()
       if (tab) {
         updateUserAgent(tab)
       }
     }
   } catch (error) {
     console.log("Network error:", error.message);
-    tab = getTab()
+    const tab = getTab()
     if (tab) {
       updateUserAgent(tab)
     }
