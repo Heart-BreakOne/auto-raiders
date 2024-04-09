@@ -32,7 +32,7 @@ html {
 }
 
 [data-theme="dark"] {
-    color-scheme: light dark;
+    color-scheme: dark;
 
     a:link {
         color: LightSkyBlue;
