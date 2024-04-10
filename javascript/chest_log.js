@@ -34,6 +34,9 @@ async function loadUserChestsLog() {
     arrayData = arrayData.userChestsLog;
     
     //Sort the array based on the time they were added.
+    if (!arrayData) {
+      return
+    }
     const sortedData = arrayData.sort((a, b) => new Date(b.dateTime) - new Date(a.dateTime));
 
     //Populate the table with array data
