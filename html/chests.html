@@ -32,15 +32,24 @@
         <button id="fetch_btn" class="green_button">FETCH</button>
         <div style="font-size: large; margin-bottom: 10px;">Minimum operational KEYS amount (set to 0 to disable it):
             <input id="min_key_currency" type="number" value="0" min="0">
-            <button id="update_key_btn" class="green_button">SAVE</button>
         </div>
         <div style="font-size: large; margin-bottom: 10px;">Minimum operational BONES amount (set to 0 to disable it):
             <input id="min_bone_currency" type="number" value="0" min="0">
-            <button id="update_bone_btn" class="green_button">SAVE</button>
+            
         </div>
         <label for="chest_purchase_order"
-            title="By default the most expensive chest is acquired first, this overrides it."><input
-                type="checkbox" id="chest_purchase_order">Buy cheapest first</label>
+            title="By default the most expensive chest is acquired first, this overrides it."><input type="checkbox"
+                id="chest_purchase_order">Buy cheapest first</label>
+        <label for="buy_all_skins" title="Skip a chest if all skins were acquired."><input type="checkbox"
+                id="buy_all_skins">Skin priority</label><br>
+        <label for="buy_one__bone_skin" title="Skip a chest if all skins were acquired.">Bone chest fallback under skin
+            priority: </label>
+        <select id="buy_one_bone_skin"></select><br>
+
+        <label for="buy_one_key_skin" title="Skip a chest if all skins were acquired.">Skin chest fallback under skin
+            priority: </label>
+        <select id="buy_one_key_skin"></select><br><br>
+        <button id="save_btn" class="green_button">SAVE</button>
         <div style="margin-top: 20px;" id="chest_container">Times shown in American format (MM/DD/YYYY)<br>Times shown
             in your local time (Probably)<br>-1 quantity means an unlimited amount can be bought</div>
 
