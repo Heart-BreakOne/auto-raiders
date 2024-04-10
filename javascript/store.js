@@ -15,11 +15,6 @@ document.addEventListener("DOMContentLoaded", async function () {
         savePreferences()
     });
 
-    document.getElementById('update_bone_btn').addEventListener('click', function () {
-        saveBoneCurrency()
-    })
-
-
     document.getElementById('chest_purchase_order').addEventListener('change', function () {
         let checkbox = document.getElementById('chest_purchase_order');
         let checkboxState = checkbox.checked;
