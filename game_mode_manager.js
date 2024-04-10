@@ -12,6 +12,7 @@ async function manageCaptain(captainType, keyword) {
     let counter = 0;
 
     let captainNameFromStorage = await retrieveFromStorage(captainType);
+    let modeChangeSwitch = await retrieveFromStorage("modeChangeSwitch");
     let multiClashSwitch;
     if (keyword == "Clash") {
       multiClashSwitch = await retrieveFromStorage("multiClashSwitch");
@@ -28,7 +29,7 @@ async function manageCaptain(captainType, keyword) {
     if (counter === 1 || (counter > 1 && keyword == "Clash" && multiClashSwitch)) {
         captains.forEach((capSlotContent) => {
             //Gets the captain's name running the mode of interest
-            if (capSlotContent.innerText.includes(keyword) && (captainNameFromStorage == null || captainNameFromStorage == "" || (keyword == "Clash" && multiClashSwitch))) {
+            if (capSlotContent.innerText.includes(keyword) && (modeChangeSwitch || captainNameFromStorage == null || captainNameFromStorage == "" || (keyword == "Clash" && multiClashSwitch))) {
                 captainName += "," + capSlotContent.querySelector(".capSlotName").innerText + ",";
             }
         });
