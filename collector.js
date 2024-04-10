@@ -304,6 +304,8 @@ async function buyChests() {
     async function buyChestsWithCurrency(currencyType, minCurrency, chestData) {
 
         let userChestData = await retrieveFromStorage("userChests");
+        let userChestLogData = await retrieveFromStorage("userChestsLog") || [];
+        let eventUid = await getEventProgressionLite();
 
         if (!userChestData) {
             return;
@@ -369,11 +371,18 @@ async function buyChests() {
                     } else {
                         console.log(`Chest with uid ${uid} not found in userChestData.`);
                     }
+                    userChestLogData.push({
+                        dateTime: new Date().toString(),
+                        chestId: purchaseResponse.data.chestId,
+                        rewards: purchaseResponse.data.rewards,
+                        eventUid: eventUid
+                    })
                 } else {
                     console.log(`Failed to purchase chest with uid ${uid}.`);
                 }
             }
             await saveToStorage("userChests", userChestData);
+            await saveToStorage("userChestsLog", userChestLogData);
         }
     }
 
