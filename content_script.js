@@ -968,11 +968,11 @@ async function getValidUnits(captainNameFromDOM, raidId, slotOption, diamondLoya
   unitDrawer = [...document.querySelectorAll(".unitSelectionCont")];
 
   let slotNum;
-  if (battleType == "Dungeons") {
+  if (battleType == "Dungeons" && await retrieveFromStorage("priorityListSwitch5")) {
     slotNum = '5';
-  } else if (battleType == "Clash") {
+  } else if (battleType == "Clash" && await retrieveFromStorage("priorityListSwitch6")) {
     slotNum = '6';
-  } else if (battleType == "Duel") {
+  } else if (battleType == "Duel" && await retrieveFromStorage("priorityListSwitch7")) {
     slotNum = '7';
   } else {
     slotNum = slotOption;
