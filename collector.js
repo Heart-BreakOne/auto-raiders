@@ -23,7 +23,7 @@ async function buyScrolls() {
     let extraState = await getSwitchState("extraSwitch");
     let storeItems = await getCurrentStoreItems();
     if (storeItems == undefined) {
-      return;
+        return;
     }
 
     //loop through and purchase scrolls, then purchase store refresh and loop/purchase scrolls again
@@ -167,7 +167,7 @@ async function collectBattlePass() {
         const url = `https://www.streamraiders.com/api/game/?cn=getEventProgressionLite&clientVersion=${clientVersion}&clientPlatform=MobileLite&gameDataVersion=${gameDataVersion}&command=getEventProgressionLite&isCaptain=0`
         const response = await makeRequest(url, 0);
         if (response == undefined) {
-          return;
+            return;
         }
         const eventProgressionData = await response.json();
         const eventProgress = eventProgressionData.data;
@@ -386,6 +386,11 @@ async function buyChests() {
         }
     }
 
+    //if (buy skins) {
+    //    call logic to buy skin
+    //} else {
     await buyChestsWithCurrency(keys, await retrieveNumberFromStorage("minKeyCurrency"), "dungeonChestsData");
     await buyChestsWithCurrency(bones, await retrieveNumberFromStorage("minBoneCurrency"), "boneChestsData");
+    // }
+
 }

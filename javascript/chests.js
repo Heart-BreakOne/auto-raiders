@@ -2,10 +2,14 @@ document.addEventListener("DOMContentLoaded", async function () {
 
     await loadChestData()
 
-    await loadCheckBoxData()
-
     await loadDropDownMenu("dungeonChestsData", "buy_one_key_skin")
     await loadDropDownMenu("boneChestsData", "buy_one_bone_skin")
+
+    await initializeSwitch("chestPurchaseOrder")
+    await initializeSwitch("buyAllSkins")
+
+    await loadSelects("buyThisBoneChest", "buy_one_bone_skin")
+    await loadSelects("buyThisKeyChest", "buy_one_key_skin")
 
     document.getElementById('fetch_btn').addEventListener('click', function () {
         fetchAndSaveChestData()
@@ -13,23 +17,6 @@ document.addEventListener("DOMContentLoaded", async function () {
 
     document.getElementById('save_btn').addEventListener('click', function () {
         savePreferences()
-    });
-
-    document.getElementById('chest_purchase_order').addEventListener('change', function () {
-        let checkbox = document.getElementById('chest_purchase_order');
-        let checkboxState = checkbox.checked;
-        chrome.storage.local.set({ 'chestPurchaseOrder': checkboxState });
-    });
-
-    let checkboxes = document.querySelectorAll('.checkbox');
-    checkboxes.forEach(checkbox => {
-        checkbox.addEventListener('change', async function (event) {
-            let checkboxId = event.target.id;
-            if (checkboxId != "chest_purchase_order") {
-                let isChecked = event.target.checked;
-                await updateCheckBox(checkboxId, isChecked);
-            }
-        });
     });
 
 })
@@ -42,9 +29,12 @@ async function savePreferences() {
     await chrome.storage.local.set({ 'minKeyCurrency': kc });
 
 
-    let bone_select = document.getElementById('buy_one_bone_skin').value
-    await chrome.storage.local.set({ 'buy_one_bone_skin': bone_select });
-    
+    let b_sel = document.getElementById('buy_one_bone_skin').value
+    await chrome.storage.local.set({ 'buyThisBoneChest': b_sel });
+
+    let k_sel = document.getElementById('buy_one_key_skin').value
+    await chrome.storage.local.set({ 'buyThisKeyChest': k_sel });
+
 
 
 }
@@ -339,6 +329,11 @@ async function loadDropDownMenu(key1, key2) {
 
     key_select.innerHTML = '';
 
+    let noneOption = document.createElement("option");
+    noneOption.value = "None";
+    noneOption.textContent = "None";
+    key_select.appendChild(noneOption);
+
     for (let key in keyChests) {
         if (keyChests.hasOwnProperty(key)) {
             let uid = keyChests[key]["Uid"];
@@ -346,6 +341,16 @@ async function loadDropDownMenu(key1, key2) {
             option.value = uid;
             option.textContent = uid;
             key_select.appendChild(option);
+        }
+    }
+}
+
+async function loadSelects(k1, k2) {
+    let v = await retrieveFromStorage(k1);
+    if (v) {
+        let s = document.getElementById(k2);
+        if (s) {
+            s.value = v;
         }
     }
 }
