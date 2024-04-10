@@ -4,17 +4,21 @@ document.addEventListener("DOMContentLoaded", async function () {
 
     await loadCheckBoxData()
 
+    await loadDropDownMenu("dungeonChestsData", "buy_one_key_skin")
+    await loadDropDownMenu("boneChestsData", "buy_one_bone_skin")
+
     document.getElementById('fetch_btn').addEventListener('click', function () {
         fetchAndSaveChestData()
     });
 
-    document.getElementById('update_key_btn').addEventListener('click', function () {
-        saveKeyCurrency()
+    document.getElementById('save_btn').addEventListener('click', function () {
+        savePreferences()
     });
 
     document.getElementById('update_bone_btn').addEventListener('click', function () {
         saveBoneCurrency()
     })
+
 
     document.getElementById('chest_purchase_order').addEventListener('change', function () {
         let checkbox = document.getElementById('chest_purchase_order');
@@ -35,15 +39,21 @@ document.addEventListener("DOMContentLoaded", async function () {
 
 })
 
-async function saveBoneCurrency() {
-    let v = document.getElementById('min_bone_currency').value
-    await chrome.storage.local.set({ 'minBoneCurrency': v });
+async function savePreferences() {
+    let bc = document.getElementById('min_bone_currency').value
+    await chrome.storage.local.set({ 'minBoneCurrency': bc });
+
+    let kc = document.getElementById('min_key_currency').value
+    await chrome.storage.local.set({ 'minKeyCurrency': kc });
+
+
+    let bone_select = document.getElementById('buy_one_bone_skin').value
+    await chrome.storage.local.set({ 'buy_one_bone_skin': bone_select });
+    
+
+
 }
 
-async function saveKeyCurrency() {
-    let v = document.getElementById('min_key_currency').value
-    await chrome.storage.local.set({ 'minKeyCurrency': v });
-}
 
 async function fetchAndSaveChestData() {
     try {
@@ -326,4 +336,21 @@ async function loadCheckBoxData() {
             }
         });
     });
+}
+
+async function loadDropDownMenu(key1, key2) {
+    let keyChests = await retrieveFromStorage(key1);
+    let key_select = document.getElementById(key2);
+
+    key_select.innerHTML = '';
+
+    for (let key in keyChests) {
+        if (keyChests.hasOwnProperty(key)) {
+            let uid = keyChests[key]["Uid"];
+            let option = document.createElement("option");
+            option.value = uid;
+            option.textContent = uid;
+            key_select.appendChild(option);
+        }
+    }
 }
