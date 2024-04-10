@@ -13,31 +13,8 @@ async function manageCaptain(captainType, keyword) {
 
     let captainNameFromStorage = await retrieveFromStorage(captainType);
     let multiClashSwitch;
-
-    if (keyword == "Dungeons") {
-        let dCounter = 0
-        if (captains) {
-            captains.forEach((captain) => {
-                if (captain.innerText.includes(keyword)) {
-                    dCounter += 1;
-                }
-            });
-        }
-        if (dCounter == 1) {
-            captains.forEach((capSlotContent) => {
-                //Gets the captain's name running the mode of interest
-                if (capSlotContent.innerText.includes(keyword)) {
-                    captainName += "," + capSlotContent.querySelector(".capSlotName").innerText + ",";
-                }
-            });
-            //Saves the game mode and the captain's name on storage so they are flagged as running that mode.
-            if (captainName !== "") {
-                await saveToStorage(captainType, captainName);
-            }
-        }
-    }
     if (keyword == "Clash") {
-        multiClashSwitch = await retrieveFromStorage("multiClashSwitch");
+      multiClashSwitch = await retrieveFromStorage("multiClashSwitch");
     }
     //Checks what mode the captain is running and whenever a captain is running the same mode a counter is incremented. 
     if (captains) {
@@ -57,17 +34,17 @@ async function manageCaptain(captainType, keyword) {
         });
         //Saves the game mode and the captain's name on storage so they are flagged as running that mode.
         if (captainName !== "") {
-            await saveToStorage(captainType, captainName);
+          await saveToStorage(captainType, captainName);
         }
     }
 }
 
 //Runs the check on special game modes every 15-20 seconds.
 (function loopManageDungeon() {
-    setTimeout(() => {
-        manageDungeon();
-        loopManageDungeon();
-    }, getRandNum(15, 20) * 1000);
+  setTimeout( () => {
+    manageDungeon();
+    loopManageDungeon();  
+  }, getRandNum(15, 20)*1000);
 }());
 
 //Checks if the slots menu exists and invokes the manageCaptain function.
