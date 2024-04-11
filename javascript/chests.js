@@ -405,7 +405,7 @@ async function updateCheckBox(checkboxId, checkBoxState) {
 
     if (userChests.hasOwnProperty(checkboxId)) {
         userChests[checkboxId] = {
-            ...userChests[id],
+            ...userChests[checkboxId],
             canBuy: checkBoxState,
         };
     } else {
