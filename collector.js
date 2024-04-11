@@ -300,7 +300,6 @@ async function buyChests() {
 
     let buyCheapestFirst = await retrieveFromStorage("chestPurchaseOrder");
 
-
     async function buyChestsWithCurrency(currencyType, minCurrency, chestData) {
 
         let userChestData = await retrieveFromStorage("userChests");
@@ -333,6 +332,7 @@ async function buyChests() {
             }
 
             for (let i = 0; i < chestsData.length; i++) {
+                await collectDelay(1500)
                 let chest = chestsData[i];
                 let uid = chest["Uid"];
                 let basePrice = chest["BasePrice"];
@@ -386,11 +386,18 @@ async function buyChests() {
         }
     }
 
-    //if (buy skins) {
-    //    call logic to buy skin
-    //} else {
-    await buyChestsWithCurrency(keys, await retrieveNumberFromStorage("minKeyCurrency"), "dungeonChestsData");
-    await buyChestsWithCurrency(bones, await retrieveNumberFromStorage("minBoneCurrency"), "boneChestsData");
-    // }
+    let buyAllSkins = await retrieveFromStorage("buyAllSkins")
+    if (buyAllSkins) {
+        await buyChestsWithSkins(keys, await retrieveFromStorage("buyThisKeyChest"), await retrieveNumberFromStorage("minKeyCurrency"), "dungeonChestsData")
+        await buyChestsWithSkins(bones, await retrieveFromStorage("buyThisBoneChest"), await retrieveNumberFromStorage("minBoneCurrency"), "boneChestsData")
+    } else {
+        await buyChestsWithCurrency(keys, await retrieveNumberFromStorage("minKeyCurrency"), "dungeonChestsData");
+        await buyChestsWithCurrency(bones, await retrieveNumberFromStorage("minBoneCurrency"), "boneChestsData");
+    }
 
+}
+
+
+async function buyChestsWithSkins(currencyType, chestFallBack, minCurrency, chestData) {
+    console.log("We are here")
 }

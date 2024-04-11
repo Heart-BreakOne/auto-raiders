@@ -51,8 +51,9 @@ async function fetchAndSaveChestData() {
         }
         const gameData = await response.json();
         if (!gameData || !gameData.sheets || !gameData.sheets.Store) {
+            return
         }
-
+        
         const chestsArray = Object.values(gameData.sheets.Store);
 
         const filterChests = (section) => {
@@ -86,8 +87,15 @@ async function fetchAndSaveChestData() {
             return filteredChests;
         };
 
-        const freshDungeonArray = filterChests("Dungeon");
-        const freshBoneArray = filterChests("Bones");
+        let freshDungeonArray = filterChests("Dungeon");
+        let freshBoneArray = filterChests("Bones");
+
+        let skins = gameData.sheets.Chests
+        let rewards = gameData.sheets.ChestRewardSlots
+        
+        freshDungeonArray = appendSkins(freshDungeonArray, skins, rewards)
+        freshBoneArray = appendSkins(freshBoneArray, skins, rewards)
+
 
         await chrome.storage.local.set({ 'dungeonChestsData': freshDungeonArray });
         await chrome.storage.local.set({ 'boneChestsData': freshBoneArray });
@@ -353,4 +361,26 @@ async function loadSelects(k1, k2) {
             s.value = v;
         }
     }
+}
+
+function appendSkins(chestArray, skins, rewards) {
+    for (let chest of chestArray) {
+        let matchingSkin = skins[chest["Uid"]];
+        if (matchingSkin) {
+            let slots = matchingSkin.ViewerSlots.split(",");
+            for(let slotUid of slots) {
+                let matchingReward = rewards[slotUid];
+                if (matchingReward) {
+                    let arrayOfRewards = matchingReward.RewardList.split(",");
+                    for (let reward of arrayOfRewards) {
+                        if (reward.toLowerCase().includes("skin")) {
+                            chest["skinsLoot"] = chest["skinsLoot"] || [];
+                            chest["skinsLoot"].push(reward.trim());
+                        }
+                    }
+                }
+            }
+        }
+    }
+    return chestArray;
 }
