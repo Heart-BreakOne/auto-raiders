@@ -7,6 +7,7 @@ document.addEventListener("DOMContentLoaded", async function () {
 
     await initializeSwitch("chestPurchaseOrder")
     await initializeSwitch("buyAllSkins")
+    await initializeSwitch("skinChestFocus")
 
     await loadSelects("buyThisBoneChest", "buy_one_bone_skin")
     await loadSelects("buyThisKeyChest", "buy_one_key_skin")
@@ -18,6 +19,31 @@ document.addEventListener("DOMContentLoaded", async function () {
     document.getElementById('save_btn').addEventListener('click', function () {
         savePreferences()
     });
+
+
+    await loadCheckBoxData()
+    // Manage chest checkboxes
+    let checkboxes = document.querySelectorAll('.checkbox');
+
+    checkboxes.forEach(checkbox => {
+        checkbox.addEventListener('change', async function (event) {
+            let checkboxId = event.target.id;
+            if (checkboxId != "chestPurchaseOrder" && checkboxId != "buyAllSkins" && checkboxId != "skinChestFocus") {
+                let isChecked = event.target.checked;
+                await updateCheckBox(checkboxId, isChecked);
+            }
+        });
+    });
+
+    // Manage chest purchase order
+    let numberInputs = document.querySelectorAll('.number');
+
+    numberInputs.forEach(number => {
+        number.addEventListener('change', async function () {
+            await updateChestOrder(number.id, number.value);
+        });
+    });
+
 
 })
 
@@ -36,7 +62,6 @@ async function savePreferences() {
     await chrome.storage.local.set({ 'buyThisKeyChest': k_sel });
 
 
-
 }
 
 
@@ -53,7 +78,7 @@ async function fetchAndSaveChestData() {
         if (!gameData || !gameData.sheets || !gameData.sheets.Store) {
             return
         }
-        
+
         const chestsArray = Object.values(gameData.sheets.Store);
 
         const filterChests = (section) => {
@@ -92,7 +117,7 @@ async function fetchAndSaveChestData() {
 
         let skins = gameData.sheets.Chests
         let rewards = gameData.sheets.ChestRewardSlots
-        
+
         freshDungeonArray = appendSkins(freshDungeonArray, skins, rewards)
         freshBoneArray = appendSkins(freshBoneArray, skins, rewards)
 
@@ -128,7 +153,6 @@ async function updateCurrency(key, id) {
     });
 }
 
-
 async function loadChestData() {
     await updateCurrency("minBoneCurrency", "min_bone_currency");
     await updateCurrency("minKeyCurrency", "min_key_currency");
@@ -136,16 +160,16 @@ async function loadChestData() {
     let dcd = await retrieveFromStorage("dungeonChestsData");
     let bcd = await retrieveFromStorage("boneChestsData");
     if (!dcd || !bcd) {
-        return
+        return;
     }
-    let userChests = await retrieveFromStorage("userChests")
+    let userChests = await retrieveFromStorage("userChests");
     let mdc = dcd.concat(bcd);
     let chestContainer = document.getElementById("chest_container");
     let table = document.createElement("table");
 
     let thead = document.createElement("thead");
     let headerRow = document.createElement("tr");
-    let headers = ["Section", "Icon", "Uid", "Item", "BasePrice", "Starts", "Ends", "Bought so far", "Can Buy"];
+    let headers = ["Section", "Icon", "Uid", "Item", "BasePrice", "Starts", "Ends", "Bought so far", "Can Buy", "Skin Focus Order"];
     headers.forEach(headerText => {
         let headerCell = document.createElement("th");
         headerCell.textContent = headerText;
@@ -163,13 +187,16 @@ async function loadChestData() {
         let [itemUrl, size] = await getItemUrl(itemUid, itemType);
         let cost = item["BasePrice"];
 
-        let amountBought;
-        if (userChests) {
-            amountBought = userChests[itemUid]
-            if (amountBought) {
-                amountBought = amountBought.amountBought
-            } else {
-                amountBought = 0
+        let amountBought = 0;
+        let order = -1;
+
+        if (userChests && userChests[itemUid]) {
+            const { amountBought: userAmountBought, purchaseOrder: userOrder } = userChests[itemUid];
+            if (userAmountBought !== undefined) {
+                amountBought = userAmountBought;
+            }
+            if (userOrder !== undefined) {
+                order = userOrder;
             }
         }
 
@@ -199,6 +226,7 @@ async function loadChestData() {
         let localLiveEndTime = utcDate.toLocaleString();
 
         let row = document.createElement("tr");
+
         let rowData = [section, itemUid, itemUid, itemType, cost, localLiveStartTime, localLiveEndTime, amountBought];
         rowData.forEach((data, index) => {
             let cell = document.createElement("td");
@@ -217,21 +245,25 @@ async function loadChestData() {
         let checkboxCell = document.createElement("td");
         let checkbox = document.createElement("input");
         checkbox.type = "checkbox";
-
         checkbox.classList.add("checkbox");
-
         checkbox.id = itemUid;
         checkboxCell.appendChild(checkbox);
         row.appendChild(checkboxCell);
 
+        let inputCell = document.createElement("td");
+        let inputNumber = document.createElement("input");
+        inputNumber.classList.add("number");
+        inputNumber.type = "number";
+        inputNumber.value = order;
+        inputNumber.id = "skinFocus" + itemUid;
+        inputCell.appendChild(inputNumber);
+        row.appendChild(inputCell);
+
         tbody.appendChild(row);
     }
     table.appendChild(tbody);
-
     chestContainer.appendChild(table);
 }
-
-
 
 
 async function getItemUrl(itemUid, itemType) {
@@ -282,25 +314,6 @@ async function getItemUrl(itemUid, itemType) {
     }
 
     return ["/icons/unknown.png", "50px"]
-}
-
-async function updateCheckBox(checkboxId, checkBoxState) {
-    let data = await chrome.storage.local.get('userChests');
-    let userChests = data.userChests || {};
-
-    if (userChests.hasOwnProperty(checkboxId)) {
-        let amountBought = userChests[checkboxId].amountBought
-        userChests[checkboxId] = {
-            canBuy: checkBoxState,
-            amountBought: amountBought
-        };
-    } else {
-        userChests[checkboxId] = {
-            canBuy: checkBoxState,
-            amountBought: 0
-        };
-    }
-    await chrome.storage.local.set({ 'userChests': userChests });
 }
 
 async function loadCheckBoxData() {
@@ -368,7 +381,7 @@ function appendSkins(chestArray, skins, rewards) {
         let matchingSkin = skins[chest["Uid"]];
         if (matchingSkin) {
             let slots = matchingSkin.ViewerSlots.split(",");
-            for(let slotUid of slots) {
+            for (let slotUid of slots) {
                 let matchingReward = rewards[slotUid];
                 if (matchingReward) {
                     let arrayOfRewards = matchingReward.RewardList.split(",");
@@ -383,4 +396,43 @@ function appendSkins(chestArray, skins, rewards) {
         }
     }
     return chestArray;
+}
+
+
+async function updateCheckBox(checkboxId, checkBoxState) {
+    let data = await chrome.storage.local.get('userChests');
+    let userChests = data.userChests || {};
+
+    if (userChests.hasOwnProperty(checkboxId)) {
+        userChests[checkboxId] = {
+            ...userChests[id],
+            canBuy: checkBoxState,
+        };
+    } else {
+        userChests[checkboxId] = {
+            canBuy: checkBoxState,
+            amountBought: 0
+        };
+    }
+    await chrome.storage.local.set({ 'userChests': userChests });
+}
+
+async function updateChestOrder(id, value) {
+    id = id.replace("skinFocus", "");
+    let data = await chrome.storage.local.get('userChests');
+    let userChests = data.userChests || {};
+
+    if (userChests.hasOwnProperty(id)) {
+        userChests[id] = {
+            ...userChests[id],
+            purchaseOrder: value
+        };
+    } else {
+        userChests[id] = {
+            canBuy: false,
+            amountBought: 0,
+            purchaseOrder: value,
+        };
+    }
+    await chrome.storage.local.set({ 'userChests': userChests });
 }
