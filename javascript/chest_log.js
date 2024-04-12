@@ -129,6 +129,9 @@ function loadChestRewardCounter() {
       let regex = /\d+/;
       let match = regex.exec(item.reward);
       let qty = match ? match[0] : "";
+      if (qty == "") {
+        console.log(item)
+      }
       if (item.reward.includes("scroll")) {
           tr.innerHTML = `<td>${item.chestId}</td><td><div class="crop"><img src="${item.url}" title="${item.reward}"></div></td><td>x${qty}</td><td>${item.count}</td>`;
       } else {
