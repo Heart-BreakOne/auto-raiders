@@ -125,16 +125,17 @@ function loadChestRewardCounter() {
     table.appendChild(header);
     // Loop through the data and create HTML elements
     for (const item of rewardData) {
-        const tr = document.createElement('tr');
-        let regex = /\d+/;
-        let qty = regex.exec(item.reward)[0];
-        if (item.reward.includes("scroll")) {
-            tr.innerHTML = `<td>${item.chestId}</td><td><div class="crop"><img src="${item.url}" title="${item.reward}"></div></td><td>x${qty}</td><td>${item.count}</td>`;
-        } else {
-            tr.innerHTML = `<td>${item.chestId}</td><td><img src="${item.url}" title="${item.reward}" style="height: 30px; width: auto"></td><td>x${qty}</td><td>${item.count}</td>`;
-        }
-        table.appendChild(tr);
-    };
+      const tr = document.createElement('tr');
+      let regex = /\d+/;
+      let match = regex.exec(item.reward);
+      let qty = match ? match[0] : "";
+      if (item.reward.includes("scroll")) {
+          tr.innerHTML = `<td>${item.chestId}</td><td><div class="crop"><img src="${item.url}" title="${item.reward}"></div></td><td>x${qty}</td><td>${item.count}</td>`;
+      } else {
+          tr.innerHTML = `<td>${item.chestId}</td><td><img src="${item.url}" title="${item.reward}" style="height: 30px; width: auto"></td><td>x${qty}</td><td>${item.count}</td>`;
+      }
+      table.appendChild(tr);
+  };
     counterContainer.appendChild(table);
     const br = document.createElement('br');
     counterContainer.appendChild(br);
