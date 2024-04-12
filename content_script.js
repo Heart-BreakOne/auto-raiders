@@ -223,6 +223,13 @@ async function start() {
         const cB = st.querySelector(".fal.fa-times-square")
         if (cB) {
           cB.click();
+          const modal = document.querySelector('.modalContent');
+          if (modal) {
+            const btn = primaryButton = modal.querySelector('.actionButton.actionButtonPrimary');
+            if (btn) {
+              btn.click()
+            }
+          }
         }
         //Flag captain into memory
         await flagCaptainRed(cpId, cpNmSt)
