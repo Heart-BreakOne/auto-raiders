@@ -1392,12 +1392,13 @@ const obsv = new MutationObserver(async function (mutations) {
       else if (purpleFlag) {
         capSlot.style.backgroundColor = purple
       }
-      else if (((dungeonCaptainNameFromStorage != "," + capNameDOM.toLowerCase() + ",") && battleType == "Dungeons") ||
+      else if (!modeChangeSwitch &&
+        (((dungeonCaptainNameFromStorage != "," + capNameDOM.toLowerCase() + ",") && battleType == "Dungeons") ||
         (!multiClashSwitch && (!clashCaptainNameFromStorage.includes("," + capNameDOM.toLowerCase() + ",")) && battleType == "Clash") ||
         ((duelsCaptainNameFromStorage != "," + capNameDOM.toLowerCase() + ",") && battleType == "Duel") ||
         ((dungeonCaptainNameFromStorage == "," + capNameDOM.toLowerCase() + ",") && battleType != "Dungeons") ||
         ((clashCaptainNameFromStorage.includes("," + capNameDOM.toLowerCase() + ",")) && battleType != "Clash") ||
-        ((duelsCaptainNameFromStorage == "," + capNameDOM.toLowerCase() + ",") && battleType != "Duel")) {
+        ((duelsCaptainNameFromStorage == "," + capNameDOM.toLowerCase() + ",") && battleType != "Duel"))) {
         capSlot.style.backgroundColor = red;
       }
       else {

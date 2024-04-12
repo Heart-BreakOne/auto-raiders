@@ -397,6 +397,15 @@ async function buyChests() {
 
 }
 
+async function cleanChestLogData() {
+    let userChestLogData = await retrieveFromStorage("userChestsLog") || [];
+    let newUserChestLogData;
+    //If there's more than 5000 entries, delete oldest.
+    if (userChestLogData.length > 5000) {
+        newUserChestLogData = userChestLogData.slice(userChestLogData.length - 5000, userChestLogData.length + 1);
+    }
+    await saveToStorage("userChestsLog", newUserChestLogData);
+}
 
 async function buyChestsWithSkins(currencyType, chestFallBack, minCurrency, chestData) {
     console.log("We are here")
