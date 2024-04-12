@@ -209,6 +209,7 @@ async function loadLogData() {
 
         //Convert the string to a Date object and get hour and minutes.
         const startingTime = getTimeString(new Date(entry.currentTime));
+        const startingDate = new Date(entry.currentTime).toDateString();
 
         //Getting human-readable colors
         let color = colorCodeMap[entry.colorCode] || "Normal";
@@ -461,7 +462,7 @@ async function loadLogData() {
             ` + logCaptId + `
             <td>${entry.logMode}</td>
             <td style="border: 1px solid #ddd; padding: 8px; color: ${color};">${color}</td>
-            <td>${startingTime}</td>
+            <td title="${startingDate}">${startingTime}</td>
             <td>${endingTime}</td>
             <td>${elapsed}</td>
             <td>${outcome}</td>
