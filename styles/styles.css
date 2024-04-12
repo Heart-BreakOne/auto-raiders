@@ -98,6 +98,11 @@ th,
     text-align: center;
 }
 
+/* Styling for highlighting table rows on hover */
+tr:hover {
+    background-color: grey;
+}
+
 /* Styling for delete button and green button */
 #deleteLogButton, .green_button {
     color: white;
