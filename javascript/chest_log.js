@@ -215,10 +215,10 @@ function loadChestRewardCounter() {
     const table = document.createElement('table');
     table.setAttribute('style', 'width:20% !important; padding:0 !important');
     const header = document.createElement('tr');
-    header.innerHTML = `<th>ChestId</th><th>Slot</th><th>Reward</th><th>Qty</th><th>Count</th><th>%</th>`;
+    header.innerHTML = `<th>#</th><th>ChestId</th><th>Slot</th><th>Reward</th><th>Qty</th><th>Count</th><th>%</th>`;
     table.appendChild(header);
-    // Loop through the data and create HTML elements
     let chests = [];
+    let counter = 1;
     item_loop: for (const item of rewardData) {
         for (const chest of chests) {
             if (item.chestId == chest.chestId && item.slotNo == chest.slotNo) {
@@ -235,7 +235,8 @@ function loadChestRewardCounter() {
     for (const item of rewardData) {
         const tr = document.createElement('tr');
         let regex = /\d+/;
-        let qty = regex.exec(item.reward.replace("_0","_"))[0];
+        let match = regex.exec(item.reward.replace("_0","_"));
+        let qty = match ? match[0] : 'N/A';
         count_loop: for (const chest of chests) {
             if (item.chestId == chest.chestId && item.slotNo == chest.slotNo) {
                 chestCount = chest.count;
@@ -245,10 +246,11 @@ function loadChestRewardCounter() {
         let percent = (item.count / chestCount) * 100
         percent = Math.round((percent + Number.EPSILON) * 100) / 100
         if (item.reward.includes("scroll")) {
-            tr.innerHTML = `<td>${item.chestId}</td><td>${item.slotNo}</td><td><div class="crop"><img src="${item.url}" title="${item.reward}"></div></td><td>x${qty}</td><td>${item.count}</td><td>${percent}</td>`;
+              tr.innerHTML = `<td>${counter}</td><td>${item.chestId}</td><td>${item.slotNo}</td><td><div class="crop"><img src="${item.url}" title="${item.reward}"></div></td><td>x${qty}</td><td>${item.count}</td><td>${percent}</td>`;
         } else {
-            tr.innerHTML = `<td>${item.chestId}</td><td>${item.slotNo}</td><td><img src="${item.url}" title="${item.reward}" style="height: 30px; width: auto"></td><td>x${qty}</td><td>${item.count}</td><td>${percent}</td>`;
+              tr.innerHTML = `<td>${counter}</td><td>${item.chestId}</td><td>${item.slotNo}</td><td><img src="${item.url}" title="${item.reward}" style="height: 30px; width: auto"></td><td>x${qty}</td><td>${item.count}</td><td>${percent}</td>`;
         }
+        counter++;
         table.appendChild(tr);
     };
     counterContainer.appendChild(table);
