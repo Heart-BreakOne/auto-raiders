@@ -32,6 +32,7 @@ async function loadUserChestsLog() {
     let items = await retrieveFromStorage("items");
     let currency = await retrieveFromStorage("currency");
     let imageURLs = await retrieveFromStorage("imageUrls");
+    let skins = await retrieveFromStorage("skins");
     let allRewardData = [];
     let allUrlData = [];
     
@@ -70,10 +71,20 @@ async function loadUserChestsLog() {
         let rewardString = "";
         
         for (let j = 0; j < rewards.length; j++) {
-            let reward = rewards[j].replace("common","");
-            for (let m = 1; m < 6; m++) {
-                reward = reward.replace(`_${m}|`,`_0${m}|`);
+            let reward = rewards[j];
+            let rewardSort;
+            if (reward.includes("scroll")) {
+                let regex = /\|scroll.+/;
+                let match = regex.exec(reward);
+                rewardSort = "0" + match[0].replace("|scroll","") + " scrolls";
+            } else {
+                rewardSort = reward;
             }
+
+            let regex = /\d+/;
+            let match = regex.exec(reward);
+            let qty = match ? match[0] : 1;
+
             let url;
             
             url_loop: for (let k = 0; k < allUrlData.length; k++) {
@@ -83,7 +94,7 @@ async function loadUserChestsLog() {
                 }
             }
             if (!url) {
-                url = await getRewardUrl(reward, eventUid, items, currency, imageURLs);  
+                url = await getRewardUrl(reward, eventUid, items, currency, imageURLs, skins);  
                 allUrlData.push({
                     reward: reward,
                     url: url,
@@ -96,6 +107,8 @@ async function loadUserChestsLog() {
                 slotNo: j + 1,
                 dateTime: dateTime,
                 reward: reward,
+                rewardSort: rewardSort,
+                qty: qty,
                 url: url,
                 eventUid: eventUid
             });
@@ -128,6 +141,8 @@ async function loadUserChestsLog() {
         let chestId = entry.chestId;
         let slotNo = entry.slotNo;
         let reward = entry.reward;
+        let rewardSort = entry.rewardSort;
+        let qty = entry.qty;
         let url = entry.url;
         let eventUid = entry.eventUid;
 
@@ -142,19 +157,27 @@ async function loadUserChestsLog() {
             chestId: chestId,
             slotNo: slotNo,
             reward: reward,
+            rewardSort: rewardSort,
+            qty: qty,
             url: url,
             eventUid: eventUid,
             count: 1
         });
     }
 
-    rewardData.sort((a, b) => a.chestId < b.chestId ? 1 : (a.chestId > b.chestId ? -1 : 0) || a.slotNo < b.slotNo ? -1 : (a.slotNo > b.slotNo ? 1 : 0) || a.reward.localeCompare(b.reward));
+    rewardData.sort((a, b) => 
+        a.chestId.localeCompare(b.chestId) || 
+        a.slotNo - b.slotNo || 
+        a.rewardSort.localeCompare(b.rewardSort) || 
+        a.qty - b.qty
+        );
 
     // Append the table to the data container
     dataContainer.appendChild(tableElement);
 }
 
-async function getRewardUrl(reward, eventUid, items, currency, imageURLs) {
+async function getRewardUrl(reward, eventUid, items, currency, imageURLs, skins) {
+    url = "";
     if (reward.includes("goldbag")) {
         url = "https://d2k2g0zg1te1mr.cloudfront.net/env/prod1/mobile-lite/static/media/iconGold.6072909d.png";
     } else if (reward.includes("epicpotion")) {
@@ -165,12 +188,21 @@ async function getRewardUrl(reward, eventUid, items, currency, imageURLs) {
         Object.keys(imageURLs).forEach(function (key) {
             if (key === "mobilelite/events/" + eventUid + "/iconEventToken.png") {
                 url = "https://d2k2g0zg1te1mr.cloudfront.net/" + imageURLs[key];
+                return;
             }
         })
     } else if (reward.includes("skin")) {
+        let skin;
+        Object.keys(skins).forEach(function (key) {
+            if (key === reward) {
+                skin = skins[key].BaseAssetName;
+                return;
+            }
+        });
         Object.keys(imageURLs).forEach(function (key) {
-            if (key === "mobilelite/units/static/" + reward + ".png") {
+            if (key === "mobilelite/units/static/" + skin + ".png") {
                 url = "https://d2k2g0zg1te1mr.cloudfront.net/" + imageURLs[key];
+                return;
             }
         });
     } else {
@@ -184,16 +216,19 @@ async function getRewardUrl(reward, eventUid, items, currency, imageURLs) {
         Object.keys(items).forEach(function (key) {
             if (key === itemReceived) {
                 item = items[key].CurrencyTypeAwarded;
+                return;
             }
         })
         Object.keys(currency).forEach(function (key) {
             if (key === item) {
                 item = currency[key].UnitAssetName;
+                return;
             }
         })
         Object.keys(imageURLs).forEach(function (key) {
             if (key === "mobilelite/units/static/" + item + ".png") {
                 url = "https://d2k2g0zg1te1mr.cloudfront.net/" + imageURLs[key];
+                return;
             }
         })
     }
@@ -234,9 +269,6 @@ function loadChestRewardCounter() {
     }
     for (const item of rewardData) {
         const tr = document.createElement('tr');
-        let regex = /\d+/;
-        let match = regex.exec(item.reward.replace("_0","_"));
-        let qty = match ? match[0] : 'N/A';
         count_loop: for (const chest of chests) {
             if (item.chestId == chest.chestId && item.slotNo == chest.slotNo) {
                 chestCount = chest.count;
@@ -245,10 +277,10 @@ function loadChestRewardCounter() {
         }
         let percent = (item.count / chestCount) * 100
         percent = Math.round((percent + Number.EPSILON) * 100) / 100
-        if (item.reward.includes("scroll")) {
-              tr.innerHTML = `<td>${counter}</td><td>${item.chestId}</td><td>${item.slotNo}</td><td><div class="crop"><img src="${item.url}" title="${item.reward}"></div></td><td>x${qty}</td><td>${item.count}</td><td>${percent}</td>`;
+        if (item.reward.includes("scroll") || item.reward.includes("skin")) {
+              tr.innerHTML = `<td>${counter}</td><td>${item.chestId}</td><td>${item.slotNo}</td><td><div class="crop"><img src="${item.url}" title="${item.rewardSort.replace("0","")}"></div></td><td>x${item.qty}</td><td>${item.count}</td><td>${percent}</td>`;
         } else {
-              tr.innerHTML = `<td>${counter}</td><td>${item.chestId}</td><td>${item.slotNo}</td><td><img src="${item.url}" title="${item.reward}" style="height: 30px; width: auto"></td><td>x${qty}</td><td>${item.count}</td><td>${percent}</td>`;
+              tr.innerHTML = `<td>${counter}</td><td>${item.chestId}</td><td>${item.slotNo}</td><td><img src="${item.url}" title="${item.rewardSort.replace("0","")}" style="height: 30px; width: auto"></td><td>x${item.qty}</td><td>${item.count}</td><td>${percent}</td>`;
         }
         counter++;
         table.appendChild(tr);
