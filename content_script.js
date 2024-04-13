@@ -1351,7 +1351,7 @@ const obsv = new MutationObserver(async function (mutations) {
     if (duelsCaptainNameFromStorage) {
       duelsCaptainNameFromStorage = duelsCaptainNameFromStorage.toLowerCase();
     }
-
+    let modeChangeSwitch = captKeys.modeChangeSwitch;
     let capNameDOM;
     let multiClashSwitch;
 
