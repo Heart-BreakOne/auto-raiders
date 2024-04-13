@@ -16,6 +16,7 @@ let previousConfirmButtonCount = 0;
 let isBattlefield = null;
 let initialPlaceButton = null;
 let initialConfirmButton = null;
+let placementOver = false;
 //Triggers the checkBattle function every 15-20 seconds
 (function loopCheckBattle() {
   setTimeout( () => {
@@ -221,6 +222,11 @@ function hideElementsFromView(element) {
 
 function hideQuestModal() {
   let questModal = document.querySelector(".modalScrim.modalOn");
+  if (questModal && questModal.innerText.includes("Placement is Over")) {
+    placementOver = true;
+    clickGoBackButtons();
+    goHome();
+  }
   if (questModal && !questModal.innerText.includes("Leave battle") && !questModal.innerText.includes("PLACE ANYWAY")) {
     try {
       questModal.style.display = "none";
@@ -249,9 +255,12 @@ async function checkAndHandleBattleButton() {
 }
 
 function clickGoBackButtons() {
-  const buttons = document.querySelectorAll(".button.actionButton.actionButtonPrimary");
+  const buttons = document.querySelectorAll(".actionButton.actionButtonPrimary");
   buttons.forEach((button) => {
-    const buttonText = button.querySelector("div").textContent.trim();
+    let buttonText = button.querySelector("div");
+    if (buttonText !== null) {
+      buttonText = buttonText.textContent.trim();
+    }
     if (buttonText === "GO BACK") {
       button.click();
     }

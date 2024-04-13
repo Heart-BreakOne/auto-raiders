@@ -1125,6 +1125,9 @@ async function getValidUnits(captainNameFromDOM, raidId, slotOption, diamondLoya
   outer_loop: for (const unit of unitDrawer[0].children) {
     const unitId = unit.id;
     for (const marker of arrayOfMarkers) {
+      if (placementOver == true) {
+        break;
+      }
       if (marker.offsetLeft == 0 && marker.offsetTop == 0) {
         continue;
       }
@@ -1419,6 +1422,7 @@ obsv.observe(tgtNode, conf);
 //This function resets the running state and closes the battlefield back to home.
 function goHome() {
   isContentRunning = false;
+  placementOver = false;
   const backHome = document.querySelector(".selectorBack");
   if (backHome) {
     backHome.click();
