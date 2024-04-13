@@ -721,6 +721,10 @@ async function openBattlefield(captainNameFromDOM, raidId, slotOption, diamondLo
   if (mode == false) { //!acceptableLoyalty && ) {
     //Opens battle info and checks chest type.
     battleInfo = document.querySelector(".battleInfoMapTitle")
+    if (battleInfo == null) {
+      goHome();
+      return;
+    }
     battleInfo.click();
 
     //Check how many units user wants

@@ -624,6 +624,9 @@ async function checkBattleMessages() {
   //Logic to check battle for messages here
   try {
     let response = await getActiveRaids()
+    if (response == undefined) {
+      return;
+    }
 
     //Get relevant data from activeRaids and save on storage so it can be displayed to the user
     const activeRaids = await response.json();
@@ -852,7 +855,7 @@ async function getCaptainsForSearch(mode) { //mode = "campaign" or "duel" or "du
     let h = 0;
 
     for (let pageNum = 1; pageNum <= 10; pageNum++) {
-      const url = `https://www.streamraiders.com/api/game/?cn=getCaptainsForSearch&userId=${userId}&isCaptain=0&gameDataVersion=${gameDataVersion}&command=getCaptainsForSearch&page=${pageNum}&resultsPerPage=24&filters={"mode":"${mode}","isPlaying":1}&clientVersion=${clientVersion}&clientPlatform=WebLite`
+      const url = `https://www.streamraiders.com/api/game/?cn=getCaptainsForSearch&userId=${userId}&isCaptain=0&gameDataVersion=${gameDataVersion}&command=getCaptainsForSearch&page=${pageNum}&resultsPerPage=24&filters={"mode":"${mode}","isPlaying":1,"roomCodes":"false"}&clientVersion=${clientVersion}&clientPlatform=WebLite`
       const response = await makeRequest(url, 0);
       if (response == undefined) {
         return;
@@ -1071,15 +1074,15 @@ async function getUserDungeonInfoForRaid(captainNameFromDOM) {
         let dungeonRaid = dungeonRaidResponse.data;
         let dungeonRaidInfo = [];
 
-        // dungeonRaidInfo[0] = dungeonRaid.streak ?? "";
-        // dungeonRaidInfo[1] = dungeonRaid.knockedUnits ?? "";
-        // dungeonRaidInfo[2] = dungeonRaid.recoveredUnits ?? "";
-        // dungeonRaidInfo[3] = dungeonRaid.deadUnits ?? "";
-        // dungeonRaidInfo[4] = dungeonRaid.exhaustedUnits ?? "";
-        // dungeonRaidInfo[5] = dungeonRaid.epicChargesUsed ?? "";
-        // dungeonRaidInfo[6] = dungeonRaid.captainBoons ?? "";
-        // dungeonRaidInfo[7] = dungeonRaid.enemyBoons ?? "";
-        dungeonRaidInfo[8] = dungeonRaid.completedLevels ?? "";
+        // dungeonRaidInfo[0] = dungeonRaid?.streak ?? "";
+        // dungeonRaidInfo[1] = dungeonRaid?.knockedUnits ?? "";
+        // dungeonRaidInfo[2] = dungeonRaid?.recoveredUnits ?? "";
+        // dungeonRaidInfo[3] = dungeonRaid?.deadUnits ?? "";
+        // dungeonRaidInfo[4] = dungeonRaid?.exhaustedUnits ?? "";
+        // dungeonRaidInfo[5] = dungeonRaid?.epicChargesUsed ?? "";
+        // dungeonRaidInfo[6] = dungeonRaid?.captainBoons ?? "";
+        // dungeonRaidInfo[7] = dungeonRaid?.enemyBoons ?? "";
+        dungeonRaidInfo[8] = dungeonRaid?.completedLevels ?? "";
 
         return dungeonRaidInfo;
       } else {
@@ -1324,7 +1327,7 @@ async function switchCaptains(currentCaptain, masterList, index) {
   
   for (let i = 1; i < 6; i++) {
     try {
-      const url = `https://www.streamraiders.com/api/game/?cn=getCaptainsForSearch&isPlayingS=desc&isLiveS=desc&page=${i}&format=normalized&resultsPerPage=30&filters={"isPlaying":1}&clientVersion=${clientVersion}&clientPlatform=MobileLite&gameDataVersion=${gameDataVersion}&command=getCaptainsForSearch&isCaptain=0`
+      const url = `https://www.streamraiders.com/api/game/?cn=getCaptainsForSearch&isPlayingS=desc&isLiveS=desc&page=${i}&format=normalized&resultsPerPage=30&filters={"isPlaying":1,"roomCodes":"false"}&clientVersion=${clientVersion}&clientPlatform=MobileLite&gameDataVersion=${gameDataVersion}&command=getCaptainsForSearch&isCaptain=0`
       const response = await makeRequest(url, 0);
       if (response == undefined) {
         return;
@@ -1504,7 +1507,7 @@ async function checkDungeons(cptId, type) {
   let dungeonCaptains = []
   for (let i = 1; i < 6; i++) {
     try {
-      const url = `https://www.streamraiders.com/api/game/?cn=getCaptainsForSearch&isPlayingS=desc&isLiveS=desc&page=${i}&format=normalized&resultsPerPage=30&filters={"isPlaying":1,"mode":"dungeons"}&clientVersion=${clientVersion}&clientPlatform=MobileLite&gameDataVersion=${gameDataVersion}&command=getCaptainsForSearch&isCaptain=0`
+      const url = `https://www.streamraiders.com/api/game/?cn=getCaptainsForSearch&isPlayingS=desc&isLiveS=desc&page=${i}&format=normalized&resultsPerPage=30&filters={"isPlaying":1,"mode":"dungeons","roomCodes":"false"}&clientVersion=${clientVersion}&clientPlatform=MobileLite&gameDataVersion=${gameDataVersion}&command=getCaptainsForSearch&isCaptain=0`
       const response = await makeRequest(url, 0);
       if (response == undefined) {
         return;
