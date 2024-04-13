@@ -236,7 +236,6 @@ function loadChestRewardCounter() {
         const tr = document.createElement('tr');
         let regex = /\d+/;
         let qty = regex.exec(item.reward.replace("_0","_"))[0];
-        let totalChestCount;
         count_loop: for (const chest of chests) {
             if (item.chestId == chest.chestId && item.slotNo == chest.slotNo) {
                 chestCount = chest.count;
