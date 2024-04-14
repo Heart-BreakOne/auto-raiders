@@ -1,6 +1,7 @@
 
 let unitsArrayList = undefined;
 let arrayOfFetchedUnits = [];
+let idleCheckboxes = ['idleSwitch0_Campaign','idleSwitch1_Campaign','idleSwitch2_Campaign','idleSwitch3_Campaign','idleSwitch4_Campaign','idleSwitch1_Dungeon','idleSwitch2_Dungeon','idleSwitch3_Dungeon','idleSwitch4_Dungeon','idleSwitch0_Clash','idleSwitch1_Clash','idleSwitch2_Clash','idleSwitch3_Clash','idleSwitch4_Clash','idleSwitch1_Duel','idleSwitch2_Duel','idleSwitch3_Duel','idleSwitch4_Duel'];
 //This script handles the user interaction with the toggle switches and radio buttons on the popup of the extension.
 
 //Event listener to initialize the switches as well as update their states
@@ -144,17 +145,31 @@ function initializeSwitch(switchId) {
 
     //Listen to changes on the switch states and set the new value.
     switchElement.addEventListener("change", function () {
-        const switchState = this.checked;
-        chrome.storage.local.set({ [switchId]: switchState }, function () {
+        if (!idleCheckboxes.includes(switchId)) {
+            const switchState = this.checked;
+            chrome.storage.local.set({ [switchId]: switchState }, function () {
+                if (chrome.runtime.lastError) {
+                    loadBanner(failureMessage, redColor)
+                } else {
+                    loadBanner(successMessage, greenColor)
+                    if (switchId == "darkSwitch") {
+                        location.reload();
+                    }
+                }
+            });
+        }
+        if (idleCheckboxes.includes(switchId)) {
+            for (idleSwitchId in idleCheckboxes) {
+                const idleSwitchElement = document.getElementById(idleCheckboxes[idleSwitchId]);
+                const switchState = idleSwitchElement.checked;
+                chrome.storage.local.set({ [idleCheckboxes[idleSwitchId]]: switchState });
+            }
             if (chrome.runtime.lastError) {
                 loadBanner(failureMessage, redColor)
             } else {
                 loadBanner(successMessage, greenColor)
-                if (switchId == "darkSwitch") {
-                    location.reload();
-                }
             }
-        });
+        }
     });
 }
 
