@@ -32,6 +32,7 @@ document.addEventListener("DOMContentLoaded", function () {
     initializeSwitch("soulSwitch7");
     initializeSwitch("joinDuelSwitch");
     initializeSwitch("modeChangeSwitch");
+    initializeSwitch("modeChangeLeaveSwitch");
     initializeSwitch("campaignSwitch");
     initializeSwitch("battlepassSwitch");
     initializeSwitch("shuffleSwitch0");
@@ -489,6 +490,25 @@ document.addEventListener("DOMContentLoaded", async function () {
         }
       })
     );
+    
+    // Get every check box by using querySelectorAll
+    document.querySelectorAll(".modeChangeCheckbox").forEach(
+    // For each check box add on click event listener
+      input => input.addEventListener('click', function(event) {
+      // get number of check boxes by passing :check attribute to the query selector
+        let checkedBoxes = document.querySelectorAll(".modeChangeCheckbox:checked");
+        
+        // check if the number of checked boxes are more than allowed limit
+        if(checkedBoxes.length > 1){
+          for (let checkedBox in checkedBoxes) {
+            if (checkedBoxes[checkedBox] != event.currentTarget) {
+              checkedBoxes[checkedBox].checked = false;
+              chrome.storage.local.set({ [checkedBoxes[checkedBox].id]: false });
+            }
+          }
+        }
+      })
+    );
 });
 
 function setInputButtonListener(buttonId, inputId) {
@@ -674,6 +694,7 @@ function exportSettingsToFile() {
         "soulSwitch7",
         "joinDuelSwitch",
         "modeChangeSwitch",
+        "modeChangeLeaveSwitch",
         "dungeonSwitch",
         "dungeonLevelSwitch",
         "dungeonBossPotionSwitch",

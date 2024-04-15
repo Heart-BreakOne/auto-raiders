@@ -89,14 +89,15 @@
                                                         Use
                                                         legendary
                                                         units</label></td>
-                                        <td><label for="modeChangeSwitch"
-                                                        title="If the captain switches from Dungeons or PVP to a different mode (ex. Dungeons to Campaign, Clash to Duels, etc), they are skipped by default. This option will ignore these mode switches and allow placements to continue as usual."><input
-                                                                type="checkbox" id="modeChangeSwitch"> Allow mode
-                                                        change</label></td>
                                         <td><label for="setMarkerSwitch"
                                                         title="The extension seeks the closest marker to the captain, with this option enabled it will seek the closest set marker. For example, if there's a vibe marker and ranged marker next to one another, the extension might place an archer on the vibe marker, with this option it will prioritize the ranged marker over the vibe marker."><input
                                                                 type="checkbox" id="setMarkerSwitch">Priority on set
                                                         markers</label>
+                                        </td>
+                                        <td width="33%"><label for="afterSwitch"
+                                                        title="Enable slot after removing captain on leave after battle"><input
+                                                                type="checkbox" id="afterSwitch"> Enable slot on
+                                                        leave after</label>
                                         </td>
                                 </tr>
                                 <tr>
@@ -283,7 +284,7 @@
                                         </td>
                                         <td>
                                                 <label for="idleSwitch0_Campaign"
-                                                        title="If 'Switch idle captains' is selected, replace all slots (excluding any additional slots selected) with Campaign."><input
+                                                        title="If 'Switch idle captains' is selected, replace all slots (excluding any additional non-Campaign slots selected) with Campaign."><input
                                                                 type="checkbox" class="idleCampaignCheckbox0 idleSlot0Checkbox" id="idleSwitch0_Campaign"></label>
                                         </td>
                                         <td>
@@ -354,7 +355,7 @@
                                         </td>
                                         <td>
                                                 <label for="idleSwitch0_Clash"
-                                                        title="If 'Switch idle captains' is selected, replace all slots (excluding any additional slots selected) with Clash."><input
+                                                        title="If 'Switch idle captains' is selected, replace all slots (excluding any additional non-Clash slots selected) with Clash."><input
                                                                 type="checkbox" class="idleClashCheckbox0 idleSlot0Checkbox" id="idleSwitch0_Clash"></label>
                                         </td>
                                         <td>
@@ -433,10 +434,17 @@
                                                                 type="checkbox" id="skipSwitch"> Leave blank if no
                                                         loyalty</label>
                                         </td>
-                                        <td width="33%"><label for="afterSwitch"
-                                                        title="Enable slot after removing captain on leave after battle"><input
-                                                                type="checkbox" id="afterSwitch"> Enable slot on
-                                                        leave after</label>
+                                </tr>
+                                <tr>
+                                        <td><label for="modeChangeSwitch"
+                                                        title="If the captain switches from Dungeons or PVP to a different mode (ex. Dungeons to Campaign, Clash to Duels, etc), they are skipped by default. This option will ignore these mode switches and allow placements to continue as usual."><input
+                                                                type="checkbox" class="modeChangeCheckbox" id="modeChangeSwitch"> Allow mode
+                                                        change</label>
+                                        </td>
+                                        <td><label for="modeChangeLeaveSwitch"
+                                                        title="If the captain switches from Dungeons or PVP to a different mode (ex. Dungeons to Campaign, Clash to Duels, etc), LEAVE the slot and try to find another captain for the selected idle mode (checkboxes above). If 'Switch idle captain' is off, the slot will stay empty."><input
+                                                                type="checkbox" class="modeChangeCheckbox" id="modeChangeLeaveSwitch"> Leave on mode
+                                                        change</label>
                                         </td>
                                 </tr>
                                 <tr>
