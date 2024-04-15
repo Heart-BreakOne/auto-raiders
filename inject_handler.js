@@ -155,7 +155,7 @@ document.addEventListener("click", function (event) {
         //User clicked the wipe button.
         if (event.target.classList.contains("wipeButton")) {
             //Using the unique key identifiers all data is removed from storage
-            chrome.storage.local.remove(['dungeonCaptain', 'clashCaptain', 'duelCaptain', 'flaggedCaptains', 'captainLoyalty', 'idleData', 'dataArray', 'offlinePermission', 'oddIdofflineButton_1', 'oddIdofflineButton_2', 'oddIdofflineButton_3', 'oddIdofflineButton_4', 'maxUnitsPlaced'], function () {
+            chrome.storage.local.remove(['dungeonCaptain', 'clashCaptain', 'duelCaptain', 'campaignCaptain', 'flaggedCaptains', 'captainLoyalty', 'idleData', 'dataArray', 'offlinePermission', 'oddIdofflineButton_1', 'oddIdofflineButton_2', 'oddIdofflineButton_3', 'oddIdofflineButton_4', 'maxUnitsPlaced'], function () {
                 //Resets dataArray to prevent data from being added from the array back to the storage.
                 dataArray = [];
                 loadBanner("Settings updated successfully", "#5fa695");
