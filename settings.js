@@ -1,6 +1,7 @@
 
 let unitsArrayList = undefined;
 let arrayOfFetchedUnits = [];
+let idleCheckboxes = ['idleSwitch0_Campaign','idleSwitch1_Campaign','idleSwitch2_Campaign','idleSwitch3_Campaign','idleSwitch4_Campaign','idleSwitch1_Dungeon','idleSwitch2_Dungeon','idleSwitch3_Dungeon','idleSwitch4_Dungeon','idleSwitch0_Clash','idleSwitch1_Clash','idleSwitch2_Clash','idleSwitch3_Clash','idleSwitch4_Clash','idleSwitch1_Duel','idleSwitch2_Duel','idleSwitch3_Duel','idleSwitch4_Duel'];
 //This script handles the user interaction with the toggle switches and radio buttons on the popup of the extension.
 
 //Event listener to initialize the switches as well as update their states
@@ -31,6 +32,7 @@ document.addEventListener("DOMContentLoaded", function () {
     initializeSwitch("soulSwitch7");
     initializeSwitch("joinDuelSwitch");
     initializeSwitch("modeChangeSwitch");
+    initializeSwitch("modeChangeLeaveSwitch");
     initializeSwitch("campaignSwitch");
     initializeSwitch("battlepassSwitch");
     initializeSwitch("shuffleSwitch0");
@@ -144,17 +146,31 @@ function initializeSwitch(switchId) {
 
     //Listen to changes on the switch states and set the new value.
     switchElement.addEventListener("change", function () {
-        const switchState = this.checked;
-        chrome.storage.local.set({ [switchId]: switchState }, function () {
+        if (!idleCheckboxes.includes(switchId)) {
+            const switchState = this.checked;
+            chrome.storage.local.set({ [switchId]: switchState }, function () {
+                if (chrome.runtime.lastError) {
+                    loadBanner(failureMessage, redColor)
+                } else {
+                    loadBanner(successMessage, greenColor)
+                    if (switchId == "darkSwitch") {
+                        location.reload();
+                    }
+                }
+            });
+        }
+        if (idleCheckboxes.includes(switchId)) {
+            for (idleSwitchId in idleCheckboxes) {
+                const idleSwitchElement = document.getElementById(idleCheckboxes[idleSwitchId]);
+                const switchState = idleSwitchElement.checked;
+                chrome.storage.local.set({ [idleCheckboxes[idleSwitchId]]: switchState });
+            }
             if (chrome.runtime.lastError) {
                 loadBanner(failureMessage, redColor)
             } else {
                 loadBanner(successMessage, greenColor)
-                if (switchId == "darkSwitch") {
-                    location.reload();
-                }
             }
-        });
+        }
     });
 }
 
@@ -474,6 +490,25 @@ document.addEventListener("DOMContentLoaded", async function () {
         }
       })
     );
+    
+    // Get every check box by using querySelectorAll
+    document.querySelectorAll(".modeChangeCheckbox").forEach(
+    // For each check box add on click event listener
+      input => input.addEventListener('click', function(event) {
+      // get number of check boxes by passing :check attribute to the query selector
+        let checkedBoxes = document.querySelectorAll(".modeChangeCheckbox:checked");
+        
+        // check if the number of checked boxes are more than allowed limit
+        if(checkedBoxes.length > 1){
+          for (let checkedBox in checkedBoxes) {
+            if (checkedBoxes[checkedBox] != event.currentTarget) {
+              checkedBoxes[checkedBox].checked = false;
+              chrome.storage.local.set({ [checkedBoxes[checkedBox].id]: false });
+            }
+          }
+        }
+      })
+    );
 });
 
 function setInputButtonListener(buttonId, inputId) {
@@ -659,6 +694,7 @@ function exportSettingsToFile() {
         "soulSwitch7",
         "joinDuelSwitch",
         "modeChangeSwitch",
+        "modeChangeLeaveSwitch",
         "dungeonSwitch",
         "dungeonLevelSwitch",
         "dungeonBossPotionSwitch",

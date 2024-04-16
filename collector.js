@@ -363,6 +363,9 @@ async function buyChests() {
                 const gameDataVersion = dataKeys.dataVersion;
                 let url = `https://www.streamraiders.com/api/game/?cn=purchaseChestItem&itemId=${uid}&clientVersion=${clientVersion}&clientPlatform=WebLite&gameDataVersion=${gameDataVersion}&command=purchaseChestItem&isCaptain=0`;
                 let response = await makeRequest(url, 0);
+                if (response == undefined) {
+                    return;
+                }
                 let purchaseResponse = await response.json();
 
                 if (purchaseResponse.status == "success") {

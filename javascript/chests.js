@@ -115,12 +115,13 @@ async function fetchAndSaveChestData() {
         let freshDungeonArray = filterChests("Dungeon");
         let freshBoneArray = filterChests("Bones");
 
-        let skins = gameData.sheets.Chests
+        let chests = gameData.sheets.Chests
         let rewards = gameData.sheets.ChestRewardSlots
 
-        freshDungeonArray = appendSkins(freshDungeonArray, skins, rewards)
-        freshBoneArray = appendSkins(freshBoneArray, skins, rewards)
-
+        freshDungeonArray = appendDisplayName(freshDungeonArray, chests)
+        freshDungeonArray = appendSkins(freshDungeonArray, chests, rewards)
+        freshBoneArray = appendDisplayName(freshBoneArray, chests)
+        freshBoneArray = appendSkins(freshBoneArray, chests, rewards)
 
         await chrome.storage.local.set({ 'dungeonChestsData': freshDungeonArray });
         await chrome.storage.local.set({ 'boneChestsData': freshBoneArray });
@@ -169,7 +170,7 @@ async function loadChestData() {
 
     let thead = document.createElement("thead");
     let headerRow = document.createElement("tr");
-    let headers = ["Section", "Icon", "Uid", "Item", "BasePrice", "Starts", "Ends", "Bought so far", "Can Buy", "Skin Focus Order"];
+    let headers = ["Section", "Icon", "Uid", "DisplayName", "Item", "BasePrice", "Starts", "Ends", "Bought so far", "Can Buy", "Skin Focus Order"];
     headers.forEach(headerText => {
         let headerCell = document.createElement("th");
         headerCell.textContent = headerText;
@@ -183,6 +184,7 @@ async function loadChestData() {
         let item = mdc[i];
         let section = item["Section"];
         let itemUid = item["Uid"];
+        let itemDisplayName = item["DisplayName"];
         let itemType = item["Item"];
         let [itemUrl, size] = await getItemUrl(itemUid, itemType);
         let cost = item["BasePrice"];
@@ -227,7 +229,7 @@ async function loadChestData() {
 
         let row = document.createElement("tr");
 
-        let rowData = [section, itemUid, itemUid, itemType, cost, localLiveStartTime, localLiveEndTime, amountBought];
+        let rowData = [section, itemUid, itemUid, itemDisplayName, itemType, cost, localLiveStartTime, localLiveEndTime, amountBought];
         rowData.forEach((data, index) => {
             let cell = document.createElement("td");
             if (index === 1) {
@@ -376,9 +378,9 @@ async function loadSelects(k1, k2) {
     }
 }
 
-function appendSkins(chestArray, skins, rewards) {
+function appendSkins(chestArray, chestsData, rewards) {
     for (let chest of chestArray) {
-        let matchingSkin = skins[chest["Uid"]];
+        let matchingSkin = chestsData[chest["Uid"]];
         if (matchingSkin) {
             let slots = matchingSkin.ViewerSlots.split(",");
             for (let slotUid of slots) {
@@ -398,6 +400,15 @@ function appendSkins(chestArray, skins, rewards) {
     return chestArray;
 }
 
+function appendDisplayName(chestArray, chests) {
+    for (let chest of chestArray) {
+        let matchingChest = chests[chest["Uid"]];
+        if (matchingChest) {
+            chest["DisplayName"] = matchingChest.DisplayName;
+        }
+    }
+    return chestArray;
+}
 
 async function updateCheckBox(checkboxId, checkBoxState) {
     let data = await chrome.storage.local.get('userChests');

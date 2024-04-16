@@ -227,7 +227,7 @@ async function switchIdleCaptain(index) {
       );
       if (mode == "duel") {
         await attemptToJoinDuel(index, "");
-      } else if (mode == "dungeons") {
+      } else if (mode == "clash" || mode == "dungeons") {
         await joinCaptCheckCodeRetry(mode, acceptableList, index, "")
       } else {
         let whiteList = await filterCaptainList('whitelist', acceptableList);

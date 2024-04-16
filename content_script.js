@@ -473,7 +473,7 @@ async function start() {
         } catch (error) {
           captainFlag = false
         }
-        let captKeysArray = ['dungeonCaptain', 'clashCaptain', 'duelCaptain', 'clashSwitch', 'dungeonSwitch', 'duelSwitch', 'campaignSwitch', 'modeChangeSwitch', 'multiClashSwitch'];
+        let captKeysArray = ['dungeonCaptain', 'clashCaptain', 'duelCaptain', 'campaignCaptain', 'clashSwitch', 'dungeonSwitch', 'duelSwitch', 'campaignSwitch', 'modeChangeSwitch', 'modeChangeLeaveSwitch', 'multiClashSwitch'];
         let captKeys = await retrieveMultipleFromStorage(captKeysArray);
         let dungeonCaptainNameFromStorage = captKeys.dungeonCaptain;
         if (dungeonCaptainNameFromStorage) {
@@ -490,11 +490,18 @@ async function start() {
         if (duelsCaptainNameFromStorage) {
           duelsCaptainNameFromStorage = duelsCaptainNameFromStorage.toLowerCase();
         }
+        let campaignCaptainNameFromStorage = captKeys.campaignCaptain;
+        if (campaignCaptainNameFromStorage) {
+          campaignCaptainNameFromStorage = campaignCaptainNameFromStorage.toLowerCase();
+        } else {
+          campaignCaptainNameFromStorage = "";
+        }
         let clashSwitch = captKeys.clashSwitch;
         let duelSwitch = captKeys.duelSwitch;
         let dungeonSwitch = captKeys.dungeonSwitch;
         let campaignSwitch = captKeys.campaignSwitch;
         let modeChangeSwitch = captKeys.modeChangeSwitch;
+        let modeChangeLeaveSwitch = captKeys.modeChangeLeaveSwitch;
         let multiClashSwitch
         if (battleType == "Clash") {
           multiClashSwitch = captKeys.multiClashSwitch;
@@ -512,8 +519,16 @@ async function start() {
         else if (captainNameFromDOM && !modeChangeSwitch &&
           ((dungeonCaptainNameFromStorage == "," + captainNameFromDOM.toLowerCase() + "," && battleType != "Dungeons") ||
             (clashCaptainNameFromStorage.includes("," + captainNameFromDOM.toLowerCase() + ",") && battleType != "Clash") ||
+            (campaignCaptainNameFromStorage.includes("," + captainNameFromDOM.toLowerCase() + ",") && battleType != "Campaign") ||
             (duelsCaptainNameFromStorage == "," + captainNameFromDOM.toLowerCase() + "," && battleType != "Duel"))) {
-          captainSlot.style.backgroundColor = red;
+        /* If modeChangeLeaveSwitch is enabled, leave the captain and allow the idle switcher to find a replacement */
+          if (!modeChangeLeaveSwitch) {
+            captainSlot.style.backgroundColor = red;
+          } else if (modeChangeLeaveSwitch) {
+            let captLoyalty = await getCaptainLoyalty(captainNameFromDOM);
+            let captainId = captLoyalty[2];
+            await removeOldCaptain(captainId);
+          }
           continue
         }
         /* Checks if the slot is a special game mode and if a unit has already been placed it check if the user wants to place
@@ -721,6 +736,10 @@ async function openBattlefield(captainNameFromDOM, raidId, slotOption, diamondLo
   if (mode == false) { //!acceptableLoyalty && ) {
     //Opens battle info and checks chest type.
     battleInfo = document.querySelector(".battleInfoMapTitle")
+    if (battleInfo == null) {
+      goHome();
+      return;
+    }
     battleInfo.click();
 
     //Check how many units user wants
@@ -1121,6 +1140,9 @@ async function getValidUnits(captainNameFromDOM, raidId, slotOption, diamondLoya
   outer_loop: for (const unit of unitDrawer[0].children) {
     const unitId = unit.id;
     for (const marker of arrayOfMarkers) {
+      if (placementOver == true) {
+        break;
+      }
       if (marker.offsetLeft == 0 && marker.offsetTop == 0) {
         continue;
       }
@@ -1334,7 +1356,7 @@ const obsv = new MutationObserver(async function (mutations) {
     const firstCapSlot = captainSlots[0];
     const capSlotChildren = firstCapSlot.querySelectorAll('.capSlot');
 
-    let captKeysArray = ['dungeonCaptain', 'clashCaptain', 'duelCaptain', 'clashSwitch', 'dungeonSwitch', 'duelSwitch', 'campaignSwitch', 'modeChangeSwitch', 'multiClashSwitch'];
+    let captKeysArray = ['dungeonCaptain', 'clashCaptain', 'duelCaptain', 'campaignCaptain', 'clashSwitch', 'dungeonSwitch', 'duelSwitch', 'campaignSwitch', 'modeChangeSwitch', 'multiClashSwitch'];
     let captKeys = await retrieveMultipleFromStorage(captKeysArray);
     let dungeonCaptainNameFromStorage = captKeys.dungeonCaptain
     if (dungeonCaptainNameFromStorage) {
@@ -1351,7 +1373,13 @@ const obsv = new MutationObserver(async function (mutations) {
     if (duelsCaptainNameFromStorage) {
       duelsCaptainNameFromStorage = duelsCaptainNameFromStorage.toLowerCase();
     }
-
+    let campaignCaptainNameFromStorage = captKeys.campaignCaptain;
+    if (campaignCaptainNameFromStorage) {
+      campaignCaptainNameFromStorage = campaignCaptainNameFromStorage.toLowerCase();
+    } else {
+      campaignCaptainNameFromStorage = "";
+    }
+    let modeChangeSwitch = captKeys.modeChangeSwitch;
     let capNameDOM;
     let multiClashSwitch;
 
@@ -1393,7 +1421,8 @@ const obsv = new MutationObserver(async function (mutations) {
         capSlot.style.backgroundColor = purple
       }
       else if (!modeChangeSwitch &&
-        (((dungeonCaptainNameFromStorage != "," + capNameDOM.toLowerCase() + ",") && battleType == "Dungeons") ||
+        (((campaignCaptainNameFromStorage.includes("," + capNameDOM.toLowerCase() + ",")) && battleType != "Campaign") ||
+        ((dungeonCaptainNameFromStorage != "," + capNameDOM.toLowerCase() + ",") && battleType == "Dungeons") ||
         (!multiClashSwitch && (!clashCaptainNameFromStorage.includes("," + capNameDOM.toLowerCase() + ",")) && battleType == "Clash") ||
         ((duelsCaptainNameFromStorage != "," + capNameDOM.toLowerCase() + ",") && battleType == "Duel") ||
         ((dungeonCaptainNameFromStorage == "," + capNameDOM.toLowerCase() + ",") && battleType != "Dungeons") ||
@@ -1415,6 +1444,7 @@ obsv.observe(tgtNode, conf);
 //This function resets the running state and closes the battlefield back to home.
 function goHome() {
   isContentRunning = false;
+  placementOver = false;
   const backHome = document.querySelector(".selectorBack");
   if (backHome) {
     backHome.click();
