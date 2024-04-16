@@ -390,6 +390,7 @@ chrome.runtime.onInstalled.addListener(function (details) {
     chrome.storage.local.set({
       "commonSwitch": true,
       "campaignSwitch": true,
+      "offlineSwitch": true,
       "loyalty": "0",
       "selectedOption": "0",
       "minCurrency": "0",
