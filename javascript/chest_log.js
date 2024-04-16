@@ -76,9 +76,6 @@ async function loadUserChestsLog() {
             if (reward.includes("scroll")) {
                 let regex = /\|scroll.+/;
                 let match = regex.exec(reward);
-                if (!match) {
-                    return
-                }
                 rewardSort = "0" + match[0].replace("|scroll","") + " scrolls";
             } else {
                 rewardSort = reward;
