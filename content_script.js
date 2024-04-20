@@ -313,23 +313,14 @@ async function start() {
 
   //Initialized a node list with placeable buttons
   const rewardButtonLabels = ["SEE RESULTS", "OPEN CHEST", "COLLECT KEYS", "COLLECT BONES"];
-  const placeUnitButtons = document.querySelectorAll(".actionButton.actionButtonPrimary.capSlotButton.capSlotButtonAction");
-  let placeUnit = null;
-  //If there are no place unit buttons, invoke the collection function then return.
-  if (placeUnitButtons.length == 0 || (placeUnitButtons.length == 1 && placeUnitButtons[0].innerText === "SELECT")) {
-    await performCollectionInterval();
-    isContentRunning = false;
-    return;
-  }
-  //If placement buttons exist, validate them
-  else if (placeUnitButtons.length != 0) {
-    //Iterate through every button
-    placeButtonLoop: for (var button of placeUnitButtons) {
+  const allButtons = document.querySelectorAll(".actionButton.capSlotButton.capSlotButtonAction");
+  if (allButtons.length != 0) {
+    for (var button of allButtons) {
       //If the button has inner text and includes one of the reward button labels, it's a valid button to collect rewards
       if (rewardButtonLabels.includes(button.innerText)) {
         button.click();
         await delay(4000);
-        const capSlot = button.parentElement.parentElement
+        const capSlot = button.parentElement.parentElement;
         const stBtn = capSlot.querySelector(".offlineButton").id
         const slotState = await getIdleState(stBtn);
         if (slotState == 2) {
@@ -349,6 +340,20 @@ async function start() {
         await confirmLeaveBattlePopup();
         continue;
       }
+    }
+  }
+  const placeUnitButtons = document.querySelectorAll(".actionButton.actionButtonPrimary.capSlotButton.capSlotButtonAction");
+  let placeUnit = null;
+  //If there are no place unit buttons, invoke the collection function then return.
+  if (placeUnitButtons.length == 0 || (placeUnitButtons.length == 1 && placeUnitButtons[0].innerText === "SELECT")) {
+    await performCollectionInterval();
+    isContentRunning = false;
+    return;
+  }
+  //If placement buttons exist, validate them
+  else if (placeUnitButtons.length != 0) {
+    //Iterate through every button
+    placeButtonLoop: for (var button of placeUnitButtons) {
       //If the button has the inner text SELECT then continue to next button
       if (button.innerText.includes("SELECT")) {
         continue;
