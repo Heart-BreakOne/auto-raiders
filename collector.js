@@ -50,6 +50,7 @@ async function buyScrolls() {
                         });
                         await returnToMainScreen();
                     }
+                    i = storeItems.length;
                 }
             }
         }
