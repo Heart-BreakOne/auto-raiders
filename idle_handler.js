@@ -9,56 +9,84 @@ const silverLoyaltyString = "Silver"; //"https://d2k2g0zg1te1mr.cloudfront.net/e
 const bronzeLoyaltyString = "Bronze"; //"https://d2k2g0zg1te1mr.cloudfront.net/env/prod1/mobile-lite/static/media/iconLoyaltyWood.ad7f4cb5.png";
 let captainButton;
 let isContentRunningIdle;
+let hasBattlePass;
 
 //This function checks if a captain is idling or if the slot is empty and gets a replacement
-async function checkIdleCaptains() {
-    //Checks if the game is on the main menu, returns if not.
-    const battleView = document.querySelector(".battleView");
-    if (!battleView) return;
-
+async function checkIdleCaptains(activeRaids) {
     //Updates the list of captains that are NOT idling.
-    await updateRunningCaptains();
+    await updateRunningCaptains(activeRaids);
+    if (hasBattlePass == null) {
+        let eventUid = await retrieveFromStorage("getEventProgressionLite");
+        eventUid = eventUid.data.eventUid;
+        if (eventUid == undefined) return;
+    }
+    let maxSlots = 3;
+    if (hasBattlePass == 1) maxSlots = 4;
 
     //Initialized a node list with all the captain slots
-    const capSlots = document.querySelectorAll('.capSlot');
+    const capSlots = activeRaids.data;
+
+    //Initialize currentSlots to store slot data
+    let currentSlots = [];
+    for (let i = 0; i < maxSlots; i++) {
+      currentSlots.push({
+          "userSortIndex": i, 
+          "raidId": null, 
+          "captId": null, 
+          "captName": null, 
+          "battleStatus": null, 
+          "idleState": null
+        });
+    }
 
     //Iterates through the list of slots
     for (let index = 0; index < capSlots.length; index++) {
         //Gets the current slot
         const slot = capSlots[index];
-        //Battle status is used to determine the idle status.
-        const battleStatus = slot.querySelector(".capSlotStatus").innerText;
-        //Select button signals that the slot is empty.
-        const selectButton = slot.querySelector(".actionButton.actionButtonPrimary.capSlotButton.capSlotButtonAction");
 
-
-        //Gets button id form the current slot
-        try {
-            const btn = slot.querySelector(".capSlotStatus .offlineButton");
-            const buttonId = btn.getAttribute('id');
-            //Checks if the user wants to switch idle captains by passing the button id
-            const currentIdleState = await getIdleState(buttonId);
-            if (!currentIdleState) {
-                continue;
-            }
-        } catch (error) {
-            return;
+        //Battle status is used to determine the idle status based on the placementEndTime. When placementEndTime is null, placement is active
+        let battleStatus;
+        //If hasViewedResults and postBattleComplete are both "1", that means "Waiting for Captain to find battle!"
+        if (slot.hasViewedResults !== "1" && slot.postBattleComplete !== "1") {
+            battleStatus = true
+        } else {
+            battleStatus = false;
         }
-
-        //If the select button exists with the innerText exists it means that the slot is empty
-        if (selectButton && selectButton.innerText == "SELECT") {
+        for (let i = 0; i < currentSlots.length; i++) {
+            if (currentSlots[i].userSortIndex == slot.userSortIndex) {
+                currentSlots[i].raidId = slot.raidId;
+                currentSlots[i].captId = slot.captainId;
+                currentSlots[i].captName = slot.twitchDisplayName;
+                currentSlots[i].battleStatus = battleStatus;
+                //Checks if the user wants to switch idle captains by passing the button id
+                const slotNo = +slot.userSortIndex + 1;
+                let currentIdleState;
+                currentSlots[i].idleState = await getIdleState("offlineButton_" + slotNo);
+                i = 5;
+            }
+        }
+    }
+    
+    for (let i = 0; i < currentSlots.length; i++) {
+        let captainName = currentSlots[i].captName;
+        //If there's a captain in a slot and the idleState indicates that the user wants to disable the slot, skip it
+        if (!currentSlots[i].idleState && captainName) {
+            continue;
+        }
+        let raidId = currentSlots[i].raidId;
+        let captId = currentSlots[i].captId;
+        //If the captain name doesn't exist, it means that the slot is empty
+        if (captainName == null) {
             //Invokes function to get a captain replacement.
             if (isContentRunningIdle == true) {
               return;
             }
             isContentRunningIdle = true;
-            await switchIdleCaptain(index)
+            await switchIdleCaptain(i);
             isContentRunningIdle = false;
             return;
-        } else if (statusArray.includes(battleStatus)) {
+        } else if (currentSlots[i].battleStatus == false) {
             //If the captain is possibly on an idle state
-            //Gets captain name
-            const captainName = slot.querySelector(".capSlotName").innerText;
             //Invokes function to set the battle status with the captainName as a parameter.
             await setBattleStatus(captainName)
             //Gets whether or not the captain is idling for more than 15 minutes using the captainName as a parameter
@@ -69,36 +97,32 @@ async function checkIdleCaptains() {
                   return;
                 }
                 isContentRunningIdle = true;
-                await abandonBattle("Abandoned", slot, "abandoned", captainName);
+                await abandonBattle("Abandoned", "abandoned", captainName, raidId, captId);
                 //Invokes function to get a captain replacement.
-                await switchIdleCaptain(index);
+                await switchIdleCaptain(i);
                 isContentRunningIdle = false;
                 return;
             }
         }
     }
-
 }
 
 /*This function ensures that a captain that was previously on a possible idle state (less than 15 minutes of idling)
 but is now running a battle is removed from the idle list. */
-
-async function updateRunningCaptains() {
+async function updateRunningCaptains(activeRaids) {
     //Get all captain slots
-    const capSlots = document.querySelectorAll('.capSlot');
+    const capSlots = activeRaids.data;
     for (let index = 0; index < capSlots.length; index++) {
-        //Iterate through every slot to get the captain name and its current battle status
+        //Iterate through every slot to get the captain name
         const slot = capSlots[index];
-        const status = slot.querySelector(".capSlotStatus");
-        const capName = slot.querySelector(".capSlotName");
-        //If the captain is on placement mode it can be removed from the idle list.
-        if (status.innerText.includes("Unit ready") && capName) {
-            const name = capName.innerText;
+        const capName = slot.twitchDisplayName;
+        //If hasViewedResults and postBattleComplete are both "1", that means "Waiting for Captain to find battle!" As long as both are not "0", the captain can be removed from the idle list.
+        if (slot.hasViewedResults !== "1" && slot.postBattleComplete !== "1" && capName) {
             //Retrieves the idle data from storage.
             chrome.storage.local.get(['idleData'], function (result) {
                 let idleData = result.idleData || [];
                 // Looks for a captain with the same name, removed it and saves back to storage.
-                const existingCaptainIndex = idleData.findIndex(item => item.captainName === name);
+                const existingCaptainIndex = idleData.findIndex(item => item.captainName === capName);
                 if (existingCaptainIndex !== -1) {
                     idleData.splice(existingCaptainIndex, 1);
                     chrome.storage.local.set({ idleData: idleData });
@@ -258,7 +282,7 @@ async function switchIdleCaptain(index) {
         //Gets list of favorited captains that are running campaign
         let favoriteList = []
         try {
-          let favoriteCaptainIds = await getFavoriteCaptainIds();
+          let favoriteCaptainIds = await retrieveFromStorage("favoriteCaptainIds");
           let favoriteCaptainIdsArray = favoriteCaptainIds.split(",");
           favoriteList = acceptableList.filter(
               entry => (favoriteCaptainIdsArray.includes(entry[0]) && !blackList.includes(entry) && entry[3] !== true)
@@ -398,10 +422,7 @@ async function filterCaptainList(type, acceptableList) {
 }
 
 //Abandon the battle and select a new captain
-async function abandonBattle(status, slot, status1, captainName) {
-    let captainLoyalty = await getCaptainLoyalty(captainName);
-    let raidId = captainLoyalty[0];
-    let captId = captainLoyalty[2];
+async function abandonBattle(status, status1, captainName, raidId, captId) {
     //Store battle result as abandoned on storage log
     await setLogResults(status, captainName, status1, "N/A", "N/A", "N/A", "N/A", "N/A", raidId, "N/A", "N/A");
     //Closes captain slot

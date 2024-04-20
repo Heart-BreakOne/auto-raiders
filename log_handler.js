@@ -2,71 +2,95 @@ const logDelay = ms => new Promise(res => setTimeout(res, ms));
 let logRunning = false;
 
 //Observer for changes on the dom
-async function addNewLogEntry() {
+async function addNewLogEntry(activeRaids) {
 
-    if (await retrieveFromStorage("paused_checkbox")) {
-        return
-    }
+    if (await retrieveFromStorage("paused_checkbox")) return
 
-    const logSlots = document.querySelectorAll(".capSlots");
+    const logSlots = activeRaids;
     if (logSlots.length === 0) return;
 
-    const logSlotsChildren = logSlots[0].querySelectorAll('.capSlot');
-
-    for (let i = 0; i < logSlotsChildren.length; i++) {
-        const logSlot = logSlotsChildren[i];
-        const logId = i + 1;
+    for (let i = 0; i < logSlots.length; i++) {
+        const logSlot = logSlots[i];
+        const logId = +logSlot.userSortIndex + 1;
         let logCapName, logMode, currentTime, colorCode;
 
         try {
-            logCapName = logSlot.querySelector('.capSlotName').innerText;
-            logMode = logSlot.querySelector('.versusLabelContainer')?.innerText || "Campaign";
-            currentTime = logSlot.querySelector(".capSlotTimer") ? new Date().toString() : undefined;
-            colorCode = window.getComputedStyle(logSlot).backgroundColor;
+            logCapName = logSlot.twitchDisplayName;
+            logMode = logSlot.type == 1 ? "Campaign" : logSlot.type == 2 ? "Clash" : logSlot.type == 3 ? "Dungeons" : logSlot.type == 5 ? "Duel" : "";
+            currentTime = new Date().toString();
+            
+            //Get flag states
+            let purpleFlag = await getCaptainFlag(logCapName, 'flaggedCaptains');
+            if (!purpleFlag) purpleFlag = await retrieveMaxUnit(logCapName);
+
+            const blueFlag = await getCaptainFlag(logCapName, 'captainLoyalty');
+
+            /*If the current captain is running a special mode and is not the one with the current flag OR
+            if the currently flagged captain is not running their assigned special mode they get colored red
+            for visual identification */
+            if (blueFlag) {
+                colorCode = "rgb(185, 242, 255)"; //blue
+            }
+            else if (purpleFlag) {
+                colorCode = "rgb(203, 195, 227)"; //purple
+            }
+            else {
+                let captKeysArray = ['dungeonCaptain', 'clashCaptain', 'duelCaptain', 'campaignCaptain', 'modeChangeSwitch', 'multiClashSwitch'];
+                let captKeys = await retrieveMultipleFromStorage(captKeysArray);
+                let dungeonCaptainNameFromStorage = captKeys.dungeonCaptain
+                if (dungeonCaptainNameFromStorage) dungeonCaptainNameFromStorage = dungeonCaptainNameFromStorage.toLowerCase();
+                let clashCaptainNameFromStorage = captKeys.clashCaptain;
+                if (clashCaptainNameFromStorage) clashCaptainNameFromStorage = clashCaptainNameFromStorage.toLowerCase();
+                if (clashCaptainNameFromStorage == null) clashCaptainNameFromStorage = "";
+                let duelsCaptainNameFromStorage = captKeys.duelCaptain;
+                if (duelsCaptainNameFromStorage) duelsCaptainNameFromStorage = duelsCaptainNameFromStorage.toLowerCase();
+                let campaignCaptainNameFromStorage = captKeys.campaignCaptain;
+                if (campaignCaptainNameFromStorage) {
+                  campaignCaptainNameFromStorage = campaignCaptainNameFromStorage.toLowerCase();
+                } else {
+                  campaignCaptainNameFromStorage = "";
+                }
+                let modeChangeSwitch = captKeys.modeChangeSwitch;
+                let multiClashSwitch;
+
+                if (!modeChangeSwitch &&
+                    (((campaignCaptainNameFromStorage.includes("," + logCapName.toLowerCase() + ",")) && logMode != "Campaign") ||
+                    ((dungeonCaptainNameFromStorage != "," + logCapName.toLowerCase() + ",") && logMode == "Dungeons") ||
+                    (!multiClashSwitch && (!clashCaptainNameFromStorage.includes("," + logCapName.toLowerCase() + ",")) && logMode == "Clash") ||
+                    ((duelsCaptainNameFromStorage != "," + logCapName.toLowerCase() + ",") && logMode == "Duel") ||
+                    ((dungeonCaptainNameFromStorage == "," + logCapName.toLowerCase() + ",") && logMode != "Dungeons") ||
+                    ((clashCaptainNameFromStorage.includes("," + logCapName.toLowerCase() + ",")) && logMode != "Clash") ||
+                    ((duelsCaptainNameFromStorage == "," + logCapName.toLowerCase() + ",") && logMode != "Duel"))) {
+                    colorCode = "rgb(255, 204, 203)"; //red
+                }
+            }
         } catch (error) {
             continue;
         }
 
         if (logCapName) {
-            const requestLoyaltyResults = await getCaptainLoyalty(logCapName);
-            if (requestLoyaltyResults == undefined) {
-              return;
-            }
-            const raidId = requestLoyaltyResults[0];
-            const chestType = requestLoyaltyResults[1];
-            const captainId = requestLoyaltyResults[2];
+            const raidId = logSlot.raidId;
+            const captainId = logSlot.captainId;
             let pvpOpponent;
             if (logMode == "Clash" || logMode == "Duel") {
-              pvpOpponent = requestLoyaltyResults[4];
+              pvpOpponent = logSlot.opponentTwitchDisplayName;
             } else {
               pvpOpponent = undefined;
             }
-            const mapName = requestLoyaltyResults[5];
-            let dungeonLevel;
-            if (logMode == "Dungeons") {
-              let dungeonInfo = await getUserDungeonInfoForRaid(logCapName);
-              try {
-                dungeonLevel = parseInt(dungeonInfo[8]) + 1;
-              } catch (error) {}
-            } else {
-              dungeonLevel = undefined;
-            }
-            await setLogCaptain(logId, logCapName, logMode, currentTime, colorCode, raidId, mapName, chestType, captainId, dungeonLevel, pvpOpponent);
+            const mapName = logSlot.nodeId;
+            const mapLoyalty = await getRaidChest(mapName);
+            await setLogCaptain(logId, logCapName, logMode, currentTime, colorCode, raidId, mapName, mapLoyalty, captainId, pvpOpponent);
         }
     }
 };
 
-document.addEventListener("DOMContentLoaded", () => {
-    addNewLogEntry();
-});
-
 //Saves initial battle information to the local storage
-async function setLogCaptain(logId, logCapName, logMode, currentTime, colorCode, raidId, mapName, chestType, captainId, dungeonLevel, pvpOpponent) {
+async function setLogCaptain(logId, logCapName, logMode, currentTime, colorCode, raidId, mapName, mapLoyalty, captainId, pvpOpponent) {
 
     // default rgb(42, 96, 132) 
     //Check if color needs to be updated on storage.
     let updateColor = false;
-    if (colorCode === "rgb(185, 242, 255)" || colorCode === "rgb(255, 204, 203" || colorCode === "rgb(203, 195, 227)") {
+    if (colorCode === "rgb(185, 242, 255)" || colorCode === "rgb(255, 204, 203)" || colorCode === "rgb(203, 195, 227)") {
         updateColor = true;
     }
     while (logRunning == true) {
@@ -75,10 +99,10 @@ async function setLogCaptain(logId, logCapName, logMode, currentTime, colorCode,
     logRunning = true;
     return new Promise((resolve, reject) => {
         // Retrieve existing data from local storage
-        chrome.storage.local.get(["logData"], function (result) {
+        chrome.storage.local.get(["logData"], async function (result) {
             let loggedData = result["logData"] || [];
             //Check if an entry for the current captain battle exists
-            const existingEntryIndex = loggedData.findIndex(entry => (entry.logCapName === logCapName && (entry.currentTime !== null && entry.currentTime !== undefined) && entry.elapsedTime === undefined && entry.chest === undefined && entry.raidId === raidId));
+            const existingEntryIndex = loggedData.findIndex(entry => (entry.logCapName === logCapName && entry.raidId === raidId));
 
             //Pushes battle data into the storage
             if (existingEntryIndex === -1 && currentTime !== null && currentTime !== undefined) {
@@ -91,7 +115,7 @@ async function setLogCaptain(logId, logCapName, logMode, currentTime, colorCode,
                     result: undefined,
                     colorCode: colorCode,
                     chest: undefined,
-                    initialchest: chestType,
+                    initialchest: mapLoyalty,
                     mapName: mapName,
                     initialchest2: undefined,
                     rewards: undefined,
@@ -104,7 +128,7 @@ async function setLogCaptain(logId, logCapName, logMode, currentTime, colorCode,
                     raidChest: undefined,
                     chestCount: undefined,
                     captainId: captainId,
-                    dungeonLevel: dungeonLevel,
+                    dungeonLevel: undefined,
                     pvpOpponent: pvpOpponent
                 });
             } else {
@@ -118,7 +142,7 @@ async function setLogCaptain(logId, logCapName, logMode, currentTime, colorCode,
             }
 
             //If there's more than 1000 entries, delete oldest.
-            if (loggedData.length > 1000) {
+            if (loggedData.length > 10000) {
                 loggedData.shift();
             }
 
@@ -178,6 +202,13 @@ async function setLogUnitsData(logCapName, raidId, unitsData) {
                 let entry = loggedData[i];
                 if (entry.logCapName === logCapName && entry.raidId === raidId) {
                     entry.units2 = unitsData;
+                    if (entry.logMode == "Dungeons") {
+                      let dungeonInfo = await retrieveFromStorage("dungeonRaidInfo");
+                      try {
+                        let dungeonLevel = parseInt(dungeonInfo[8]) + 1;
+                        entry.dungeonLevel = dungeonLevel;
+                      } catch (error) {}
+                    }
                     break;
                 }
             };

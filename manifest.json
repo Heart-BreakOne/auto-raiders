@@ -22,6 +22,7 @@
    "content_scripts": [
       {
          "js": [
+            "request_handler.js",
             "content_script.js",
             "collector.js",
             "game_mode_manager.js",
@@ -33,16 +34,23 @@
             "idle_handler.js",
             "rotation_handler.js",
             "log_handler.js",
-            "/javascript/log.js",
-            "settings.js",
             "marker_handler.js",
             "masterlist_handler.js",
             "units_handler.js",
             "battle_message_handler.js",
             "quest_handler.js",
-            "request_handler.js",
             "mouse_events.js",
             "level_handler.js"
+         ],
+         "run_at": "document_start",
+         "matches": [
+            "https://www.streamraiders.com/*"
+         ]
+      },
+            {
+         "js": [
+            "/javascript/log.js",
+            "settings.js"
          ],
          "matches": [
             "https://www.streamraiders.com/*"
@@ -52,7 +60,15 @@
    "web_accessible_resources": [
       {
          "resources": [
-            "settings.html"
+            "xmlhttprequest.js"
+         ],
+         "matches": [
+            "https://www.streamraiders.com/*"
+         ]
+      },
+      {
+         "resources": [
+            "settings.js"
          ],
          "matches": [
             "https://www.streamraiders.com/*"
