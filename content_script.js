@@ -9,20 +9,17 @@ functions to perform tasks such as replacing idle captains or buying scrolls.
     loopStart();
   }, getRandNum(10, 15) * 1000);
 }());
-//Triggers the perform collection function every 60-70 seconds
-(function loopPerformCollection() {
-  setTimeout(() => {
-    performCollectionInterval();
-    loopPerformCollection();
-  }, getRandNum(60, 70) * 1000);
-}());
-//Triggers the addNewLogEntry function every 10-15 seconds
-(function loopAddNewLogEntry() {
-  setTimeout(() => {
-    addNewLogEntry();
-    loopAddNewLogEntry();
-  }, getRandNum(10, 15) * 1000);
-}());
+
+var s = document.createElement('script');
+// must be listed in web_accessible_resources in manifest.json
+s.src = chrome.runtime.getURL('xmlhttprequest.js');
+s.type = "module"
+s.onload = function() {
+    this.remove();
+};
+(document.head || document.documentElement).appendChild(s);
+
+window.addEventListener('message', (message) => handleMessage(message));
 
 //Declares/initializes variables
 let currentMarkerKey = "";
@@ -53,6 +50,8 @@ let isEventCurrencyActive;
 let reloadRunning = false;
 let isEnemyPresentNameArray = ['Puppet Master']; //Enemy name as seen in DOM alt text (case sensitive)
 let ifPresentAvoidUnitArray = ['RANGED']; //Unit name or type to avoid if enemy is present on the map. Pairs with the enemy name at the same index in the array (isEnemyPresentNameArray[0] - ifPresentAvoidUnitArray[0])
+let collectRunning = false;
+let collectLastTime = new Date();
 
 //Battlefield markers.
 const arrayOfBattleFieldMarkers = [
@@ -140,7 +139,7 @@ const loyaltyArray = [{ key: 1, value: "Wood" },
 
 // This is the start, it selects a captain placement as well as collect any rewards to proceed
 async function start() {
-  if (await retrieveFromStorage("paused_checkbox")) {
+  if (await retrieveFromStorage("paused_checkbox") || collectRunning) {
     return
   }
   //Reload tracker
@@ -166,7 +165,7 @@ async function start() {
       }
     })
   }
-  if (chestsRunning == false && requestRunning == false && ((reload != undefined && elapsedMinutes >= reload && reload > 0) || ((reload != undefined || reload != 0) && elapsedMinutes >= 60))) {
+  if (activeRaidsArray.length == 0 || (requestRunning == false && ((reload != undefined && elapsedMinutes >= reload && reload > 0) || ((reload != undefined || reload != 0) && elapsedMinutes >= 60)))) {
     await locationReload();
     return;
   }
@@ -250,9 +249,6 @@ async function start() {
     let duelSwitchSuccessful;
     let masterlistSwitchSuccessful;
     if (joinDuelSwitch) {
-      while (chestsRunning == true) {
-        await delay(10);
-      }
       let slotAvailable = -1;
       let duelJoined = false;
       //Initialized a node list with all the captain slots
@@ -313,19 +309,15 @@ async function start() {
     }
   }
 
-  //Checks if the user wants to replace idle captains and invoke the function to check and replace them.
-  const offline = await retrieveFromStorage("offlineSwitch")
-  if (offline) {
-    await checkIdleCaptains()
-  }
-
   let captainNameFromDOM = "";
 
   //Initialized a node list with placeable buttons
+  const rewardButtonLabels = ["SEE RESULTS", "OPEN CHEST", "COLLECT KEYS", "COLLECT BONES"];
   const placeUnitButtons = document.querySelectorAll(".actionButton.actionButtonPrimary.capSlotButton.capSlotButtonAction");
   let placeUnit = null;
   //If there are no place unit buttons, invoke the collection function then return.
-  if (placeUnitButtons.length == 0 || (placeUnitButtons.length == 1 && placeUnitButtons[0].innerText === "SUBMIT")) {
+  if (placeUnitButtons.length == 0 || (placeUnitButtons.length == 1 && placeUnitButtons[0].innerText === "SELECT")) {
+    await performCollectionInterval();
     isContentRunning = false;
     return;
   }
@@ -333,6 +325,16 @@ async function start() {
   else if (placeUnitButtons.length != 0) {
     //Iterate through every button
     placeButtonLoop: for (var button of placeUnitButtons) {
+      //If the button has inner text and includes one of the reward button labels, it's a valid button to collect rewards
+      if (rewardButtonLabels.includes(button.innerText)) {
+        button.click();
+        await delay(3000);
+        continue;
+      }
+      //If the button has the inner text SELECT then continue to next button
+      if (button.innerText.includes("SELECT")) {
+        continue;
+      }
       //If the button has the inner text PLACE UNIT it's a valid button
       if (button.innerText.includes("PLACE UNIT")) {
         //Get captain name from the slot
@@ -362,6 +364,86 @@ async function start() {
         if (slotState == 0) {
           continue
         }
+        
+        diamondLoyalty = null;
+
+        let captainFlag;
+        //Pass captain name and check if the captain is flagged
+        try {
+          if (!captainNameFromDOM) {
+            captainNameFromDOM = ""
+          }
+          captainFlag = await getCaptainFlag(captainNameFromDOM, 'flaggedCaptains');
+          if (captainFlag) {
+            continue
+          }
+          //Make a second attempt to set loyalty flag
+        } catch (error) {
+          captainFlag = false
+        }
+        let captKeysArray = ['dungeonCaptain', 'clashCaptain', 'duelCaptain', 'campaignCaptain', 'clashSwitch', 'dungeonSwitch', 'duelSwitch', 'campaignSwitch', 'modeChangeSwitch', 'modeChangeLeaveSwitch', 'multiClashSwitch'];
+        let captKeys = await retrieveMultipleFromStorage(captKeysArray);
+        let dungeonCaptainNameFromStorage = captKeys.dungeonCaptain;
+        if (dungeonCaptainNameFromStorage) dungeonCaptainNameFromStorage = dungeonCaptainNameFromStorage.toLowerCase();
+        let clashCaptainNameFromStorage = captKeys.clashCaptain;
+        if (clashCaptainNameFromStorage) clashCaptainNameFromStorage = clashCaptainNameFromStorage.toLowerCase();
+        if (clashCaptainNameFromStorage == null) clashCaptainNameFromStorage = "";
+        let duelsCaptainNameFromStorage = captKeys.duelCaptain;
+        if (duelsCaptainNameFromStorage) duelsCaptainNameFromStorage = duelsCaptainNameFromStorage.toLowerCase();
+        let campaignCaptainNameFromStorage = captKeys.campaignCaptain;
+        if (campaignCaptainNameFromStorage) {
+          campaignCaptainNameFromStorage = campaignCaptainNameFromStorage.toLowerCase();
+        } else {
+          campaignCaptainNameFromStorage = "";
+        }
+        let clashSwitch = captKeys.clashSwitch;
+        let duelSwitch = captKeys.duelSwitch;
+        let dungeonSwitch = captKeys.dungeonSwitch;
+        let campaignSwitch = captKeys.campaignSwitch;
+        let modeChangeSwitch = captKeys.modeChangeSwitch;
+        let modeChangeLeaveSwitch = captKeys.modeChangeLeaveSwitch;
+        let multiClashSwitch
+        if (battleType == "Clash") {
+          multiClashSwitch = captKeys.multiClashSwitch;
+        }
+        /* Check if the captain is running a special game mode and if the same captain is the one in storage.
+        So if the dungeon captain on storage is Mike and there is another captain name John also running a dungeon
+        the captain John will be skipped, this is done so only one captain runs a special mode at any given time and keys don't get reset.  */
+        if (captainNameFromDOM && ((dungeonCaptainNameFromStorage != "," + captainNameFromDOM.toLowerCase() + ",") && battleType == "Dungeons") ||
+          (!multiClashSwitch && (clashCaptainNameFromStorage.includes("," + captainNameFromDOM.toLowerCase() + ",")) && battleType == "Clash") ||
+          ((duelsCaptainNameFromStorage != "," + captainNameFromDOM.toLowerCase() + ",") && battleType == "Duel")) {
+          continue
+        }
+        /* Checks if the captain saved on storage running a special mode is still running the same mode, if they change they might lock
+        the slot for 30 minutes so if a captain switches to campaign they are skipped and colored red */
+        else if (captainNameFromDOM && !modeChangeSwitch &&
+          ((dungeonCaptainNameFromStorage == "," + captainNameFromDOM.toLowerCase() + "," && battleType != "Dungeons") ||
+            (clashCaptainNameFromStorage.includes("," + captainNameFromDOM.toLowerCase() + ",") && battleType != "Clash") ||
+            (campaignCaptainNameFromStorage.includes("," + captainNameFromDOM.toLowerCase() + ",") && battleType != "Campaign") ||
+            (duelsCaptainNameFromStorage == "," + captainNameFromDOM.toLowerCase() + "," && battleType != "Duel"))) {
+        /* If modeChangeLeaveSwitch is enabled, leave the captain and allow the idle switcher to find a replacement */
+          if (!modeChangeLeaveSwitch) {
+            captainSlot.style.backgroundColor = red;
+          } else if (modeChangeLeaveSwitch) {
+            let captLoyalty = await getCaptainLoyalty(captainNameFromDOM);
+            let captainId = captLoyalty[2];
+            await removeOldCaptain(captainId);
+          }
+          continue
+        }
+        /* Checks if the slot is a special game mode and if a unit has already been placed it check if the user wants to place
+        multiple units on special modes */
+        else if (((battleType == "Dungeons" && !dungeonSwitch) || (battleType == "Clash" && !clashSwitch) ||
+          ((battleType == "Duel" && !duelSwitch)) || !campaignSwitch) &&
+          captainSlot.querySelector('.capSlotClose') == null) {
+          continue
+        }
+        //If all is clear, it checks if the captain is diamond loyalty for future comparison.
+        else {
+          diamondLoyalty = null;
+          diamondLoyalty = captainSlot.outerHTML;
+        }
+
         let userWaitTime = await getUserWaitTime(battleType);
         let batTime;
         try {
@@ -457,93 +539,6 @@ async function start() {
           }
         }
 
-        diamondLoyalty = null;
-
-        let captainFlag, captainLoyalty;
-        //Pass captain name and check if the captain is flagged
-        try {
-          if (!captainNameFromDOM) {
-            captainNameFromDOM = ""
-          }
-          captainFlag = await getCaptainFlag(captainNameFromDOM, 'flaggedCaptains');
-          if (captainFlag) {
-            continue
-          }
-          //Make a second attempt to set loyalty flag
-        } catch (error) {
-          captainFlag = false
-        }
-        let captKeysArray = ['dungeonCaptain', 'clashCaptain', 'duelCaptain', 'campaignCaptain', 'clashSwitch', 'dungeonSwitch', 'duelSwitch', 'campaignSwitch', 'modeChangeSwitch', 'modeChangeLeaveSwitch', 'multiClashSwitch'];
-        let captKeys = await retrieveMultipleFromStorage(captKeysArray);
-        let dungeonCaptainNameFromStorage = captKeys.dungeonCaptain;
-        if (dungeonCaptainNameFromStorage) {
-          dungeonCaptainNameFromStorage = dungeonCaptainNameFromStorage.toLowerCase();
-        }
-        let clashCaptainNameFromStorage = captKeys.clashCaptain;
-        if (clashCaptainNameFromStorage) {
-          clashCaptainNameFromStorage = clashCaptainNameFromStorage.toLowerCase();
-        }
-        if (clashCaptainNameFromStorage == null) {
-          clashCaptainNameFromStorage = "";
-        }
-        let duelsCaptainNameFromStorage = captKeys.duelCaptain;
-        if (duelsCaptainNameFromStorage) {
-          duelsCaptainNameFromStorage = duelsCaptainNameFromStorage.toLowerCase();
-        }
-        let campaignCaptainNameFromStorage = captKeys.campaignCaptain;
-        if (campaignCaptainNameFromStorage) {
-          campaignCaptainNameFromStorage = campaignCaptainNameFromStorage.toLowerCase();
-        } else {
-          campaignCaptainNameFromStorage = "";
-        }
-        let clashSwitch = captKeys.clashSwitch;
-        let duelSwitch = captKeys.duelSwitch;
-        let dungeonSwitch = captKeys.dungeonSwitch;
-        let campaignSwitch = captKeys.campaignSwitch;
-        let modeChangeSwitch = captKeys.modeChangeSwitch;
-        let modeChangeLeaveSwitch = captKeys.modeChangeLeaveSwitch;
-        let multiClashSwitch
-        if (battleType == "Clash") {
-          multiClashSwitch = captKeys.multiClashSwitch;
-        }
-        /* Check if the captain is running a special game mode and if the same captain is the one in storage.
-        So if the dungeon captain on storage is Mike and there is another captain name John also running a dungeon
-        the captain John will be skipped, this is done so only one captain runs a special mode at any given time and keys don't get reset.  */
-        if (captainNameFromDOM && ((dungeonCaptainNameFromStorage != "," + captainNameFromDOM.toLowerCase() + ",") && battleType == "Dungeons") ||
-          (!multiClashSwitch && (clashCaptainNameFromStorage.includes("," + captainNameFromDOM.toLowerCase() + ",")) && battleType == "Clash") ||
-          ((duelsCaptainNameFromStorage != "," + captainNameFromDOM.toLowerCase() + ",") && battleType == "Duel")) {
-          continue
-        }
-        /* Checks if the captain saved on storage running a special mode is still running the same mode, if they change they might lock
-        the slot for 30 minutes so if a captain switches to campaign they are skipped and colored red */
-        else if (captainNameFromDOM && !modeChangeSwitch &&
-          ((dungeonCaptainNameFromStorage == "," + captainNameFromDOM.toLowerCase() + "," && battleType != "Dungeons") ||
-            (clashCaptainNameFromStorage.includes("," + captainNameFromDOM.toLowerCase() + ",") && battleType != "Clash") ||
-            (campaignCaptainNameFromStorage.includes("," + captainNameFromDOM.toLowerCase() + ",") && battleType != "Campaign") ||
-            (duelsCaptainNameFromStorage == "," + captainNameFromDOM.toLowerCase() + "," && battleType != "Duel"))) {
-        /* If modeChangeLeaveSwitch is enabled, leave the captain and allow the idle switcher to find a replacement */
-          if (!modeChangeLeaveSwitch) {
-            captainSlot.style.backgroundColor = red;
-          } else if (modeChangeLeaveSwitch) {
-            let captLoyalty = await getCaptainLoyalty(captainNameFromDOM);
-            let captainId = captLoyalty[2];
-            await removeOldCaptain(captainId);
-          }
-          continue
-        }
-        /* Checks if the slot is a special game mode and if a unit has already been placed it check if the user wants to place
-        multiple units on special modes */
-        else if (((battleType == "Dungeons" && !dungeonSwitch) || (battleType == "Clash" && !clashSwitch) ||
-          ((battleType == "Duel" && !duelSwitch)) || !campaignSwitch) &&
-          captainSlot.querySelector('.capSlotClose') == null) {
-          continue
-        }
-        //If all is clear, it checks if the captain is diamond loyalty for future comparison.
-        //Assigns the placeUnit button and breaks.
-        else {
-          diamondLoyalty = null;
-          diamondLoyalty = captainSlot.outerHTML;
-        }
         //Pass captain name and check if the captain has a loyalty flag.
         const loyaltyRadio = await getRadioButton("loyalty");
         let loyaltyRadioInt = 0
@@ -671,9 +666,12 @@ async function start() {
 }
 
 async function performCollectionInterval() {
-  if (await retrieveFromStorage("paused_checkbox")) {
+  if (await retrieveFromStorage("paused_checkbox") || (new Date().getTime() - collectLastTime.getTime()) / 1000 < 10) {
     return
   }
+  if (collectRunning) return;
+  collectRunning = true;
+  await collectQuests();
   await buyScrolls();
   await collectBattlePass();
   await buyChests();
@@ -681,6 +679,8 @@ async function performCollectionInterval() {
     await collectEventChests();
     await collectFreeDaily();
   }
+  collectLastTime = new Date();
+  collectRunning = false;
 }
 
 // This function checks if the battlefield is present, the current chest type, then zooms into it.
@@ -853,9 +853,11 @@ async function getValidUnits(captainNameFromDOM, raidId, slotOption, diamondLoya
     return;
   }
 
-
-  //Check if user wants to auto equip skins and equip them
-  const equipSwitch = await retrieveFromStorage("equipSwitch");
+  let equipSwitch = false;
+  if (battleType == "Campaign") {
+    //Check if user wants to auto equip skins and equip them
+    equipSwitch = await retrieveFromStorage("equipSwitch");
+  }
   //Get the unit switcher container
   const unitSwitcher = document.querySelector('.settingsSwitchCont');
   if (equipSwitch !== undefined && unitSwitcher) {
@@ -1091,7 +1093,7 @@ async function getValidUnits(captainNameFromDOM, raidId, slotOption, diamondLoya
     moreSkinsSwitch = true;
   }
 
-  if (!soulSwitch && battleType != "Dungeons" && moreSkinsSwitch && equipSwitch && !canCompleteQuests) {
+  if (!soulSwitch && moreSkinsSwitch && equipSwitch && !canCompleteQuests) {
     if (!equipNoDiamondSwitch || (equipNoDiamondSwitch && !diamondLoyalty.toString().includes("LoyaltyDiamond"))) {
       try {
         await shiftUnits(captainNameFromDOM);
@@ -1157,7 +1159,6 @@ async function getValidUnits(captainNameFromDOM, raidId, slotOption, diamondLoya
         }
         hasPlaced = await attemptPlacement(unit, marker);
         if (hasPlaced == undefined || hasPlaced) {
-          getLeaderboardUnitsData();
           goHome()
           closeAll()
           return
@@ -1359,20 +1360,12 @@ const obsv = new MutationObserver(async function (mutations) {
     let captKeysArray = ['dungeonCaptain', 'clashCaptain', 'duelCaptain', 'campaignCaptain', 'clashSwitch', 'dungeonSwitch', 'duelSwitch', 'campaignSwitch', 'modeChangeSwitch', 'multiClashSwitch'];
     let captKeys = await retrieveMultipleFromStorage(captKeysArray);
     let dungeonCaptainNameFromStorage = captKeys.dungeonCaptain
-    if (dungeonCaptainNameFromStorage) {
-      dungeonCaptainNameFromStorage = dungeonCaptainNameFromStorage.toLowerCase();
-    }
+    if (dungeonCaptainNameFromStorage) dungeonCaptainNameFromStorage = dungeonCaptainNameFromStorage.toLowerCase();
     let clashCaptainNameFromStorage = captKeys.clashCaptain;
-    if (clashCaptainNameFromStorage) {
-      clashCaptainNameFromStorage = clashCaptainNameFromStorage.toLowerCase();
-    }
-    if (clashCaptainNameFromStorage == null) {
-      clashCaptainNameFromStorage = "";
-    }
+    if (clashCaptainNameFromStorage) clashCaptainNameFromStorage = clashCaptainNameFromStorage.toLowerCase();
+    if (clashCaptainNameFromStorage == null) clashCaptainNameFromStorage = "";
     let duelsCaptainNameFromStorage = captKeys.duelCaptain;
-    if (duelsCaptainNameFromStorage) {
-      duelsCaptainNameFromStorage = duelsCaptainNameFromStorage.toLowerCase();
-    }
+    if (duelsCaptainNameFromStorage) duelsCaptainNameFromStorage = duelsCaptainNameFromStorage.toLowerCase();
     let campaignCaptainNameFromStorage = captKeys.campaignCaptain;
     if (campaignCaptainNameFromStorage) {
       campaignCaptainNameFromStorage = campaignCaptainNameFromStorage.toLowerCase();
@@ -1405,9 +1398,7 @@ const obsv = new MutationObserver(async function (mutations) {
 
       //Get flag states
       let purpleFlag = await getCaptainFlag(capNameDOM, 'flaggedCaptains');
-      if (!purpleFlag) {
-        purpleFlag = await retrieveMaxUnit(capNameDOM);
-      }
+      if (!purpleFlag) purpleFlag = await retrieveMaxUnit(capNameDOM);
 
       const blueFlag = await getCaptainFlag(capNameDOM, 'captainLoyalty');
 
@@ -1437,7 +1428,7 @@ const obsv = new MutationObserver(async function (mutations) {
   });
 });
 
-const tgtNode = document.body;
+const tgtNode = document.documentElement;
 const conf = { childList: true, subtree: true };
 obsv.observe(tgtNode, conf);
 
@@ -1603,6 +1594,3 @@ async function scrollToMarker(marker) {
   }
 }
 
-function getRandNum(min, max) {
-  return Math.floor(Math.random() * (max - min + 1) + min);
-}

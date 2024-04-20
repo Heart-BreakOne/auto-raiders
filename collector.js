@@ -1,13 +1,5 @@
 //This file handles shopping and collection of scrolls, quests and rewards.
 
-//Triggers the collectQuests function every 10-15 seconds
-(function loopCollectQuests() {
-    setTimeout(() => {
-        collectQuests();
-        loopCollectQuests();
-    }, getRandNum(10, 15) * 1000);
-}());
-
 //Declare variables for initialization later
 const collectDelay = (ms) => new Promise((res) => setTimeout(res, ms));
 let navItems;
@@ -21,9 +13,11 @@ async function buyScrolls() {
     }
     //Checks if the user wants to buy additional scrolls
     let extraState = await getSwitchState("extraSwitch");
-    let storeItems = await getCurrentStoreItems();
+    let storeItems = await retrieveFromStorage("currentStoreItems");
     if (storeItems == undefined) {
         return;
+    } else {
+      storeItems = storeItems.data;
     }
 
     //loop through and purchase scrolls, then purchase store refresh and loop/purchase scrolls again
@@ -33,20 +27,53 @@ async function buyScrolls() {
             if (storeItem.section == "Scrolls") {
                 //add logic to buy specific scrolls?
                 if (storeItem.purchased == "0") {
-                    await purchaseStoreItem(storeItem.itemId);
+                    //If there are scrolls to purchase, purchase them using the dom
+                    
+                    //Initializes node list with nav bar items.
+                    navItems = document.querySelectorAll(".mainNavItemText");
+
+                    //Opens the store via the navbar
+                    navItems.forEach((navItem) => {
+                        if (navItem.innerText === "Store") {
+                            navItem.click();
+                        }
+                    });
+
+                    await collectDelay(4000);
+                    //Initializes a node list with the buy buttons
+                    let buyScrollButtons = document.querySelectorAll(".actionButton.actionButtonGolden.actionButtonShiny.userStoreItemButton");
+
+                    //If they buy buttons exists, click all of them and go back to the main menu.
+                    if (buyScrollButtons.length > 0) {
+                        buyScrollButtons.forEach((buyButton) => {
+                            buyButton.click();
+                        });
+                        await returnToMainScreen();
+                    }
                 }
             }
         }
         if (extraState) {
-            let storeRefreshCount = await getStoreRefreshCount();
+            let storeRefreshCount = await retrieveFromStorage("storeRefreshCount");
             if (storeRefreshCount == 0) {
-                storeItems = await purchaseStoreRefresh();
+                //Initializes the refresh button
+                let buyMoreButton = document.querySelector(".actionButton.actionButtonGolden.storeScrollsButton");
+                //If it exists check if the button is the refresh button for 100 coins, clicks it and returns to the main menu.
+                if (buyMoreButton) {
+                    const buttonText = buyMoreButton.innerText;
+                    if (buttonText.includes("REFRESH NOW") && buttonText.includes("100")) {
+                        buyMoreButton = document.querySelector(".actionButton.actionButtonGolden.storeScrollsButton");
+                        buyMoreButton.click();
+                        buyMoreButton.submit();
+                    }
+                }
+                await returnToMainScreen();
             }
         } else {
+            await returnToMainScreen();
             break;
         }
     }
-
 }
 
 //Function to collect the free daily reward given during events
@@ -56,8 +83,21 @@ async function collectFreeDaily() {
     if (!dailySwitch) {
         return;
     }
-
-    await grantDailyDrop();
+    //Initializes node list with nav bar items and open the store.
+    navItems = document.querySelectorAll(".mainNavItemText");
+    navItems.forEach((navItem) => {
+        if (navItem.innerText === "Store") {
+            navItem.click();
+        }
+    });
+    await collectDelay(4000);
+    //Initiliazes the freebie button and if it exists and is the claim button, clicks it and goes back to the main menu.
+    const freebieButton = document.querySelector(".actionButton.actionButtonBones.storeCardButton.storeCardButtonBuy");
+    if (freebieButton && freebieButton.innerText.includes("CLAIM")) {
+        freebieButton.click();
+        freebieButton.submit();
+        await returnToMainScreen();
+    }
 }
 
 //Function to collect the event chests given during events
@@ -88,7 +128,7 @@ async function collectEventChests() {
         }
     }
     if (eventCurrency == null || eventCurrency == undefined || eventCurrencyImg == null || eventCurrencyImg == undefined || eventCurrencyAlt == null || eventCurrencyAlt == undefined) {
-        returnToMainScreen()
+        await returnToMainScreen()
     }
 
     let eventCurrencyQuantity;
@@ -98,7 +138,7 @@ async function collectEventChests() {
         eventCurrencyQuantity = eventCurrency.querySelector(".quantityText").textContent;
         number = parseInt(eventCurrencyQuantity.substring(0, 4));
     } catch (error) {
-        returnToMainScreen()
+        await returnToMainScreen()
     }
 
     // Get minimum value set by the user or default to 1500.
@@ -129,7 +169,7 @@ async function collectEventChests() {
                 //break;
             }
         }
-        returnToMainScreen();
+        await returnToMainScreen();
     }
 }
 
@@ -143,12 +183,36 @@ async function collectQuests() {
     if (!questState) {
         return;
     }
-    let questsData = await getUserQuests();
-    for (const questData in questsData) {
-        if (questsData[questData].currentQuestId != null) {
-            await collectQuestReward(questsData[questData].questSlotId);
+
+    //Initializes node list with nav bar items.
+    navItems = document.querySelectorAll(".mainNavItemText");
+
+    //Clicks the Quests button on the nav bar
+    navItems.forEach((navItem) => {
+        if (navItem.innerText === "Quests") {
+            navItem.click();
+            return;
         }
-    }
+    });
+    await collectDelay(2000);
+
+    //Initializes a node list with collect quest buttons
+    const questItems = document.querySelectorAll(".questItemCont");
+
+    //Get the quest buttons from the quest items and checks if they aren't disabled. Clicks them.
+    questItems.forEach(async (questItem) => {
+        const collectQuestButton = questItem.querySelector(".actionButton.actionButtonPrimary.questItemCollect");
+        const isDisabled = questItem.querySelector(".questItemDisabled");
+        try {
+            if (collectQuestButton && !isDisabled) {
+              collectQuestButton.click();
+              collectQuestButton.submit();
+              await collectDelay(1000);
+            }
+        } catch (error) {}
+    });
+    //Returns to main menu.
+    await returnToMainScreen();
 }
 
 //Function to collect the battlepass during events
@@ -158,113 +222,38 @@ async function collectBattlePass() {
     if (!questState) {
         return;
     }
-    const dataArray = ['clientVersion', 'dataVersion'];
-    const dataKeys = await retrieveMultipleFromStorage(dataArray);
-    const clientVersion = dataKeys.clientVersion;
-    const gameDataVersion = dataKeys.dataVersion;
-
-    try {
-        const url = `https://www.streamraiders.com/api/game/?cn=getEventProgressionLite&clientVersion=${clientVersion}&clientPlatform=MobileLite&gameDataVersion=${gameDataVersion}&command=getEventProgressionLite&isCaptain=0`
-        const response = await makeRequest(url, 0);
-        if (response == undefined) {
-            return;
-        }
-        const eventProgressionData = await response.json();
-        const eventProgress = eventProgressionData.data;
-        let currentTier = eventProgress.currentTier;
-        let tiers = [];
-        const rows = currentTier - 1;
-        const columns = 3;
-
-        for (let i = 0; i < rows; i++) {
-            tiers[i] = [];
-            for (let j = 0; j < columns; j++) {
-                tiers[i][j] = j;
-            }
-        }
-
-        let hasBattlePass = eventProgress.hasBattlePass;
-
-        //get current list of collected tiers, split into array, sort as numerical values
-        let basicRewardsCollected = [];
-        let battlePassRewardsCollected = [];
-        if (eventProgress.basicRewardsCollected != null) {
-            basicRewardsCollected = splitAndSort(eventProgress.basicRewardsCollected);
-        }
-        if (hasBattlePass == "1") {
-            if (eventProgress.battlePassRewardsCollected != null) {
-                battlePassRewardsCollected = splitAndSort(eventProgress.battlePassRewardsCollected);
-            }
-        }
-
-        //set up tiers array to determine which tiers need to be collected
-        for (let j = 0; j < currentTier - 1; j++) {
-            tiers[j][0] = j + 1;
-            tiers[j][1] = 0;
-            tiers[j][2] = 0;
-            basic_loop: for (let m = 0; m < basicRewardsCollected.length; m++) {
-                if (basicRewardsCollected[m] == tiers[j][0]) {
-                    tiers[j][1] = 1;
-                    break basic_loop;
-                }
-            }
-            if (hasBattlePass == "1") {
-                battlePass_loop: for (let m = 0; m < battlePassRewardsCollected.length; m++) {
-                    if (battlePassRewardsCollected[m] == tiers[j][0]) {
-                        tiers[j][2] = 1;
-                        break battlePass_loop;
+    await returnToMainScreen();
+    //Get the header buttons to click on the rewards
+    const headerButtons = document.querySelectorAll(".actionButton.actionButtonGift");
+    headerButtons.forEach(async (rewardButton) => {
+        //If the rewards button exist in the header, clicks it.
+        if (rewardButton.innerText.includes("REWARDS")) {
+            rewardButton.click();
+            await collectDelay(1000);
+            //Initializes a node list with collect buttons
+            const collectButtons = document.querySelectorAll(".actionButton.actionButtonCollect.rewardActionButton");
+            //Clicks any buttons that may exist
+            for (button of collectButtons) {
+                button.click();
+                await collectDelay(1000);
+                //After clicking the collect button a confirmation popup loads.
+                const confirmButtons = document.querySelectorAll(".actionButton.actionButtonPrimary");
+                confirmButtons.forEach(async (confirm) => {
+                    //Clicks on correct confirm button.
+                    if (confirm.innerText.includes("CONFIRM AND COLLECT")) {
+                        confirm.click();
+                        confirm.submit();
+                        await collectDelay(1000);
                     }
-                }
+                });
             }
+            closeAll();
         }
-        //Basic (free) rewards
-        await loopTiersAndCollect(tiers, "False");
-
-        //BattlePass (paid) rewards
-        if (hasBattlePass == "1") {
-            await loopTiersAndCollect(tiers, "True");
-        }
-    } catch (error) {
-        console.error('Error collecting event/battlepass rewards:', error.message);
-        return;
-    }
-}
-
-function splitAndSort(arr) {
-    let splitAndSortArray = arr.split(",");
-    splitAndSortArray = splitAndSortArray.sort(function (a, b) { return a - b; });;
-    return splitAndSortArray;
-}
-
-async function loopTiersAndCollect(tiers, battlePass) {
-    let eventUid = await getEventProgressionLite();
-    let eventTiers = await retrieveFromStorage("eventTiers");
-    for (let j = 0; j < tiers.length; j++) {
-        if ((battlePass == "False" && tiers[j][1] == 0) || (battlePass == "True" && tiers[j][2] == 0)) {
-            let missingTier = j + 1;
-            tier_loop: for (const eventTier in eventTiers) {
-                if (eventTiers[eventTier].Tier == missingTier) {
-                    if ((battlePass == "True" && eventTiers[eventTier].BattlePassRewards == "epicpotion") || (battlePass == "False" && eventTiers[eventTier].BasicRewards == "epicpotion")) {
-                        let epicProgression = await getPotionQuantity();
-                        //if the capacity for new potions is >= the reward amount, collect the reward
-                        if ((battlePass == "True" && (100 - epicProgression) >= eventTiers.BattlePassAmount) || (battlePass == "False" && (100 - epicProgression) >= eventTiers.BasicAmount)) {
-                            await collectEventReward(eventUid, missingTier, battlePass);
-                            break tier_loop;
-                        } else {
-                            break tier_loop;
-                        }
-                    } else {
-                        await collectEventReward(eventUid, missingTier, battlePass);
-                        break tier_loop;
-                    }
-                }
-            }
-        }
-    }
+    });
 }
 
 //This function is called after all tasks are completed in order to return to the main menu.
-function returnToMainScreen() {
+async function returnToMainScreen() {
     navItems = document.querySelectorAll(".mainNavItemText");
     navItems.forEach(navItem => {
         if (navItem.innerText === "Battle") {
@@ -286,11 +275,9 @@ function getMinimumCurrency() {
     });
 }
 
-
-
 async function buyChests() {
 
-    let currentUserCurrencies = await getAvailableCurrencies()
+    let currentUserCurrencies = await retrieveFromStorage("availableCurrencies")
     if (!currentUserCurrencies || !currentUserCurrencies.data || currentUserCurrencies.data == undefined) {
         return
     }
@@ -304,7 +291,9 @@ async function buyChests() {
 
         let userChestData = await retrieveFromStorage("userChests");
         let userChestLogData = await retrieveFromStorage("userChestsLog") || [];
-        let eventUid = await getEventProgressionLite();
+        let eventUid = await retrieveFromStorage("getEventProgressionLite");
+        eventUid = eventUid.data.eventUid;
+        if (eventUid == undefined) return;
 
         if (!userChestData) {
             return;
@@ -366,7 +355,7 @@ async function buyChests() {
                 if (response == undefined) {
                     return;
                 }
-                let purchaseResponse = await response.json();
+                let purchaseResponse = response;
 
                 if (purchaseResponse.status == "success") {
                     if (userChestData.hasOwnProperty(uid)) {

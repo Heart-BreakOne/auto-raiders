@@ -138,7 +138,7 @@ document.addEventListener("DOMContentLoaded", function () {
 //When the user interacts with the toggle switches, it gets the current stored value and update them with the value.
 function initializeSwitch(switchId) {
     const switchElement = document.getElementById(switchId);
-
+    if (switchElement == null) return;
     // Load switch state from storage
     chrome.storage.local.get([switchId], function (result) {
         switchElement.checked = result[switchId] || false;
@@ -187,6 +187,7 @@ document.addEventListener("DOMContentLoaded", async function () {
     document.querySelector("html").setAttribute("data-theme", darkTheme);
 
     const scrollToTopBtn = document.getElementById("scrollBtn");
+    if (scrollToTopBtn == null) return;
 
     // Show or hide the button based on scroll position
     window.onscroll = function () {

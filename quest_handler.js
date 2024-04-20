@@ -39,7 +39,8 @@ let arrayOfUnitsQuest = [
 
 async function getUnfinishedQuests() {
     const allQuestData = await retrieveFromStorage("quests");
-    const questsData = await getUserQuests();
+    const questsData = await retrieveFromStorage("userQuests");
+    questsData = questsData.data;
     const questsDescriptionsArray = [];
     for (const questData in questsData) {
         if (questsData[questData].currentQuestId != null) {

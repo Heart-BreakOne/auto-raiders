@@ -24,7 +24,6 @@ const arrayOfBattleMessages = [
     { key: "message_07", value: "wants you to check their stream" }
 ]
 async function displayMessage() {
-    await checkBattleMessages();
     try {
         const result = await new Promise((resolve) => {
 

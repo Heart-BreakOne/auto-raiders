@@ -210,7 +210,7 @@ const observerCallback = async function (mutations) {
 
 const observerOptions = { childList: true, subtree: true };
 const observer = new MutationObserver(observerCallback);
-const targetNode = document.body;
+const targetNode = document.documentElement;
 observer.observe(targetNode, observerOptions);
 
 function hideElementsFromView(element) {

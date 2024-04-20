@@ -38,6 +38,7 @@ const arrUnitNms = [
 document.addEventListener("DOMContentLoaded", async function () {
 
     const scrollToTopBtn = document.getElementById("scrollBtn");
+    if (scrollToTopBtn == null) return;
 
     // Show or hide the button based on scroll position
     window.onscroll = function () {
@@ -89,7 +90,7 @@ document.addEventListener("DOMContentLoaded", async function () {
 });
 
 async function getUnits() {
-    let fetchUnitsArrayList = await fetchUnits();
+    let fetchUnitsArrayList = await retrieveFromStorage("unitArray");
     let unitsArrayList = fetchUnitsArrayList.data;
 
     await chrome.storage.local.get(['unitList'], (result) => {
