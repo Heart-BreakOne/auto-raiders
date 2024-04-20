@@ -328,7 +328,25 @@ async function start() {
       //If the button has inner text and includes one of the reward button labels, it's a valid button to collect rewards
       if (rewardButtonLabels.includes(button.innerText)) {
         button.click();
-        await delay(3000);
+        await delay(4000);
+        const capSlot = button.parentElement.parentElement
+        const stBtn = capSlot.querySelector(".offlineButton").id
+        const slotState = await getIdleState(stBtn);
+        if (slotState == 2) {
+          const close = capSlot.parentElement.parentElement.parentElement.querySelector(".capSlotClose")
+          if (close) {
+            const afterSwitch = await retrieveFromStorage('afterSwitch');
+            if (afterSwitch) {
+              await setIdleState(stBtn, 1);
+            } else {
+              await setIdleState(stBtn, 0);
+            }
+            close.click()
+          }
+          break
+        }
+        await delay(1000);
+        await confirmLeaveBattlePopup();
         continue;
       }
       //If the button has the inner text SELECT then continue to next button

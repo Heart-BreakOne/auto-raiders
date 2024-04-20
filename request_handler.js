@@ -1160,6 +1160,16 @@ async function cancelLeaveBattlePopup() {
   }
 }
 
+async function confirmLeaveBattlePopup() {
+  let leaveBattleModal = document.querySelector(".modalContent");
+  if (leaveBattleModal && leaveBattleModal.innerText.includes("Leave battle")) {
+    try {
+      let confirmButton = document.querySelector(".actionButton.actionButtonPrimary");
+      confirmButton.click();
+    } catch (error) { }
+  }
+}
+
 async function checkDungeons(cptId, type) {
   // No need to check pause state because collectChests already does that.
 
