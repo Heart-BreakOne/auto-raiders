@@ -65,6 +65,8 @@ async function buyScrolls() {
                         buyMoreButton = document.querySelector(".actionButton.actionButtonGolden.storeScrollsButton");
                         buyMoreButton.click();
                         buyMoreButton.submit();
+                        clickHoldAndScroll(buyMoreButton, 0, 0);
+                        await collectDelay(1000);
                     }
                 }
                 await returnToMainScreen();
