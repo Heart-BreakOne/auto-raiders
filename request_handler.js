@@ -1393,6 +1393,22 @@ async function handleMessage(message) {
   if (url == "https://www.streamraiders.com/api/game/?cn=getEventProgressionLite") {
     console.log(url, data);
     await chrome.storage.local.set({ "getEventProgressionLite": data });
+    let eventTiers = await retrieveFromStorage("eventTiers");
+    let eventUid = data.data.eventUid;
+    //If eventTiers is undefined, reload to update it
+    if (eventTiers == undefined) {
+      await locationReload();
+    }
+    //If the event tiers eventUid doesn't match the eventUid in getEventProgressionLite, reload to update it
+    let counter = 0
+    for (const nodeKey in eventTiers) {
+      counter++;
+      const node = eventTiers[nodeKey];
+      if (node.EventUid != eventUid) {
+        await locationReload();
+      }
+      if (counter >= 1) break;
+    }
   }
   if (url == "https://www.streamraiders.com/api/game/?cn=getUser") {
     console.log(url, data);
@@ -1433,18 +1449,12 @@ async function handleMessage(message) {
   }
   if (url == "https://www.streamraiders.com/api/game/?cn=grantEventReward") {
     console.log(url, data);
-    // await retrieveFromStorage("grantEventReward");
-    // await chrome.storage.local.set({ "grantEventReward": data });
   }
   if (url == "https://www.streamraiders.com/api/game/?cn=collectQuestReward") {
     console.log(url, data);
-    // await retrieveFromStorage("collectQuestReward");
-    // await chrome.storage.local.set({ "collectQuestReward": data });
   }
   if (url == "https://www.streamraiders.com/api/game/?cn=getCaptainsForSearch") {
     console.log(url, data);
-    // await retrieveFromStorage("getCaptainsForSearch");
-    // await chrome.storage.local.set({ "getCaptainsForSearch": data });
   }
   if (url == "https://www.streamraiders.com/api/game/?cn=purchaseChestItem") {
     //Save chest results to log
@@ -1631,7 +1641,9 @@ async function getGameData(url, data) {
   eventTiers = removeKeys(eventTiers, eventTiers_keys_rm)
 
   let eventUid = await retrieveFromStorage("getEventProgressionLite");
-  eventUid = eventUid.data.eventUid;
+  if (eventUid) {
+    eventUid = eventUid.data.eventUid;
+  }
   
   for (const nodeKey in eventTiers) {
     const node = eventTiers[nodeKey];

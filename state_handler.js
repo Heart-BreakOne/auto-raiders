@@ -29,9 +29,9 @@ let placementOver = false;
 async function locationReload() {
   isContentRunning2 = false;
   reloadRunning = true;
-  await delay(100);
+  await battleDelay(100);
   while (requestRunning) {
-    await delay(10);
+    await battleDelay(10);
   }
   let reloadPort = await chrome.runtime.connect({ name: "content-script" });
   reloadPort.postMessage({ action: "reloadCleanCache", });
