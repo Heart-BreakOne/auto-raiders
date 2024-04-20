@@ -207,11 +207,12 @@ async function collectQuests() {
             if (collectQuestButton && !isDisabled) {
               collectQuestButton.click();
               collectQuestButton.submit();
-              await collectDelay(1000);
+              clickHoldAndScroll(collectQuestButton, 0, 0);
             }
         } catch (error) {}
     });
     //Returns to main menu.
+    await collectDelay(1000);
     await returnToMainScreen();
 }
 
