@@ -17,12 +17,9 @@ async function updateUserAgent(tab) {
   processedTabs.add(tab.id);
 
   // Remove any existing rules for the tab
-  await chrome.declarativeNetRequest.updateSessionRules({
-    removeRuleIds: [tab.id]
-  });
-
   // Add a new rule for the static user agent
   await chrome.declarativeNetRequest.updateSessionRules({
+    removeRuleIds: [tab.id],
     addRules: [{
       'id': tab.id,
       'action': {
