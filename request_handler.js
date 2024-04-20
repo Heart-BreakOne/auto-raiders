@@ -1447,9 +1447,32 @@ async function handleMessage(message) {
     // await chrome.storage.local.set({ "getCaptainsForSearch": data });
   }
   if (url == "https://www.streamraiders.com/api/game/?cn=purchaseChestItem") {
-    console.log(url, data);
-    // await retrieveFromStorage("purchaseChestItem");
-    // await chrome.storage.local.set({ "purchaseChestItem": data });
+    //Save chest results to log
+    let userChestData = await retrieveFromStorage("userChests") || [];
+    let userChestLogData = await retrieveFromStorage("userChestsLog") || [];
+    let eventUid = await retrieveFromStorage("getEventProgressionLite");
+    eventUid = eventUid.data.eventUid;
+    if (eventUid == undefined) return;
+
+    let purchaseResponse = data;
+
+    if (purchaseResponse.status == "success") {
+        let chestId = purchaseResponse.data.chestId;
+        let rewards = purchaseResponse.data.rewards;
+        if (userChestData.hasOwnProperty(chestId)) {
+            userChestData[chestId].amountBought++;
+        } else {
+            console.log(`${chestId} not found in userChestData.`);
+        }
+        userChestLogData.push({
+            dateTime: new Date().toString(),
+            chestId: chestId,
+            rewards: rewards,
+            eventUid: eventUid
+        })
+    }
+    await saveToStorage("userChests", userChestData);
+    await saveToStorage("userChestsLog", userChestLogData);
   }
 }
 

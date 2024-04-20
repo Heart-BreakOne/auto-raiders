@@ -194,17 +194,19 @@ async function collectQuests() {
             return;
         }
     });
-    await collectDelay(2000);
+    await collectDelay(1000);
 
     //Initializes a node list with collect quest buttons
     const questItems = document.querySelectorAll(".questItemCont");
-
+    
+    let questsCollected = 0;
     //Get the quest buttons from the quest items and checks if they aren't disabled. Clicks them.
     questItems.forEach(async (questItem) => {
         const collectQuestButton = questItem.querySelector(".actionButton.actionButtonPrimary.questItemCollect");
         const isDisabled = questItem.querySelector(".questItemDisabled");
         try {
             if (collectQuestButton && !isDisabled) {
+              questsCollected++;
               collectQuestButton.click();
               collectQuestButton.submit();
               clickHoldAndScroll(collectQuestButton, 0, 0);
@@ -212,7 +214,7 @@ async function collectQuests() {
         } catch (error) {}
     });
     //Returns to main menu.
-    await collectDelay(1000);
+    if (questsCollected > 0) await collectDelay(1000);
     await returnToMainScreen();
 }
 
@@ -291,10 +293,6 @@ async function buyChests() {
     async function buyChestsWithCurrency(currencyType, minCurrency, chestData) {
 
         let userChestData = await retrieveFromStorage("userChests");
-        let userChestLogData = await retrieveFromStorage("userChestsLog") || [];
-        let eventUid = await retrieveFromStorage("getEventProgressionLite");
-        eventUid = eventUid.data.eventUid;
-        if (eventUid == undefined) return;
 
         if (!userChestData) {
             return;
@@ -322,9 +320,9 @@ async function buyChests() {
             }
 
             for (let i = 0; i < chestsData.length; i++) {
-                await collectDelay(1500)
                 let chest = chestsData[i];
                 let uid = chest["Uid"];
+                let chestName = chest["DisplayName"];
                 let basePrice = chest["BasePrice"];
 
                 if ((currencyType - basePrice) < minCurrency) {
@@ -347,35 +345,8 @@ async function buyChests() {
 
                 currencyType -= basePrice;
 
-                const dataArray = ['clientVersion', 'dataVersion'];
-                const dataKeys = await retrieveMultipleFromStorage(dataArray);
-                const clientVersion = dataKeys.clientVersion;
-                const gameDataVersion = dataKeys.dataVersion;
-                let url = `https://www.streamraiders.com/api/game/?cn=purchaseChestItem&itemId=${uid}&clientVersion=${clientVersion}&clientPlatform=WebLite&gameDataVersion=${gameDataVersion}&command=purchaseChestItem&isCaptain=0`;
-                let response = await makeRequest(url, 0);
-                if (response == undefined) {
-                    return;
-                }
-                let purchaseResponse = response;
-
-                if (purchaseResponse.status == "success") {
-                    if (userChestData.hasOwnProperty(uid)) {
-                        userChestData[uid].amountBought++;
-                    } else {
-                        console.log(`Chest with uid ${uid} not found in userChestData.`);
-                    }
-                    userChestLogData.push({
-                        dateTime: new Date().toString(),
-                        chestId: purchaseResponse.data.chestId,
-                        rewards: purchaseResponse.data.rewards,
-                        eventUid: eventUid
-                    })
-                } else {
-                    console.log(`Failed to purchase chest with uid ${uid}.`);
-                }
+                await buySpecificChest(chestName, basePrice);
             }
-            await saveToStorage("userChests", userChestData);
-            await saveToStorage("userChestsLog", userChestLogData);
         }
     }
 
@@ -388,6 +359,46 @@ async function buyChests() {
         await buyChestsWithCurrency(bones, await retrieveNumberFromStorage("minBoneCurrency"), "boneChestsData");
     }
 
+}
+
+async function buySpecificChest(chestName, basePrice) {
+    //Initializes node list with nav bar items.
+    let navItems = document.querySelectorAll(".mainNavItemText");
+
+    //Opens the store via the navbar
+    navItems.forEach((navItem) => {
+        if (navItem.innerText === "Store") {
+            navItem.click();
+        }
+    });
+
+    await collectDelay(2000);
+    //Initializes a node list with the store options
+    let storeOptions = document.querySelectorAll(".storeCard.storeCardHighlighted");
+
+    //If they buy buttons exists, click all of them and go back to the main menu.
+    if (storeOptions.length > 0) {
+        storeOptions.forEach((storeOption) => {
+            let itemName = storeOption.querySelector(".storeCardNameNotif");
+            if (itemName.innerText == chestName) {
+                const buyButton = storeOption.querySelector(".actionButton.actionButtonBones.storeCardButton.storeCardButtonBuy");
+                if (buyButton && buyButton.innerText.includes(basePrice)) {
+                    buyButton.click();
+                    clickHoldAndScroll(buyButton, 0, 0);
+                    //After clicking the collect button a confirmation popup loads.
+                    const confirmButtons = document.querySelectorAll(".actionButton.actionButtonPrimary");
+                    confirmButtons.forEach((confirm) => {
+                        //Clicks on correct confirm button.
+                        if (confirm.innerText.includes("OK")) {
+                            confirm.click();
+                        }
+                    });
+                }
+            }
+        });
+        await collectDelay(1000);
+        await returnToMainScreen();
+    }
 }
 
 async function cleanChestLogData() {

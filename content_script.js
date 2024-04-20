@@ -672,14 +672,15 @@ async function start() {
           isContentRunning = false;
           return;
         }
+        await performCollectionInterval();
       } else {
+        await performCollectionInterval();
         continue;
       }
     }
   }
-
-  // Change captains using a different device without the script freezing trying to select a captain.
   closeAll();
+  await performCollectionInterval();
   isContentRunning = false;
 }
 
