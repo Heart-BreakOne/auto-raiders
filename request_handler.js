@@ -1379,10 +1379,10 @@ async function handleMessage(message) {
     await chrome.storage.local.set({ "gameDataPath": url });
     await getGameData(url, data);
   }
-  if (url == "https://d2k2g0zg1te1mr.cloudfront.net/manifests/mobilelite.json") {
+  else if (url == "https://d2k2g0zg1te1mr.cloudfront.net/manifests/mobilelite.json") {
     await chrome.storage.local.set({ imageUrls: data });
   }
-  if (url == "https://www.streamraiders.com/api/game/?cn=getActiveRaidsLite") {
+  else if (url == "https://www.streamraiders.com/api/game/?cn=getActiveRaidsLite") {
     if (data.info.dataPath != await retrieveFromStorage("gameDataPath")) {
       await locationReload();
       return;
@@ -1390,7 +1390,7 @@ async function handleMessage(message) {
     await getActiveRaidsLite(data);
     await logChestsAndUnitsInterval();
   }
-  if (url == "https://www.streamraiders.com/api/game/?cn=getEventProgressionLite") {
+  else if (url == "https://www.streamraiders.com/api/game/?cn=getEventProgressionLite") {
     console.log(url, data);
     await chrome.storage.local.set({ "getEventProgressionLite": data });
     let eventTiers = await retrieveFromStorage("eventTiers");
@@ -1410,7 +1410,7 @@ async function handleMessage(message) {
       if (counter >= 1) break;
     }
   }
-  if (url == "https://www.streamraiders.com/api/game/?cn=getUser") {
+  else if (url == "https://www.streamraiders.com/api/game/?cn=getUser") {
     console.log(url, data);
     await chrome.storage.local.set({ 
       "userId": data.data.userId, 
@@ -1419,44 +1419,44 @@ async function handleMessage(message) {
       "favoriteCaptainIds": data.data.favoriteCaptainIds 
     });
   }
-  if (url == "https://www.streamraiders.com/api/game/?cn=getRaidStatsByUser") {
+  else if (url == "https://www.streamraiders.com/api/game/?cn=getRaidStatsByUser") {
     console.log(url, data);
     await getRaidStats(data);
   }
-  if (url == "https://www.streamraiders.com/api/game/?cn=getRaid") {
+  else if (url == "https://www.streamraiders.com/api/game/?cn=getRaid") {
     console.log(url, data);
     await getLeaderboardUnitsData(data);
   }
-  if (url == "https://www.streamraiders.com/api/game/?cn=getUserQuests") {
+  else if (url == "https://www.streamraiders.com/api/game/?cn=getUserQuests") {
     console.log(url, data);
     await chrome.storage.local.set({ "userQuests": data });
   }
-  if (url == "https://www.streamraiders.com/api/game/?cn=getCurrentStoreItems") {
+  else if (url == "https://www.streamraiders.com/api/game/?cn=getCurrentStoreItems") {
     console.log(url, data);
     await chrome.storage.local.set({ "currentStoreItems": data });
   }
-  if (url == "https://www.streamraiders.com/api/game/?cn=getUserUnits") {
+  else if (url == "https://www.streamraiders.com/api/game/?cn=getUserUnits") {
     console.log(url, data);
     await chrome.storage.local.set({ "unitArray": data });
   }
-  if (url == "https://www.streamraiders.com/api/game/?cn=getUserDungeonInfoForRaid") {
+  else if (url == "https://www.streamraiders.com/api/game/?cn=getUserDungeonInfoForRaid") {
     console.log(url, data);
     await getUserDungeonInfoForRaid(data, headers);
   }
-  if (url == "https://www.streamraiders.com/api/game/?cn=getAvailableCurrencies") {
+  else if (url == "https://www.streamraiders.com/api/game/?cn=getAvailableCurrencies") {
     console.log(url, data);
     await chrome.storage.local.set({ "availableCurrencies": data });
   }
-  if (url == "https://www.streamraiders.com/api/game/?cn=grantEventReward") {
+  else if (url == "https://www.streamraiders.com/api/game/?cn=grantEventReward") {
     console.log(url, data);
   }
-  if (url == "https://www.streamraiders.com/api/game/?cn=collectQuestReward") {
+  else if (url == "https://www.streamraiders.com/api/game/?cn=collectQuestReward") {
     console.log(url, data);
   }
-  if (url == "https://www.streamraiders.com/api/game/?cn=getCaptainsForSearch") {
+  else if (url == "https://www.streamraiders.com/api/game/?cn=getCaptainsForSearch") {
     console.log(url, data);
   }
-  if (url == "https://www.streamraiders.com/api/game/?cn=purchaseChestItem") {
+  else if (url == "https://www.streamraiders.com/api/game/?cn=purchaseChestItem") {
     //Save chest results to log
     let userChestData = await retrieveFromStorage("userChests") || [];
     let userChestLogData = await retrieveFromStorage("userChestsLog") || [];
