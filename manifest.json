@@ -68,7 +68,7 @@
       },
       {
          "resources": [
-            "settings.js"
+            "settings.html"
          ],
          "matches": [
             "https://www.streamraiders.com/*"
