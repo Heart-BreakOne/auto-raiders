@@ -1,52 +1,59 @@
-//Triggers the logChestsAndUnits function every 10-15 seconds
-(function loopLog() {
-  setTimeout( () => {
-    logChestsAndUnitsInterval();
-    loopLog();  
-  }, getRandNum(10, 15)*1000);
-}());
-//Triggers the levelUp function every 150-200 seconds
-(function looplevelUp() {
-  setTimeout( () => {
-    levelUp();
-    looplevelUp();  
-  }, getRandNum(150, 200)*1000);
-}());
-
 //Declaring variables
 let isRunning = false;
-let chestsRunning = false;
 let requestRunning = false;
+let activeRaidsArray = [];
+let eventData = [];
 let backgroundDelay = ms => new Promise(res => setTimeout(res, ms));
 
-async function logChestsAndUnitsInterval() {
-  if (await retrieveFromStorage("paused_checkbox")) {
-    return
-  }
-  await collectChests();
-  await getLeaderboardUnitsData();
+function getRandNum(min, max) {
+  return Math.floor(Math.random() * (max - min + 1) + min);
 }
 
-//RETURNS raidId and CHESTTYPE (returns "chestbronze" if not found or if error)
-async function getCaptainLoyalty(captainName) {
-  const dataArray = ['clientVersion', 'dataVersion'];
-  const dataKeys = await retrieveMultipleFromStorage(dataArray);
-  const clientVersion = dataKeys.clientVersion;
-  const gameDataVersion = dataKeys.dataVersion;
+async function logChestsAndUnitsInterval() {
+  let intervalKeysArray = ['paused_checkbox', 'offlineSwitch'];
+  let intervalKeys = await retrieveMultipleFromStorage(intervalKeysArray);
+  let paused_checkbox = intervalKeys.paused_checkbox;
+  let offlineSwitch = intervalKeys.offlineSwitch;
 
+  if (paused_checkbox) {
+    return
+  }
   try {
-    let response = await getActiveRaids()
+    if (requestRunning) return;
+    requestRunning = true;
+    let response = activeRaidsArray;
+    if (response == undefined || response == null) {
+      return;
+    }
+    const activeRaids = response;
+    await checkBattleMessages(activeRaids);
+    await manageGameModes(activeRaids);
+    await addNewLogEntry(activeRaids);
+    //Checks if the user wants to replace idle captains and invoke the function to check and replace them.
+    // if (offlineSwitch) {
+      // await checkIdleCaptains(activeRaids);
+    // }
+    requestRunning = false;
+  } catch (error) {
+    console.error('Error in logChestsAndUnitsInterval:', error);
+    return;
+  }
+}
+
+async function getCaptainLoyalty(captainName) {
+  try {
+    let response = activeRaidsArray;
     if (response == undefined) {
       return;
     }
 
-    const activeRaids = await response.json();
+    const activeRaids = response;
     let loyaltyResults = new Object();
-    for (let i = 0; i < activeRaids.data.length; i++) {
-      const position = activeRaids.data[i];
+    for (let i = 0; i < activeRaids.length; i++) {
+      const position = activeRaids[i];
       if (position.twitchDisplayName === captainName) {
         loyaltyResults[0] = position.raidId;
-        const mapLoyalty = await getRaidChest(position.raidId, clientVersion, gameDataVersion);
+        const mapLoyalty = await getRaidChest(position.nodeId);
         loyaltyResults[1] = mapLoyalty;
         loyaltyResults[2] = position.captainId;
         loyaltyResults[3] = position.twitchDisplayName;
@@ -59,241 +66,105 @@ async function getCaptainLoyalty(captainName) {
     return loyaltyResults;
 
   } catch (error) {
-    console.error('Error in getCaptainLoyalty:', error);
+    console.error('Error in getCaptainLoyalty:', new Date().toLocaleTimeString(), error);
     return;
   }
 }
 
-// MAKE TWO POST REQUESTS, ONE FOR THE CURRENT CHEST AND ANOTHER TO COMPARE
-async function getRaidChest(raidId, clientVersion, gameDataVersion) {
+async function getRaidChest(nodeId) {
   try {
-    const url = `https://www.streamraiders.com/api/game/?cn=getRaid&raidId=${raidId}&placementStartIndex=0&maybeSendNotifs=false&clientVersion=${clientVersion}&clientPlatform=WebLite&gameDataVersion=${gameDataVersion}&command=getRaid&isCaptain=0`
-    const response = await makeRequest(url, 0);
-    if (response == undefined) {
-      return;
-    }
-
-    const currentRaid = await response.json();
     let chests = await retrieveFromStorage("loyaltyChests")
     chests = chests.MapNodes
 
-    const nodeId = currentRaid.data.nodeId;
     const chestType = chests[nodeId]?.ChestType;
     return chestType;
 
   } catch (error) {
-    console.error('Error in getRaidChest:', error);
+    console.error('Error in getRaidChest:', new Date().toLocaleTimeString(), error);
     return "chestbronze";
   }
 }
 
-async function getLeaderboardUnitsData() {
+async function getLeaderboardUnitsData(getRaid) {
   if (await retrieveFromStorage("paused_checkbox")) {
     return
   }
 
-  const dataArray = ['clientVersion', 'dataVersion', 'userId', 'units', 'skins', 'imageUrls'];
+  const dataArray = ['userId', 'units', 'skins', 'imageUrls'];
   const dataKeys = await retrieveMultipleFromStorage(dataArray);
-  const clientVersion = dataKeys.clientVersion;
-  const gameDataVersion = dataKeys.dataVersion;
   const userId = dataKeys.userId;
   const unitAssetNames = dataKeys.units;
   const skinNames = dataKeys.skins;
   const imageURLs = dataKeys.imageUrls;
 
   try {
-    let response = await getActiveRaids()
-    if (response == undefined) {
-      return;
-    }
-    const activeRaids = await response.json();
+    const currentRaid = getRaid.data;
+    const raidId = currentRaid.raidId;
+    const cptName = currentRaid.twitchDisplayName;
+    const placements = currentRaid.placements;
+    let CharacterType = "";
+    let skin = "";
+    let skinURL = "";
+    let SoulType = "";
+    let specializationUid = "";
+    let unitIconList = "";
 
-    for (let i = 0; i < activeRaids.data.length; i++) {
-      const position = activeRaids.data[i];
-      const raidId = position.raidId;
-      const cptName = position.twitchDisplayName;
-
-      const url = `https://www.streamraiders.com/api/game/?cn=getRaid&raidId=${raidId}&placementStartIndex=0&maybeSendNotifs=false&clientVersion=${clientVersion}&clientPlatform=WebLite&gameDataVersion=${gameDataVersion}&command=getRaid&isCaptain=0`
-      let response = await makeRequest(url, 0);
-      if (response == undefined) {
-        continue;
-      }
-      const currentRaid = await response.json();
-      const placements = currentRaid.data.placements;
-      let CharacterType = "";
-      let skin = "";
-      let skinURL = "";
-      let SoulType = "";
-      let specializationUid = "";
-      let unitIconList = "";
-
-      if (placements) {
-        for (let i = 0; i < placements.length; i++) {
-          const placement = placements[i];
-          if (placement.userId === userId) {
-            if (placement.CharacterType === null || placement.CharacterType === "") {
-              CharacterType = "none";
-            } else {
-              CharacterType = placement.CharacterType;
-            }
-            if (placement.skin === null || placement.skin === "") {
-              Object.keys(unitAssetNames).forEach(function (key) {
-                const uid = unitAssetNames[key].Uid
-                if (uid === CharacterType) {
-                  skin = unitAssetNames[key].AssetName;
-                }
-              })
-            } else {
-              skin = placement.skin;
-              Object.keys(skinNames).forEach(function (key) {
-                if (key === placement.skin) {
-                  skin = skinNames[key].BaseAssetName;
-                }
-              })
-            }
-            if (placement.SoulType === null || placement.SoulType === "") {
-              SoulType = "none";
-            } else {
-              SoulType = placement.SoulType;
-            }
-            if (placement.specializationUid === null || placement.specializationUid === "") {
-              specializationUid = "none";
-            } else {
-              specializationUid = placement.specializationUid;
-            }
-            Object.keys(imageURLs).forEach(function (key) {
-              if (key === "mobilelite/units/static/" + skin + ".png") {
-                skinURL = "https://d2k2g0zg1te1mr.cloudfront.net/" + imageURLs[key];
-              }
-            });
-            unitIconList = skinURL + " " + skin.replace("allies", "").replace("skinFull", "") + " " + CharacterType + " " + SoulType + " " + specializationUid + "," + unitIconList
-          }
-        }
-      }
-
-      if (unitIconList !== "") {
-        await setLogUnitsData(cptName, raidId, unitIconList);
-      }
-    }
-    return "";
-  } catch (error) {
-    console.error('Error in getLeaderboardData:', error);
-    return "";
-  }
-}
-
-async function collectChests() {
-  if (await retrieveFromStorage("paused_checkbox") || chestsRunning) {
-    return
-  }
-  chestsRunning = true;
-
-  try {
-    let response = await getActiveRaids()
-    if (response == undefined) {
-      return;
-    }
-
-    const activeRaids = await response.json();
-    let m = 4 // rows
-    let n = 5 // columns
-    let activeRaidsData = Array(m).fill().map(entry => Array(n))
-    let duelJoined = false;
-    let dungeonJoined = false
-
-    for (let i = 0; i < activeRaids.data.length; i++) {
-      let raidData = activeRaids.data[i];
-      if (raidData.type == "5") {
-        duelJoined = true;
-      }
-      if (raidData.type == "3") {
-        dungeonJoined = true;
-      }
-
-      if (raidData.postBattleComplete == "1" && (raidData.hasRecievedRewards == null || raidData.hasRecievedRewards == "0")) {
-        activeRaidsData[i][0] = raidData.raidId;
-        activeRaidsData[i][1] = raidData.twitchDisplayName;
-        activeRaidsData[i][2] = raidData.captainId;
-        activeRaidsData[i][3] = raidData.userSortIndex;
-        activeRaidsData[i][4] = raidData.type;
-      }
-    }
-
-    for (let j = 0; j < activeRaidsData.length; j++) {
-      if (activeRaidsData[j][0] !== undefined) {
-        let raidId = activeRaidsData[j][0];
-        let captainName = activeRaidsData[j][1];
-        let cptId = activeRaidsData[j][2];
-        let userSortIndex = activeRaidsData[j][3];
-        let type = activeRaidsData[j][4];
-        let raidStats = await getRaidStats(raidId, userSortIndex, cptId);
-        let battleResult = raidStats[0];
-        let leaderboardRank = raidStats[1];
-        let kills = raidStats[3];
-        let assists = raidStats[4];
-        let unitIconList = raidStats[8];
-        let rewards = raidStats[2];
-        let chestStringAlt = raidStats[5];
-        let raidChest = raidStats[6];
-        let chestCount = raidStats[7];
-
-        if (captainName !== null && captainName !== undefined && raidId !== null && raidId !== undefined && ((battleResult !== null && battleResult !== undefined) || (chestStringAlt !== null && chestStringAlt !== undefined) || (leaderboardRank !== null && leaderboardRank !== undefined) || (kills !== null && kills !== undefined) || (assists !== null && assists !== undefined) || (unitIconList !== null && unitIconList !== undefined) || (rewards !== null && rewards !== undefined) || (raidChest !== null && raidChest !== undefined) || (chestCount !== null && chestCount !== undefined))) {
-          await setLogResults(battleResult, captainName, chestStringAlt, leaderboardRank, kills, assists, unitIconList, rewards, raidId, raidChest, chestCount);
-        }
-        battleResult = null;
-        captainName = null;
-        chestStringAlt = null;
-        leaderboardRank = null;
-        kills = null;
-        assists = null;
-        unitIconList = null;
-        rewards = null;
-
-        //Leave after collecting chest and logging results if user selected the option to do so
-        let slotState;
-        let slotNo = parseInt(userSortIndex) + 1;
-        slotState = await getIdleState("offlineButton_" + slotNo);
-        if (slotState == 2) {
-          await backgroundDelay(3000);
-          await removeOldCaptain(cptId);
-          if (await retrieveFromStorage('afterSwitch')) {
-            setIdleState("offlineButton_" + slotNo, 1)
+    if (placements) {
+      for (let i = 0; i < placements.length; i++) {
+        const placement = placements[i];
+        if (placement.userId === userId) {
+          if (placement.CharacterType === null || placement.CharacterType === "") {
+            CharacterType = "none";
           } else {
-            setIdleState("offlineButton_" + slotNo, 0)
+            CharacterType = placement.CharacterType;
           }
-        }
-        //If join Duel switch is selected, user is not currently in a Duel already, target slot is Campaign, and target slot is enabled, check for an ongoing Duel and join
-        if (await retrieveFromStorage("joinDuelSwitch") && !duelJoined && type == "1" && slotState == 1) {
-          duelJoined = await attemptToJoinDuel(slotNo - 1, cptId);
-        }
-
-        // Join dungeons if user wants to.
-        if (!dungeonJoined && await retrieveFromStorage("dungeonSlotSwitch")) {
-          dungeonJoined = await checkDungeons(cptId, captainName, type)
+          if (placement.skin === null || placement.skin === "") {
+            Object.keys(unitAssetNames).forEach(function (key) {
+              const uid = unitAssetNames[key].Uid
+              if (uid === CharacterType) {
+                skin = unitAssetNames[key].AssetName;
+              }
+            })
+          } else {
+            skin = placement.skin;
+            Object.keys(skinNames).forEach(function (key) {
+              if (key === placement.skin) {
+                skin = skinNames[key].BaseAssetName;
+              }
+            })
+          }
+          if (placement.SoulType === null || placement.SoulType === "") {
+            SoulType = "none";
+          } else {
+            SoulType = placement.SoulType;
+          }
+          if (placement.specializationUid === null || placement.specializationUid === "") {
+            specializationUid = "none";
+          } else {
+            specializationUid = placement.specializationUid;
+          }
+          Object.keys(imageURLs).forEach(function (key) {
+            if (key === "mobilelite/units/static/" + skin + ".png") {
+              skinURL = "https://d2k2g0zg1te1mr.cloudfront.net/" + imageURLs[key];
+            }
+          });
+          unitIconList = skinURL + " " + skin.replace("allies", "").replace("skinFull", "") + " " + CharacterType + " " + SoulType + " " + specializationUid + "," + unitIconList
         }
       }
     }
-    chestsRunning = false;
+
+    if (unitIconList !== "") {
+      await setLogUnitsData(cptName, raidId, unitIconList);
+    }
+    return "";
   } catch (error) {
-    console.error('Error in getAllRewardChests:', error);
-    chestsRunning = false;
+    console.error('Error in getLeaderboardData:', "|", error.name, "|", new Date().toLocaleTimeString(), error);
     return "";
   }
 }
 
-async function getRaidStats(raidId, captId) {
-  const dataArray = ['clientVersion', 'dataVersion'];
-  const dataKeys = await retrieveMultipleFromStorage(dataArray);
-  const clientVersion = dataKeys.clientVersion;
-  const gameDataVersion = dataKeys.dataVersion;
-
+async function getRaidStats(currentRaid) {
   try {
-    const url = `https://www.streamraiders.com/api/game/?cn=getRaidStatsByUser&raidId=${raidId}&clientVersion=${clientVersion}&clientPlatform=WebLite&gameDataVersion=${gameDataVersion}&command=getRaidStatsByUser&isCaptain=0`
-    const response = await makeRequest(url, 0);
-    if (response == undefined) {
-      return;
-    }
-    const currentRaid = await response.json();
     try {
       if (currentRaid.errorMessage !== null) {
         console.log(currentRaid.errorMessage);
@@ -309,7 +180,8 @@ async function getRaidStats(raidId, captId) {
 
     const userId = await retrieveFromStorage("userId")
 
-    let eventUid = await getEventProgressionLite();
+    let eventUid = await retrieveFromStorage("getEventProgressionLite");
+    eventUid = eventUid.data.eventUid;
 
     let items = await retrieveFromStorage("items")
     let currency = await retrieveFromStorage("currency")
@@ -535,87 +407,57 @@ async function getRaidStats(raidId, captId) {
     raidStats[6] = raidData.raidChest;
     raidStats[7] = raidData.chestCount;
 
-    return raidStats;
+        let raidId = raidData.raidId;
+        let cptId, captainName, userSortIndex, type;
+        for (let i = 0; i < activeRaidsArray.length; i++) {
+          if (activeRaidsArray[i].raidId == raidId) {
+            cptId = activeRaidsArray[i].captainId;
+            captainName = activeRaidsArray[i].twitchDisplayName;
+            userSortIndex = activeRaidsArray[i].userSortIndex;
+            type = activeRaidsArray[i].type;
+            i = activeRaidsArray.length;
+          }
+        }
+        let battleResult = raidStats[0];
+        let leaderboardRank = raidStats[1];
+        let kills = raidStats[3];
+        let assists = raidStats[4];
+        let unitIconList = raidStats[8];
+        rewards = raidStats[2];
+        let chestStringAlt = raidStats[5];
+        let raidChest = raidStats[6];
+        let chestCount = raidStats[7];
 
+        console.log("LOG-before-logged data for "+captainName+raidId);
+        if (captainName !== null && captainName !== undefined && raidId !== null && raidId !== undefined && ((battleResult !== null && battleResult !== undefined) || (chestStringAlt !== null && chestStringAlt !== undefined) || (leaderboardRank !== null && leaderboardRank !== undefined) || (kills !== null && kills !== undefined) || (assists !== null && assists !== undefined) || (unitIconList !== null && unitIconList !== undefined) || (rewards !== null && rewards !== undefined) || (raidChest !== null && raidChest !== undefined) || (chestCount !== null && chestCount !== undefined))) {
+          await setLogResults(battleResult, captainName, chestStringAlt, leaderboardRank, kills, assists, unitIconList, rewards, raidId, raidChest, chestCount);
+          console.log('await setLogResults("'+battleResult+'", "'+captainName+'", "'+chestStringAlt+'", "'+leaderboardRank+'", "'+kills+'", "'+assists+'", "'+unitIconList+'", "'+rewards+'", "'+raidId+'", "'+raidChest+'", '+chestCount+')');
+        }
   } catch (error) {
-    console.error('Error in getRaidStats:', error);
+    console.error('Error in getRaidStats:', new Date().toLocaleTimeString(), error);
     return "";
   }
 }
 
-async function getEventProgressionLite() {
-  const dataArray = ['clientVersion', 'dataVersion'];
-  const dataKeys = await retrieveMultipleFromStorage(dataArray);
-  const clientVersion = dataKeys.clientVersion;
-  const gameDataVersion = dataKeys.dataVersion;
-
+async function getEventProgressionLite(data) {
   try {
-    const url = `https://www.streamraiders.com/api/game/?cn=getEventProgressionLite&clientVersion=${clientVersion}&clientPlatform=WebLite&gameDataVersion=${gameDataVersion}&command=getEventProgressionLite&isCaptain=0`
-    const response = await makeRequest(url, 0);
-    if (response == undefined) {
-      return;
-    }
-    const eventInfo = await response.json();
-    const eventUid = eventInfo.data.eventUid;
-    return eventUid;
-
+    const eventInfo = data;
+    eventData = [];
+    eventData.push({
+      "eventUid": eventInfo.data.eventUid,
+      "hasBattlePass": eventInfo.data.hasBattlePass,
+      "basicRewardsCollected": eventInfo.data.basicRewardsCollected,
+      "battlePassRewardsCollected": eventInfo.data.battlePassRewardsCollected,
+      "currentTier": eventInfo.data.currentTier
+    });
   } catch (error) {
-    console.error('Error in getEventProgressionLite:', error);
-    return "";
-  }
-}
-
-async function getMapName(captainName) {
-  try {
-    let response = await getActiveRaids()
-
-    const activeRaids = await response.json();
-
-    for (let i = 0; i < activeRaids.data.length; i++) {
-      const position = activeRaids.data[i];
-      const raidId = position.raidId;
-      const cptName = position.twitchDisplayName;
-
-      if (cptName === captainName) {
-        const mapNode = await getMapNode(raidId);
-        return mapNode;
-      }
-    }
-
-    //No match found
-    return "";
-
-  } catch (error) {
-    console.error('Error in getMapName:', error);
-    return "";
-  }
-}
-
-async function getMapNode(raidId) {
-  const dataArray = ['clientVersion', 'dataVersion'];
-  const dataKeys = await retrieveMultipleFromStorage(dataArray);
-  const clientVersion = dataKeys.clientVersion;
-  const gameDataVersion = dataKeys.dataVersion;
-
-  try {
-    const url = `https://www.streamraiders.com/api/game/?cn=getRaid&raidId=${raidId}&placementStartIndex=0&maybeSendNotifs=false&clientVersion=${clientVersion}&clientPlatform=WebLite&gameDataVersion=${gameDataVersion}&command=getRaid&isCaptain=0`
-    const response = await makeRequest(url, 0);
-    if (response == undefined) {
-      return;
-    }
-
-    const currentRaid = await response.json();
-    const nodeId = currentRaid.data.nodeId;
-    return nodeId;
-
-  } catch (error) {
-    console.error('Error in getMapNode:', error);
+    console.error('Error in getEventProgressionLite:', new Date().toLocaleTimeString(), error);
     return "";
   }
 }
 
 //Initialize arrays with null values, get authentication cookies and make requests for the data of interest.
-async function checkBattleMessages() {
+async function checkBattleMessages(activeRaids) {
   if (isRunning) {
     return;
   }
@@ -623,16 +465,10 @@ async function checkBattleMessages() {
 
   //Logic to check battle for messages here
   try {
-    let response = await getActiveRaids()
-    if (response == undefined) {
-      return;
-    }
-
     //Get relevant data from activeRaids and save on storage so it can be displayed to the user
-    const activeRaids = await response.json();
     let battleMessageData = [];
-    for (let i = 0; i < activeRaids.data.length; i++) {
-      const position = activeRaids.data[i];
+    for (let i = 0; i < activeRaids.length; i++) {
+      const position = activeRaids[i];
       const cptName = position.twitchDisplayName;
       const message = position.message;
       battleMessageData.push({ cptName, message })
@@ -641,7 +477,7 @@ async function checkBattleMessages() {
     await chrome.storage.local.set({ battleMessageData: battleMessageData });
     isRunning = false;
   } catch (error) {
-    console.error('Error while getting battle messages', error);
+    console.error('Error while getting battle messages', new Date().toLocaleTimeString(), error);
     isRunning = false
   }
   isRunning = false;
@@ -660,7 +496,7 @@ async function removeOldCaptain(captainId) {
     await backgroundDelay(3000);
     return;
   } catch (error) {
-    console.error('Error removing captain:', error.message);
+    console.error('Error removing captain:', new Date().toLocaleTimeString(), error.message);
     return;
   }
 }
@@ -672,69 +508,12 @@ async function collectEventReward(eventUid, missingTier, battlePass) {
   const gameDataVersion = dataKeys.dataVersion;
 
   try {
-    const url = `https://www.streamraiders.com/api/game/?cn=grantEventReward&eventId=${eventUid}&rewardTier=${missingTier}&collectBattlePass=${battlePass}&clientVersion=${clientVersion}&clientPlatform=MobileLite&gameDataVersion=${gameDataVersion}&command=grantEventReward&isCaptain=0`
+    const url = `https://www.streamraiders.com/api/game/?cn=grantEventReward&eventId=${eventUid}&rewardTier=${missingTier}&collectBattlePass=${battlePass}&clientVersion=${clientVersion}&clientPlatform=WebLite&gameDataVersion=${gameDataVersion}&command=grantEventReward&isCaptain=0`
     const response = await makeRequest(url, 0);
     return;
   } catch (error) {
-    console.error('Error collecting event/battlepass rewards:', error.message);
+    console.error('Error collecting event/battlepass rewards:', new Date().toLocaleTimeString(), error.message);
     return;
-  }
-}
-
-async function getPotionQuantity() {
-  try {
-    const url = `https://www.streamraiders.com/api/game/?cn=getUser&command=getUser`;
-    const response = await makeRequest(url, 0);
-    if (response == undefined) {
-      return;
-    }
-    const data = await response.json();
-    let epicProgression;
-    epicProgression = parseInt(data.data.epicProgression);
-    return epicProgression;
-  } catch (error) {
-    console.error('Error getting potion quantity:', error.message);
-    return;
-  }
-}
-
-async function getStoreRefreshCount() {
-  try {
-    const url = `https://www.streamraiders.com/api/game/?cn=getUser&command=getUser`;
-    const response = await makeRequest(url, 0);
-    if (response == undefined) {
-      return;
-    }
-    const data = await response.json();
-    let storeRefreshCount;
-    storeRefreshCount = parseInt(data.data.storeRefreshCount);
-    return storeRefreshCount;
-  } catch (error) {
-    console.error('Error getting storeRefreshCount:', error.message);
-    return;
-  }
-}
-
-async function getCurrentStoreItems() {
-  const dataArray = ['clientVersion', 'dataVersion'];
-  const dataKeys = await retrieveMultipleFromStorage(dataArray);
-  const clientVersion = dataKeys.clientVersion;
-  const gameDataVersion = dataKeys.dataVersion;
-
-  try {
-    const url = `https://www.streamraiders.com/api/game/?cn=getCurrentStoreItems&clientVersion=${clientVersion}&clientPlatform=WebLite&gameDataVersion=${gameDataVersion}&command=getCurrentStoreItems&isCaptain=0`
-    const response = await makeRequest(url, 0);
-    if (response == undefined) {
-      return;
-    }
-
-    const storeData = await response.json();
-    const storeItems = storeData.data;
-    return storeItems;
-
-  } catch (error) {
-    console.error('Error in getCurrentStoreItems:', error);
-    return "";
   }
 }
 
@@ -751,7 +530,7 @@ async function purchaseStoreItem(item) {
     return;
 
   } catch (error) {
-    console.error('Error in purchaseStoreItem:', error);
+    console.error('Error in purchaseStoreItem:', new Date().toLocaleTimeString(), error);
     return;
   }
 }
@@ -769,36 +548,12 @@ async function purchaseStoreRefresh() {
       return;
     }
 
-    const storeData = await response.json();
+    const storeData = response;
     const storeItems = storeData.data;
     return storeItems;
 
   } catch (error) {
-    console.error('Error in purchaseStoreRefresh:', error);
-    return "";
-  }
-}
-
-async function getUserQuests() {
-  const dataArray = ['clientVersion', 'dataVersion', 'userId'];
-  const dataKeys = await retrieveMultipleFromStorage(dataArray);
-  const clientVersion = dataKeys.clientVersion;
-  const gameDataVersion = dataKeys.dataVersion;
-  const userId = dataKeys.userId;
-
-  try {
-    const url = `https://www.streamraiders.com/api/game/?cn=getUserQuests&userId=${userId}&isCaptain=0&gameDataVersion=${gameDataVersion}&command=getUserQuests&clientVersion=${clientVersion}&clientPlatform=WebLite`
-    const response = await makeRequest(url, 0);
-    if (response == undefined) {
-      return;
-    }
-
-    const questsData = await response.json();
-    const quests = questsData.data;
-    return quests;
-
-  } catch (error) {
-    console.error('Error in getUserQuests:', error);
+    console.error('Error in purchaseStoreRefresh:', new Date().toLocaleTimeString(), error);
     return "";
   }
 }
@@ -817,12 +572,12 @@ async function collectQuestReward(questSlotId) {
       return;
     }
 
-    const questsData = await response.json();
+    const questsData = response;
     const quests = questsData.data;
     return quests;
 
   } catch (error) {
-    console.error('Error in collectQuestReward:', error);
+    console.error('Error in collectQuestReward:', new Date().toLocaleTimeString(), error);
     return "";
   }
 }
@@ -834,16 +589,16 @@ async function grantDailyDrop() {
   const gameDataVersion = dataKeys.dataVersion;
 
   try {
-    const url = `https://www.streamraiders.com/api/game/?cn=grantDailyDrop&clientVersion=${clientVersion}&clientPlatform=MobileLite&gameDataVersion=${gameDataVersion}&command=grantDailyDrop&isCaptain=0`
+    const url = `https://www.streamraiders.com/api/game/?cn=grantDailyDrop&clientVersion=${clientVersion}&clientPlatform=WebLite&gameDataVersion=${gameDataVersion}&command=grantDailyDrop&isCaptain=0`
     const response = await makeRequest(url, 0);
     return;
   } catch (error) {
-    console.error('Error collecting daily reward:', error.message);
+    console.error('Error collecting daily reward:', new Date().toLocaleTimeString(), error.message);
     return;
   }
 }
 
-async function getCaptainsForSearch(mode) { //mode = "campaign" or "duel" or "dungeons" or "clash"
+async function getCaptainsForSearch(mode, codes = 0) { //mode = "campaign" or "duel" or "dungeons" or "clash"
   const dataArray = ['clientVersion', 'dataVersion', 'userId'];
   const dataKeys = await retrieveMultipleFromStorage(dataArray);
   const clientVersion = dataKeys.clientVersion;
@@ -855,13 +610,18 @@ async function getCaptainsForSearch(mode) { //mode = "campaign" or "duel" or "du
     let h = 0;
 
     for (let pageNum = 1; pageNum <= 10; pageNum++) {
-      const url = `https://www.streamraiders.com/api/game/?cn=getCaptainsForSearch&userId=${userId}&isCaptain=0&gameDataVersion=${gameDataVersion}&command=getCaptainsForSearch&page=${pageNum}&resultsPerPage=24&filters={"mode":"${mode}","isPlaying":1,"roomCodes":"false"}&clientVersion=${clientVersion}&clientPlatform=WebLite`
+      let url;
+      if (codes == 0) {
+        url = `https://www.streamraiders.com/api/game/?cn=getCaptainsForSearch&userId=${userId}&isCaptain=0&gameDataVersion=${gameDataVersion}&command=getCaptainsForSearch&page=${pageNum}&resultsPerPage=24&filters={"mode":"${mode}","isPlaying":1,"roomCodes":"false"}&clientVersion=${clientVersion}&clientPlatform=WebLite`
+      } else if (codes == 1) {
+        url = `https://www.streamraiders.com/api/game/?cn=getCaptainsForSearch&userId=${userId}&isCaptain=0&gameDataVersion=${gameDataVersion}&command=getCaptainsForSearch&page=${pageNum}&resultsPerPage=24&filters={"mode":"${mode}","isPlaying":1}&clientVersion=${clientVersion}&clientPlatform=WebLite`
+      }
       const response = await makeRequest(url, 0);
       if (response == undefined) {
         return;
       }
 
-      let captData = await response.json();
+      let captData = response;
       console.log(captData)
       if (captData.data && captData.data.captains != null) {
         let capts = captData.data.captains;
@@ -885,7 +645,7 @@ async function getCaptainsForSearch(mode) { //mode = "campaign" or "duel" or "du
     return captArray;
 
   } catch (error) {
-    console.error('Error in getCaptainsForSearch:', error);
+    console.error('Error in getCaptainsForSearch:', new Date().toLocaleTimeString(), error);
     return "";
   }
 }
@@ -906,23 +666,6 @@ So effectively, the time between 11 and 7 is the battle time. The time between 7
 
 */
 
-async function getFavoriteCaptainIds() {
-  try {
-    const url = `https://www.streamraiders.com/api/game/?cn=getUser&command=getUser`;
-    const response = await makeRequest(url, 0);
-    if (response == undefined) {
-      return;
-    }
-    const data = await response.json();
-    let favoriteCaptainIds;
-    favoriteCaptainIds = data.data.favoriteCaptainIds;
-    return favoriteCaptainIds;
-  } catch (error) {
-    console.error('Error getting favorite captain Ids:', error.message);
-    return;
-  }
-}
-
 async function joinCaptain(captainId, index) {
   const dataArray = ['clientVersion', 'dataVersion'];
   const dataKeys = await retrieveMultipleFromStorage(dataArray);
@@ -934,7 +677,7 @@ async function joinCaptain(captainId, index) {
     const response = await makeRequest(url, 0);
     return;
   } catch (error) {
-    console.error('Error joining captain:', error.message);
+    console.error('Error joining captain:', new Date().toLocaleTimeString(), error.message);
     return;
   }
 }
@@ -945,31 +688,8 @@ async function joinCaptainToAvailableSlot(captainName) {
     const response = await makeRequest(url, 0);
     return;
   } catch (error) {
-    console.error('Error joining captain:', error.message);
+    console.error('Error joining captain:', new Date().toLocaleTimeString(), error.message);
     return;
-  }
-}
-
-//Get every unit the user has
-async function fetchUnits() {
-  const dataArray = ['clientVersion', 'dataVersion'];
-  const dataKeys = await retrieveMultipleFromStorage(dataArray);
-  const clientVersion = dataKeys.clientVersion;
-  const gameDataVersion = dataKeys.dataVersion;
-
-  try {
-    const url = `https://www.streamraiders.com/api/game/?cn=getUserUnits&clientVersion=${clientVersion}&clientPlatform=MobileLite&gameDataVersion=${gameDataVersion}&command=getUserUnits&isCaptain=0`
-    const response = await makeRequest(url, 0);
-    if (response == undefined) {
-      return;
-    }
-
-    // get unit id and name.
-    const unitsArray = await response.json();
-    return unitsArray
-
-  } catch (error) {
-    console.error('Error fetching units:', error.message);
   }
 }
 
@@ -979,7 +699,7 @@ async function useCooldownCurrency(unitType, unitLevel) {
   const clientVersion = dataKeys.clientVersion;
   const gameDataVersion = dataKeys.dataVersion;
 
-  let unitArray = await fetchUnits();
+  let unitArray = await retrieveFromStorage("unitArray");
   let unitId;
   unit_loop: for (let i = 0; i < unitArray.length; i++) {
     if (unitArray[i].unitType == unitType && unitArray[i].level == unitLevel) {
@@ -992,7 +712,7 @@ async function useCooldownCurrency(unitType, unitLevel) {
     const response = await makeRequest(url, 0);
     return;
   } catch (error) {
-    console.error('Error using meat:', error.message);
+    console.error('Error using meat:', new Date().toLocaleTimeString(), error.message);
     return;
   }
 }
@@ -1007,7 +727,7 @@ async function reviveUnit(unitType, unitLevel, captainNameFromDOM) {
   let requestLoyaltyResults = await getCaptainLoyalty(captainNameFromDOM);
   let raidId = requestLoyaltyResults[0];
 
-  let unitArray = await fetchUnits();
+  let unitArray = await retrieveFromStorage("unitArray");
   let unitId;
   unit_loop: for (let i = 0; i < unitArray.data.length; i++) {
     if (unitArray.data[i].unitType == unitType && unitArray.data[i].level == unitLevel) {
@@ -1021,16 +741,16 @@ async function reviveUnit(unitType, unitLevel, captainNameFromDOM) {
     if (response == undefined) {
       return;
     }
-    let reviveStatus = await response.json();
+    let reviveStatus = response;
     return;
   } catch (error) {
-    console.error('Error reviving unit:', error.message);
+    console.error('Error reviving unit:', new Date().toLocaleTimeString(), error.message);
     return;
   }
 }
 
 async function getUnitInfo(unitId) {
-  let unitArray = await fetchUnits();
+  let unitArray = await retrieveFromStorage("unitArray");
   let unitInfo = [];
   for (let i = 0; i < unitArray.data.length; i++) {
     if (unitArray.data[i].unitId == unitId) {
@@ -1042,7 +762,7 @@ async function getUnitInfo(unitId) {
 }
 
 async function getUnitId(unitType, unitLevel) {
-  let unitArray = await fetchUnits();
+  let unitArray = await retrieveFromStorage("unitArray");
   let unitId;
   unit_loop: for (let i = 0; i < unitArray.data.length; i++) {
     if (unitArray.data[i].unitType == unitType && unitArray.data[i].level == unitLevel) {
@@ -1052,69 +772,25 @@ async function getUnitId(unitType, unitLevel) {
   }
 }
 
-async function getUserDungeonInfoForRaid(captainNameFromDOM) {
-  const dataArray = ['clientVersion', 'dataVersion', 'userId'];
-  const dataKeys = await retrieveMultipleFromStorage(dataArray);
-  const clientVersion = dataKeys.clientVersion;
-  const gameDataVersion = dataKeys.dataVersion;
-  const userId = dataKeys.userId;
+async function getUserDungeonInfoForRaid(data, headers) {
+  let headersArray = headers.split("&");
+  let raidId = headersArray[0].split("=")[1];
 
-  let requestLoyaltyResults = await getCaptainLoyalty(captainNameFromDOM);
-  if (requestLoyaltyResults == undefined) {
-    return;
-  }
-  let raidId = requestLoyaltyResults[0];
+  let dungeonRaidResponse = data;
+  if (dungeonRaidResponse && dungeonRaidResponse != null) {
+    let dungeonRaid = dungeonRaidResponse.data;
+    let dungeonRaidInfo = [];
 
-  try {
-    const url = `https://www.streamraiders.com/api/game/?cn=getUserDungeonInfoForRaid&userId=${userId}&isCaptain=0&gameDataVersion=${gameDataVersion}&command=getUserDungeonInfoForRaid&raidId=${raidId}&clientVersion=${clientVersion}&clientPlatform=WebLite`
-    const response = await makeRequest(url, 0);
-    if (response && response != null) {
-      let dungeonRaidResponse = await response.json();
-      if (dungeonRaidResponse && dungeonRaidResponse != null) {
-        let dungeonRaid = dungeonRaidResponse.data;
-        let dungeonRaidInfo = [];
-
-        // dungeonRaidInfo[0] = dungeonRaid?.streak ?? "";
-        // dungeonRaidInfo[1] = dungeonRaid?.knockedUnits ?? "";
-        // dungeonRaidInfo[2] = dungeonRaid?.recoveredUnits ?? "";
-        // dungeonRaidInfo[3] = dungeonRaid?.deadUnits ?? "";
-        // dungeonRaidInfo[4] = dungeonRaid?.exhaustedUnits ?? "";
-        // dungeonRaidInfo[5] = dungeonRaid?.epicChargesUsed ?? "";
-        // dungeonRaidInfo[6] = dungeonRaid?.captainBoons ?? "";
-        // dungeonRaidInfo[7] = dungeonRaid?.enemyBoons ?? "";
-        dungeonRaidInfo[8] = dungeonRaid?.completedLevels ?? "";
-
-        return dungeonRaidInfo;
-      } else {
-        return;
-      }
-    } else {
-      return;
-    }
-  } catch (error) {
-    console.error('Error retrieving dungeon info:', error.message);
-    return;
-  }
-}
-
-async function getAvailableCurrencies() {
-  const dataArray = ['clientVersion', 'dataVersion'];
-  const dataKeys = await retrieveMultipleFromStorage(dataArray);
-  const clientVersion = dataKeys.clientVersion;
-  const gameDataVersion = dataKeys.dataVersion;
-
-  try {
-    const url = `https://www.streamraiders.com/api/game/?cn=getAvailableCurrencies&format=object&clientVersion=${clientVersion}&clientPlatform=WebLite&gameDataVersion=${gameDataVersion}&command=getAvailableCurrencies&isCaptain=0`
-    const response = await makeRequest(url, 0);
-    if (response == undefined) {
-      return;
-    }
-
-    // Return currencies
-    return await response.json();
-
-  } catch (error) {
-    console.error('Error fetching units:', error.message);
+    dungeonRaidInfo[0] = dungeonRaid?.streak ?? "";
+    dungeonRaidInfo[1] = dungeonRaid?.knockedUnits ?? "";
+    dungeonRaidInfo[2] = dungeonRaid?.recoveredUnits ?? "";
+    dungeonRaidInfo[3] = dungeonRaid?.deadUnits ?? "";
+    dungeonRaidInfo[4] = dungeonRaid?.exhaustedUnits ?? "";
+    dungeonRaidInfo[5] = dungeonRaid?.epicChargesUsed ?? "";
+    dungeonRaidInfo[6] = dungeonRaid?.captainBoons ?? "";
+    dungeonRaidInfo[7] = dungeonRaid?.enemyBoons ?? "";
+    dungeonRaidInfo[8] = dungeonRaid?.completedLevels ?? "";
+    await chrome.storage.local.set({ "dungeonRaidInfo": dungeonRaidInfo });
   }
 }
 
@@ -1196,10 +872,10 @@ async function levelUp() {
     { lower: 28, high: 29, gold: 1600, scroll: 20 },
     { lower: 29, high: 30, gold: 2000, scroll: 20 }];
 
-  let u = await fetchUnits()
+  let u = await retrieveFromStorage("unitArray");
   let units = u.data
 
-  let uC = await getAvailableCurrencies()
+  let uC = await retrieveFromStorage("availableCurrencies")
   let userCurrencies = uC.data
   let gold = userCurrencies.gold
   let goldInt = parseInt(gold)
@@ -1225,11 +901,11 @@ async function levelUp() {
       return obj;
     }, {});
 
-  let unitsArray = Object.entries(filteredUnits);
-  unitsArray.sort((a, b) => a[1].priority - b[1].priority);
+  let unitArray = Object.entries(filteredUnits);
+  uArray.sort((a, b) => a[1].priority - b[1].priority);
 
-  for (let i = 0; i < unitsArray.length; i++) {
-    let unit = unitsArray[i]
+  for (let i = 0; i < unitArray.length; i++) {
+    let unit = unitArray[i]
     let unitName = unit[0]
     let canLevelUp = unit[1].canLevelUp
     let canSpec = unit[1].canSpec
@@ -1269,16 +945,16 @@ async function levelUp() {
             //Make the api call to level up
             let upgradeUrl = ""
             if (level == 19 && canSpec) {
-              upgradeUrl = `https://www.streamraiders.com/api/game/?cn=specializeUnit&unitId=${unitId}&specializationUid=${spec}&clientVersion=${clientVersion}&clientPlatform=MobileLite&gameDataVersion=${gameDataVersion}&command=specializeUnit&isCaptain=0`
+              upgradeUrl = `https://www.streamraiders.com/api/game/?cn=specializeUnit&unitId=${unitId}&specializationUid=${spec}&clientVersion=${clientVersion}&clientPlatform=WebLite&gameDataVersion=${gameDataVersion}&command=specializeUnit&isCaptain=0`
             } else {
-              upgradeUrl = `https://www.streamraiders.com/api/game/?cn=upgradeUnit&userId=${userId}&isCaptain=0&gameDataVersion=${gameDataVersion}&command=upgradeUnit&unitType=${unitName}&unitLevel=${level}&unitId=${unitId}&clientVersion=${clientVersion}&clientPlatform=MobileLite`
+              upgradeUrl = `https://www.streamraiders.com/api/game/?cn=upgradeUnit&userId=${userId}&isCaptain=0&gameDataVersion=${gameDataVersion}&command=upgradeUnit&unitType=${unitName}&unitLevel=${level}&unitId=${unitId}&clientVersion=${clientVersion}&clientPlatform=WebLite`
             }
             try {
               const response = await makeRequest(upgradeUrl, 0);
               break;
 
             } catch (error) {
-              console.error('Error upgrading unit:', error.message);
+              console.error('Error upgrading unit:', new Date().toLocaleTimeString(), error.message);
               return;
             }
             break;
@@ -1327,13 +1003,14 @@ async function switchCaptains(currentCaptain, masterList, index) {
   
   for (let i = 1; i < 6; i++) {
     try {
-      const url = `https://www.streamraiders.com/api/game/?cn=getCaptainsForSearch&isPlayingS=desc&isLiveS=desc&page=${i}&format=normalized&resultsPerPage=30&filters={"isPlaying":1,"roomCodes":"false"}&clientVersion=${clientVersion}&clientPlatform=MobileLite&gameDataVersion=${gameDataVersion}&command=getCaptainsForSearch&isCaptain=0`
+      // const url = `https://www.streamraiders.com/api/game/?cn=getCaptainsForSearch&isPlayingS=desc&isLiveS=desc&page=${i}&format=normalized&resultsPerPage=30&filters={"isPlaying":1,"roomCodes":"false"}&clientVersion=${clientVersion}&clientPlatform=WebLite&gameDataVersion=${gameDataVersion}&command=getCaptainsForSearch&isCaptain=0`
+      const url = `https://www.streamraiders.com/api/game/?cn=getCaptainsForSearch&isPlayingS=desc&page=${i}&format=normalized&resultsPerPage=30&filters={"isPlaying":1}&clientVersion=${clientVersion}&clientPlatform=WebLite&gameDataVersion=${gameDataVersion}&command=getCaptainsForSearch&isCaptain=0`
       const response = await makeRequest(url, 0);
       if (response == undefined) {
         return;
       }
 
-      const captainsData = await response.json();
+      const captainsData = response;
 
       for (let i = 0; i < captainsData.data.captains.length; i++) {
         const current = captainsData.data.captains[i];
@@ -1354,7 +1031,7 @@ async function switchCaptains(currentCaptain, masterList, index) {
         }
       }
     } catch (error) {
-      console.error('Error fetching captains:', error.message);
+      console.error('Error fetching captains:', new Date().toLocaleTimeString(), error.message);
       return false;
     }
   }
@@ -1395,12 +1072,12 @@ async function switchCaptains(currentCaptain, masterList, index) {
 
 async function checkIfCodeLocked(captainName) {
   try {
-    let response = await getActiveRaids();
+    let response = activeRaidsArray;
 
-    const activeRaids = await response.json();
+    const activeRaids = response;
     let activeRaidsData = new Object();
-    for (let i = 0; i < activeRaids.data.length; i++) {
-      const position = activeRaids.data[i];
+    for (let i = 0; i < activeRaids.length; i++) {
+      const position = activeRaids[i];
       if (position.twitchUserName.toLowerCase() === captainName.toLowerCase() && position.isCodeLocked == true) {
         return true;
       }
@@ -1412,6 +1089,7 @@ async function checkIfCodeLocked(captainName) {
 async function attemptToJoinDuel(index, originalCaptainId) {
   let duelCapt = await checkForDuel();
   if (duelCapt) {
+    duelCapt = await getCaptainsForSearch("duel", 0);
     await backgroundDelay(3000);
     await removeOldCaptain(originalCaptainId);
     await backgroundDelay(1000);
@@ -1429,12 +1107,19 @@ async function joinCaptCheckCodeRetry(mode, captainArray, index, originalCaptain
     if (!alreadyJoined) {
       captainId = captain[0];
       captainName = captain[1];
+      console.log("LOG-joining "+captainName);
       await joinCaptain(captainId, index);
       if (mode != "campaign") {
-        await saveToStorage(mode + "Captain", "," + captainName + ",");
+        console.log("LOG-save to storage "+captainName);
+        if (mode == "dungeons") {
+          await saveToStorage("dungeonCaptain", "," + captainName + ",");
+        } else {
+          await saveToStorage(mode + "Captain", "," + captainName + ",");
+        }
       }
       await delay(3000);
       if (await checkIfCodeLocked(captainName)) { //If code, leave captain, delete the captain from the array, and try again
+        console.log("LOG-removing "+captainName);
         await removeOldCaptain(captainId);
         captLoop: for (let j = 0; j < captainArray.length; j++) {
           if (captainArray[j][1].toLowerCase() == captainName.toLowerCase()) {
@@ -1458,6 +1143,7 @@ async function joinCaptCheckCodeRetry(mode, captainArray, index, originalCaptain
   //If unable to join any new captain, join the original again, if applicable
   if (originalCaptainId != "") {
     await delay(1000);
+    console.log("LOG-joining original captain "+originalCaptainId);
     await joinCaptain(originalCaptainId, index);
     await delay(3000);
   }
@@ -1507,13 +1193,14 @@ async function checkDungeons(cptId, type) {
   let dungeonCaptains = []
   for (let i = 1; i < 6; i++) {
     try {
-      const url = `https://www.streamraiders.com/api/game/?cn=getCaptainsForSearch&isPlayingS=desc&isLiveS=desc&page=${i}&format=normalized&resultsPerPage=30&filters={"isPlaying":1,"mode":"dungeons","roomCodes":"false"}&clientVersion=${clientVersion}&clientPlatform=MobileLite&gameDataVersion=${gameDataVersion}&command=getCaptainsForSearch&isCaptain=0`
+      // const url = `https://www.streamraiders.com/api/game/?cn=getCaptainsForSearch&isPlayingS=desc&isLiveS=desc&page=${i}&format=normalized&resultsPerPage=30&filters={"isPlaying":1,"mode":"dungeons","roomCodes":"false"}&clientVersion=${clientVersion}&clientPlatform=WebLite&gameDataVersion=${gameDataVersion}&command=getCaptainsForSearch&isCaptain=0`
+      const url = `https://www.streamraiders.com/api/game/?cn=getCaptainsForSearch&isPlayingS=desc&page=${i}&format=normalized&resultsPerPage=30&filters={"isPlaying":1,"mode":"dungeons"}&clientVersion=${clientVersion}&clientPlatform=WebLite&gameDataVersion=${gameDataVersion}&command=getCaptainsForSearch&isCaptain=0`
       const response = await makeRequest(url, 0);
       if (response == undefined) {
         return;
       }
 
-      let parsedResponse = await response.json()
+      let parsedResponse = response
       let dungeonCaptainData = parsedResponse.data.captains
       dungeonCaptains.push(...dungeonCaptainData);
     } catch (error) {
@@ -1580,7 +1267,7 @@ async function joinDungeon(cptId, dungeonCaptains) {
 
       return true;
     } catch (error) {
-      console.error('Error joining captain:', error.message);
+      console.error('Error joining captain:', new Date().toLocaleTimeString(), error.message);
       return await joinNextDungeon(cptId, dungeonCaptains.slice(1));
     }
   }
@@ -1602,7 +1289,7 @@ async function getActiveRaids() {
 
   //Logic to check battle for messages here
   try {
-    const url = `https://www.streamraiders.com/api/game/?cn=getActiveRaidsLitecn=getActiveRaidsLite&clientVersion=${clientVersion}&clientPlatform=MobileLite&gameDataVersion=${gameDataVersion}&command=getActiveRaidsLite&isCaptain=0`
+    const url = `https://www.streamraiders.com/api/game/?cn=getActiveRaidsLite&clientVersion=${clientVersion}&clientPlatform=WebLite&gameDataVersion=${gameDataVersion}&command=getActiveRaidsLite&isCaptain=0`
     const response = await makeRequest(url, 0);
 
     return response
@@ -1618,16 +1305,43 @@ async function makeRequest(url, retryCount) {
   }
   requestRunning = true;
   try {
+    if (retryCount >= 1) {
+      console.error(new Date().toLocaleTimeString(), new Date().getSeconds(),new Date().getMilliseconds(), "Trying...:", url, retryCount, reloadRunning);
+    }
+
+    const dataArray = ['clientVersion', 'dataVersion'];
+    const dataKeys = await retrieveMultipleFromStorage(dataArray);
+    const clientVersion = dataKeys.clientVersion;
+    const gameDataVersion = dataKeys.dataVersion;
+    let parsedUrl = url.split("&");
+    let apiUrl = parsedUrl[0];
+
     let cookieString = document.cookie;
-    let response = await fetch(url, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/x-www-form-urlencoded',
-        'Cookie': cookieString,
-      },
-    });
-    if (!response.ok || response == null || response == undefined) {
-        console.error(new Date().toLocaleTimeString(), "Invalid response:", url, retryCount, response);
+    
+    let response;
+    let xhr = new XMLHttpRequest();
+    let data = url.replace(apiUrl + "&","");
+    
+    xhr.open("POST", apiUrl, false);
+    xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+    xhr.setRequestHeader("Accept", "application/json, text/plain, */*");
+    xhr.setRequestHeader("Priority", "u=1, i");
+    xhr.setRequestHeader("Protocol", clientVersion);
+    xhr.onload = function (e) {
+      if (xhr.readyState === 4) {
+        if (xhr.status === 200) {
+          response = JSON.parse(xhr.responseText);
+        } else {
+          console.error(xhr.statusText);
+        }
+      }
+    };
+    xhr.onerror = function (e) {
+      console.error(xhr.statusText);
+    };
+    xhr.send(data);
+
+    if (xhr.status !== 200 || response == null || response == undefined) {
         throw new Error('Network response was not ok');
     }
     requestRunning = false;
@@ -1644,4 +1358,270 @@ async function makeRequest(url, retryCount) {
       return null;
     }
   }
+}
+
+async function handleMessage(message) {
+  let url = message.data[0];
+  let data = message.data[1];
+  let headers = message.data[2];
+  
+  if (url.startsWith("https://streamcap-prod1.s3.amazonaws.com/data/data.")) {
+    await chrome.storage.local.set({ "gameDataPath": url });
+    await getGameData(url, data);
+  }
+  if (url == "https://d2k2g0zg1te1mr.cloudfront.net/manifests/mobilelite.json") {
+    await chrome.storage.local.set({ imageUrls: data });
+  }
+  if (url == "https://www.streamraiders.com/api/game/?cn=getActiveRaidsLite") {
+    if (data.info.dataPath != await retrieveFromStorage("gameDataPath")) {
+      await locationReload();
+      return;
+    }
+    await getActiveRaidsLite(data);
+    await logChestsAndUnitsInterval();
+  }
+  if (url == "https://www.streamraiders.com/api/game/?cn=getEventProgressionLite") {
+    console.log(url, data);
+    await chrome.storage.local.set({ "getEventProgressionLite": data });
+  }
+  if (url == "https://www.streamraiders.com/api/game/?cn=getUser") {
+    console.log(url, data);
+    await chrome.storage.local.set({ 
+      "userId": data.data.userId, 
+      "epicProgression": data.data.epicProgression, 
+      "storeRefreshCount": data.data.storeRefreshCount, 
+      "favoriteCaptainIds": data.data.favoriteCaptainIds 
+    });
+  }
+  if (url == "https://www.streamraiders.com/api/game/?cn=getRaidStatsByUser") {
+    console.log(url, data);
+    await getRaidStats(data);
+  }
+  if (url == "https://www.streamraiders.com/api/game/?cn=getRaid") {
+    console.log(url, data);
+    await getLeaderboardUnitsData(data);
+  }
+  if (url == "https://www.streamraiders.com/api/game/?cn=getUserQuests") {
+    console.log(url, data);
+    await chrome.storage.local.set({ "userQuests": data });
+  }
+  if (url == "https://www.streamraiders.com/api/game/?cn=getCurrentStoreItems") {
+    console.log(url, data);
+    await chrome.storage.local.set({ "currentStoreItems": data });
+  }
+  if (url == "https://www.streamraiders.com/api/game/?cn=getUserUnits") {
+    console.log(url, data);
+    await chrome.storage.local.set({ "unitArray": data });
+  }
+  if (url == "https://www.streamraiders.com/api/game/?cn=getUserDungeonInfoForRaid") {
+    console.log(url, data);
+    await getUserDungeonInfoForRaid(data, headers);
+  }
+  if (url == "https://www.streamraiders.com/api/game/?cn=getAvailableCurrencies") {
+    console.log(url, data);
+    await chrome.storage.local.set({ "availableCurrencies": data });
+  }
+  if (url == "https://www.streamraiders.com/api/game/?cn=grantEventReward") {
+    console.log(url, data);
+    // await retrieveFromStorage("grantEventReward");
+    // await chrome.storage.local.set({ "grantEventReward": data });
+  }
+  if (url == "https://www.streamraiders.com/api/game/?cn=collectQuestReward") {
+    console.log(url, data);
+    // await retrieveFromStorage("collectQuestReward");
+    // await chrome.storage.local.set({ "collectQuestReward": data });
+  }
+  if (url == "https://www.streamraiders.com/api/game/?cn=getCaptainsForSearch") {
+    console.log(url, data);
+    // await retrieveFromStorage("getCaptainsForSearch");
+    // await chrome.storage.local.set({ "getCaptainsForSearch": data });
+  }
+  if (url == "https://www.streamraiders.com/api/game/?cn=purchaseChestItem") {
+    console.log(url, data);
+    // await retrieveFromStorage("purchaseChestItem");
+    // await chrome.storage.local.set({ "purchaseChestItem": data });
+  }
+}
+
+async function getActiveRaidsLite(activeRaids) {
+  for (let i = 0; i < activeRaids.data.length; i++) {
+    let activeRaid = activeRaids.data[i];
+    for (index in activeRaidsArray) {
+      if (activeRaidsArray[index].userSortIndex == activeRaid.userSortIndex) activeRaidsArray.splice(index, 1);
+    }
+    activeRaidsArray.push({
+      "twitchDisplayName": activeRaid.twitchDisplayName, 
+      "twitchUserName": activeRaid.twitchUserName, 
+      "captainId": activeRaid.captainId, 
+      "userSortIndex": activeRaid.userSortIndex, 
+      "raidId": activeRaid.raidId, 
+      "nodeId": activeRaid.nodeId, 
+      "opponentTwitchDisplayName": activeRaid.opponentTwitchDisplayName, 
+      "type": activeRaid.type, 
+      "isCodeLocked": activeRaid.isCodeLocked, 
+      "message": activeRaid.message
+    });
+  }
+  //Put an empty entry in activeRaidsArray if the user has no captains in any slot
+  if (activeRaidsArray.length == 0) {
+    activeRaidsArray.push({
+      "twitchDisplayName": "", 
+      "twitchUserName": "", 
+      "captainId": "", 
+      "userSortIndex": 0, 
+      "raidId": "", 
+      "nodeId": "", 
+      "opponentTwitchDisplayName": "", 
+      "type": "", 
+      "isCodeLocked": "", 
+      "message": ""
+    });
+  }
+}
+
+async function getGameData(url, data) {
+  const currency_keys_rm = [
+    "CapCaptain",
+    "CapViewer",
+    "CaptainType",
+    "DisplayName",
+    "EpicType",
+    "NearCapCaptain",
+    "NearCapViewer",
+    "RegularType",
+    "Type",
+    "Uid"
+  ]
+  let currency = data.sheets.Currency;
+  currency = removeKeys(currency, currency_keys_rm)
+
+  const items_keys_rm = ["DisplayName", "IsInRandomPool", "Rarity", "Uid"]
+  let items = data.sheets.Items;
+  items = removeKeys(items, items_keys_rm)
+
+  const units_keys_rm = ["AssetScaleOverride",
+    "AttackRate",
+    "AttackType",
+    "BaseAction",
+    "BaseActionSelfVfxUid",
+    "CanBePlaced",
+    "Damage",
+    "DamageDelay",
+    "Description",
+    "DisplayName",
+    "EffectiveCircleDataUid",
+    "ExtraHitSize",
+    "HP",
+    "Heal",
+    "IsCaptain",
+    "IsEpic",
+    "IsFlying",
+    "Level",
+    "OnDeathAction",
+    "OnDeathActionSelfVfxUid",
+    "OnDefeatAction",
+    "OnKillAction",
+    "PassThroughList",
+    "PlacementType",
+    "PlacementVFX",
+    "Power",
+    "ProjectileUid",
+    "Range",
+    "Rarity",
+    "RemainsAsset",
+    "Role",
+    "ShowTeamIndicator",
+    "Size",
+    "SpecialAbilityActionUid",
+    "SpecialAbilityDescription",
+    "SpecialAbilityRate",
+    "SpecialAbilitySelfVfxUid",
+    "Speed",
+    "StartBuffsList",
+    "StrongAgainstTagsList",
+    "TagsList",
+    "TargetPriorityTagsList",
+    "TargetTeam",
+    "TargetingPriorityRange",
+    "Triggers",
+    "UnitTargetingType",
+    "UnitType",
+    "UpgradeCurrencyType",
+    "WeakAgainstTagsList"]
+  const units = data.sheets.Units;
+  const unitsArray = Object.values(units);
+  let filteredUnits = unitsArray.filter(unit => unit.PlacementType === "viewer");
+  filteredUnits = removeKeys(filteredUnits, units_keys_rm)
+
+  const skins_keys_rm = ["BaseUnitType",
+    "CaptainUnitType",
+    "DateAdded",
+    "Description",
+    "DisplayName",
+    "EpicAssetOverride",
+    "EpicUnitType",
+    "Filter",
+    "IsCharity",
+    "IsGiftable",
+    "IsLive",
+    "Jira",
+    "ProductId",
+    "ProjectileOverrideUid",
+    "Shared",
+    "SortOrder",
+    "StreamerId",
+    "StreamerName",
+    "Type",
+    "Uid"]
+  let skins = data.sheets.Skins;
+  skins = removeKeys(skins, skins_keys_rm)
+
+  const map_keys_rm = ["NodeDifficulty", "NodeType", "MapTags", "OnLoseDialog", "OnStartDialog", "OnWinDialog"]
+  let mapNodes = data.sheets.MapNodes
+  mapNodes = removeKeys(mapNodes, map_keys_rm)
+
+  const transformedJson = {
+    url: url,
+    MapNodes: mapNodes
+  };
+
+  const events_keys_rm = ["BannerAsset", "Customizations", "Description", "MapNodeSpecialAsset", "PreviewLegendaryAsset1", "PreviewLegendaryAsset2", "PreviewLegendaryAsset3", "PreviewSkinAsset1", "PreviewSkinAsset2", "PreviewSkinAsset3", "PreviewSkinAsset4", "PreviewSkinAsset5", "PreviewSkinAsset6", "PreviewSkinAsset7", "PreviewSkinAsset7Epic", "TeaserTime", "WorldIndex"]
+  let events = data.sheets.Events;
+  events = removeKeys(events, events_keys_rm)
+
+  const chests_keys_rm = ["BonusSlots", "BuyButtonMessageOverride", "CaptainSlots", "CharityChestEventUid", "CharityChestReward", "ClosedIcon", "GrandPrizeIcon", "IsBoosted", "IsCharity", "OpenCountMessageOverride", "OpenIcon", "RewardDescription", "RewardDescription2", "RewardOpenCountDescriptionOverride", "ShowOpenCount", "TrackOpenCount"]
+  let chests = data.sheets.Chests;
+  chests = removeKeys(chests, chests_keys_rm)
+
+  const eventTiers_keys_rm = ["Badge", "BasicRewardImageOverride", "BattlePassRewardImageOverride", "Requirement"]
+  let eventTiers = data.sheets.EventTiers;
+  eventTiers = removeKeys(eventTiers, eventTiers_keys_rm)
+
+  let eventUid = await retrieveFromStorage("getEventProgressionLite");
+  eventUid = eventUid.data.eventUid;
+  
+  for (const nodeKey in eventTiers) {
+    const node = eventTiers[nodeKey];
+    if (node.EventUid != eventUid) {
+      delete eventTiers[nodeKey];
+    }
+  }
+
+  const quests_keys_rm = ["AssetPathOverride", "AssetScaleOverride", "AutoCompleteCost", "CompletionCooldown", "CurrencyIdRequirement", "CurrencyMaxRequirement", "CurrencyMinRequirement", "QuestIds", "UnitAsset", "UnitLevelRequirement", "UnitTypeRequirement"]
+  let quests = data.sheets.Quests;
+  quests = removeKeys(quests, quests_keys_rm)
+
+  await chrome.storage.local.set({ "loyaltyChests": transformedJson, "currency": currency, "items": items, "units": filteredUnits, "skins": skins, "events": events, "chests": chests, "eventTiers": eventTiers, "quests": quests });
+
+  console.log("Game data successfully fetched and saved to chrome storage.");
+}
+
+function removeKeys(items, keysToRemove) {
+  for (const nodeKey in items) {
+    const node = items[nodeKey];
+    for (const keyToRemove of keysToRemove) {
+      delete node[keyToRemove];
+    }
+  }
+  return items
 }

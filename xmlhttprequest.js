@@ -31,45 +31,29 @@
                 if (postData) {
                     if (typeof postData === 'string') {
                         try {
-                            // here you get the REQUEST HEADERS, in JSON format, so you can also use JSON.parse
                             this._requestHeaders = postData;    
                         } catch(err) {
                             console.log('Request Header JSON decode failed, transfer_encoding field could be base64');
                             console.log(err);
                         }
-                    } else if (typeof postData === 'object' || typeof postData === 'array' || typeof postData === 'number' || typeof postData === 'boolean') {
-                            // do something if you need
                     }
                 }
 
-                // here you get the RESPONSE HEADERS
                 var responseHeaders = this.getAllResponseHeaders();
 
-                if ( this.responseType == "" || this.responseType == "text") {// != 'blob' && this.responseText) {
-                    // responseText is string or null
+                if ( this.responseType == "" || this.responseType == "text") {
                     try {
-
-                        // here you get RESPONSE TEXT (BODY), in JSON format, so you can use JSON.parse
-                        var arr = this.responseText;
-
-                        // printing url, request headers, response headers, response body, to console
-
-                        // console.log(this._url);
-                        // console.log(this._requestHeaders);
-                        // console.log(responseHeaders);
-                        let response = JSON.parse(arr);
-                        window.postMessage([this._url, response])
-                        // console.log(response);
+                        let response = JSON.parse(this.responseText);
+                        window.postMessage([this._url, response, this._requestHeaders])
                     } catch(err) {
-                        console.log("Error in responseType try catch");
-                        console.log(err);
+                        if (!err.name.includes("SyntaxError")) {
+                            console.log("Error in responseType try catch");
+                            console.log(err);
+                        }
                     }
                 }
-
             }
         });
-
         return send.apply(this, arguments);
     };
-
 })(XMLHttpRequest);
