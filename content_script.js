@@ -570,6 +570,7 @@ async function start() {
         } catch (error) {
           loyaltyRadioInt = 0
         }
+        let captainLoyalty;
         let lResults = await getCaptainLoyalty(captainNameFromDOM);
         let raidId = lResults[0];
         let chestType = lResults[1];
