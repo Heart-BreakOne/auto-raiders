@@ -3,18 +3,16 @@
 //Declaring/initializing variables
 const idleDelay = ms => new Promise(res => setTimeout(res, ms));
 const statusArray = ["Waiting for Captain to find battle!ENABLED", , "Waiting for Captain to start battle!ENABLED", "Waiting for Captain to collect reward!ENABLED"];
-const diamondLoyaltyString = "Diamond"; //"https://d2k2g0zg1te1mr.cloudfront.net/env/prod1/mobile-lite/static/media/iconLoyaltyDiamond.66307240.png";
-const goldLoyaltyString = "Gold"; //"https://d2k2g0zg1te1mr.cloudfront.net/env/prod1/mobile-lite/static/media/iconLoyaltyGold.4bd4f730.png";
-const silverLoyaltyString = "Silver"; //"https://d2k2g0zg1te1mr.cloudfront.net/env/prod1/mobile-lite/static/media/iconLoyaltyBlue.d4328aba.png";
-const bronzeLoyaltyString = "Bronze"; //"https://d2k2g0zg1te1mr.cloudfront.net/env/prod1/mobile-lite/static/media/iconLoyaltyWood.ad7f4cb5.png";
+const diamondLoyaltyLevel = 4;
+const goldLoyaltyLevel = 3;
+const silverLoyaltyLevel = 2;
+const bronzeLoyaltyLevel = 1;
 let captainButton;
 let isContentRunningIdle;
 let hasBattlePass;
 
 //This function checks if a captain is idling or if the slot is empty and gets a replacement
-async function checkIdleCaptains(activeRaids) {
-    //Updates the list of captains that are NOT idling.
-    await updateRunningCaptains(activeRaids);
+async function checkIdleCaptains() {
     if (hasBattlePass == null) {
         let eventUid = await retrieveFromStorage("getEventProgressionLite");
         eventUid = eventUid.data.eventUid;
@@ -24,67 +22,74 @@ async function checkIdleCaptains(activeRaids) {
     if (hasBattlePass == 1) maxSlots = 4;
 
     //Initialized a node list with all the captain slots
-    const capSlots = activeRaids.data;
+    const captainSlots = activeRaidsArray;
 
     //Initialize currentSlots to store slot data
     let currentSlots = [];
     for (let i = 0; i < maxSlots; i++) {
+      //Checks if the user wants to switch idle captains by passing the button id
+      const slotNo = +i + 1;
       currentSlots.push({
           "userSortIndex": i, 
           "raidId": null, 
           "captId": null, 
           "captName": null, 
           "battleStatus": null, 
-          "idleState": null
+          "idleState": await getIdleState("offlineButton_" + slotNo)
         });
     }
 
-    //Iterates through the list of slots
-    for (let index = 0; index < capSlots.length; index++) {
-        //Gets the current slot
-        const slot = capSlots[index];
+    if (!(captainSlots.length == 1 && captainSlots[0].twitchDisplayName == "")) {
+        //Iterates through the list of slots
+        for (let index = 0; index < captainSlots.length; index++) {
+            //Gets the current slot
+            const slot = captainSlots[index];
 
-        //Battle status is used to determine the idle status based on the placementEndTime. When placementEndTime is null, placement is active
-        let battleStatus;
-        //If hasViewedResults and postBattleComplete are both "1", that means "Waiting for Captain to find battle!"
-        if (slot.hasViewedResults !== "1" && slot.postBattleComplete !== "1") {
-            battleStatus = true
-        } else {
-            battleStatus = false;
-        }
-        for (let i = 0; i < currentSlots.length; i++) {
-            if (currentSlots[i].userSortIndex == slot.userSortIndex) {
-                currentSlots[i].raidId = slot.raidId;
-                currentSlots[i].captId = slot.captainId;
-                currentSlots[i].captName = slot.twitchDisplayName;
-                currentSlots[i].battleStatus = battleStatus;
-                //Checks if the user wants to switch idle captains by passing the button id
-                const slotNo = +slot.userSortIndex + 1;
-                let currentIdleState;
-                currentSlots[i].idleState = await getIdleState("offlineButton_" + slotNo);
-                i = 5;
+            //Battle status is used to determine the idle status based on the placementEndTime. When placementEndTime is null, placement is active
+            let battleStatus;
+            //If hasViewedResults and postBattleComplete are both "1", that means "Waiting for Captain to find battle!"
+            if (slot.hasViewedResults !== "1" && slot.postBattleComplete !== "1") {
+                battleStatus = true
+            } else {
+                battleStatus = false;
+            }
+            for (let i = 0; i < currentSlots.length; i++) {
+                if (currentSlots[i].userSortIndex == slot.userSortIndex) {
+                    currentSlots[i].raidId = slot.raidId;
+                    currentSlots[i].captId = slot.captainId;
+                    currentSlots[i].captName = slot.twitchDisplayName;
+                    currentSlots[i].battleStatus = battleStatus;
+                    i = 5;
+                }
             }
         }
     }
     
     for (let i = 0; i < currentSlots.length; i++) {
         let captainName = currentSlots[i].captName;
-        //If there's a captain in a slot and the idleState indicates that the user wants to disable the slot, skip it
-        if (!currentSlots[i].idleState && captainName) {
-            continue;
-        }
+        //If the idleState indicates that the user wants to disable the slot, skip it
+        if (!currentSlots[i].idleState) continue;
+
         let raidId = currentSlots[i].raidId;
         let captId = currentSlots[i].captId;
         //If the captain name doesn't exist, it means that the slot is empty
         if (captainName == null) {
-            //Invokes function to get a captain replacement.
-            if (isContentRunningIdle == true) {
-              return;
+            const capSlots = document.querySelectorAll('.capSlot');
+            const slot = capSlots[i];
+            if (!slot) return;
+            const selectButton = slot.querySelector(".actionButton.actionButtonPrimary.capSlotButton.capSlotButtonAction");
+            if (selectButton && selectButton.innerText == "SELECT") {
+                if (isContentRunningIdle == true) {
+                    return;
+                }
+                isContentRunningIdle = true;
+                //Clicks select button to open the captains list
+                selectButton.click();
+                //Invokes function to get a captain replacement.
+                await switchIdleCaptain(i);
+                isContentRunningIdle = false;
+                return;
             }
-            isContentRunningIdle = true;
-            await switchIdleCaptain(i);
-            isContentRunningIdle = false;
-            return;
         } else if (currentSlots[i].battleStatus == false) {
             //If the captain is possibly on an idle state
             //Invokes function to set the battle status with the captainName as a parameter.
@@ -98,6 +103,11 @@ async function checkIdleCaptains(activeRaids) {
                 }
                 isContentRunningIdle = true;
                 await abandonBattle("Abandoned", "abandoned", captainName, raidId, captId);
+                //Clicks the select button to open captain selection list
+                const selectButton = slot.querySelector(".actionButton.actionButtonPrimary.capSlotButton.capSlotButtonAction");
+                if (selectButton) {
+                    selectButton.click();
+                }
                 //Invokes function to get a captain replacement.
                 await switchIdleCaptain(i);
                 isContentRunningIdle = false;
@@ -111,10 +121,10 @@ async function checkIdleCaptains(activeRaids) {
 but is now running a battle is removed from the idle list. */
 async function updateRunningCaptains(activeRaids) {
     //Get all captain slots
-    const capSlots = activeRaids.data;
-    for (let index = 0; index < capSlots.length; index++) {
+    const captainSlots = activeRaids;
+    for (let index = 0; index < captainSlots.length; index++) {
         //Iterate through every slot to get the captain name
-        const slot = capSlots[index];
+        const slot = captainSlots[index];
         const capName = slot.twitchDisplayName;
         //If hasViewedResults and postBattleComplete are both "1", that means "Waiting for Captain to find battle!" As long as both are not "0", the captain can be removed from the idle list.
         if (slot.hasViewedResults !== "1" && slot.postBattleComplete !== "1" && capName) {
@@ -149,7 +159,7 @@ async function setBattleStatus(captainName) {
             const lastUpdateTime = idleData[existingCaptainIndex].currentTime;
             if (currentTime - new Date(lastUpdateTime).getTime() > 3600000) {
                 // Update the currentTime
-                idleData[existingCaptainIndex].currentTime = currentTime;//new Date(currentTime).toISOString();
+                idleData[existingCaptainIndex].currentTime = currentTime;
                 // Save updated data back to local storage
                 chrome.storage.local.set({ idleData: idleData });
             }
@@ -199,8 +209,7 @@ async function getBattleStatus(captainName) {
 }
 
 //When invoked this function gets a captain replacement for the current empty slot
-//When invoked, the captain selection will be into view
-async function switchIdleCaptain(index) {
+async function switchIdleCaptain() {
 
     let idlersList;
     const storageData = await chrome.storage.local.get(['idleData']);
@@ -216,141 +225,110 @@ async function switchIdleCaptain(index) {
         idlersList = []
     }
 
-    let captainName;
-    let fullCaptainList;
-    let slotNum = index + 1;
-    let idleKeysArray = ['idleSwitch0_Campaign', 'idleSwitch' + slotNum + '_Campaign', 'idleSwitch0_Dungeon', 'idleSwitch' + slotNum + '_Dungeon', 'idleSwitch0_Clash', 'idleSwitch' + slotNum + '_Clash', 'idleSwitch0_Duel', 'idleSwitch' + slotNum + '_Duel', ];
-    let idleKeys = await retrieveMultipleFromStorage(idleKeysArray);
-    let idleSwitchAll_Campaign = idleKeys.idleSwitch0_Campaign;
-    let idleSwitchSlot_Campaign = idleKeys['idleSwitch' + slotNum + '_Campaign'];
-    let idleSwitchAll_Dungeon = idleKeys.idleSwitch0_Dungeon;
-    let idleSwitchSlot_Dungeon = idleKeys['idleSwitch' + slotNum + '_Dungeon'];
-    let idleSwitchAll_Clash = idleKeys.idleSwitch0_Clash;
-    let idleSwitchSlot_Clash = idleKeys['idleSwitch' + slotNum + '_Clash'];
-    let idleSwitchAll_Duel = idleKeys.idleSwitch0_Duel;
-    let idleSwitchSlot_Duel = idleKeys['idleSwitch' + slotNum + '_Duel'];
-    let mode;
-    
-    if (idleSwitchAll_Dungeon || idleSwitchSlot_Dungeon) {
-      mode = "dungeons";
-    } else if (idleSwitchAll_Clash || idleSwitchSlot_Clash) {
-      mode = "clash";
-    } else if (idleSwitchAll_Duel || idleSwitchSlot_Duel) {
-      mode = "duel";
-    } else if (idleSwitchAll_Campaign || idleSwitchSlot_Campaign) {
-      mode = "campaign";
-    } else {
-      mode = "campaign";
+    //Clicks on the ALL captains tab to obtain the full list of online captains
+    const allCaptainsTab = document.querySelector(".subNavItemText");
+    allCaptainsTab.click();
+    //Scrolls to the bottom
+    await scroll();
+    await idleDelay(3000);
+    //Gets the full list of captains
+
+    let fullCaptainList = await retrieveFromStorage("captainSearchData")
+    fullCaptainList = fullCaptainList.filter(captain => !idlersList.includes(captain.twitchDisplayName.toUpperCase()));
+
+    let blackList = await filterCaptainList('blacklist', fullCaptainList);
+    const acceptableList = fullCaptainList.filter(
+        entry => !blackList.includes(entry)
+    );
+    let whiteList = await filterCaptainList('whitelist', acceptableList);
+    let masterList = await filterCaptainList('masterlist', acceptableList);
+
+    //Manage masterlist states
+    const skipIdleMasterSwitch = await getSwitchState("skipIdleMasterSwitch");
+    const idleMasterSwitch = await getSwitchState("idleMasterSwitch");
+    //User wants to leave slot blank if there no masterlisted captains online
+    if (skipIdleMasterSwitch && masterList.length == 0) {
+        closeAll();
+        return;
     }
 
-    fullCaptainList = await getCaptainsForSearch(mode);
-    if (fullCaptainList != null && fullCaptainList != "") {
-      let blackList = await filterCaptainList('blacklist', fullCaptainList);
-      const acceptableList = fullCaptainList.filter(
-          entry => !blackList.includes(entry)
-      );
-      if (mode == "duel") {
-        await attemptToJoinDuel(index, "");
-      } else if (mode == "clash" || mode == "dungeons") {
-        await joinCaptCheckCodeRetry(mode, acceptableList, index, "")
-      } else {
-        let whiteList = await filterCaptainList('whitelist', acceptableList);
-        let masterList = await filterCaptainList('masterlist', acceptableList);
-
-        //Manage masterlist states
-        const skipIdleMasterSwitch = await getSwitchState("skipIdleMasterSwitch");
-        const idleMasterSwitch = await getSwitchState("idleMasterSwitch");
-        //User wants to leave slot blank if there no masterlisted captains online
-        if (skipIdleMasterSwitch && masterList.length == 0) {
+    //Invokes function to get list with gold loyalty captains
+    let diamondLoyaltyList = createLoyaltyList(acceptableList, diamondLoyaltyLevel);
+    //Invokes function to get list with gold loyalty captains
+    let goldLoyaltyList = createLoyaltyList(acceptableList, goldLoyaltyLevel);
+    //Invokes function to get list with silver loyalty captains
+    let silverLoyaltyList = createLoyaltyList(acceptableList, silverLoyaltyLevel);
+    //Invokes function to get list with bronze loyalty captains
+    let bronzeLoyaltyList = createLoyaltyList(acceptableList, bronzeLoyaltyLevel);
+    //Gets list of favorited captains that are running campaign
+    let favoriteList = []
+    try {
+        let favoriteCaptainIds = await retrieveFromStorage("favoriteCaptainIds");
+        let favoriteCaptainIdsArray = favoriteCaptainIds.split(",");
+        favoriteList = acceptableList.filter(
+            entry => (favoriteCaptainIdsArray.includes(entry.userId) && !entry.isSelected && entry.type == 1)
+        );
+    } catch(error) {
+        favoriteList = []
+    }
+    //If diamond loyalty captains exist, click on a random one
+    if (idleMasterSwitch && masterList.length != 0) {
+        await joinCaptainToAvailableSlot(masterList[0].twitchDisplayName);
+    } else if (diamondLoyaltyList.length != 0) {
+        await joinCaptainToAvailableSlot(diamondLoyaltyList[getRandomIndex(diamondLoyaltyList.length)].twitchDisplayName);
+    }
+    //If diamond loyalty captains exist, click on a random one
+    else if (goldLoyaltyList.length != 0) {
+        await joinCaptainToAvailableSlot(goldLoyaltyList[getRandomIndex(goldLoyaltyList.length)].twitchDisplayName);
+    }
+    //If silver loyalty captains exist, click on a random one
+    else if (silverLoyaltyList.length != 0) {
+        await joinCaptainToAvailableSlot(silverLoyaltyList[getRandomIndex(silverLoyaltyList.length)].twitchDisplayName);
+    }
+    //If bronze loyalty captains exist, click on a random one
+    else if (bronzeLoyaltyList.length != 0) {
+        await joinCaptainToAvailableSlot(bronzeLoyaltyList[getRandomIndex(bronzeLoyaltyList.length)].twitchDisplayName);
+    }
+    //Get a whitelisted captain
+    else if (whiteList.length != 0) {
+        await joinCaptainToAvailableSlot(whiteList[0].twitchDisplayName);
+    }
+    //If favorited captains exist, click on a random one
+    else if (favoriteList.length != 0) {
+        await joinCaptainToAvailableSlot(favoriteList[getRandomIndex(favoriteList.length)].twitchDisplayName);
+    }
+    else {
+        //Checks if the user wants to switch to non special captains, if not the list is closed
+        const skipSwitch = await retrieveFromStorage("skipSwitch")
+        if (skipSwitch) {
+            //Closes the list
+            closeAll();
             return;
         }
-        //If masterlist captain exists, click the first one
-        if (idleMasterSwitch && masterList.length != 0) {
-            captainId = masterList[0][0];
-            await joinCaptain(captainId, index);
-            return;
+        //Get an acceptable captain
+        if (acceptableList.length != 0) {
+            await joinCaptainToAvailableSlot(acceptableList[0].twitchDisplayName);
         }
-        
-        //Invokes function to get list with gold loyalty captains
-        let diamondLoyaltyList = createLoyaltyList(acceptableList, diamondLoyaltyString, blackList);
-        //Invokes function to get list with gold loyalty captains
-        let goldLoyaltyList = createLoyaltyList(acceptableList, goldLoyaltyString, blackList);
-        //Invokes function to get list with silver loyalty captains
-        let silverLoyaltyList = createLoyaltyList(acceptableList, silverLoyaltyString, blackList);
-        //Invokes function to get list with bronze loyalty captains
-        let bronzeLoyaltyList = createLoyaltyList(acceptableList, bronzeLoyaltyString, blackList);
-        //Gets list of favorited captains that are running campaign
-        let favoriteList = []
-        try {
-          let favoriteCaptainIds = await retrieveFromStorage("favoriteCaptainIds");
-          let favoriteCaptainIdsArray = favoriteCaptainIds.split(",");
-          favoriteList = acceptableList.filter(
-              entry => (favoriteCaptainIdsArray.includes(entry[0]) && !blackList.includes(entry) && entry[3] !== true)
-          );
-        } catch(error) {
-          favoriteList = []
-        }
-        
-        //If diamond loyalty captains exist, click on a random one
-        if (diamondLoyaltyList.length != 0) {
-            captainId = diamondLoyaltyList[getRandomIndex(diamondLoyaltyList.length)][0];
-            await joinCaptain(captainId, index);
-        }
-        //If gold loyalty captains exist, click on a random one
-        else if (goldLoyaltyList.length != 0) {
-            captainId = goldLoyaltyList[getRandomIndex(goldLoyaltyList.length)][0];
-            await joinCaptain(captainId, index);
-        }
-        //If silver loyalty captains exist, click on a random one
-        else if (silverLoyaltyList.length != 0) {
-            captainId = silverLoyaltyList[getRandomIndex(silverLoyaltyList.length)][0];
-            await joinCaptain(captainId, index);
-        }
-        //If bronze loyalty captains exist, click on a random one
-        else if (bronzeLoyaltyList.length != 0) {
-            captainId = bronzeLoyaltyList[getRandomIndex(bronzeLoyaltyList.length)][0];
-            await joinCaptain(captainId, index);
-        }
-        //Get a whitelisted captain
-        else if (whiteList.length != 0) {
-            captainId = whiteList[0][0];
-            await joinCaptain(captainId, index);
-        }
-        //If favorited captains exist, click on a random one
-        else if (favoriteList.length != 0) {
-            captainId = favoriteList[getRandomIndex(favoriteList.length)][0];
-            await joinCaptain(captainId, index);
-        }
+        //No special captains (no loyalty, not favorite, no whitelist, no acceptable captains) exist
         else {
-            //Checks if the user wants to switch to non special captains, if not the list is closed
-            const skipSwitch = await retrieveFromStorage("skipSwitch")
-            if (skipSwitch) {
-                return;
-            }
-            //Get an acceptable captain
-            if (acceptableList.length != 0) {
-                captainId = acceptableList[0][0];
-                await joinCaptain(captainId, index);
-            }
-            //No special captains (no loyalty, not favorite, no whitelist, no acceptable captains) exist
-            else {
-                for (let i = 0; i < acceptableList.length; i++) {
-                    //Iterates through the list of captains
-                    const captain = acceptableList[i];
-                    //Gets the already joined from the current captain
-                    let alreadyJoined = captain[3];
-                    //If the captain is running campaign and has not been joined yet
-                    if (!alreadyJoined) {
-                        //If user wants to select any captain, the first captain from the list is clicked
-                        captainId = captain[0];
-                        await joinCaptain(captainId, index);
-                        break;
-                    }
+            for (let i = 0; i < acceptableList.length; i++) {
+                //Iterates through the list of captains
+                const captain = acceptableList[i];
+                //Gets mode the current captain is running
+                const mode = captain.type == 1 ? "Campaign" : captain.type == 2 ? "Clash" : captain.type == 3 ? "Dungeons" : captain.type == 5 ? "Duel" : "";
+                //Gets the already joined from the current captain
+                const alreadyJoined = captain.isSelected ?? false;
+                //If the captain is running campaign and has not been joined yet
+                if (mode === "Campaign" || !alreadyJoined) {
+                    //If user wants to select any captain, the first captain from the list is clicked
+                    await joinCaptainToAvailableSlot(captain.twitchDisplayName);
+                    break;
                 }
             }
         }
-      }
     }
+    closeAll();
+    goHome();
 }
 
 //Returns a random index number for the captains special list
@@ -362,33 +340,24 @@ function getRandomIndex(max) {
 and returns an sub array with only captains that match the loyalty string and
 captains that are running campaign and captains that have not been joined yet */
 
-function createLoyaltyList(acceptableList, loyaltyString, blackList) {
+function createLoyaltyList(captainList, loyaltyLevel) {
 
-    const filteredList = acceptableList.filter(item => !blackList.includes(item));
-
-    return Array.from(filteredList).filter(captain => {
-        let loyalty;
+    return Array.from(captainList).filter(captain => {
         //Gets loyalty for comparison
-        if (captain[4] >= 100) {
-            loyalty = "Diamond";
-        } else if (captain[4] >= 50 && captain[4] < 100) {
-            loyalty = "Gold";
-        } else if (captain[4] >= 25 && captain[4] < 50) {
-            loyalty = "Silver";
-        } else if (captain[4] >= 1 && captain[4] < 25) {
-            loyalty = "Bronze";
-        }
+        const loyalty = captain.pveLoyaltyLevel;
+        //Gets game mode
+        const mode = captain.type == 1 ? "Campaign" : captain.type == 2 ? "Clash" : captain.type == 3 ? "Dungeons" : captain.type == 5 ? "Duel" : "";
         //Gets whether or not the captain has been joined already.
-        const alreadyJoined = captain[3];
+        const alreadyJoined = captain.isSelected ?? false;
 
         //Returns captain if they match the loyalty string and the game mode campaign and have not been joined.
-        return loyalty && loyalty === loyaltyString && !alreadyJoined;
+        return loyalty === loyaltyLevel && mode === "Campaign" && !alreadyJoined;
     });
 }
 
 
 //This function receives the list type and the full list and sorts the matching captains
-async function filterCaptainList(type, acceptableList) {
+async function filterCaptainList(type, captainList) {
 
     let filteredArray = [];
     function getListedCaptains() {
@@ -407,13 +376,16 @@ async function filterCaptainList(type, acceptableList) {
         //Get favorite captain in order
         const listedCaptain = listArray[i];
         //Check if the captainName and other condition match, add it to filtered array
-        for (let j = 0; j < acceptableList.length; j++) {
-            const captain = acceptableList[j];
-            const captainName = captain[1];
+        for (let j = 0; j < captainList.length; j++) {
+            const captain = captainList[j];
+            const captainName = captain.twitchDisplayName;
+            //Gets game mode
+            const mode = captain.type == 1 ? "Campaign" : captain.type == 2 ? "Clash" : captain.type == 3 ? "Dungeons" : captain.type == 5 ? "Duel" : "";
             //Gets whether or not the captain has been joined already.
-            const alreadyJoined = captain[3];
+            const alreadyJoined = captain.isSelected ?? false;
 
-            if (captainName.toUpperCase() === listedCaptain.toUpperCase() && !alreadyJoined) {
+            if (captainName.toUpperCase() === listedCaptain.toUpperCase() &&
+                mode === "Campaign" && !alreadyJoined) {
                 filteredArray.push(captain);
             }
         }
@@ -421,12 +393,47 @@ async function filterCaptainList(type, acceptableList) {
     return filteredArray;
 }
 
+//Scroll to the bottom of the page and load all captains
+async function scroll() {
+    //Initialized the scrollable element
+    const scroll = document.querySelector('.capSearchResults');
+    //Scrolls to the bottom with a delay so the new dynamically elements can be loaded
+    for (let i = 0; i < 20; i++) {
+        scroll.scrollTop = scroll.scrollHeight;
+        await idleDelay(450);
+    }
+}
+
 //Abandon the battle and select a new captain
-async function abandonBattle(status, status1, captainName, raidId, captId) {
-    //Store battle result as abandoned on storage log
-    await setLogResults(status, captainName, status1, "N/A", "N/A", "N/A", "N/A", "N/A", raidId, "N/A", "N/A");
+async function abandonBattle(status, slot, status1) {
     //Closes captain slot
-    await removeOldCaptain(captId);
+    let close = slot.querySelector(".fas.fa-square");
+    const c = close.offsetParent;
+    const closeOffset = c.offsetParent;
+    const idleCapName = closeOffset.querySelector(".capSlotName").innerText;
+    if (close) {
+        close.click();
+    }
+    await delay(1000);
+    //Store battle result as abandoned on storage log
+    await setLogResults(status, idleCapName, status1, "N/A", "N/A", "N/A", "N/A", "N/A", raidId, "N/A", "N/A");
+    //Checks if modal that appears on certain conditions exists and clicks to close it.
+    const modal = document.querySelector(".modalScrim.modalOn");
+    let placeAnyway = modal.querySelector(".actionButton.actionButtonSecondary").innerText
+    // If placeAnyways is undefined assign an empty value otherwise the placeAnyway != "PLACE ANYWAY" will crash the script.
+    // The check can't be done there because actionButtonSecondary doesn't always exist, this a failsafe for that scenario.
+    if (!placeAnyway) {
+        placeAnyway = ""
+    }
+    if (placeAnyway != "PLACE ANYWAY" && modal) {
+        await delay(2000);
+        close = modal.querySelector(".actionButton.actionButtonPrimary");
+        if (close) {
+            close.click();
+        }
+
+    }
+    await idleDelay(2000);
 }
 
 async function getUserIdleTime(){

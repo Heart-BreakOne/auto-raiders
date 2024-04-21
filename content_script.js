@@ -240,54 +240,16 @@ async function start() {
   }
 
   //Checks masterlist to switch
-  let masterSwitchkeysArray = ['joinDuelSwitch', 'liveMasterSwitch', 'priorityMasterSwitch'];
+  let masterSwitchkeysArray = ['liveMasterSwitch', 'priorityMasterSwitch'];
   let masterSwitchkeys = await retrieveMultipleFromStorage(masterSwitchkeysArray);
-  let joinDuelSwitch = masterSwitchkeys.joinDuelSwitch;
   let forceMaster = masterSwitchkeys.liveMasterSwitch;
   let replaceMaster = masterSwitchkeys.priorityMasterSwitch;
-  if (joinDuelSwitch || forceMaster || replaceMaster) {
-    let duelSwitchSuccessful;
+  if (forceMaster || replaceMaster) {
     let masterlistSwitchSuccessful;
-    if (joinDuelSwitch) {
-      let slotAvailable = -1;
-      let duelJoined = false;
-      //Initialized a node list with all the captain slots
-      const capSlots = document.querySelectorAll('.capSlot');
-
-      //Iterates through the list of slots
-      for (let index = 0; index < capSlots.length; index++) {
-        //Gets the current slot
-        const slot = capSlots[index];
-        //Gets button id form the current slot
-        try {
-          const btn = slot.querySelector(".capSlotStatus .offlineButton");
-          const buttonId = btn.getAttribute('id');
-          //Checks if the user wants to switch idle captains by passing the button id
-          const currentIdleState = await getIdleState(buttonId);
-          if (!currentIdleState) {
-            continue;
-          }
-        } catch (error) {
-          return;
-        }
-        if (slot.innerText.includes("Duel")) {
-          duelJoined = true;
-        }
-        //Select button signals that the slot is empty.
-        const selectButton = slot.querySelector(".actionButton.actionButtonPrimary.capSlotButton.capSlotButtonAction");
-        if (selectButton && selectButton.innerText == "SELECT") {
-          slotAvailable = index;
-        }
-      }
-      //If slot is available and user is not currently in a Duel already, switch to a Duel (if one exists)
-      if (slotAvailable != -1 && !duelJoined) {
-        duelJoined = await attemptToJoinDuel(slotAvailable, "");
-      }
-    }
     if (forceMaster || replaceMaster) {
-      masterlistSwitchSuccessful = await switchToMasterList(forceMaster, replaceMaster, joinDuelSwitch);
+      masterlistSwitchSuccessful = await switchToMasterList(forceMaster, replaceMaster);
     }
-    if (duelSwitchSuccessful || masterlistSwitchSuccessful) {
+    if (masterlistSwitchSuccessful) {
       navItems = document.querySelectorAll('.mainNavItemText');
       let storeButton;
       let battleButton;
@@ -307,6 +269,12 @@ async function start() {
         await delay(5000);
       }
     }
+  }
+
+  //Checks if the user wants to replace idle captains and invoke the function to check and replace them.
+  const offline = await retrieveFromStorage("offlineSwitch")
+  if (offline) {
+    await checkIdleCaptains()
   }
 
   let captainNameFromDOM = "";
@@ -467,8 +435,9 @@ async function start() {
             captainSlot.style.backgroundColor = red;
           } else if (modeChangeLeaveSwitch) {
             let captLoyalty = await getCaptainLoyalty(captainNameFromDOM);
+            let raidId = captLoyalty[0];
             let captainId = captLoyalty[2];
-            await removeOldCaptain(captainId);
+            await abandonBattle("Abandoned-Mode Change", "abandoned", captainNameFromDOM, raidId, captainId);
           }
           continue
         }

@@ -65,7 +65,6 @@ async function buyScrolls() {
                     if (buttonText.includes("REFRESH NOW") && buttonText.includes("100")) {
                         buyMoreButton = document.querySelector(".actionButton.actionButtonGolden.storeScrollsButton");
                         buyMoreButton.click();
-                        buyMoreButton.submit();
                         clickHoldAndScroll(buyMoreButton, 0, 0);
                         await collectDelay(1000);
                     }

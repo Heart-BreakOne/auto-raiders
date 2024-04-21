@@ -8,7 +8,7 @@ const readyToPlace = "Unit ready to place!";
 let masterPort;
 let masterlistRunning;
 
-async function switchToMasterList(forceMaster, replaceMaster, joinDuelSwitch) {
+async function switchToMasterList(forceMaster, replaceMaster) {
     if (masterlistRunning) {
       return
     }
@@ -24,15 +24,13 @@ async function switchToMasterList(forceMaster, replaceMaster, joinDuelSwitch) {
 
         const slot = allCaptains[i];
 
-        if (joinDuelSwitch && slot.innerText.includes("Duel")) {
-            continue;
-        }
-        
         if (slot.innerHTML.includes("DISABLED")) {
             continue;
         }
-		
-		//Remove captains with passwords
+        
+        const close = slot.querySelector(".capSlotClose");
+        
+        //Remove captains with passwords
         if (slot.innerHTML.includes("ENTER_CODE")) {
             close.click();
             switchSuccessful = false;
@@ -93,6 +91,7 @@ async function switchToMasterList(forceMaster, replaceMaster, joinDuelSwitch) {
                         } else {
                             //There are captains with a higher priority than the current captain. Switch.
                             //Use the high priority list array to find an active captain that is within that list.
+                            close.click();
                             switchSuccessful = await switchCaptains(capName, higherPriorityCaptains, i);
                         }
 
@@ -114,6 +113,7 @@ async function switchToMasterList(forceMaster, replaceMaster, joinDuelSwitch) {
                             if (higherPriorityCaptains.length === 0) {
                                 switchSuccessful = false;
                             } else {
+                                close.click();
                                 switchSuccessful = await switchCaptains(capName, higherPriorityCaptains, i);
                             }
                         }
@@ -125,4 +125,90 @@ async function switchToMasterList(forceMaster, replaceMaster, joinDuelSwitch) {
     }
     masterlistRunning = false;
     return switchSuccessful;
+}
+
+//Switch captains to a higher one if available
+async function switchCaptains(currentCaptain, higherPriorityCaptains, index) {
+  if (higherPriorityCaptains.length == 0) {
+    return false;
+  }
+  
+  await backgroundDelay(1000);
+  const selectButton = document.querySelectorAll(".actionButton.actionButtonPrimary.capSlotButton.capSlotButtonAction")[index];
+  if (selectButton && selectButton.innerText == "SELECT") {
+    //Clicks select button to open the captains list
+    selectButton.click();
+
+    let captainsArray = [];
+    let currentId;
+
+    let idlersList;
+    const storageData = await chrome.storage.local.get(['idleData']);
+    const idlers = storageData.idleData || [];
+
+    if (idlers) {
+      const presentTime = Date.now();
+      const uIT = await getUserIdleTime()
+      idlersList = idlers
+        .filter(entry => presentTime - entry.presentTime < uIT)
+        .map(entry => entry.captainName.toUpperCase());
+    } else {
+      idlersList = []
+    }
+
+    //Clicks on the ALL captains tab to obtain the full list of online captains
+    const allCaptainsTab = document.querySelector(".subNavItemText");
+    allCaptainsTab.click();
+    //Scrolls to the bottom
+    await scroll();
+    await idleDelay(3000);
+    //Gets the full list of captains
+
+    let fullCaptainList = await retrieveFromStorage("captainSearchData")
+    fullCaptainList = fullCaptainList.filter(captain => !idlersList.includes(captain.twitchDisplayName.toUpperCase()));
+
+    let blackList = await filterCaptainList('blacklist', fullCaptainList);
+    const acceptableList = fullCaptainList.filter(
+      entry => !blackList.includes(entry)
+    );
+    let whiteList = await filterCaptainList('whitelist', acceptableList);
+    let masterList = await filterCaptainList('masterlist', acceptableList);
+
+    for (let i = 0; i < higherPriorityCaptains.length; i++) {
+      for (let j = 0; j  < masterList.length; j++) {
+        const current = masterList[i];
+        const name = current.twitchUserName.toUpperCase();
+        const type = current.type;
+        const isSelected = current.isSelected;
+        const id = current.userId;
+        if (name == higherPriorityCaptains[i] && !isSelected && type == 1) {
+          captainsArray.push({
+            name, id
+          });
+        }
+      }
+    }
+
+    //Sort live captains based on their order on the masterlist
+    captainsArray.sort((a, b) => {
+      return higherPriorityCaptains.indexOf(a.name) - higherPriorityCaptains.indexOf(b.name);
+    });
+
+    //Extract the name from the sorted captains
+    const firstCaptainName = captainsArray.length > 0 ? captainsArray[0].name : null;
+
+    if (firstCaptainName != undefined) {
+      await joinCaptainToAvailableSlot(firstCaptainName);
+      await delay(2000);
+      closeAll();
+      goHome();
+      return true;
+    }
+  }
+  //If no other captain to switch to, rejoin first captain
+  await joinCaptainToAvailableSlot(currentCaptain);
+  await delay(2000);
+  closeAll();
+  goHome();
+  return false;
 }
