@@ -313,33 +313,50 @@ async function start() {
 
   //Initialized a node list with placeable buttons
   const rewardButtonLabels = ["SEE RESULTS", "OPEN CHEST", "COLLECT KEYS", "COLLECT BONES"];
-  const allButtons = document.querySelectorAll(".actionButton.capSlotButton.capSlotButtonAction");
+  let allButtons = document.querySelectorAll(".actionButton.capSlotButton.capSlotButtonAction");
   if (allButtons.length != 0) {
     for (var button of allButtons) {
       //If the button has inner text and includes one of the reward button labels, it's a valid button to collect rewards
       if (rewardButtonLabels.includes(button.innerText)) {
-        button.click();
-        clickHoldAndScroll(button, 0, 0);
-        await delay(5000);
-        const capSlot = button.parentElement.parentElement;
-        const stBtn = capSlot.querySelector(".offlineButton").id
-        const slotState = await getIdleState(stBtn);
-        if (slotState == 2) {
-          const close = capSlot.parentElement.parentElement.querySelector(".capSlotClose")
-          if (close) {
-            const afterSwitch = await retrieveFromStorage('afterSwitch');
-            if (afterSwitch) {
-              await setIdleState(stBtn, 1);
-            } else {
-              await setIdleState(stBtn, 0);
-            }
-            close.click()
-          }
-          break
+        let captainSlot = button.closest('.capSlot');
+        captainNameFromDOM = captainSlot.querySelector('.capSlotName').innerText;
+        //Retrieve the slot pause state
+        const btn = captainSlot.querySelector(".capSlotStatus .offlineButton");
+        if (btn == null || btn == undefined) {
+          return;
         }
-        await delay(1000);
+        const buttonId = btn.getAttribute('id');
+        const slotState = await getIdleState(buttonId);
+        button.click();
+        await delay(2000);
+        if (slotState == 2) {
+          allButtons = document.querySelectorAll(".actionButton.capSlotButton.capSlotButtonAction");
+          for (var button of allButtons) {
+            do {
+              captainSlot = button.closest('.capSlot');
+              await delay(500);
+            } while (!captainSlot.querySelector('.capSlotName'))
+            if (captainSlot.querySelector('.capSlotName').innerText == captainNameFromDOM) {
+              let close; 
+              do {
+                close = captainSlot.querySelector(".capSlotClose")
+                await delay(500);
+              } while (!close)
+              if (close) {
+                const afterSwitch = await retrieveFromStorage('afterSwitch');
+                if (afterSwitch) {
+                  await setIdleState(buttonId, 1);
+                } else {
+                  await setIdleState(buttonId, 0);
+                }
+                close.click()
+              }
+            }
+          }
+        }
         await confirmLeaveBattlePopup();
-        continue;
+        goHome();
+        isContentRunning = false;
       }
     }
   }
@@ -951,6 +968,9 @@ async function getValidUnits(captainNameFromDOM, raidId, slotOption, diamondLoya
   let commonAllowed = unitKeys.commonSwitch;
   let pvpSpecAllowed = unitKeys.pvpSpecSwitch;
 
+  if (!unitDrawer[0] || unitDrawer[0] == null) {
+    return;
+  }
   for (let i = 0; i < unitDrawer[0].children.length; i++) {
     let unit = unitDrawer[0].children[i];
 
