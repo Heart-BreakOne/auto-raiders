@@ -30,7 +30,6 @@ document.addEventListener("DOMContentLoaded", function () {
     initializeSwitch("soulSwitch5");
     initializeSwitch("soulSwitch6");
     initializeSwitch("soulSwitch7");
-    initializeSwitch("joinDuelSwitch");
     initializeSwitch("modeChangeSwitch");
     initializeSwitch("modeChangeLeaveSwitch");
     initializeSwitch("campaignSwitch");
@@ -44,24 +43,6 @@ document.addEventListener("DOMContentLoaded", function () {
     initializeSwitch("shuffleSwitch6");
     initializeSwitch("shuffleSwitch7");
     initializeSwitch("offlineSwitch");
-    initializeSwitch("idleSwitch0_Campaign");
-    initializeSwitch("idleSwitch1_Campaign");
-    initializeSwitch("idleSwitch2_Campaign");
-    initializeSwitch("idleSwitch3_Campaign");
-    initializeSwitch("idleSwitch4_Campaign");
-    initializeSwitch("idleSwitch1_Dungeon");
-    initializeSwitch("idleSwitch2_Dungeon");
-    initializeSwitch("idleSwitch3_Dungeon");
-    initializeSwitch("idleSwitch4_Dungeon");
-    initializeSwitch("idleSwitch0_Clash");
-    initializeSwitch("idleSwitch1_Clash");
-    initializeSwitch("idleSwitch2_Clash");
-    initializeSwitch("idleSwitch3_Clash");
-    initializeSwitch("idleSwitch4_Clash");
-    initializeSwitch("idleSwitch1_Duel");
-    initializeSwitch("idleSwitch2_Duel");
-    initializeSwitch("idleSwitch3_Duel");
-    initializeSwitch("idleSwitch4_Duel");
     initializeSwitch("setMarkerSwitch");
     initializeSwitch("skipSwitch");
     initializeSwitch("completeQuests");
@@ -89,9 +70,6 @@ document.addEventListener("DOMContentLoaded", function () {
     initializeSwitch("lbossSwitch");
     initializeSwitch("lsuperbossSwitch");
     initializeSwitch("afterSwitch");
-    initializeSwitch("dungeonSlotSwitch");
-    initializeSwitch("dungeonSlotOverwrite");
-    initializeSwitch("dungeonSlotSkip");
     initializeSwitch("duelsSlotSwitch");
     initializeSwitch("skipDuelsSlotSwitch");
     initializeSwitch("clashSlotSwitch");
@@ -624,24 +602,6 @@ function exportSettingsToFile() {
         "userWaitTimeInputPVP",
         "placementOddsInput",
         "offlineSwitch",
-        "idleSwitch0_Campaign",
-        "idleSwitch1_Campaign",
-        "idleSwitch2_Campaign",
-        "idleSwitch3_Campaign",
-        "idleSwitch4_Campaign",
-        "idleSwitch1_Dungeon",
-        "idleSwitch2_Dungeon",
-        "idleSwitch3_Dungeon",
-        "idleSwitch4_Dungeon",
-        "idleSwitch0_Clash",
-        "idleSwitch1_Clash",
-        "idleSwitch2_Clash",
-        "idleSwitch3_Clash",
-        "idleSwitch4_Clash",
-        "idleSwitch1_Duel",
-        "idleSwitch2_Duel",
-        "idleSwitch3_Duel",
-        "idleSwitch4_Duel",
         "skipSwitch",
         "setMarkerSwitch",
         "scrollSwitch",
@@ -693,7 +653,6 @@ function exportSettingsToFile() {
         "soulSwitch5",
         "soulSwitch6",
         "soulSwitch7",
-        "joinDuelSwitch",
         "modeChangeSwitch",
         "modeChangeLeaveSwitch",
         "dungeonSwitch",
@@ -732,9 +691,6 @@ function exportSettingsToFile() {
         "lScrollInput",
         "BossInput",
         "sBossInput",
-        "dungeonSlotSwitch",
-        "dungeonSlotOverwrite",
-        "dungeonSlotSkip",
         "duelsSlotSwitch",
         "skipDuelsSlotSwitch",
         "clashSlotSwitch",
