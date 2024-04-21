@@ -733,9 +733,9 @@ async function handleMessage(message) {
 }
 
 async function getActiveRaidsLite(activeRaids) {
+  activeRaidsArray = [];
   for (let i = 0; i < activeRaids.data.length; i++) {
     let activeRaid = activeRaids.data[i];
-    activeRaidsArray = [];
     activeRaidsArray.push({
       "twitchDisplayName": activeRaid.twitchDisplayName, 
       "twitchUserName": activeRaid.twitchUserName, 
