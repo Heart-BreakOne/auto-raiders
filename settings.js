@@ -121,6 +121,21 @@ function initializeSwitch(switchId) {
     chrome.storage.local.get([switchId], function (result) {
         switchElement.checked = result[switchId] || false;
     });
+
+    //Listen to changes on the switch states and set the new value.
+    switchElement.addEventListener("change", function () {
+        const switchState = this.checked;
+        chrome.storage.local.set({ [switchId]: switchState }, function () {
+            if (chrome.runtime.lastError) {
+                loadBanner(failureMessage, redColor)
+            } else {
+                loadBanner(successMessage, greenColor)
+                if (switchId == "darkSwitch") {
+                    location.reload();
+                }
+            }
+        });
+    });
 }
 
 //Event listener to initialize the radio buttons as well as update their states
