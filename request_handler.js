@@ -179,8 +179,7 @@ async function getRaidStats(currentRaid) {
             return;
         }
     });
-
-    let eventUid = await retrieveFromStorage("getEventProgressionLite");
+    let eventUid = dataKeys.getEventProgressionLite;
     eventUid = eventUid.data.eventUid;
 
     if (stats.length > 0) {
@@ -211,7 +210,7 @@ async function getRaidStats(currentRaid) {
     let i = 0;
     try {
       if (raidData.goldAwarded > 0) {
-        rewards[i] = "https://d2k2g0zg1te1mr.cloudfront.net/env/prod1/mobile-lite/static/media/iconGold.6072909d.png";
+        rewards[i] = "/icons/iconGold.png";
         rewards[i] = rewards[i] + " goldpiecebagx" + raidData.goldAwarded;
         i++;
       }
@@ -220,7 +219,7 @@ async function getRaidStats(currentRaid) {
     }
     try {
       if (raidData.bonesAwarded > 0) {
-        rewards[i] = "https://d2k2g0zg1te1mr.cloudfront.net/env/prod1/mobile-lite/static/media/iconBones.56e87204.png";
+        rewards[i] = "/icons/iconBones.png";
         rewards[i] = rewards[i] + " bonesx" + raidData.bonesAwarded;
         raidStats[5] = "bones";
         i++;
@@ -230,7 +229,7 @@ async function getRaidStats(currentRaid) {
     }
     try {
       if (raidData.keysAwarded > 0) {
-        rewards[i] = "https://d2k2g0zg1te1mr.cloudfront.net/env/prod1/mobile-lite/static/media/iconKeys.01121bde.png";
+        rewards[i] = "/icons/keys.png";
         rewards[i] = rewards[i] + " keysx" + raidData.keysAwarded;
         raidStats[5] = "keys";
         i++;
@@ -253,7 +252,7 @@ async function getRaidStats(currentRaid) {
     }
     try {
       if (raidData.treasureChestGold != "0") {
-        rewards[i] = "https://d2k2g0zg1te1mr.cloudfront.net/env/prod1/mobile-lite/static/media/iconGold.6072909d.png";
+        rewards[i] = "/icons/iconGold.png";
         rewards[i] = rewards[i] + " treasurechestgoldx" + raidData.treasureChestGold;
         i++;
       }
@@ -262,7 +261,7 @@ async function getRaidStats(currentRaid) {
     }
     try {
       if (raidData.potionsAwarded != "0") {
-        rewards[i] = "https://d2k2g0zg1te1mr.cloudfront.net/env/prod1/mobile-lite/static/media/iconPotion.2c8f0f08.png";
+        rewards[i] = "/icons/iconPotion.png";
         rewards[i] = rewards[i] + " epicpotionx" + raidData.potionsAwarded;
         i++;
       }
@@ -348,11 +347,11 @@ async function getRaidStats(currentRaid) {
 async function getRewardUrl(reward, eventUid, items, currency, imageURLs, skins) {
     let url = "";
     if (reward.includes("goldbag")) {
-        url = "https://d2k2g0zg1te1mr.cloudfront.net/env/prod1/mobile-lite/static/media/iconGold.6072909d.png";
+        url = "/icons/iconGold.png";
     } else if (reward.includes("epicpotion")) {
-        url = "https://d2k2g0zg1te1mr.cloudfront.net/env/prod1/mobile-lite/static/media/iconPotion.2c8f0f08.png";
+        url = "/icons/iconPotion.png";
     } else if (reward.includes("cooldown")) {
-        url = "https://d2k2g0zg1te1mr.cloudfront.net/env/prod1/mobile-lite/static/media/iconMeat.5c167903.png";
+        url = "/icons/iconMeat.png";
     } else if (reward.includes("eventtoken")) {
         if (allRewardUrls.hasOwnProperty(eventUid)) {
             url = allRewardUrls[eventUid].Url;

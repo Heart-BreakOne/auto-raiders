@@ -11,34 +11,34 @@ const battleChests = [
     { key: "undefined", name: "tbd", outcome: "tbd", url: "/icons/tbd.png" },
     { key: "Unknown", name: "Unknown", outcome: "Unknown", url: "/icons/unknown.png" },
     { key: "abandoned", name: "abandoned", outcome: "Abandoned", url: "/icons/block.png" },
-    { key: "bones", name: "PvP", outcome: "Victory", url: "https://d2k2g0zg1te1mr.cloudfront.net/env/prod1/mobile-lite/static/media/iconBones.56e87204.png" },
-    { key: "bonechest", name: "PvP", outcome: "Victory", url: "https://d2k2g0zg1te1mr.cloudfront.net/env/prod1/mobile-lite/static/media/iconBones.56e87204.png" },
+    { key: "bones", name: "PvP", outcome: "Victory", url: "/icons/iconBones.png" },
+    { key: "bonechest", name: "PvP", outcome: "Victory", url: "/icons/iconBones.png" },
     { key: "keys", name: "Dungeons", outcome: "Victory", url: "/icons/keys.png" },
     { key: "dungeonchest", name: "Dungeons", outcome: "Victory", url: "/icons/keys.png" },
-    { key: "chestsalvage", name: "Defeat", outcome: "Defeat", url: "https://d2k2g0zg1te1mr.cloudfront.net/mobilelite/chests/iconChestSalvage.7f5d2511b08f.png" },
-    { key: "chestbronze", name: "Bronze", outcome: "Victory", url: "https://d2k2g0zg1te1mr.cloudfront.net/mobilelite/chests/iconChestBronze.7f5d2511b08f.png" },
-    { key: "chestsilver", name: "Silver", outcome: "Victory", url: "https://d2k2g0zg1te1mr.cloudfront.net/mobilelite/chests/iconChestSilver.7f5d2511b08f.png" },
-    { key: "chestgold", name: "Gold", outcome: "Victory", url: "https://d2k2g0zg1te1mr.cloudfront.net/mobilelite/chests/iconChestGold.7f5d2511b08f.png" },
-    { key: "chestboostedgold", name: "Loyalty Gold", outcome: "Victory", url: "https://d2k2g0zg1te1mr.cloudfront.net/mobilelite/chests/iconChestGoldBoosted.c0e0bcd2b145.png" },
-    { key: "chestboostedskin", name: "Loyalty Skin", outcome: "Victory", url: "https://d2k2g0zg1te1mr.cloudfront.net/mobilelite/chests/iconChestSkinBoosted.c0e0bcd2b145.png " },
-    { key: "chestboostedskin_maps01to11", name: "Loyalty Skin", outcome: "Victory", url: "https://d2k2g0zg1te1mr.cloudfront.net/mobilelite/chests/iconChestSkinBoosted.c0e0bcd2b145.png " },
-    { key: "chestboostedskin_maps23to33", name: "Loyalty Skin", outcome: "Victory", url: "https://d2k2g0zg1te1mr.cloudfront.net/mobilelite/chests/iconChestSkinBoosted.c0e0bcd2b145.png " },
-    { key: "chestboostedskin_maps12to22", name: "Loyalty Skin", outcome: "Victory", url: "https://d2k2g0zg1te1mr.cloudfront.net/mobilelite/chests/iconChestSkinBoosted.c0e0bcd2b145.png " },
-    { key: "chestboostedskinalternate", name: "Loyalty Skin", outcome: "Victory", url: "https://d2k2g0zg1te1mr.cloudfront.net/mobilelite/chests/iconChestSkinBoosted.c0e0bcd2b145.png " },
-    { key: "chestboostedscroll", name: "Loyalty Scroll", outcome: "Victory", url: "https://d2k2g0zg1te1mr.cloudfront.net/mobilelite/chests/iconChestScrollBoosted.ff3678509435.png" },
-    { key: "chestboostedtoken", name: "Loyalty Token", outcome: "Victory", url: "https://d2k2g0zg1te1mr.cloudfront.net/mobilelite/chests/iconChestTokenBoosted.c0e0bcd2b145.png" },
-    { key: "chestbosssuper", name: "Loyalty Super Boss", outcome: "Victory", url: "https://d2k2g0zg1te1mr.cloudfront.net/mobilelite/chests/iconChestBossSuper.c0e0bcd2b145.png" },
-    { key: "chestboss", name: "Loyalty Boss", outcome: "Victory", url: "https://d2k2g0zg1te1mr.cloudfront.net/mobilelite/chests/iconChestBoss.7f5d2511b08f.png" },
+    { key: "chestsalvage", name: "Defeat", outcome: "Defeat", url: "/icons/iconChestSalvage.png" },
+    { key: "chestbronze", name: "Bronze", outcome: "Victory", url: "/icons/iconChestBronze.png" },
+    { key: "chestsilver", name: "Silver", outcome: "Victory", url: "/icons/iconChestSilver.png" },
+    { key: "chestgold", name: "Gold", outcome: "Victory", url: "/icons/iconChestGold.png" },
+    { key: "chestboostedgold", name: "Loyalty Gold", outcome: "Victory", url: "/icons/iconChestGoldBoosted.png" },
+    { key: "chestboostedskin", name: "Loyalty Skin", outcome: "Victory", url: "/icons/iconChestSkinBoosted.png" },
+    { key: "chestboostedskin_maps01to11", name: "Loyalty Skin", outcome: "Victory", url: "/icons/iconChestSkinBoosted.png" },
+    { key: "chestboostedskin_maps23to33", name: "Loyalty Skin", outcome: "Victory", url: "/icons/iconChestSkinBoosted.png" },
+    { key: "chestboostedskin_maps12to22", name: "Loyalty Skin", outcome: "Victory", url: "/icons/iconChestSkinBoosted.png" },
+    { key: "chestboostedskinalternate", name: "Loyalty Skin", outcome: "Victory", url: "/icons/iconChestSkinBoosted.png" },
+    { key: "chestboostedscroll", name: "Loyalty Scroll", outcome: "Victory", url: "/icons/iconChestScrollBoosted.png" },
+    { key: "chestboostedtoken", name: "Loyalty Token", outcome: "Victory", url: "/icons/iconChestTokenBoosted.png" },
+    { key: "chestbosssuper", name: "Loyalty Super Boss", outcome: "Victory", url: "/icons/iconChestBossSuper.png" },
+    { key: "chestboss", name: "Loyalty Boss", outcome: "Victory", url: "/icons/iconChestBoss.png" },
 ];
 
 //quantity is the count of log records for the chest. count is the chestcount from getRaidStatsByUser
 let chestCounter = [
-    { key: "chestboostedgold", name: "Loyalty Gold", quantity: 0, max: 65, count: 0, url: "https://d2k2g0zg1te1mr.cloudfront.net/mobilelite/chests/iconChestGoldBoosted.c0e0bcd2b145.png" },
-    { key: "chestboostedskin", name: "Loyalty Skin", quantity: 0, max: 130, count: 0, url: "https://d2k2g0zg1te1mr.cloudfront.net/mobilelite/chests/iconChestSkinBoosted.c0e0bcd2b145.png " },
-    { key: "chestboostedscroll", name: "Loyalty Scroll", quantity: 0, max: 65, count: 0, url: "https://d2k2g0zg1te1mr.cloudfront.net/mobilelite/chests/iconChestScrollBoosted.ff3678509435.png" },
-    { key: "chestboostedtoken", name: "Loyalty Token", quantity: 0, max: 65, count: 0, url: "https://d2k2g0zg1te1mr.cloudfront.net/mobilelite/chests/iconChestTokenBoosted.c0e0bcd2b145.png" },
-    { key: "chestbosssuper", name: "Loyalty SB", quantity: 0, max: 30, count: 0, url: "https://d2k2g0zg1te1mr.cloudfront.net/mobilelite/chests/iconChestBossSuper.c0e0bcd2b145.png" },
-    { key: "chestboss", name: "Loyalty Boss", quantity: 0, max: 190, count: 0, url: "https://d2k2g0zg1te1mr.cloudfront.net/mobilelite/chests/iconChestBoss.7f5d2511b08f.png" },
+    { key: "chestboostedgold", name: "Loyalty Gold", quantity: 0, max: 65, count: 0, url: "/icons/iconChestGoldBoosted.png" },
+    { key: "chestboostedskin", name: "Loyalty Skin", quantity: 0, max: 130, count: 0, url: "/icons/iconChestSkinBoosted.png" },
+    { key: "chestboostedscroll", name: "Loyalty Scroll", quantity: 0, max: 65, count: 0, url: "/icons/iconChestScrollBoosted.png" },
+    { key: "chestboostedtoken", name: "Loyalty Token", quantity: 0, max: 65, count: 0, url: "/icons/iconChestTokenBoosted.png" },
+    { key: "chestbosssuper", name: "Loyalty SB", quantity: 0, max: 30, count: 0, url: "/icons/iconChestBossSuper.png" },
+    { key: "chestboss", name: "Loyalty Boss", quantity: 0, max: 190, count: 0, url: "/icons/iconChestBoss.png" },
 ];
 
 //Event listener for when the page loads
@@ -127,12 +127,28 @@ document.addEventListener('DOMContentLoaded', async function () {
 });
 
 async function loadLogData() {
-    const logSwitch = await retrieveFromStorage("logSwitch");
-    const captIdSwitch = await retrieveFromStorage("captIdSwitch");
-    const raidIdSwitch = await retrieveFromStorage("raidIdSwitch");
-    const pendingSwitch = await retrieveFromStorage("pendingSwitch");
-    const dungeonPVPSwitch = await retrieveFromStorage("dungeonPVPSwitch");
+    const dataArray = ['logSwitch', 'captIdSwitch', 'raidIdSwitch', 'pendingSwitch', 'dungeonPVPSwitch', 'items', 'currency', 'skins', 'imageUrls', 'getEventProgressionLite'];
+    const dataKeys = await retrieveMultipleFromStorage(dataArray);
+    const logSwitch = dataKeys.logSwitch;
+    const captIdSwitch = dataKeys.captIdSwitch;
+    const raidIdSwitch = dataKeys.raidIdSwitch;
+    const pendingSwitch = dataKeys.pendingSwitch;
+    const dungeonPVPSwitch = dataKeys.dungeonPVPSwitch;
+    const items = dataKeys.items;
+    const currency = dataKeys.currency;
+    const skins = dataKeys.skins;
+    const imageURLs = dataKeys.imageUrls;
+    let filteredImageURLs = {};
+    Object.keys(imageURLs).forEach(function (key) {
+        if (key.startsWith("mobilelite/units/static/") || key.startsWith("mobilelite/events/")) {
+            filteredImageURLs[key] = imageURLs[key];
+            return;
+        }
+    });
+    let eventUid = dataKeys.getEventProgressionLite;
+    eventUid = eventUid.data.eventUid;
 
+    
     //If table already exists, remove it so a new one can be injected
     const isTable = document.getElementById("logTable");
     if (isTable) isTable.remove();
@@ -165,7 +181,7 @@ async function loadLogData() {
         headerRow.innerHTML ='<th>#</th><th>Slot</th><th>Captain Name</th><th>Mode</th><th>Color Code</th><th>Start time</th><th>End time</th><th>Duration</th><th>Result</th><th>Awarded Chest</th><th>Initial Chest</th>';
     }
     if (raidIdSwitch) headerRow.innerHTML += '<th>Raid ID</th>';
-    if (dungeonPVPSwitch) headerRow.innerHTML += '<th>Dungeon Level</th><th>Opponent</th>';
+    if (dungeonPVPSwitch) headerRow.innerHTML += '<th>Dungeon Level</th><th style="max-width:70px !important; word-wrap:break-word;">Opponent</th>';
     if (logSwitch) headerRow.innerHTML += '<th>Rewards</th><th>Leaderboard Rank</th><th>Kills</th><th>Assists</th><th>Units Placed</th>';
 
     //Append header row to the table
@@ -271,12 +287,15 @@ async function loadLogData() {
             rewards = "";
             for (let i = 0; i < rewardsList.length; i++) {
                 const reward = rewardsList[i].split(" ");
-                if (reward[1] !== undefined) {
+                if (reward[1] !== undefined && reward[0] !== "undefined") {
                     if (reward[1].includes("scroll")) {
                         rewards = '<div class="crop"><img src="' + reward[0] + '" title="' + reward[1] + '"></div>' + rewards;
                     } else {
                         rewards = '<img src="' + reward[0] + '" title="' + reward[1] + '" style="height: 30px; width: auto">' + rewards;
                     }
+                } else if (reward[0] == "undefined") {
+                    let url = await getRewardUrl(reward[1], eventUid, items, currency, imageURLs, skins);
+                    rewards = '<div class="crop"><img src="' + url + '" title="' + reward[1] + '"></div>' + rewards;
                 }
             }
         }
@@ -407,7 +426,7 @@ async function loadLogData() {
         let logDungeonPVP;
         if (dungeonPVPSwitch) {
             logDungeonPVP = `<td>${dungeonLevel}</td>
-                <td>${pvpOpponent}</td>`;
+                <td style="max-width:70px !important; word-wrap:break-word;">${pvpOpponent}</td>`;
         } else {
             logDungeonPVP = ``;
         }
@@ -517,7 +536,7 @@ function loadChestCounter() {
     const counterContainer = document.querySelector('.counter-container');
     counterContainer.innerHTML = '';
     const table = document.createElement('table');
-    table.setAttribute('style', 'width:20% !important; padding:0 !important');
+    table.setAttribute('style', 'width:20% !important; padding:0 !important;');
     const header = document.createElement('tr');
     header.innerHTML = `<td>Chest</td><td>Log Count</td><td>Game Count</td><td>Remaining</td><td>Max</td>`;
     table.appendChild(header);
