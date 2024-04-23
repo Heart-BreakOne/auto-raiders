@@ -2,8 +2,8 @@
 let isRunning = false;
 let requestRunning = false;
 let activeRaidsArray = [];
-let eventData = [];
-let backgroundDelay = ms => new Promise(res => setTimeout(res, ms));
+let isEventCurrencyActive;
+let allRewardUrls = {};
 
 function getRandNum(min, max) {
   return Math.floor(Math.random() * (max - min + 1) + min);
@@ -84,7 +84,14 @@ async function getLeaderboardUnitsData(getRaid) {
   const unitAssetNames = dataKeys.units;
   const skinNames = dataKeys.skins;
   const imageURLs = dataKeys.imageUrls;
-
+  let filteredImageURLs = {};
+  Object.keys(imageURLs).forEach(function (key) {
+      if (key.startsWith("mobilelite/units/static/")) {
+          filteredImageURLs[key] = imageURLs[key];
+          return;
+      }
+  });
+  
   try {
     const currentRaid = getRaid.data;
     const raidId = currentRaid.raidId;
@@ -127,10 +134,8 @@ async function getLeaderboardUnitsData(getRaid) {
           } else {
             specializationUid = placement.specializationUid;
           }
-          Object.keys(imageURLs).forEach(function (key) {
-            if (key === "mobilelite/units/static/" + skin + ".png") {
-              skinURL = "https://d2k2g0zg1te1mr.cloudfront.net/" + imageURLs[key];
-            }
+          Object.keys(filteredImageURLs).forEach(function (key) {
+            if (key === "mobilelite/units/static/" + skin + ".png") skinURL = "https://d2k2g0zg1te1mr.cloudfront.net/" + filteredImageURLs[key];
           });
           unitIconList = skinURL + " " + skin.replace("allies", "").replace("skinFull", "") + " " + CharacterType + " " + SoulType + " " + specializationUid + "," + unitIconList;
         }
@@ -157,17 +162,26 @@ async function getRaidStats(currentRaid) {
     }
     const raidData = currentRaid.data;
     const stats = raidData.stats;
-
-    const userId = await retrieveFromStorage("userId")
     let raidStats = {};
     let rewards = {};
 
+    const dataArray = ['userId', 'items', 'currency', 'skins', 'imageUrls', 'getEventProgressionLite'];
+    const dataKeys = await retrieveMultipleFromStorage(dataArray);
+    const userId = dataKeys.userId;
+    const items = dataKeys.items;
+    const currency = dataKeys.currency;
+    const skins = dataKeys.skins;
+    const imageURLs = dataKeys.imageUrls;
+    let filteredImageURLs = {};
+    Object.keys(imageURLs).forEach(function (key) {
+        if (key.startsWith("mobilelite/units/static/") || key.startsWith("mobilelite/events/")) {
+            filteredImageURLs[key] = imageURLs[key];
+            return;
+        }
+    });
+
     let eventUid = await retrieveFromStorage("getEventProgressionLite");
     eventUid = eventUid.data.eventUid;
-
-    let items = await retrieveFromStorage("items")
-    let currency = await retrieveFromStorage("currency")
-    let imageURLs = await retrieveFromStorage("imageUrls")
 
     if (stats.length > 0) {
       if (raidData.battleResult === "True") {
@@ -228,11 +242,9 @@ async function getRaidStats(currentRaid) {
       if (raidData.eventCurrencyAwarded > 0) {
         rewards[i] = "";
 
-        Object.keys(imageURLs).forEach(function (key) {
-          if (key === "mobilelite/events/" + eventUid + "/iconEventCurrency.png") {
-            rewards[i] = "https://d2k2g0zg1te1mr.cloudfront.net/" + imageURLs[key];
-          }
-        })
+        Object.keys(filteredImageURLs).forEach(function (key) {
+          if (key === "mobilelite/events/" + eventUid + "/iconEventCurrency.png") rewards[i] = "https://d2k2g0zg1te1mr.cloudfront.net/" + filteredImageURLs[key];
+        });
         rewards[i] = rewards[i] + " eventcurrencyx" + raidData.eventCurrencyAwarded;
         i++;
       }
@@ -259,49 +271,7 @@ async function getRaidStats(currentRaid) {
     }
     try {
       if (raidData.bonusItemReceived !== "" && raidData.bonusItemReceived !== null) {
-        if (raidData.bonusItemReceived.includes("goldbag")) {
-          rewards[i] = "https://d2k2g0zg1te1mr.cloudfront.net/env/prod1/mobile-lite/static/media/iconGold.6072909d.png";
-        } else if (raidData.bonusItemReceived.includes("epicpotion")) {
-          rewards[i] = "https://d2k2g0zg1te1mr.cloudfront.net/env/prod1/mobile-lite/static/media/iconPotion.2c8f0f08.png";
-        } else if (raidData.bonusItemReceived.includes("cooldown")) {
-          rewards[i] = "https://d2k2g0zg1te1mr.cloudfront.net/env/prod1/mobile-lite/static/media/iconMeat.5c167903.png";
-        } else if (raidData.bonusItemReceived.includes("eventtoken")) {
-          Object.keys(imageURLs).forEach(function (key) {
-            if (key === "mobilelite/events/" + eventUid + "/iconEventToken.png") {
-              rewards[i] = "https://d2k2g0zg1te1mr.cloudfront.net/" + imageURLs[key];
-            }
-          })
-        } else if (raidData.bonusItemReceived.includes("skin")) {
-          Object.keys(imageURLs).forEach(function (key) {
-            if (key === "mobilelite/units/static/" + raidData.bonusItemReceived + ".png") {
-              rewards[i] = "https://d2k2g0zg1te1mr.cloudfront.net/" + imageURLs[key];
-            }
-          });
-        } else {
-          rewards[i] = "";
-          let item;
-          let bonusItemReceived;
-          if (raidData.bonusItemReceived.includes("|")) {
-            bonusItemReceived = raidData.bonusItemReceived.split("|")[1];
-          } else {
-            bonusItemReceived = raidData.bonusItemReceived;
-          }
-          Object.keys(items).forEach(function (key) {
-            if (key === bonusItemReceived) {
-              item = items[key].CurrencyTypeAwarded;
-            }
-          })
-          Object.keys(currency).forEach(function (key) {
-            if (key === item) {
-              item = currency[key].UnitAssetName;
-            }
-          })
-          Object.keys(imageURLs).forEach(function (key) {
-            if (key === "mobilelite/units/static/" + item + ".png") {
-              rewards[i] = "https://d2k2g0zg1te1mr.cloudfront.net/" + imageURLs[key];
-            }
-          })
-        }
+        rewards[i] = await getRewardUrl(raidData.bonusItemReceived, eventUid, items, currency, filteredImageURLs, skins);
         rewards[i] = rewards[i] + " " + raidData.bonusItemReceived;
         i++;
       }
@@ -311,11 +281,9 @@ async function getRaidStats(currentRaid) {
     try {
       if (raidData.eventTokensReceived != "0") {
         rewards[i] = "";
-        Object.keys(imageURLs).forEach(function (key) {
-          if (key === "mobilelite/events/" + eventUid + "/iconEventToken.png") {
-            rewards[i] = "https://d2k2g0zg1te1mr.cloudfront.net/" + imageURLs[key];
-          }
-        })
+        Object.keys(filteredImageURLs).forEach(function (key) {
+          if (key === "mobilelite/events/" + eventUid + "/iconEventToken.png") rewards[i] = "https://d2k2g0zg1te1mr.cloudfront.net/" + filteredImageURLs[key];
+        });
         rewards[i] = rewards[i] + " eventtokenx" + raidData.eventTokensReceived;
         i++;
       }
@@ -325,49 +293,7 @@ async function getRaidStats(currentRaid) {
     try {
       if (raidData.viewerChestRewards !== undefined && raidData.viewerChestRewards !== null) {
         for (var k = 0; k < raidData.viewerChestRewards.length; k++) {
-          if (raidData.viewerChestRewards[k].includes("goldbag")) {
-            rewards[i] = "https://d2k2g0zg1te1mr.cloudfront.net/env/prod1/mobile-lite/static/media/iconGold.6072909d.png";
-          } else if (raidData.viewerChestRewards[k].includes("epicpotion")) {
-            rewards[i] = "https://d2k2g0zg1te1mr.cloudfront.net/env/prod1/mobile-lite/static/media/iconPotion.2c8f0f08.png";
-          } else if (raidData.viewerChestRewards[k].includes("cooldown")) {
-            rewards[i] = "https://d2k2g0zg1te1mr.cloudfront.net/env/prod1/mobile-lite/static/media/iconMeat.5c167903.png";
-          } else if (raidData.viewerChestRewards[k].includes("eventtoken")) {
-            Object.keys(imageURLs).forEach(function (key) {
-              if (key === "mobilelite/events/" + eventUid + "/iconEventToken.png") {
-                rewards[i] = "https://d2k2g0zg1te1mr.cloudfront.net/" + imageURLs[key];
-              }
-            })
-          } else if (raidData.viewerChestRewards[k].includes("skin")) {
-            Object.keys(imageURLs).forEach(function (key) {
-              if (key === "mobilelite/units/static/" + raidData.viewerChestRewards[k] + ".png") {
-                rewards[i] = "https://d2k2g0zg1te1mr.cloudfront.net/" + imageURLs[key];
-              }
-            });
-          } else {
-            rewards[i] = "";
-            let item;
-            let viewerChestRewardItem;
-            if (raidData.viewerChestRewards[k].includes("|")) {
-              viewerChestRewardItem = raidData.viewerChestRewards[k].split("|")[1];
-            } else {
-              viewerChestRewardItem = raidData.viewerChestRewards[k]
-            }
-            Object.keys(items).forEach(function (key) {
-              if (key === viewerChestRewardItem) {
-                item = items[key].CurrencyTypeAwarded;
-              }
-            })
-            Object.keys(currency).forEach(function (key) {
-              if (key === item) {
-                item = currency[key].UnitAssetName;
-              }
-            })
-            Object.keys(imageURLs).forEach(function (key) {
-              if (key === "mobilelite/units/static/" + item + ".png") {
-                rewards[i] = "https://d2k2g0zg1te1mr.cloudfront.net/" + imageURLs[key];
-              }
-            })
-          }
+          rewards[i] = await getRewardUrl(raidData.viewerChestRewards[k], eventUid, items, currency, filteredImageURLs, skins);
           rewards[i] = rewards[i] + " " + raidData.viewerChestRewards[k];
           i++;
         }
@@ -419,6 +345,73 @@ async function getRaidStats(currentRaid) {
   }
 }
 
+async function getRewardUrl(reward, eventUid, items, currency, imageURLs, skins) {
+    let url = "";
+    if (reward.includes("goldbag")) {
+        url = "https://d2k2g0zg1te1mr.cloudfront.net/env/prod1/mobile-lite/static/media/iconGold.6072909d.png";
+    } else if (reward.includes("epicpotion")) {
+        url = "https://d2k2g0zg1te1mr.cloudfront.net/env/prod1/mobile-lite/static/media/iconPotion.2c8f0f08.png";
+    } else if (reward.includes("cooldown")) {
+        url = "https://d2k2g0zg1te1mr.cloudfront.net/env/prod1/mobile-lite/static/media/iconMeat.5c167903.png";
+    } else if (reward.includes("eventtoken")) {
+        if (allRewardUrls.hasOwnProperty(eventUid)) {
+            url = allRewardUrls[eventUid].Url;
+        } else {
+            Object.keys(imageURLs).forEach(function (key) {
+                if (key === "mobilelite/events/" + eventUid + "/iconEventToken.png") {
+                    url = "https://d2k2g0zg1te1mr.cloudfront.net/" + imageURLs[key];
+                    allRewardUrls[eventUid] = {Url: url};
+                    return;
+                }
+            });
+        }
+    } else if (reward.includes("skin")) {
+        let skin;
+        Object.keys(skins).forEach(function (key) {
+            if (key === reward) {
+                skin = skins[key].BaseAssetName;
+                return;
+            }
+        });
+        Object.keys(imageURLs).forEach(function (key) {
+            if (key === "mobilelite/units/static/" + skin + ".png") {
+                url = "https://d2k2g0zg1te1mr.cloudfront.net/" + imageURLs[key];
+                return;
+            }
+        });
+    } else {
+        let item;
+        let itemReceived;
+        if (reward.includes("|")) {
+            itemReceived = reward.split("|")[1];
+        } else {
+            itemReceived = reward;
+        }
+        if (allRewardUrls.hasOwnProperty(itemReceived)) {
+            url = allRewardUrls[itemReceived].Url;
+        } else {
+            Object.keys(items).forEach(function (key) {
+                if (key === itemReceived) {
+                    item = items[key].CurrencyTypeAwarded;
+                    return;
+                }
+            });
+            Object.keys(currency).forEach(function (key) {
+                if (key === item) {
+                    item = currency[key].UnitAssetName;
+                    return;
+                }
+            });
+            Object.keys(imageURLs).forEach(function (key) {
+                if (key === "mobilelite/units/static/" + item + ".png") {
+                    url = "https://d2k2g0zg1te1mr.cloudfront.net/" + imageURLs[key];
+                    allRewardUrls[itemReceived] = {Url: url};
+                    return;
+                }
+            });
+        }
+    }
+    return url;
 }
 
 //Initialize arrays with null values, get authentication cookies and make requests for the data of interest.

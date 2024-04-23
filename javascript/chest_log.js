@@ -1,6 +1,5 @@
 //Declaring/Initializing variables
 let rewardData = [];
-let allRewardUrls = {};
 let allChests = {};
 
 //Event listener for when the page loads
@@ -199,75 +198,6 @@ async function loadUserChestsLog() {
 
     // Append the table to the data container
     dataContainer.appendChild(tableElement);
-}
-
-async function getRewardUrl(reward, eventUid, items, currency, imageURLs, skins) {
-    url = "";
-    if (reward.includes("goldbag")) {
-        url = "https://d2k2g0zg1te1mr.cloudfront.net/env/prod1/mobile-lite/static/media/iconGold.6072909d.png";
-    } else if (reward.includes("epicpotion")) {
-        url = "https://d2k2g0zg1te1mr.cloudfront.net/env/prod1/mobile-lite/static/media/iconPotion.2c8f0f08.png";
-    } else if (reward.includes("cooldown")) {
-        url = "https://d2k2g0zg1te1mr.cloudfront.net/env/prod1/mobile-lite/static/media/iconMeat.5c167903.png";
-    } else if (reward.includes("eventtoken")) {
-        if (allRewardUrls.hasOwnProperty(eventUid)) {
-            url = allRewardUrls[eventUid].Url;
-        } else {
-            Object.keys(imageURLs).forEach(function (key) {
-                if (key === "mobilelite/events/" + eventUid + "/iconEventToken.png") {
-                    url = "https://d2k2g0zg1te1mr.cloudfront.net/" + imageURLs[key];
-                    allRewardUrls[eventUid] = {Url: url};
-                    return;
-                }
-            })
-        }
-    } else if (reward.includes("skin")) {
-        let skin;
-        Object.keys(skins).forEach(function (key) {
-            if (key === reward) {
-                skin = skins[key].BaseAssetName;
-                return;
-            }
-        });
-        Object.keys(imageURLs).forEach(function (key) {
-            if (key === "mobilelite/units/static/" + skin + ".png") {
-                url = "https://d2k2g0zg1te1mr.cloudfront.net/" + imageURLs[key];
-                return;
-            }
-        });
-    } else {
-        let item;
-        let itemReceived;
-        if (reward.includes("|")) {
-            itemReceived = reward.split("|")[1];
-        } else {
-            itemReceived = reward;
-        }
-        if (allRewardUrls.hasOwnProperty(itemReceived)) {
-            url = allRewardUrls[itemReceived].Url;
-        } else {
-            Object.keys(items).forEach(function (key) {
-                if (key === itemReceived) {
-                    item = items[key].CurrencyTypeAwarded;
-                    return;
-                }
-            })
-            Object.keys(currency).forEach(function (key) {
-                if (key === item) {
-                    item = currency[key].UnitAssetName;
-                    return;
-                }
-            })
-            Object.keys(imageURLs).forEach(function (key) {
-                if (key === "mobilelite/units/static/" + item + ".png") {
-                    url = "https://d2k2g0zg1te1mr.cloudfront.net/" + imageURLs[key];
-                    allRewardUrls[itemReceived] = {Url: url};
-                    return;
-                }
-            })
-        }
-    }
-    return url;
 }
 
 function getTimeString(startTime) {
