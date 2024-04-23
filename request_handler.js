@@ -697,6 +697,7 @@ async function getActiveRaidsLite(activeRaids) {
       "opponentTwitchDisplayName": activeRaid.opponentTwitchDisplayName, 
       "type": activeRaid.type, 
       "isCodeLocked": activeRaid.isCodeLocked, 
+      "pveWins": activeRaid.pveWins, 
       "message": activeRaid.message
     });
   }
@@ -712,6 +713,7 @@ async function getActiveRaidsLite(activeRaids) {
       "opponentTwitchDisplayName": "", 
       "type": "", 
       "isCodeLocked": "", 
+      "pveWins": "", 
       "message": ""
     });
   }

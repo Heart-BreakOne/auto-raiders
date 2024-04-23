@@ -24,7 +24,6 @@ window.addEventListener('message', (message) => handleMessage(message));
 //Declares/initializes variables
 let currentMarker;
 let arrayOfMarkers;
-let diamondLoyalty;
 let firstReload;
 let reload = 0;
 let isContentRunning = false;
@@ -311,8 +310,6 @@ async function start() {
         //If slot state is disabled, move to the next slot
         if (slotState == 0) continue;
         
-        diamondLoyalty = null;
-
         let captainFlag;
         //Pass captain name and check if the captain is flagged
         try {
@@ -368,11 +365,6 @@ async function start() {
         else if (((battleType == "Dungeons" && !dungeonSwitch) || (battleType == "Clash" && !clashSwitch) ||
           ((battleType == "Duel" && !duelSwitch)) || !campaignSwitch) &&
           captainSlot.querySelector('.capSlotClose') == null) {
-        }
-        //If all is clear, it checks if the captain is diamond loyalty for future comparison.
-        else {
-          diamondLoyalty = null;
-          diamondLoyalty = captainSlot.outerHTML;
           continue;
         }
 
@@ -471,11 +463,19 @@ async function start() {
         try {
           loyaltyRadioInt = parseInt(loyaltyRadio);
         } catch (error) {
-          loyaltyRadioInt = 0
+          loyaltyRadioInt = 0;
         }
-        let captainLoyalty;
+        let notAcceptableLoyalty, captainLoyalty, pveWins, captainLoyaltyLevel, raidId;
+        for (let i = 0; i < activeRaidsArray.length; i++) {
+          if (activeRaidsArray[i].twitchDisplayName == captainNameFromDOM) {
+            pveWins = activeRaidsArray[i].pveWins;
+            // captainLoyaltyLevel = pveWins >= 98 ? "Diamond" : (pveWins < 98 && pveWins >= 48) ? "Gold" : (pveWins < 48 && pveWins >= 13) ? "Silver" : "Bronze";
+            captainLoyaltyLevel = pveWins >= 98 ? 4 : (pveWins < 98 && pveWins >= 48) ? 3 : (pveWins < 48 && pveWins >= 13) ? 2 : 1;
+            raidId = activeRaidsArray[i].raidId;
+            i = activeRaidsArray.length;
+          }
+        }
         let lResults = await getCaptainLoyalty(captainNameFromDOM);
-        let raidId = lResults[0];
         let chestType = lResults[1];
         if (battleType == "Campaign" && loyaltyRadioInt != 0 && loyaltyRadio != undefined) {
           try {
@@ -490,7 +490,7 @@ async function start() {
               let ltoken = chestKeys.ltokenSwitch;
               let lboss = chestKeys.lbossSwitch;
               let lsuperboss = chestKeys.lsuperbossSwitch;
-              if ((!lgold && chestType == "chestboostedgold") || (!lskin && chestType == "chestboostedskin") || (!lscroll && chestType == "chestboostedscroll") || (!ltoken && chestType == "chestboostedtoken") || (!lboss && chestType == "chestboss") || (!lsuperboss && chestType == "chestbosssuper")) {
+              if ((!lgold && chestType == "chestboostedgold") || (!lskin && chestType.includes("chestboostedskin")) || (!lscroll && chestType == "chestboostedscroll") || (!ltoken && chestType == "chestboostedtoken") || (!lboss && chestType == "chestboss") || (!lsuperboss && chestType == "chestbosssuper")) {
                 captainLoyalty = true;
               } else if (chestType == "bonechest" || chestType == "dungeonchest" || chestType == "chestbronze" || chestType == "chestsilver" || chestType == "chestgold") {
                 captainLoyalty = false;
@@ -499,69 +499,31 @@ async function start() {
               }
 
               if (captainLoyalty) {
-                let lBadgeElement = null
-                let lBadge = ""
-                try {
-                  lBadgeElement = captainSlot.querySelector('.capSlotLoyalty img');
-                  if (lBadgeElement != null) {
-                    lBadge = lBadgeElement.getAttribute('src')
-                  }
-                  if ((lBadge == null || lBadge == undefined) && loyaltyRadioInt == 0) {
-                    captainLoyalty = false;
-                    captainFlag = false;
-                    lBadge = ""
-                  }
-                  if (lBadge == null || lBadge == undefined) {
-                    lBadge = ""
-                  }
-                  else if (lBadge.includes("Wood") && loyaltyRadioInt == 1) {
-                    // Bronze check
-                    captainLoyalty = false;
-                    captainFlag = false;
-                  }
-                  else if (lBadge.includes("Blue") && loyaltyRadioInt <= 2) {
-                    // Silver Check
-                    captainLoyalty = false;
-                    captainFlag = false;
-                  }
-                  else if (lBadge.includes("Gold") && loyaltyRadioInt <= 3) {
-                    // Gold check
-                    captainLoyalty = false;
-                    captainFlag = false;
-                  }
-                  else if (lBadge.includes("Diamond") && loyaltyRadioInt <= 4) {
-                    // Diamond check
-                    captainLoyalty = false;
-                    captainFlag = false;
-                  }
-                  else {
-                    captainLoyalty = true;
-                    captainFlag = true;
-                  }
-                } catch (error) {
-                  console.log(error)
-                  captainLoyalty = true;
+                if (loyaltyRadioInt == 0 || captainLoyaltyLevel >= loyaltyRadioInt) {
+                  notAcceptableLoyalty = false;
+                  captainFlag = false;
+                }
+                else {
+                  notAcceptableLoyalty = true;
                   captainFlag = true;
                 }
               }
             }
           } catch (error) {
-            console.log(error)
-            captainLoyalty = true;
+            console.log(error);
+            notAcceptableLoyalty = true;
             captainFlag = true;
 
           }
         } else {
-          captainLoyalty = false;
+          notAcceptableLoyalty = false;
           captainFlag = false;
         }
         //If captain has any flags, change color and move to the next slot
 
-        if (captainLoyalty || captainFlag) {
-          if (captainLoyalty) {
-            captainSlot.style.backgroundColor = blue;
-          }
         if (await retrieveMaxUnit(captainNameFromDOM)) continue;
+        if (notAcceptableLoyalty || captainFlag) {
+          if (notAcceptableLoyalty) captainSlot.style.backgroundColor = blue;
           continue;
         } else {
           captainSlot.style.backgroundColor = gameBlue;
@@ -573,7 +535,7 @@ async function start() {
         if (placeUnit) {
           placeUnit.click();
           await delay(1000);
-          await openBattlefield(captainNameFromDOM, raidId, slotOption, diamondLoyalty, battleType);
+          await openBattlefield(captainNameFromDOM, raidId, slotOption, notAcceptableLoyalty, captainLoyaltyLevel, battleType);
           break;
         } else {
           isContentRunning = false;
@@ -608,7 +570,7 @@ async function performCollectionInterval() {
 }
 
 // This function checks if the battlefield is present, the current chest type, then zooms into it.
-async function openBattlefield(captainNameFromDOM, raidId, slotOption, diamondLoyalty, battleType) {
+async function openBattlefield(captainNameFromDOM, raidId, slotOption, notAcceptableLoyalty, captainLoyaltyLevel, battleType) {
   let chestKeysArray = ['lgoldSwitch', 'lskinSwitch', 'lscrollSwitch', 'ltokenSwitch', 'lbossSwitch', 'lsuperbossSwitch'];
   let chestKeys = await retrieveMultipleFromStorage(chestKeysArray);
   let lgold = chestKeys.lgoldSwitch;
@@ -629,34 +591,7 @@ async function openBattlefield(captainNameFromDOM, raidId, slotOption, diamondLo
   } catch (error) {
     return;
   }
-  mode = false;
-  //Duels and clash strings here.
-  if (battleInfo.includes("Level") || battleInfo.includes("Versus")) {
-    mode = true;
-  }
-  //Check if user wants to preserve loyalty
-  let radioLoyalty = await getRadioButton("loyalty");
-  let radioLoyaltyInt = 0
-  try {
-    radioLoyaltyInt = parseInt(radioLoyalty)
-  } catch (error) {
-    radioLoyaltyInt = 0
-  }
 
-  let acceptableLoyalty = false;
-  if (diamondLoyalty == null) {
-    return;
-  }
-  const matchingEntry = loyaltyArray.find(item => diamondLoyalty.includes(item.value));
-  const matchingKey = matchingEntry ? matchingEntry.key : null;
-
-  if (radioLoyaltyInt === 0) {
-    acceptableLoyalty = true;
-  } else if (matchingKey >= radioLoyaltyInt) {
-    acceptableLoyalty = true;
-  }
-
-  //User wants to preserve diamond loyalty and current captain is not diamond and current mode is campaign
   //Current mode is campaign
   if (battleType == "Campaign") {
     //Opens battle info and checks chest type.
@@ -710,7 +645,8 @@ async function openBattlefield(captainNameFromDOM, raidId, slotOption, diamondLo
 
     await setLogInitialChest2(captainNameFromDOM, raidId, chest);
 
-    if (!acceptableLoyalty && ((!lgold && chest == "Loyalty Gold Chest") || (!lskin && chest == "Loyalty Skin Chest") || (!lscroll && chest == "Loyalty Scroll Chest") || (!ltoken && chest == "Loyalty Token Chest") || (!lboss && chest == "Loyalty Boss Chest") || (!lsuperboss && chest == "Loyalty Super Boss Chest"))) {
+console.log("LOG-"+chest);
+    if (notAcceptableLoyalty && ((!lgold && chest == "Loyalty Gold Chest") || (!lskin && chest == "Loyalty Skin Chest") || (!lscroll && chest == "Loyalty Scroll Chest") || (!ltoken && chest == "Loyalty Token Chest") || (!lboss && chest == "Loyalty Boss Chest") || (!lsuperboss && chest == "Loyalty Super Boss Chest"))) {
       //Flag the captain loyalty since the current map is to be skipped
       await flagCaptain('captainLoyalty');
       //Close the chest info popup and return to main menu
@@ -720,16 +656,16 @@ async function openBattlefield(captainNameFromDOM, raidId, slotOption, diamondLo
     } else {
       //Current chest is not special, close chest info and zoom
       closeAll();
-      await getValidUnits(captainNameFromDOM, raidId, slotOption, diamondLoyalty, battleType);
+      await getValidUnits(captainNameFromDOM, raidId, slotOption, notAcceptableLoyalty, captainLoyaltyLevel, battleType);
     }
   } else {
     //User doesn't want to preserve diamond loyalty
     closeAll();
-    await getValidUnits(captainNameFromDOM, raidId, slotOption, diamondLoyalty, battleType);
+    await getValidUnits(captainNameFromDOM, raidId, slotOption, notAcceptableLoyalty, captainLoyaltyLevel, battleType);
   }
 }
 
-async function getValidUnits(captainNameFromDOM, raidId, slotOption, diamondLoyalty, battleType) {
+async function getValidUnits(captainNameFromDOM, raidId, slotOption, notAcceptableLoyalty, captainLoyaltyLevel, battleType) {
   currentMarker = null;
   unitDrawer = null;
   //Function to check for a frozen state
@@ -1004,7 +940,7 @@ async function getValidUnits(captainNameFromDOM, raidId, slotOption, diamondLoya
   }
 
   if (!soulSwitch && moreSkinsSwitch && equipSwitch && !canCompleteQuests) {
-    if (!equipNoDiamondSwitch || (equipNoDiamondSwitch && !diamondLoyalty.toString().includes("LoyaltyDiamond"))) {
+    if (!equipNoDiamondSwitch || (equipNoDiamondSwitch && captainLoyaltyLevel != 4)) {
       try {
         await shiftUnits(captainNameFromDOM);
       } catch (error) {
