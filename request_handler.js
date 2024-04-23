@@ -515,7 +515,7 @@ async function getUserDungeonInfoForRaid(data, headers) {
     dungeonRaidInfo[6] = dungeonRaid?.captainBoons ?? "";
     dungeonRaidInfo[7] = dungeonRaid?.enemyBoons ?? "";
     dungeonRaidInfo[8] = dungeonRaid?.completedLevels ?? "";
-    dungeonRaidInfo[8] = raidId;
+    dungeonRaidInfo[9] = raidId;
     await chrome.storage.local.set({ "dungeonRaidInfo": dungeonRaidInfo });
   }
 }
