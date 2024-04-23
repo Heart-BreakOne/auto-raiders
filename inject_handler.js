@@ -111,6 +111,17 @@ function injectIntoDOM() {
         let quantityItemsCont = document.querySelector(".quantityItemsCont");
         quantityItemsCont.appendChild(elapsedTimeContainer);
     }
+
+    // Checks if label container already exists
+    let chestContainer = document.querySelector(".chestContainer");
+    //If button doesn't exist one is created and injected.
+    if (!chestContainer) {
+        chestContainer = document.createElement("div");
+        chestContainer.className = "chestContainer";
+        chestContainer.style.cssText = elapsedTimeStyles;
+        let quantityItemsCont = document.querySelector(".quantityItemsCont");
+        quantityItemsCont.appendChild(chestContainer);
+    }
 }
 
 document.addEventListener("click", function (event) {

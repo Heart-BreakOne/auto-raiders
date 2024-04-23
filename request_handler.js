@@ -683,9 +683,22 @@ async function handleMessage(message) {
 }
 
 async function getActiveRaidsLite(activeRaids) {
+  activeRaidsArrayOld = activeRaidsArray;
   activeRaidsArray = [];
   for (let i = 0; i < activeRaids.data.length; i++) {
     let activeRaid = activeRaids.data[i];
+    let chestType;
+    for (let j = 0; j < activeRaidsArrayOld.length; j++) {
+      let activeRaidOld = activeRaidsArrayOld[j];
+      if (activeRaidOld.raidId == activeRaid.raidId) {
+        if (activeRaid.nodeId == activeRaidOld.nodeId && activeRaidOld.chestType) {
+          chestType = activeRaidOld.chestType;
+        } else {
+          chestType = await getRaidChest(activeRaid.nodeId);
+        }
+        j = activeRaidsArrayOld.length;
+      }
+    }
     activeRaidsArray.push({
       "twitchDisplayName": activeRaid.twitchDisplayName, 
       "twitchUserName": activeRaid.twitchUserName, 
@@ -693,6 +706,7 @@ async function getActiveRaidsLite(activeRaids) {
       "userSortIndex": activeRaid.userSortIndex, 
       "raidId": activeRaid.raidId, 
       "nodeId": activeRaid.nodeId, 
+      "chestType": chestType, 
       "opponentTwitchDisplayName": activeRaid.opponentTwitchDisplayName, 
       "type": activeRaid.type, 
       "isCodeLocked": activeRaid.isCodeLocked, 
