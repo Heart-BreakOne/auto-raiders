@@ -5,13 +5,11 @@
 
 const findBattle = "Waiting for Captain to find battle!";
 const readyToPlace = "Unit ready to place!";
-let masterPort;
 let masterlistRunning;
 
 async function switchToMasterList(forceMaster, replaceMaster) {
-    if (masterlistRunning) {
-      return
-    }
+    if (masterlistRunning) return;
+
     masterlistRunning = true;
     let switchSuccessful = false;
     const allCaptains = document.querySelectorAll(".capSlot");
@@ -24,9 +22,7 @@ async function switchToMasterList(forceMaster, replaceMaster) {
 
         const slot = allCaptains[i];
 
-        if (slot.innerHTML.includes("DISABLED")) {
-            continue;
-        }
+        if (slot.innerHTML.includes("DISABLED")) continue;
         
         const close = slot.querySelector(".capSlotClose");
         
@@ -39,23 +35,18 @@ async function switchToMasterList(forceMaster, replaceMaster) {
         //Check master switching
 
         //User does not want to master switch
-        if (!forceMaster && !replaceMaster) {
-            continue;
-        }
+        if (!forceMaster && !replaceMaster) continue;
+
         //Captain is in a state that allows switching and user wants some kind of master switching
         if (close && (slot.innerHTML.includes(findBattle) || slot.innerHTML.includes(readyToPlace))) {
 
             //Get list of idlers so they aren't put back
             //Makes sure the idler list is not empty
             let idlers;
-            if (idlers != undefined) {
-                switchSuccessful = false;
-            }
+            if (idlers != undefined) switchSuccessful = false;
             const storageData = await chrome.storage.local.get(['idleData']);
             idlers = storageData.idleData || [];
-            if (idlers === undefined) {
-                switchSuccessful = false;
-            }
+            if (idlers === undefined) switchSuccessful = false;
 
             //Get the captain names that are currently idling
             const presentTime = Date.now();
@@ -69,7 +60,7 @@ async function switchToMasterList(forceMaster, replaceMaster) {
             const capName = slot.querySelector(".capSlotName").innerText.toUpperCase();
             // Handle the retrieved data
             let masterlistResult = await chrome.storage.local.get(['masterlist']);
-            let masterlist = masterlistResult['masterlist'];
+            let masterlist = masterlistResult.masterlist;
 
             //Check if the array exists and is an array with at least one element
             if (Array.isArray(masterlist) && masterlist.length > 0) {
@@ -106,9 +97,7 @@ async function switchToMasterList(forceMaster, replaceMaster) {
                             const higherPriorityCaptains = [...new Set(masterlist)];
                             allCaptainNames.forEach(captain => {
                                 const index = higherPriorityCaptains.indexOf(captain);
-                                if (index !== -1) {
-                                    higherPriorityCaptains.splice(index, 1);
-                                }
+                                if (index !== -1) higherPriorityCaptains.splice(index, 1);
                             });
                             if (higherPriorityCaptains.length === 0) {
                                 switchSuccessful = false;
@@ -129,18 +118,15 @@ async function switchToMasterList(forceMaster, replaceMaster) {
 
 //Switch captains to a higher one if available
 async function switchCaptains(currentCaptain, higherPriorityCaptains, index) {
-  if (higherPriorityCaptains.length == 0) {
-    return false;
-  }
+  if (higherPriorityCaptains.length == 0) return false;
   
-  await backgroundDelay(1000);
+  await delay(1000);
   const selectButton = document.querySelectorAll(".actionButton.actionButtonPrimary.capSlotButton.capSlotButtonAction")[index];
   if (selectButton && selectButton.innerText == "SELECT") {
     //Clicks select button to open the captains list
     selectButton.click();
 
     let captainsArray = [];
-    let currentId;
 
     let idlersList;
     const storageData = await chrome.storage.local.get(['idleData']);
@@ -148,12 +134,12 @@ async function switchCaptains(currentCaptain, higherPriorityCaptains, index) {
 
     if (idlers) {
       const presentTime = Date.now();
-      const uIT = await getUserIdleTime()
+      const uIT = await getUserIdleTime();
       idlersList = idlers
         .filter(entry => presentTime - entry.presentTime < uIT)
         .map(entry => entry.captainName.toUpperCase());
     } else {
-      idlersList = []
+      idlersList = [];
     }
 
     //Clicks on the ALL captains tab to obtain the full list of online captains
@@ -164,14 +150,13 @@ async function switchCaptains(currentCaptain, higherPriorityCaptains, index) {
     await idleDelay(3000);
     //Gets the full list of captains
 
-    let fullCaptainList = await retrieveFromStorage("captainSearchData")
+    let fullCaptainList = await retrieveFromStorage("captainSearchData");
     fullCaptainList = fullCaptainList.filter(captain => !idlersList.includes(captain.twitchDisplayName.toUpperCase()));
 
     let blackList = await filterCaptainList('blacklist', fullCaptainList);
     const acceptableList = fullCaptainList.filter(
       entry => !blackList.includes(entry)
     );
-    let whiteList = await filterCaptainList('whitelist', acceptableList);
     let masterList = await filterCaptainList('masterlist', acceptableList);
 
     for (let i = 0; i < higherPriorityCaptains.length; i++) {

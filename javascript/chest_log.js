@@ -23,8 +23,6 @@ document.addEventListener('DOMContentLoaded', async function () {
     document.documentElement.scrollTop = 0;
   });
 
-  isSuccess = [false, false];
-
   //Load the chest rewards log
   await loadUserChestsLog();
   loadChestRewardCounter();
@@ -51,9 +49,7 @@ async function loadUserChestsLog() {
     arrayData = arrayData.userChestsLog;
     
     //Sort the array based on the time they were added.
-    if (!arrayData) {
-      return
-    }
+    if (!arrayData) return;
     const sortedData = arrayData.sort((a, b) => new Date(b.dateTime) - new Date(a.dateTime));
 
     //Get the data container div
@@ -66,7 +62,7 @@ async function loadUserChestsLog() {
 
     //Create table header row
     const headerRow = document.createElement('tr');
-    headerRow.innerHTML = '<th>#</th><th>ChestId</th><th>Chest Name</th><th>Time</th><th>Rewards</th>'
+    headerRow.innerHTML = '<th>#</th><th>ChestId</th><th>Chest Name</th><th>Time</th><th>Rewards</th>';
 
     //Append header row to the table
     tableElement.appendChild(headerRow);
@@ -91,7 +87,7 @@ async function loadUserChestsLog() {
                     allChests[key] = {DisplayName: chestName};
                     return;
                 }
-            })
+            });
         }
 
         for (let j = 0; j < rewards.length; j++) {
@@ -139,9 +135,9 @@ async function loadUserChestsLog() {
             });
             
             if (reward.includes("scroll")) {
-                rewardString += `<div class="crop"><img src="${url}" title="${reward}"></div>`
+                rewardString += `<div class="crop"><img src="${url}" title="${reward}"></div>`;
             } else {
-                rewardString += `<img src="${url}" title="${reward}" style="height: 30px; width: auto">`
+                rewardString += `<img src="${url}" title="${reward}" style="height: 30px; width: auto">`;
             }
         }
         
@@ -156,7 +152,7 @@ async function loadUserChestsLog() {
             <td>${chestId}</td>
             <td>${chestName}</td>
             <td title="${startingDate}">${startingTime}</td>
-            <td>${rewardString}</td>`
+            <td>${rewardString}</td>`;
 
         // Append the row to the table
         tableElement.appendChild(row);
@@ -199,7 +195,7 @@ async function loadUserChestsLog() {
         a.slotNo - b.slotNo || 
         a.rewardSort.localeCompare(b.rewardSort) || 
         a.qty - b.qty
-        );
+    );
 
     // Append the table to the data container
     dataContainer.appendChild(tableElement);
@@ -309,14 +305,15 @@ function loadChestRewardCounter() {
     }
     for (const item of rewardData) {
         const tr = document.createElement('tr');
+        let chestCount;
         count_loop: for (const chest of chests) {
             if (item.chestId == chest.chestId && item.slotNo == chest.slotNo) {
                 chestCount = chest.count;
                 break count_loop;
             }
         }
-        let percent = (item.count / chestCount) * 100
-        percent = Math.round((percent + Number.EPSILON) * 100) / 100
+        let percent = (item.count / chestCount) * 100;
+        percent = Math.round((percent + Number.EPSILON) * 100) / 100;
         if (item.reward.includes("scroll") || item.reward.includes("skin")) {
               tr.innerHTML = `<td>${counter}</td><td title="${item.chestId}" style="white-space: nowrap;">${item.chestName}</td><td>${item.slotNo}</td><td><div class="crop"><img src="${item.url}" title="${item.rewardSort.replace("0","")}"></div></td><td>x${item.qty}</td><td>${item.count}</td><td>${percent}</td>`;
         } else {
@@ -324,7 +321,7 @@ function loadChestRewardCounter() {
         }
         counter++;
         table.appendChild(tr);
-    };
+    }
     counterContainer.appendChild(table);
     const br = document.createElement('br');
     counterContainer.appendChild(br);

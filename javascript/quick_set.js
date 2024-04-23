@@ -1,30 +1,23 @@
 document.addEventListener("DOMContentLoaded", async function () {
 
-    // initializeSwitch("enableQuickSetSlot1")
-    // initializeSwitch("enableQuickSetSlot2")
-    // initializeSwitch("enableQuickSetSlot3")
-    // initializeSwitch("enableQuickSetSlot4")
-
     //Opens the popup
     document.getElementById("quickSet_button").addEventListener("click", async function () {
         const popup = document.getElementById('popup');
         const all_inputs = document.querySelectorAll(".quick_set_input");
         all_inputs.forEach((input, index) => {
-            input.value = ""
-            if (index < 5) {
-                input.value = "-1";
-            }
+            input.value = "";
+            if (index < 5) input.value = "-1";
         });
         popup.style.display = 'block';
 
     });
 
     document.getElementById("loadUnitFileBtn").addEventListener("change", async function () {
-        importUnitsFromFile()
+        importUnitsFromFile();
     });
 
     document.getElementById("exportUnits_button").addEventListener("click", async function () {
-        exportUnitsToFile()
+        exportUnitsToFile();
     });
 
     //Closes the popup
@@ -35,12 +28,12 @@ document.addEventListener("DOMContentLoaded", async function () {
 
     //Save the presets to a file
     document.getElementById("savePreSetBtn").addEventListener("click", async function () {
-        savePresetToFile()
+        savePresetToFile();
     });
 
     //Set the presets
     document.getElementById("setBtn").addEventListener("click", async function () {
-        setPresets()
+        setPresets();
         const popup = document.getElementById('popup');
         popup.style.display = 'none';
     });
@@ -54,61 +47,61 @@ document.addEventListener("DOMContentLoaded", async function () {
 
     //Clear all inputs
     document.getElementById('clearPresetBtn').addEventListener('click', function () {
-        const a = document.querySelectorAll(".quick_set_input")
+        const a = document.querySelectorAll(".quick_set_input");
         a.forEach(input => {
-            input.value = ""
+            input.value = "";
         });
     });
 
     //Quick sets.
     //Save
     document.getElementById('savePreset1Btn').addEventListener('click', function () {
-        saveQuickSet("quickSetOne")
+        saveQuickSet("quickSetOne");
     });
 
     document.getElementById('savePreset2Btn').addEventListener('click', function () {
-        saveQuickSet("quickSetTwo")
+        saveQuickSet("quickSetTwo");
     });
 
     document.getElementById('savePreset3Btn').addEventListener('click', function () {
-        saveQuickSet("quickSetThree")
+        saveQuickSet("quickSetThree");
     });
 
     document.getElementById('savePreset4Btn').addEventListener('click', function () {
-        saveQuickSet("quickSetFour")
+        saveQuickSet("quickSetFour");
     });
 
     document.getElementById('savePreset5Btn').addEventListener('click', function () {
-        saveQuickSet("quickSetFive")
+        saveQuickSet("quickSetFive");
     });
 
     document.getElementById('savePreset6Btn').addEventListener('click', function () {
-        saveQuickSet("quickSetSix")
+        saveQuickSet("quickSetSix");
     });
 
     //Load
     document.getElementById('loadPreset1Btn').addEventListener('click', function () {
-        loadQuickSet("quickSetOne")
+        loadQuickSet("quickSetOne");
     });
 
     document.getElementById('loadPreset2Btn').addEventListener('click', function () {
-        loadQuickSet("quickSetTwo")
+        loadQuickSet("quickSetTwo");
     });
 
     document.getElementById('loadPreset3Btn').addEventListener('click', function () {
-        loadQuickSet("quickSetThree")
+        loadQuickSet("quickSetThree");
     });
 
     document.getElementById('loadPreset4Btn').addEventListener('click', function () {
-        loadQuickSet("quickSetFour")
+        loadQuickSet("quickSetFour");
     });
 
     document.getElementById('loadPreset5Btn').addEventListener('click', function () {
-        loadQuickSet("quickSetFive")
+        loadQuickSet("quickSetFive");
     });
 
     document.getElementById('loadPreset6Btn').addEventListener('click', function () {
-        loadQuickSet("quickSetSix")
+        loadQuickSet("quickSetSix");
     });
 
 });
@@ -135,7 +128,7 @@ function setPresets() {
     { value: a59, min: 5, max: 9 },
     { value: a1019, min: 10, max: 19 },
     { value: a2029, min: 20, max: 29 },
-    { value: a3030, min: 30, max: 30 }]
+    { value: a3030, min: 30, max: 30 }];
     for (let i = 0; i < ar.length; i++) {
         let v = ar[i].value;
         let minV = ar[i].min;
@@ -144,9 +137,7 @@ function setPresets() {
             let row = tableOfUnits.rows[i];
             let unitLevel = parseInt(row.cells[2].innerText);
             let inputElement = row.querySelector('input');
-            if (v >= 0 && unitLevel >= minV && unitLevel <= maxV) {
-                inputElement.value = v
-            }
+            if (v >= 0 && unitLevel >= minV && unitLevel <= maxV) inputElement.value = v;
         }
     }
 
@@ -154,10 +145,8 @@ function setPresets() {
     for (let i = 0; i < preSets.length; i++) {
         const key = Object.keys(preSets[i])[0];
         const sliceKey = key.slice(0, -5);
-        const value = preSets[i][key]
-        if (value < 0 || isNaN(value)) {
-            continue
-        }
+        const value = preSets[i][key];
+        if (value < 0 || isNaN(value)) continue;
         let minLevel = parseInt(key.slice(-5).substring(0, 2));
         let maxLevel = parseInt(key.slice(-2));
 
@@ -168,9 +157,7 @@ function setPresets() {
             let unitLevel = parseInt(row.cells[2].innerText);
             let inputElement = row.querySelector('input');
             if (unitName.toLowerCase() == sliceKey.toLowerCase()) {
-                if (unitLevel >= minLevel && unitLevel <= maxLevel) {
-                    inputElement.value = value
-                }
+                if (unitLevel >= minLevel && unitLevel <= maxLevel) inputElement.value = value;
             }
         }
     }
@@ -185,12 +172,10 @@ function setPresets() {
     { value: com59, min: 5, max: 9 },
     { value: com1019, min: 10, max: 19 },
     { value: com2029, min: 20, max: 29 },
-    { value: com3030, min: 30, max: 30 }]
+    { value: com3030, min: 30, max: 30 }];
     for (let i = 0; i < comr.length; i++) {
         let v = comr[i].value;
-        if (v < 0 || isNaN(v)) {
-            continue
-        }
+        if (v < 0 || isNaN(v)) continue;
         let minV = comr[i].min;
         let maxV = comr[i].max;
         
@@ -208,9 +193,7 @@ function setPresets() {
             let unitLevel = parseInt(row.cells[2].innerText);
             let inputElement = row.querySelector('input');
             if (unitClass == "common") {
-                if (unitLevel >= minV && unitLevel <= maxV) {
-                    inputElement.value = v
-                }
+                if (unitLevel >= minV && unitLevel <= maxV) inputElement.value = v;
             }
         }        
     }
@@ -225,12 +208,10 @@ function setPresets() {
     { value: unc59, min: 5, max: 9 },
     { value: unc1019, min: 10, max: 19 },
     { value: unc2029, min: 20, max: 29 },
-    { value: unc3030, min: 30, max: 30 }]
+    { value: unc3030, min: 30, max: 30 }];
     for (let i = 0; i < uncr.length; i++) {
         let v = uncr[i].value;
-        if (v < 0 || isNaN(v)) {
-            continue
-        }
+        if (v < 0 || isNaN(v)) continue;
         let minV = uncr[i].min;
         let maxV = uncr[i].max;
         
@@ -248,9 +229,7 @@ function setPresets() {
             let unitLevel = parseInt(row.cells[2].innerText);
             let inputElement = row.querySelector('input');
             if (unitClass == "uncommon") {
-                if (unitLevel >= minV && unitLevel <= maxV) {
-                    inputElement.value = v
-                }
+                if (unitLevel >= minV && unitLevel <= maxV) inputElement.value = v;
             }
         }        
     }
@@ -265,12 +244,10 @@ function setPresets() {
     { value: rar59, min: 5, max: 9 },
     { value: rar1019, min: 10, max: 19 },
     { value: rar2029, min: 20, max: 29 },
-    { value: rar3030, min: 30, max: 30 }]
+    { value: rar3030, min: 30, max: 30 }];
     for (let i = 0; i < rarr.length; i++) {
         let v = rarr[i].value;
-        if (v < 0 || isNaN(v)) {
-            continue
-        }
+        if (v < 0 || isNaN(v)) continue;
         let minV = rarr[i].min;
         let maxV = rarr[i].max;
         
@@ -288,9 +265,7 @@ function setPresets() {
             let unitLevel = parseInt(row.cells[2].innerText);
             let inputElement = row.querySelector('input');
             if (unitClass == "rare") {
-                if (unitLevel >= minV && unitLevel <= maxV) {
-                    inputElement.value = v
-                }
+                if (unitLevel >= minV && unitLevel <= maxV) inputElement.value = v;
             }
         }        
     }
@@ -305,12 +280,10 @@ function setPresets() {
     { value: len59, min: 5, max: 9 },
     { value: len1019, min: 10, max: 19 },
     { value: len2029, min: 20, max: 29 },
-    { value: len3030, min: 30, max: 30 }]
+    { value: len3030, min: 30, max: 30 }];
     for (let i = 0; i < lenr.length; i++) {
         let v = lenr[i].value;
-        if (v < 0 || isNaN(v)) {
-            continue
-        }
+        if (v < 0 || isNaN(v)) continue;
         let minV = lenr[i].min;
         let maxV = lenr[i].max;
         
@@ -328,9 +301,7 @@ function setPresets() {
             let unitLevel = parseInt(row.cells[2].innerText);
             let inputElement = row.querySelector('input');
             if (unitClass == "legendary") {
-                if (unitLevel >= minV && unitLevel <= maxV) {
-                    inputElement.value = v
-                }
+                if (unitLevel >= minV && unitLevel <= maxV) inputElement.value = v;
             }
         }        
     }
@@ -409,33 +380,29 @@ function saveQuickSet(quickSetKey) {
 function loadQuickSet(quickSetKey) {
     const a_i = document.querySelectorAll(".quick_set_input");
     a_i.forEach(input => {
-        input.value = ""
+        input.value = "";
     });
 
     chrome.storage.local.get(quickSetKey, function (storedData) {
         if (storedData.hasOwnProperty(quickSetKey)) {
-            const array = storedData[quickSetKey]
+            const array = storedData[quickSetKey];
             for (let i = 0; i < array.length; i++) {
-                let id = null
-                let value = null
+                let id = null;
+                let value = null;
                 try {
                     const obj = array[i];
                     id = Object.keys(obj)[0];
                     value = obj[id];
                 } catch (error) {
-                    continue
+                    continue;
                 }
 
                 if (id !== null && value !== null && value >= 0) {
                     const a_i = document.querySelectorAll(".quick_set_input");
                     a_i.forEach(input => {
-                        if (input.id === id) {
-                            input.value = value;
-
-                        }
+                        if (input.id === id) input.value = value;
                     });
                 }
-
             }
         }
     });
@@ -466,7 +433,7 @@ function importUnitsFromFile() {
     };
 
     reader.readAsText(fileInput);
-    location.reload()
+    location.reload();
 }
 
 
@@ -478,16 +445,8 @@ function exportUnitsToFile() {
         "quickSetFour",
         "quickSetFive",
         "quickSetSix",
-        // "slotQuickSetOne",
-        // "slotQuickSetTwo",
-        // "slotQuickSetThree",
-        // "slotQuickSetFour",
-        // "enableQuickSetSlotOne",
-        // "enableQuickSetSlotTwo",
-        // "enableQuickSetSlotThree",
-        // "enableQuickSetSlotFour",
         "unitList"
-    ]
+    ];
 
     chrome.storage.local.get(keysToExport, function (data) {
         const exportedData = {};

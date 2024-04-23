@@ -1,27 +1,27 @@
 document.addEventListener("DOMContentLoaded", async function () {
 
-    await loadChestData()
+    await loadChestData();
 
-    await loadDropDownMenu("dungeonChestsData", "buy_one_key_skin")
-    await loadDropDownMenu("boneChestsData", "buy_one_bone_skin")
+    await loadDropDownMenu("dungeonChestsData", "buy_one_key_skin");
+    await loadDropDownMenu("boneChestsData", "buy_one_bone_skin");
 
-    await initializeSwitch("chestPurchaseOrder")
-    await initializeSwitch("buyAllSkins")
-    await initializeSwitch("skinChestFocus")
+    await initializeSwitch("chestPurchaseOrder");
+    await initializeSwitch("buyAllSkins");
+    await initializeSwitch("skinChestFocus");
 
-    await loadSelects("buyThisBoneChest", "buy_one_bone_skin")
-    await loadSelects("buyThisKeyChest", "buy_one_key_skin")
+    await loadSelects("buyThisBoneChest", "buy_one_bone_skin");
+    await loadSelects("buyThisKeyChest", "buy_one_key_skin");
 
     document.getElementById('fetch_btn').addEventListener('click', function () {
-        fetchAndSaveChestData()
+        fetchAndSaveChestData();
     });
 
     document.getElementById('save_btn').addEventListener('click', function () {
-        savePreferences()
+        savePreferences();
     });
 
 
-    await loadCheckBoxData()
+    await loadCheckBoxData();
     // Manage chest checkboxes
     let checkboxes = document.querySelectorAll('.checkbox');
 
@@ -45,25 +45,23 @@ document.addEventListener("DOMContentLoaded", async function () {
     });
 
 
-})
+});
 
 async function savePreferences() {
-    let bc = document.getElementById('min_bone_currency').value
+    let bc = document.getElementById('min_bone_currency').value;
     await chrome.storage.local.set({ 'minBoneCurrency': bc });
 
-    let kc = document.getElementById('min_key_currency').value
+    let kc = document.getElementById('min_key_currency').value;
     await chrome.storage.local.set({ 'minKeyCurrency': kc });
 
 
-    let b_sel = document.getElementById('buy_one_bone_skin').value
+    let b_sel = document.getElementById('buy_one_bone_skin').value;
     await chrome.storage.local.set({ 'buyThisBoneChest': b_sel });
 
-    let k_sel = document.getElementById('buy_one_key_skin').value
+    let k_sel = document.getElementById('buy_one_key_skin').value;
     await chrome.storage.local.set({ 'buyThisKeyChest': k_sel });
 
-
 }
-
 
 async function fetchAndSaveChestData() {
     try {
@@ -71,13 +69,9 @@ async function fetchAndSaveChestData() {
 
         // Get chests from the game data
         const response = await fetch(gdUrl);
-        if (!response.ok) {
-            throw new Error(`Failed to fetch game data (${response.status} ${response.statusText})`);
-        }
+        if (!response.ok) throw new Error(`Failed to fetch game data (${response.status} ${response.statusText})`);
         const gameData = await response.json();
-        if (!gameData || !gameData.sheets || !gameData.sheets.Store) {
-            return
-        }
+        if (!gameData || !gameData.sheets || !gameData.sheets.Store) return;
 
         const chestsArray = Object.values(gameData.sheets.Store);
 
@@ -85,14 +79,14 @@ async function fetchAndSaveChestData() {
             const filteredChests = [];
             for (let j = 0; j < chestsArray.length; j++) {
                 const chest = chestsArray[j];
-                const chestSection = chest["Section"];
-                const availableTo = chest["AvailableTo"];
-                const purchaseLimit = chest["PurchaseLimit"];
+                const chestSection = chest.Section;
+                const availableTo = chest.AvailableTo;
+                const purchaseLimit = chest.PurchaseLimit;
 
                 if (chestSection === section && availableTo !== "Captain") {
-                    const basePrice = chest["BasePrice"];
+                    const basePrice = chest.BasePrice;
                     if (basePrice != -1 && purchaseLimit == -1) {
-                        const liveEndTime = new Date(chest["LiveEndTime"]);
+                        const liveEndTime = new Date(chest.LiveEndTime);
                         const currentDate = new Date();
                         const currentUTCTime = Date.UTC(
                             currentDate.getUTCFullYear(),
@@ -103,9 +97,7 @@ async function fetchAndSaveChestData() {
                             currentDate.getUTCSeconds()
                         );
 
-                        if (currentUTCTime <= liveEndTime.getTime()) {
-                            filteredChests.push(chest);
-                        }
+                        if (currentUTCTime <= liveEndTime.getTime()) filteredChests.push(chest);
                     }
                 }
             }
@@ -115,13 +107,13 @@ async function fetchAndSaveChestData() {
         let freshDungeonArray = filterChests("Dungeon");
         let freshBoneArray = filterChests("Bones");
 
-        let chests = gameData.sheets.Chests
-        let rewards = gameData.sheets.ChestRewardSlots
+        let chests = gameData.sheets.Chests;
+        let rewards = gameData.sheets.ChestRewardSlots;
 
-        freshDungeonArray = appendDisplayName(freshDungeonArray, chests)
-        freshDungeonArray = appendSkins(freshDungeonArray, chests, rewards)
-        freshBoneArray = appendDisplayName(freshBoneArray, chests)
-        freshBoneArray = appendSkins(freshBoneArray, chests, rewards)
+        freshDungeonArray = appendDisplayName(freshDungeonArray, chests);
+        freshDungeonArray = appendSkins(freshDungeonArray, chests, rewards);
+        freshBoneArray = appendDisplayName(freshBoneArray, chests);
+        freshBoneArray = appendSkins(freshBoneArray, chests, rewards);
 
         await chrome.storage.local.set({ 'dungeonChestsData': freshDungeonArray });
         await chrome.storage.local.set({ 'boneChestsData': freshBoneArray });
@@ -160,9 +152,7 @@ async function loadChestData() {
 
     let dcd = await retrieveFromStorage("dungeonChestsData");
     let bcd = await retrieveFromStorage("boneChestsData");
-    if (!dcd || !bcd) {
-        return;
-    }
+    if (!dcd || !bcd) return;
     let userChests = await retrieveFromStorage("userChests");
     let mdc = dcd.concat(bcd);
     let chestContainer = document.getElementById("chest_container");
@@ -182,27 +172,23 @@ async function loadChestData() {
     let tbody = document.createElement("tbody");
     for (let i = 0; i < mdc.length; i++) {
         let item = mdc[i];
-        let section = item["Section"];
-        let itemUid = item["Uid"];
-        let itemDisplayName = item["DisplayName"];
-        let itemType = item["Item"];
+        let section = item.Section;
+        let itemUid = item.Uid;
+        let itemDisplayName = item.DisplayName;
+        let itemType = item.Item;
         let [itemUrl, size] = await getItemUrl(itemUid, itemType);
-        let cost = item["BasePrice"];
+        let cost = item.BasePrice;
 
         let amountBought = 0;
         let order = -1;
 
         if (userChests && userChests[itemUid]) {
             const { amountBought: userAmountBought, purchaseOrder: userOrder } = userChests[itemUid];
-            if (userAmountBought !== undefined) {
-                amountBought = userAmountBought;
-            }
-            if (userOrder !== undefined) {
-                order = userOrder;
-            }
+            if (userAmountBought !== undefined) amountBought = userAmountBought;
+            if (userOrder !== undefined) order = userOrder;
         }
 
-        let utcTimeString = item["LiveStartTime"];
+        let utcTimeString = item.LiveStartTime;
 
         let utcDate = new Date(Date.UTC(
             parseInt(utcTimeString.substring(0, 4)),
@@ -214,7 +200,7 @@ async function loadChestData() {
         ));
         let localLiveStartTime = utcDate.toLocaleString();
 
-        utcTimeString = item["LiveEndTime"];
+        utcTimeString = item.LiveEndTime;
 
         utcDate = new Date(Date.UTC(
             parseInt(utcTimeString.substring(0, 4)),
@@ -289,33 +275,29 @@ async function getItemUrl(itemUid, itemType) {
 
 
         let imageURLs = await retrieveFromStorage("imageUrls");
-        let currency = await retrieveFromStorage("currency")
-        let item
+        let currency = await retrieveFromStorage("currency");
+        let item;
         Object.keys(currency).forEach(function (key) {
-            if (key === unitName) {
-                item = currency[key].UnitAssetName;
-            }
-        })
+            if (key === unitName) item = currency[key].UnitAssetName;
+        });
         Object.keys(imageURLs).forEach(function (key) {
-            if (key === "mobilelite/units/static/" + item + ".png") {
-                result = "https://d2k2g0zg1te1mr.cloudfront.net/" + imageURLs[key];
-            }
-        })
+            if (key === "mobilelite/units/static/" + item + ".png") result = "https://d2k2g0zg1te1mr.cloudfront.net/" + imageURLs[key];
+        });
 
         return [result, "100px"];
     }
     else if (itemType.includes("soulvessel")) {
-        return ["https://d2k2g0zg1te1mr.cloudfront.net/mobilelite/products/soulvessel.9de886eb455e.png", "50px"]
+        return ["https://d2k2g0zg1te1mr.cloudfront.net/mobilelite/products/soulvessel.9de886eb455e.png", "50px"];
     }
     else if (itemType === "chest") {
         if (itemUid.includes("skin")) {
-            return ["https://d2k2g0zg1te1mr.cloudfront.net/mobilelite/chests/iconChestSkinBoosted.c0e0bcd2b145.png", "50px"]
+            return ["https://d2k2g0zg1te1mr.cloudfront.net/mobilelite/chests/iconChestSkinBoosted.c0e0bcd2b145.png", "50px"];
         } else {
-            return ["https://d2k2g0zg1te1mr.cloudfront.net/mobilelite/chests/iconChestGladiator.306cb4539906.png", "50px"]
+            return ["https://d2k2g0zg1te1mr.cloudfront.net/mobilelite/chests/iconChestGladiator.306cb4539906.png", "50px"];
         }
     }
 
-    return ["/icons/unknown.png", "50px"]
+    return ["/icons/unknown.png", "50px"];
 }
 
 async function loadCheckBoxData() {
@@ -323,11 +305,11 @@ async function loadCheckBoxData() {
     let checkbox = document.getElementById('chest_purchase_order');
 
     if (checkbox) {
-        let checkboxState = await retrieveFromStorage("chestPurchaseOrder")
+        let checkboxState = await retrieveFromStorage("chestPurchaseOrder");
         if (!checkboxState) {
-            checkbox.checked = false
+            checkbox.checked = false;
         } else {
-            checkbox.checked = true
+            checkbox.checked = true;
         }
     }
 
@@ -339,9 +321,7 @@ async function loadCheckBoxData() {
         checkboxes.forEach((checkbox) => {
             let checkboxId = checkbox.id;
 
-            if (userChests.hasOwnProperty(checkboxId)) {
-                checkbox.checked = userChests[checkboxId].canBuy;
-            }
+            if (userChests.hasOwnProperty(checkboxId)) checkbox.checked = userChests[checkboxId].canBuy;
         });
     });
 }
@@ -359,7 +339,7 @@ async function loadDropDownMenu(key1, key2) {
 
     for (let key in keyChests) {
         if (keyChests.hasOwnProperty(key)) {
-            let uid = keyChests[key]["Uid"];
+            let uid = keyChests[key].Uid;
             let option = document.createElement("option");
             option.value = uid;
             option.textContent = uid;
@@ -372,15 +352,13 @@ async function loadSelects(k1, k2) {
     let v = await retrieveFromStorage(k1);
     if (v) {
         let s = document.getElementById(k2);
-        if (s) {
-            s.value = v;
-        }
+        if (s) s.value = v;
     }
 }
 
 function appendSkins(chestArray, chestsData, rewards) {
     for (let chest of chestArray) {
-        let matchingSkin = chestsData[chest["Uid"]];
+        let matchingSkin = chestsData[chest.Uid];
         if (matchingSkin) {
             let slots = matchingSkin.ViewerSlots.split(",");
             for (let slotUid of slots) {
@@ -389,8 +367,8 @@ function appendSkins(chestArray, chestsData, rewards) {
                     let arrayOfRewards = matchingReward.RewardList.split(",");
                     for (let reward of arrayOfRewards) {
                         if (reward.toLowerCase().includes("skin")) {
-                            chest["skinsLoot"] = chest["skinsLoot"] || [];
-                            chest["skinsLoot"].push(reward.trim());
+                            chest.skinsLoot = chest.skinsLoot || [];
+                            chest.skinsLoot.push(reward.trim());
                         }
                     }
                 }
@@ -402,10 +380,8 @@ function appendSkins(chestArray, chestsData, rewards) {
 
 function appendDisplayName(chestArray, chests) {
     for (let chest of chestArray) {
-        let matchingChest = chests[chest["Uid"]];
-        if (matchingChest) {
-            chest["DisplayName"] = matchingChest.DisplayName;
-        }
+        let matchingChest = chests[chest.Uid];
+        if (matchingChest) chest.DisplayName = matchingChest.DisplayName;
     }
     return chestArray;
 }

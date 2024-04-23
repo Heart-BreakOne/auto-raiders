@@ -37,9 +37,7 @@ function hideContainer(mainContainer) {
 //Allow scrolling so some of the tables in the game can be scrolled
 function setScroll() {
   let viewContainer = document.querySelector(".viewContainer");
-  if (viewContainer) {
-    viewContainer.style.scrollY = "auto";
-  }
+  if (viewContainer) viewContainer.style.scrollY = "auto";
 }
 
 //Makes the unit drawer container usable during battle placement.
@@ -58,9 +56,7 @@ async function setUnitContainer() {
       const computedStyles = window.getComputedStyle(container);
       unset = computedStyles.getPropertyValue("transform");
       //If none returns, else change it
-    if (unset === "none") {
-      return;
-    }
+    if (unset === "none") return;
     await rotationDelay(5);
     container.style.cssText = unitContainerStyles;
   } 
@@ -73,20 +69,16 @@ async function setUnitContainer() {
       const computedStyles = window.getComputedStyle(closedContainer);
       unset = computedStyles.getPropertyValue("transform");
     } catch (error) {
-      return
+      return;
     }
     //Check container properties after closing container, if they match "none", reset to default values
-    if (closedContainer && !openedContainer && unset === "none") {
-      container.style.cssText = defaultStyles;
-    }
+    if (closedContainer && !openedContainer && unset === "none") container.style.cssText = defaultStyles;
   }
 }
 
 //An event listener for when the page loads 
 window.addEventListener('load', async function () {
   let mainContainer = document.querySelector(".rotateMessageCont");
-  if (mainContainer) {
-    hideContainer(mainContainer);
-  }
+  if (mainContainer) hideContainer(mainContainer);
   setScroll();
 });

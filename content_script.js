@@ -13,7 +13,7 @@ functions to perform tasks such as replacing idle captains or buying scrolls.
 var s = document.createElement('script');
 // must be listed in web_accessible_resources in manifest.json
 s.src = chrome.runtime.getURL('xmlhttprequest.js');
-s.type = "module"
+s.type = "module";
 s.onload = function() {
     this.remove();
 };
@@ -22,13 +22,8 @@ s.onload = function() {
 window.addEventListener('message', (message) => handleMessage(message));
 
 //Declares/initializes variables
-let currentMarkerKey = "";
 let currentMarker;
 let arrayOfMarkers;
-let sortedArrMrks;
-let computedStyle;
-let backgroundImageValue;
-let mode;
 let diamondLoyalty;
 let firstReload;
 let reload = 0;
@@ -40,61 +35,13 @@ const purple = 'rgb(203, 195, 227)';
 const gameBlue = 'rgb(42, 96, 132)';
 const cancelButtonSelector = ".actionButton.actionButtonNegative.placerButton";
 const delay = ms => new Promise(res => setTimeout(res, ms));
-let battleResult;
-let captainName;
-let chestStringAlt;
 let unitDrawer;
 let hasPlacedSkin;
 let contentRunningLoopCount = 0;
-let isEventCurrencyActive;
-let reloadRunning = false;
 let isEnemyPresentNameArray = ['Puppet Master']; //Enemy name as seen in DOM alt text (case sensitive)
 let ifPresentAvoidUnitArray = ['RANGED']; //Unit name or type to avoid if enemy is present on the map. Pairs with the enemy name at the same index in the array (isEnemyPresentNameArray[0] - ifPresentAvoidUnitArray[0])
 let collectRunning = false;
 let collectLastTime = new Date();
-
-//Battlefield markers.
-const arrayOfBattleFieldMarkers = [
-  { key: "NO", icon: "VYAAAAASUVORK5CYII=" },
-  { key: "VIBE", icon: "1EPFWIYQTQRB9OWOGAAAABJRU5ERKJGGG" },
-  { key: "ARMORED", icon: "XLAAAAAELFTKSUQMCC" },
-  { key: "ASSASSIN", icon: "EGAAAABJRU5ERKJGGG==" },
-  { key: "MELEE", icon: "TAAAAAASUVORK5CYII=" },
-  { key: "RANGED", icon: "+IAAAAAELFTKSUQMCC" },
-  { key: "SUPPORT", icon: "YFQAAAABJRU5ERKJGGG" },
-  { key: "AMAZON", type: "MELEE", icon: "CRKB" },
-  { key: "ARCHER", type: "RANGED", icon: "6QAAAABJRU5ERKJGGG==" },
-  { key: "ARTILLERY", type: "RANGED", icon: "+YAAAAASUVORK5CYII=" },
-  { key: "BALLOON", type: "ASSASSIN", icon: "BAAAAAASUVORK5CYII=" },
-  { key: "BARBARIAN", type: "MELEE", icon: "GIAAAAAASUVORK5CYII=" },
-  { key: "BERSERKER", type: "MELEE", icon: "JAAAAAAELFTKSUQMCC" },
-  { key: "BLOB", type: "ARMORED", icon: "KAAAAAELFTKSUQMCC" },
-  { key: "BOMBER", type: "RANGED", icon: "TWAAAAASUVORK5CYII=" },
-  { key: "BUSTER", type: "ASSASSIN", icon: "OWAAAABJRU5ERKJGGG==" },
-  { key: "CENTURION", type: "ARMORED", icon: "0WAAAABJRU5ERKJGGG==" },
-  { key: "FAIRY", type: "SUPPORT", icon: "AUWAAAABJRU5ERKJGGG==" },
-  { key: "FLAG", type: "SUPPORT", icon: "HAAAAABJRU5ERKJGGG==" },
-  { key: "FLYING", type: "ASSASSIN", icon: "0AAAAASUVORK5CYII=" },
-  { key: "GLADIATOR", type: "MELEE", icon: "NWAAAAASUVORK5CYII=" },
-  { key: "HEALER", type: "SUPPORT", icon: "IGAAAAASUVORK5CYII=" },
-  { key: "LANCER", type: "MELEE", icon: "XQAAAABJRU5ERKJGGG==" },
-  { key: "MAGE", type: "RANGED", icon: "3QAAAABJRU5ERKJGGG==" },
-  { key: "MONK", type: "SUPPORT", icon: "RAAAAAELFTKSUQMCC" },
-  { key: "MUSKETEER", type: "RANGED", icon: "MAAAAASUVORK5CYII=" },
-  { key: "NECROMANCER", type: "SUPPORT", icon: "QMAAAAAELFTKSUQMCC" },
-  { key: "ORC", type: "ARMORED", icon: "OQAAAABJRU5ERKJGGG==" },
-  { key: "PALADIN", type: "ARMORED", icon: "EAAAAAELFTKSUQMCC" },
-  { key: "PHANTOM", type: "ASSASSIN", icon: "MLAAAAAELFTKSUQMCC" },
-  { key: "ROGUE", type: "ASSASSIN", icon: "VIAAAAAELFTKSUQMCC" },
-  { key: "SAINT", type: "SUPPORT", icon: "SAAAAAASUVORK5CYII=" },
-  { key: "SHINOBI", type: "ASSASSIN", icon: "WAAAAABJRU5ERKJGGG==" },
-  { key: "SPY", type: "ASSASSIN", icon: "N6GAAAAASUVORK5CYII=" },
-  { key: "TANK", type: "ARMORED", icon: "FAAAAAELFTKSUQMCC" },
-  { key: "TEMPLAR", type: "SUPPORT", icon: "VGAAAABJRU5ERKJGGG==" },
-  { key: "VAMPIRE", type: "ARMORED", icon: "BAAAAAELFTKSUQMCC" },
-  { key: "WARBEAST", type: "MELEE", icon: "4WAAAABJRU5ERKJGGG==" },
-  { key: "WARRIOR", type: "MELEE", icon: "YIAAAAASUVORK5CYII=" },
-];
 
 //Unit icons from the unit drawer (the icon on the top left corner of the unit square)
 const arrayOfUnits = [
@@ -132,16 +79,10 @@ const arrayOfUnits = [
   { key: "WARBEAST", type: "MELEE", icon: "SRJSYO", name: "warbeast" },
   { key: "WARRIOR", type: "MELEE", icon: "YTUUAHQ", name: "warrior" },
 ];
-const loyaltyArray = [{ key: 1, value: "Wood" },
-{ key: 2, value: "Blue" },
-{ key: 3, value: "Gold" },
-{ key: 4, value: "Diamond" }]
 
 // This is the start, it selects a captain placement as well as collect any rewards to proceed
 async function start() {
-  if (await retrieveFromStorage("paused_checkbox") || collectRunning) {
-    return
-  }
+  if (await retrieveFromStorage("paused_checkbox") || collectRunning) return;
   //Reload tracker
   if (firstReload === undefined) {
     firstReload = new Date();
@@ -149,7 +90,7 @@ async function start() {
   //Keep track of time and reload after 1hr15min to avoid the browser crashing due to low memory.
   const elapsedMinutes = Math.floor((new Date() - firstReload.getTime()) / (1000 * 60));
   const timeContainer = document.querySelector(".elapsedTimeContainer");
-  let battleMessages = ""
+  let battleMessages = "";
 
   if (timeContainer && (elapsedMinutes !== null || elapsedMinutes !== undefined)) {
     battleMessages = await displayMessage();
@@ -163,7 +104,7 @@ async function start() {
       if (reloaderInputValue !== undefined) {
         reload = reloaderInputValue;
       }
-    })
+    });
   }
   if (activeRaidsArray.length == 0 || (requestRunning == false && ((reload != undefined && elapsedMinutes >= reload && reload > 0) || ((reload != undefined || reload != 0) && elapsedMinutes >= 60)))) {
     await locationReload();
@@ -179,7 +120,7 @@ async function start() {
       leaderboard.classList.remove('slideLeftOpen');
       leaderboard.classList.add('slideLeftClosed');
     }
-    return
+    return;
   }
   contentRunningLoopCount = 0;
   isContentRunning = true;
@@ -202,40 +143,38 @@ async function start() {
     }
   }
 
-  unfinishedQuests = null
+  unfinishedQuests = null;
   if (await retrieveFromStorage("completeQuests")) {
     try {
-      unfinishedQuests = await getUnfinishedQuests()
+      unfinishedQuests = await getUnfinishedQuests();
     } catch (error) {
-      unfinishedQuests = undefined
+      unfinishedQuests = undefined;
     }
   }
 
-  const capSlots = document.querySelectorAll(".capSlot")
-  for (i in capSlots) {
+  const capSlots = document.querySelectorAll(".capSlot");
+  for (let i in capSlots) {
     try {
-      const st = capSlots[i]
+      const st = capSlots[i];
       //Check if captain has a code
       if (st.innerHTML.includes("ENTER_CODE")) {
         const cpId = parseInt(i, 10) + 1;
-        const cpNmSt = st.querySelector(".capSlotName").innerText
-        const cB = st.querySelector(".fal.fa-times-square")
+        const cpNmSt = st.querySelector(".capSlotName").innerText;
+        const cB = st.querySelector(".fal.fa-times-square");
         if (cB) {
           cB.click();
           const modal = document.querySelector('.modalContent');
           if (modal) {
-            const btn = primaryButton = modal.querySelector('.actionButton.actionButtonPrimary');
-            if (btn) {
-              btn.click()
-            }
+            const btn = modal.querySelector('.actionButton.actionButtonPrimary');
+            if (btn) btn.click();
           }
         }
         //Flag captain into memory
-        await flagCaptainRed(cpId, cpNmSt)
+        await flagCaptainRed(cpId, cpNmSt);
         continue;
       }
     } catch (error) {
-      continue
+      continue;
     }
   }
 
@@ -272,9 +211,9 @@ async function start() {
   }
 
   //Checks if the user wants to replace idle captains and invoke the function to check and replace them.
-  const offline = await retrieveFromStorage("offlineSwitch")
+  const offline = await retrieveFromStorage("offlineSwitch");
   if (offline) {
-    await checkIdleCaptains()
+    await checkIdleCaptains();
   }
 
   let captainNameFromDOM = "";
@@ -303,13 +242,13 @@ async function start() {
             do {
               captainSlot = button.closest('.capSlot');
               await delay(500);
-            } while (!captainSlot.querySelector('.capSlotName'))
+            } while (!captainSlot.querySelector('.capSlotName'));
             if (captainSlot.querySelector('.capSlotName').innerText == captainNameFromDOM) {
               let close; 
               do {
-                close = captainSlot.querySelector(".capSlotClose")
+                close = captainSlot.querySelector(".capSlotClose");
                 await delay(500);
-              } while (!close)
+              } while (!close);
               if (close) {
                 const afterSwitch = await retrieveFromStorage('afterSwitch');
                 if (afterSwitch) {
@@ -317,7 +256,7 @@ async function start() {
                 } else {
                   await setIdleState(buttonId, 0);
                 }
-                close.click()
+                close.click();
               }
             }
           }
@@ -370,58 +309,41 @@ async function start() {
         }
 
         //If slot state is disabled, move to the next slot
-        if (slotState == 0) {
-          continue
-        }
+        if (slotState == 0) continue;
         
         diamondLoyalty = null;
 
         let captainFlag;
         //Pass captain name and check if the captain is flagged
         try {
-          if (!captainNameFromDOM) {
-            captainNameFromDOM = ""
-          }
+          if (!captainNameFromDOM) captainNameFromDOM = "";
           captainFlag = await getCaptainFlag(captainNameFromDOM, 'flaggedCaptains');
-          if (captainFlag) {
-            continue
-          }
+          if (captainFlag) continue;
           //Make a second attempt to set loyalty flag
         } catch (error) {
-          captainFlag = false
+          captainFlag = false;
         }
         let captKeysArray = ['dungeonCaptain', 'clashCaptain', 'duelCaptain', 'campaignCaptain', 'clashSwitch', 'dungeonSwitch', 'duelSwitch', 'campaignSwitch', 'modeChangeSwitch', 'modeChangeLeaveSwitch', 'multiClashSwitch'];
         let captKeys = await retrieveMultipleFromStorage(captKeysArray);
-        let dungeonCaptainNameFromStorage = captKeys.dungeonCaptain;
-        if (dungeonCaptainNameFromStorage) dungeonCaptainNameFromStorage = dungeonCaptainNameFromStorage.toLowerCase();
-        let clashCaptainNameFromStorage = captKeys.clashCaptain;
-        if (clashCaptainNameFromStorage) clashCaptainNameFromStorage = clashCaptainNameFromStorage.toLowerCase();
-        if (clashCaptainNameFromStorage == null) clashCaptainNameFromStorage = "";
-        let duelsCaptainNameFromStorage = captKeys.duelCaptain;
-        if (duelsCaptainNameFromStorage) duelsCaptainNameFromStorage = duelsCaptainNameFromStorage.toLowerCase();
-        let campaignCaptainNameFromStorage = captKeys.campaignCaptain;
-        if (campaignCaptainNameFromStorage) {
-          campaignCaptainNameFromStorage = campaignCaptainNameFromStorage.toLowerCase();
-        } else {
-          campaignCaptainNameFromStorage = "";
-        }
+        let dungeonCaptainNameFromStorage = captKeys.dungeonCaptain?.toLowerCase() ?? "";
+        let clashCaptainNameFromStorage = captKeys.clashCaptain?.toLowerCase() ?? "";
+        let duelsCaptainNameFromStorage = captKeys.duelCaptain?.toLowerCase() ?? "";
+        let campaignCaptainNameFromStorage = captKeys.campaignCaptain?.toLowerCase() ?? "";
         let clashSwitch = captKeys.clashSwitch;
         let duelSwitch = captKeys.duelSwitch;
         let dungeonSwitch = captKeys.dungeonSwitch;
         let campaignSwitch = captKeys.campaignSwitch;
         let modeChangeSwitch = captKeys.modeChangeSwitch;
         let modeChangeLeaveSwitch = captKeys.modeChangeLeaveSwitch;
-        let multiClashSwitch
-        if (battleType == "Clash") {
-          multiClashSwitch = captKeys.multiClashSwitch;
-        }
+        let multiClashSwitch = captKeys.multiClashSwitch;
+
         /* Check if the captain is running a special game mode and if the same captain is the one in storage.
         So if the dungeon captain on storage is Mike and there is another captain name John also running a dungeon
         the captain John will be skipped, this is done so only one captain runs a special mode at any given time and keys don't get reset.  */
         if (captainNameFromDOM && ((dungeonCaptainNameFromStorage != "," + captainNameFromDOM.toLowerCase() + ",") && battleType == "Dungeons") ||
           (!multiClashSwitch && (clashCaptainNameFromStorage.includes("," + captainNameFromDOM.toLowerCase() + ",")) && battleType == "Clash") ||
           ((duelsCaptainNameFromStorage != "," + captainNameFromDOM.toLowerCase() + ",") && battleType == "Duel")) {
-          continue
+          continue;
         }
         /* Checks if the captain saved on storage running a special mode is still running the same mode, if they change they might lock
         the slot for 30 minutes so if a captain switches to campaign they are skipped and colored red */
@@ -439,31 +361,29 @@ async function start() {
             let captainId = captLoyalty[2];
             await abandonBattle("Abandoned-Mode Change", "abandoned", captainNameFromDOM, raidId, captainId);
           }
-          continue
+          continue;
         }
         /* Checks if the slot is a special game mode and if a unit has already been placed it check if the user wants to place
         multiple units on special modes */
         else if (((battleType == "Dungeons" && !dungeonSwitch) || (battleType == "Clash" && !clashSwitch) ||
           ((battleType == "Duel" && !duelSwitch)) || !campaignSwitch) &&
           captainSlot.querySelector('.capSlotClose') == null) {
-          continue
         }
         //If all is clear, it checks if the captain is diamond loyalty for future comparison.
         else {
           diamondLoyalty = null;
           diamondLoyalty = captainSlot.outerHTML;
+          continue;
         }
 
         let userWaitTime = await getUserWaitTime(battleType);
         let batTime;
         try {
-          const batClock = captainSlot.querySelector(".capSlotTimer").lastChild.innerText.replace(':', '')
+          const batClock = captainSlot.querySelector(".capSlotTimer").lastChild.innerText.replace(':', '');
           batTime = parseInt(batClock, 10);
-          if (batTime > userWaitTime) {
-            continue
-          }
+          if (batTime > userWaitTime) continue;
         } catch (error) {
-          console.log("")
+          console.log("");
         }
 
         if (battleType == "Clash" && placeUnitButtons.length > 1) {
@@ -479,7 +399,7 @@ async function start() {
                   const slotStateToCompare = await getIdleState(buttonIdToCompare);
                   if (slotStateToCompare == 1) {
                     try {
-                      const batClockToCompare = slotToCompare.querySelector(".capSlotTimer").lastChild.innerText.replace(':', '')
+                      const batClockToCompare = slotToCompare.querySelector(".capSlotTimer").lastChild.innerText.replace(':', '');
                       const batTimeToCompare = parseInt(batClockToCompare, 10);
                       //If the time of the other slot is more than or equal to the original minus 2 seconds (for delay), skip to the next one to compare
                       //If it's less, skip the original button altogether and go to the next available place button
@@ -489,7 +409,7 @@ async function start() {
                         continue placeButtonLoop;
                       }
                     } catch (error) {
-                      console.log("")
+                      console.log("");
                     }
                   }
                 }
@@ -499,15 +419,15 @@ async function start() {
         }
 
         // Calculate placements odds
-        const bSlot = button.closest('.capSlot')
+        const bSlot = button.closest('.capSlot');
         const currentTime = new Date();
-        const oddKey = "oddId" + bSlot.querySelector(".offlineButton").id
-        let placementOdds = await retrieveNumberFromStorage("placementOddsInput")
+        const oddKey = "oddId" + bSlot.querySelector(".offlineButton").id;
+        let placementOdds = await retrieveNumberFromStorage("placementOddsInput");
         if (placementOdds == -100 || placementOdds == undefined || placementOdds > 100) {
-          placementOdds = 100
+          placementOdds = 100;
         } else if (placementOdds > 0 && placementOdds < 100) {
 
-          let canPlace = false
+          let canPlace = false;
 
           await new Promise((resolve, reject) => {
             chrome.storage.local.get(oddKey, function (result) {
@@ -531,29 +451,25 @@ async function start() {
               }
             });
           });
-          if (!canPlace) {
-            continue
-          }
-        } else if (placementOdds <= 0) {
-          continue
-        }
+          if (!canPlace) continue;
+        } else if (placementOdds <= 0) continue;
 
-        const closeBtn = bSlot.querySelector(".capSlotClose")
+        const closeBtn = bSlot.querySelector(".capSlotClose");
         if (placementOdds != 100 && button.innerText.includes("PLACE UNIT") && !closeBtn) {
           if (!((Math.floor(Math.random() * 100) + 1) <= placementOdds)) {
             const minutes = Math.floor(Math.random() * 5) + 7;
             const eT = new Date(currentTime.getTime() + minutes * 60000);
             const eTString = eT.toISOString();
             await chrome.storage.local.set({ [oddKey]: eTString });
-            continue
+            continue;
           }
         }
 
         //Pass captain name and check if the captain has a loyalty flag.
         const loyaltyRadio = await getRadioButton("loyalty");
-        let loyaltyRadioInt = 0
+        let loyaltyRadioInt = 0;
         try {
-          loyaltyRadioInt = parseInt(loyaltyRadio)
+          loyaltyRadioInt = parseInt(loyaltyRadio);
         } catch (error) {
           loyaltyRadioInt = 0
         }
@@ -641,19 +557,17 @@ async function start() {
         }
         //If captain has any flags, change color and move to the next slot
 
-        if (await retrieveMaxUnit(captainNameFromDOM)) {
-          continue
-        }
         if (captainLoyalty || captainFlag) {
           if (captainLoyalty) {
             captainSlot.style.backgroundColor = blue;
           }
+        if (await retrieveMaxUnit(captainNameFromDOM)) continue;
           continue;
         } else {
           captainSlot.style.backgroundColor = gameBlue;
         }
 
-        placeUnit = button
+        placeUnit = button;
 
         //If place unit exists, click it and call the openBattlefield function
         if (placeUnit) {
@@ -678,9 +592,7 @@ async function start() {
 }
 
 async function performCollectionInterval() {
-  if (await retrieveFromStorage("paused_checkbox") || (new Date().getTime() - collectLastTime.getTime()) / 1000 < 10) {
-    return
-  }
+  if (await retrieveFromStorage("paused_checkbox") || (new Date().getTime() - collectLastTime.getTime()) / 1000 < 10) return;
   if (collectRunning) return;
   collectRunning = true;
   await collectQuests();
@@ -708,10 +620,10 @@ async function openBattlefield(captainNameFromDOM, raidId, slotOption, diamondLo
 
   arrayOfMarkers = null;
   unitDrawer = null;
-  await delay(3000)
+  await delay(3000);
 
   // Attempts to check if battlefield is open
-  let battleInfo
+  let battleInfo;
   try {
     battleInfo = document.querySelector(".battleInfo").innerText;
   } catch (error) {
@@ -745,9 +657,10 @@ async function openBattlefield(captainNameFromDOM, raidId, slotOption, diamondLo
   }
 
   //User wants to preserve diamond loyalty and current captain is not diamond and current mode is campaign
-  if (mode == false) { //!acceptableLoyalty && ) {
+  //Current mode is campaign
+  if (battleType == "Campaign") {
     //Opens battle info and checks chest type.
-    battleInfo = document.querySelector(".battleInfoMapTitle")
+    battleInfo = document.querySelector(".battleInfoMapTitle");
     if (battleInfo == null) {
       goHome();
       return;
@@ -755,8 +668,8 @@ async function openBattlefield(captainNameFromDOM, raidId, slotOption, diamondLo
     battleInfo.click();
 
     //Check how many units user wants
-    const unitQtt = await getUnitAmountData()
-    hasPlacedSkin = false
+    const unitQtt = await getUnitAmountData();
+    hasPlacedSkin = false;
     let commaCount = 0;
 
     try {
@@ -769,19 +682,17 @@ async function openBattlefield(captainNameFromDOM, raidId, slotOption, diamondLo
       battleLog = battleLog.slice(-4);
       for (let i = battleLog.length - 1; i >= 0; i--) {
         const battleOfInterest = battleLog[i];
-        if (battleOfInterest["raidId"].trim() === raidId) {
-          const unitsPlaced = battleOfInterest["units2"].toLowerCase();
+        if (battleOfInterest.raidId.trim() === raidId) {
+          const unitsPlaced = battleOfInterest.units2.toLowerCase();
           commaCount = unitsPlaced.split(",").length - 1;
-          if (unitsPlaced.includes(captainNameFromDOM.toLowerCase().trim())) {
-            hasPlacedSkin = true
-          }
-          break
+          if (unitsPlaced.includes(captainNameFromDOM.toLowerCase().trim())) hasPlacedSkin = true;
+          break;
         }
       }
     } catch (error) { }
 
     if (commaCount >= unitQtt) {
-      await setMaxUnit(captainNameFromDOM)
+      await setMaxUnit(captainNameFromDOM);
       closeAll();
       goHome();
       return;
@@ -811,7 +722,6 @@ async function openBattlefield(captainNameFromDOM, raidId, slotOption, diamondLo
       closeAll();
       await getValidUnits(captainNameFromDOM, raidId, slotOption, diamondLoyalty, battleType);
     }
-    //diamondLoyalty = null;
   } else {
     //User doesn't want to preserve diamond loyalty
     closeAll();
@@ -842,22 +752,22 @@ async function getValidUnits(captainNameFromDOM, raidId, slotOption, diamondLoya
     }
   }
 
-  zoom()
+  zoom();
 
   // This sorts the markers and adds imaginary markers if there aren't any
   makeMarkers();
-  let arrayOfMarkers = Array.of(document.querySelectorAll(".planIcon"))
-  arrayOfMarkers = getMapMatrix(arrayOfMarkers)
-  arrayOfMarkers = bumpVibeMarkers(arrayOfMarkers)
+  let arrayOfMarkers = Array.of(document.querySelectorAll(".planIcon"));
+  arrayOfMarkers = getMapMatrix(arrayOfMarkers);
+  arrayOfMarkers = bumpVibeMarkers(arrayOfMarkers);
   let isEnemyPresent = [];
   for (let i = 0; i < isEnemyPresentNameArray.length; i++) {
     isEnemyPresent[i] = document.querySelector('img[alt="' + isEnemyPresentNameArray[i] + '"]');
   }
 
   // Open unit drawer and set the filter to ALL units
-  const placeUnitBtn = document.querySelector(".actionButton.actionButtonPrimary.placeUnitButton")
+  const placeUnitBtn = document.querySelector(".actionButton.actionButtonPrimary.placeUnitButton");
   if (placeUnitBtn) {
-    placeUnitBtn.click()
+    placeUnitBtn.click();
     await delay(1000);
     document.querySelector('.unitFilterButton')?.click();
   } else {
@@ -866,25 +776,19 @@ async function getValidUnits(captainNameFromDOM, raidId, slotOption, diamondLoya
   }
 
   let equipSwitch = false;
-  if (battleType == "Campaign") {
-    //Check if user wants to auto equip skins and equip them
-    equipSwitch = await retrieveFromStorage("equipSwitch");
-  }
+  //Check if user wants to auto equip skins and equip them
+  if (battleType == "Campaign") equipSwitch = await retrieveFromStorage("equipSwitch");
   //Get the unit switcher container
   const unitSwitcher = document.querySelector('.settingsSwitchCont');
   if (equipSwitch !== undefined && unitSwitcher) {
     //Get the unit switch check box, doing it inside the if garantees the the checkbox exists.
     const checkbox = unitSwitcher.querySelector('input[type="checkbox"]');
-    if (checkbox) {
-      //Assign true or false to the checkbox
-      checkbox.checked = equipSwitch;
-    }
+    //Assign true or false to the checkbox
+    if (checkbox) checkbox.checked = equipSwitch;
   } else if (unitSwitcher) {
     //Value from storage couldn't be retrieved, assign false to the unit checkbox
     const checkbox = unitSwitcher.querySelector('input[type="checkbox"]');
-    if (checkbox) {
-      checkbox.checked = false;
-    }
+    if (checkbox) checkbox.checked = false;
   }
 
   let dungeonLevelSwitch, dungeonLevel, userUnitLevel = 0, userDunLevel;
@@ -902,21 +806,17 @@ async function getValidUnits(captainNameFromDOM, raidId, slotOption, diamondLoya
     let battleInfo = "";
     try {
       battleInfo = document.querySelector(".battleInfo").innerText;
-      if (battleInfo.includes("Level")) {
-        dungeonLevel = parseInt(battleInfo.substr(battleInfo.length - 3).replace(":", ""));
-      }
+      if (battleInfo.includes("Level")) dungeonLevel = parseInt(battleInfo.substr(battleInfo.length - 3).replace(":", ""));
     } catch (error) { }
   }
 
   //Get all units from the drawer
-  let canCompleteQuests = await retrieveFromStorage("completeQuests")
+  let canCompleteQuests = await retrieveFromStorage("completeQuests");
   unitDrawer = [...document.querySelectorAll(".unitSelectionCont")];
-  let unitsToRemove = []
+  let unitsToRemove = [];
 
   // Remove cooldown units, unavailable units and rarity check units
-  if (!unitDrawer || !unitDrawer[0] || unitDrawer[0].children == null) {
-    return;
-  }
+  if (!unitDrawer || !unitDrawer[0] || unitDrawer[0].children == null) return;
 
   //Add unit name and type to unit itself
   for (const unit of unitDrawer[0].children) {
@@ -924,9 +824,7 @@ async function getValidUnits(captainNameFromDOM, raidId, slotOption, diamondLoya
     const unitType = unitClassImg.getAttribute('alt').toUpperCase();
     const unitName = unitClassImg.getAttribute('src').slice(-50).toUpperCase();
     const unit1 = arrayOfUnits.find(unit1 => unitName.includes(unit1.icon.toUpperCase()));
-    if (unit1) {
-      unit.id = unit1.key + "#" + unitType;
-    }
+    if (unit1) unit.id = unit1.key + "#" + unitType;
   }
 
   let unitKeysArray = ['legendarySwitch', 'rareSwitch', 'uncommonSwitch', 'commonSwitch', 'pvpSpecSwitch'];
@@ -937,8 +835,9 @@ async function getValidUnits(captainNameFromDOM, raidId, slotOption, diamondLoya
   let commonAllowed = unitKeys.commonSwitch;
   let pvpSpecAllowed = unitKeys.pvpSpecSwitch;
 
-  if (!unitDrawer[0] || unitDrawer[0] == null) {
-    return;
+  try {
+    if (unitDrawer[0] == null) return;
+  } catch (error) {
   }
   for (let i = 0; i < unitDrawer[0].children.length; i++) {
     let unit = unitDrawer[0].children[i];
@@ -965,32 +864,32 @@ async function getValidUnits(captainNameFromDOM, raidId, slotOption, diamondLoya
       continue;
     }
     if (coolDownCheck || defeatedCheck || !unitDisabled) {
-      unitsToRemove.push(unit)
-      continue
+      unitsToRemove.push(unit);
+      continue;
     }
     if (legendaryCheck && !legendaryAllowed && !canCompleteQuests) {
-      unitsToRemove.push(unit)
-      continue
+      unitsToRemove.push(unit);
+      continue;
     } else if (rareCheck && !rareAllowed && !canCompleteQuests) {
-      unitsToRemove.push(unit)
-      continue
+      unitsToRemove.push(unit);
+      continue;
     } else if (uncommonCheck && !uncommonAllowed && !canCompleteQuests) {
-      unitsToRemove.push(unit)
-      continue
+      unitsToRemove.push(unit);
+      continue;
     } else if (commonCheck && !commonAllowed && !canCompleteQuests) {
-      unitsToRemove.push(unit)
-      continue
+      unitsToRemove.push(unit);
+      continue;
     } else if ((battleType == "Clash" || battleType == "Duel") && specCheck == null && pvpSpecAllowed) {
-      unitsToRemove.push(unit)
-      continue
+      unitsToRemove.push(unit);
+      continue;
     }
 
     //If campaign and specified enemy is present, remove the associated units
     if (battleType == "Campaign") {
       for (let j = 0; j < isEnemyPresent.length; j++) {
         if (isEnemyPresent[j] && unit.id.includes(ifPresentAvoidUnitArray[j].toUpperCase())) {
-          unitsToRemove.push(unit)
-          continue
+          unitsToRemove.push(unit);
+          continue;
         }
       }
     }
@@ -1000,14 +899,14 @@ async function getValidUnits(captainNameFromDOM, raidId, slotOption, diamondLoya
       if ((userDunLevel == null || userDunLevel == undefined || userUnitLevel == null || userUnitLevel == undefined) && !unit.id.includes("AMAZON")) {
         continue;
       } else if ((dungeonLevelSwitch && dungeonLevel <= userDunLevel && unitLevel > userUnitLevel) || unit.id.includes("AMAZON")) {
-        unitsToRemove.push(unit)
-        continue
+        unitsToRemove.push(unit);
+        continue;
       }
     }
   }
 
   unitsToRemove.forEach(unit => unit.remove());
-  unitsToRemove = undefined
+  unitsToRemove = undefined;
   unitDrawer = [...document.querySelectorAll(".unitSelectionCont")];
 
   let slotNum;
@@ -1031,13 +930,9 @@ async function getValidUnits(captainNameFromDOM, raidId, slotOption, diamondLoya
   let soulSwitchSlotAll = switchKeys.soulSwitch0;
 
   let shuffleSwitch = false;
-  if (shuffleSwitchSlot || shuffleSwitchSlotAll) {
-    shuffleSwitch = true;
-  }
+  if (shuffleSwitchSlot || shuffleSwitchSlotAll) shuffleSwitch = true;
   let soulSwitch = false;
-  if (soulSwitchSlot || soulSwitchSlotAll) {
-    soulSwitch = true;
-  }
+  if (soulSwitchSlot || soulSwitchSlotAll) soulSwitch = true;
   if (!canCompleteQuests) {
     //If unit priority list for the slot is selected, use the list for the slot
     if (priorityListSwitchSlot) {
@@ -1065,7 +960,7 @@ async function getValidUnits(captainNameFromDOM, raidId, slotOption, diamondLoya
   //Sort the array so units with souls are put on the front.
   if (soulSwitch && !canCompleteQuests) {
     const soulSwitcher = document.querySelector('.unitFilterSoulSwitch input[type="checkbox"]');
-    soulSwitcher.click()
+    soulSwitcher.click();
     for (let i = 1; i <= unitsQuantity; i++) {
       const unit = unitDrawer[0].querySelector(".unitSelectionItemCont:nth-child(" + i + ") .unitItem:nth-child(1)");
       // Check if unit has a soul
@@ -1121,14 +1016,14 @@ async function getValidUnits(captainNameFromDOM, raidId, slotOption, diamondLoya
 
   if (canCompleteQuests) {
     try {
-      unitDrawer = await completeQuests(unitDrawer, unfinishedQuests)
+      unitDrawer = await completeQuests(unitDrawer, unfinishedQuests);
     } catch (error) {
       unitDrawer = [...document.querySelectorAll(".unitSelectionCont")];
     }
   }
 
   if (!arrayOfMarkers || arrayOfMarkers.length == 0) {
-    await flagCaptain('flaggedCaptains')
+    await flagCaptain('flaggedCaptains');
     goHome();
     return;
   }
@@ -1149,44 +1044,33 @@ async function getValidUnits(captainNameFromDOM, raidId, slotOption, diamondLoya
     favoriteSwitch = await getSwitchState("favoriteSwitch");
   } else if (battleType == "Dungeons") {
     dungeonBossPotionSwitch = await getSwitchState("dungeonBossPotionSwitch");
-    if (dungeonLevel % 3 === 0) {
-      isBossLevel = true;
-    }
+    if (dungeonLevel % 3 === 0) isBossLevel = true;
   }
-  let counter = 0
+  let counter = 0;
   outer_loop: for (const unit of unitDrawer[0].children) {
     const unitId = unit.id;
     for (const marker of arrayOfMarkers) {
-      if (placementOver == true) {
-        break;
-      }
-      if (marker.offsetLeft == 0 && marker.offsetTop == 0) {
-        continue;
-      }
-      //if(counter > 40) {
-      //break outer_loop
-      //}
+      if (placementOver == true) break;
+      if (marker.offsetLeft == 0 && marker.offsetTop == 0) continue;
       const markerId = marker.id;
       let hasPlaced;
       if (markerId === "VIBE" || markerId.includes(unitId.split("#")[0]) || markerId.includes(unitId.split("#")[1])) {
-        if (potionState != 0 || dungeonBossPotionSwitch) {
-          await doPotions(battleType, favoriteSwitch, isBossLevel);
-        }
+        if (potionState != 0 || dungeonBossPotionSwitch) await doPotions(battleType, favoriteSwitch, isBossLevel, captainNameFromDOM);
         hasPlaced = await attemptPlacement(unit, marker);
         if (hasPlaced == undefined || hasPlaced) {
-          goHome()
-          closeAll()
-          return
+          goHome();
+          closeAll();
+          return;
         } else {
           await cancelPlacement();
           continue;
         }
       }
-      counter += 1
+      counter++;
     }
   }
-  goHome()
-  closeAll()
+  goHome();
+  closeAll();
 }
 
 async function cancelPlacement() {
@@ -1211,9 +1095,7 @@ async function attemptPlacement(unit, marker) {
   await delay(2000);
   unit.querySelector(".unitItem").click();
   await delay(1000);
-  if (!tapUnit()) {
-    return true
-  }
+  if (!tapUnit()) return true;
   await delay(500);
   await placeTheUnit();
   await delay(1000);
@@ -1276,12 +1158,10 @@ async function placeTheUnit() {
         confirmPlacement.click();
         await delay(2000);
         //Rarely, it attempts to place incorrectly. If the Place Anyway pop up appears, click BACK
-        let allPlaceAnywayBackButtons = document.querySelectorAll('.actionButton.actionButtonPrimary')
+        let allPlaceAnywayBackButtons = document.querySelectorAll('.actionButton.actionButtonPrimary');
         let placeAnywayBackButton;
         allPlaceAnywayBackButtons.forEach(button => {
-          if (button.innerText === "BACK") {
-            placeAnywayBackButton = button;
-          }
+          if (button.innerText === "BACK") placeAnywayBackButton = button;
         });
         if (placeAnywayBackButton) {
           placeAnywayBackButton.click();
@@ -1318,26 +1198,20 @@ async function placeTheUnit() {
 
 const obsv = new MutationObserver(async function (mutations) {
 
-  if (await retrieveFromStorage("paused_checkbox")) {
-    return
-  }
+  if (await retrieveFromStorage("paused_checkbox")) return;
 
   mutations.forEach(async function (mutation) {
     if (mutation.type === 'childList') {
       // Check if the added nodes contain an element with the desired class
       const addedNodes = mutation.addedNodes;
       for (const node of addedNodes) {
-        if (node.classList && node.classList.contains('mainNavItemText')) {
-          start();
-        }
+        if (node.classList && node.classList.contains('mainNavItemText')) start();
       }
     }
 
     //Get captain slots or returns if they don't exist
     const captainSlots = document.querySelectorAll(".capSlots");
-    if (captainSlots.length == 0) {
-      return;
-    }
+    if (captainSlots.length == 0) return;
 
     //Set offline button states after load.
     const allCapSlots = document.querySelectorAll(".capSlot");
@@ -1345,9 +1219,7 @@ const obsv = new MutationObserver(async function (mutations) {
       //Iterate through every button
       try {
         const btnOff = slot.querySelector(".capSlotStatus .offlineButton");
-        if (btnOff == null) {
-          return;
-        }
+        if (btnOff == null) return;
         const btnId = btnOff.getAttribute('id');
         //Retrieve button state from storage
         let offstate = await getIdleState(btnId);
@@ -1363,7 +1235,6 @@ const obsv = new MutationObserver(async function (mutations) {
           btnOff.style.backgroundColor = "red";
         }
       } catch (error) {
-        console.log("LOG-cap slot states error, return");
         return;
       }
     }
@@ -1374,22 +1245,13 @@ const obsv = new MutationObserver(async function (mutations) {
 
     let captKeysArray = ['dungeonCaptain', 'clashCaptain', 'duelCaptain', 'campaignCaptain', 'clashSwitch', 'dungeonSwitch', 'duelSwitch', 'campaignSwitch', 'modeChangeSwitch', 'multiClashSwitch'];
     let captKeys = await retrieveMultipleFromStorage(captKeysArray);
-    let dungeonCaptainNameFromStorage = captKeys.dungeonCaptain
-    if (dungeonCaptainNameFromStorage) dungeonCaptainNameFromStorage = dungeonCaptainNameFromStorage.toLowerCase();
-    let clashCaptainNameFromStorage = captKeys.clashCaptain;
-    if (clashCaptainNameFromStorage) clashCaptainNameFromStorage = clashCaptainNameFromStorage.toLowerCase();
-    if (clashCaptainNameFromStorage == null) clashCaptainNameFromStorage = "";
-    let duelsCaptainNameFromStorage = captKeys.duelCaptain;
-    if (duelsCaptainNameFromStorage) duelsCaptainNameFromStorage = duelsCaptainNameFromStorage.toLowerCase();
-    let campaignCaptainNameFromStorage = captKeys.campaignCaptain;
-    if (campaignCaptainNameFromStorage) {
-      campaignCaptainNameFromStorage = campaignCaptainNameFromStorage.toLowerCase();
-    } else {
-      campaignCaptainNameFromStorage = "";
-    }
+    let dungeonCaptainNameFromStorage = captKeys.dungeonCaptain?.toLowerCase() ?? "";
+    let clashCaptainNameFromStorage = captKeys.clashCaptain?.toLowerCase() ?? "";
+    let duelsCaptainNameFromStorage = captKeys.duelCaptain?.toLowerCase() ?? "";
+    let campaignCaptainNameFromStorage = captKeys.campaignCaptain?.toLowerCase() ?? "";
     let modeChangeSwitch = captKeys.modeChangeSwitch;
     let capNameDOM;
-    let multiClashSwitch;
+    let multiClashSwitch = captKeys.multiClashSwitch;
 
     //Gets captain name from the dom
     for (const capSlot of capSlotChildren) {
@@ -1400,7 +1262,6 @@ const obsv = new MutationObserver(async function (mutations) {
         battleType = "Dungeons";
       } else if (capSlot.innerText.includes("Clash")) {
         battleType = "Clash";
-        multiClashSwitch = captKeys.multiClashSwitch;
       } else if (capSlot.innerText.includes("Duel")) {
         battleType = "Duel";
       }
@@ -1424,7 +1285,7 @@ const obsv = new MutationObserver(async function (mutations) {
         capSlot.style.backgroundColor = blue;
       }
       else if (purpleFlag) {
-        capSlot.style.backgroundColor = purple
+        capSlot.style.backgroundColor = purple;
       }
       else if (!modeChangeSwitch &&
         (((campaignCaptainNameFromStorage.includes("," + capNameDOM.toLowerCase() + ",")) && battleType != "Campaign") ||
@@ -1463,15 +1324,14 @@ function goHome() {
   }
 }
 
-
-async function doPotions(battleType, favoriteSwitch, isBossLevel) {
+async function doPotions(battleType, favoriteSwitch, isBossLevel, captainNameFromDOM) {
   let favoritePotion = !favoriteSwitch;
 
   if (battleType == "Campaign" && favoriteSwitch) {
     try {
       const potionCaptainsList = await new Promise((resolve) => {
         chrome.storage.local.get({ 'potionlist': [] }, function (result) {
-          resolve(result["potionlist"]);
+          resolve(result.potionlist);
         });
       });
 
@@ -1520,8 +1380,8 @@ async function moveScreen(marker) {
     //Move screen so the current marker gets centered
     await delay(1000);
     if (marker && marker !== undefined && marker !== null) {
-      scrollToMarker(marker)
-      return true
+      scrollToMarker(marker);
+      return true;
     } else {
       goHome();
       return false;
@@ -1537,53 +1397,49 @@ function zoom() {
   if (zoomButton) {
     for (let i = 0; i < 7; i++) {
       zoomButton.click();
-    };
+    }
   }
 }
 
 async function getUserWaitTime(battleType) {
   try {
-    if (battleType == "Clash" || battleType == "Duel") {
-      battleType = "PVP"
-    }
+    if (battleType == "Clash" || battleType == "Duel") battleType = "PVP";
     let userWaitTime = await retrieveNumberFromStorage("userWaitTimeInput" + battleType);
     let secondsToMin = userWaitTime / 60;
     let min = "0" + (60 - ((secondsToMin - parseInt(secondsToMin)) * 60));
-    if (min == "060") {
-      min = "00";
-    }
+    if (min == "060") min = "00";
     min = min.substr(min.length - 2);
 
     if (battleType == "Campaign") {
       if (userWaitTime == -100 || userWaitTime >= (30 * 60)) {
-        return 2830
+        return 2830;
       } else {
         if (userWaitTime == 0) {
           return 30;
         }
-        return parseInt("".concat(parseInt((30 - secondsToMin)), min))
+        return parseInt("".concat(parseInt((30 - secondsToMin)), min));
       }
     } else if (battleType == "Dungeons") {
       if (userWaitTime == -100 || userWaitTime >= (5 * 60)) {
-        return 500
+        return 500;
       } else {
         if (userWaitTime == 0) {
           return 500;
         }
-        return parseInt("".concat(parseInt((5 - secondsToMin)), min))
+        return parseInt("".concat(parseInt((5 - secondsToMin)), min));
       }
     } else if (battleType == "PVP") {
       if (userWaitTime == -100 || userWaitTime >= (6 * 60)) {
-        return 600
+        return 600;
       } else {
         if (userWaitTime == 0) {
           return 600;
         }
-        return parseInt("".concat(parseInt((6 - secondsToMin)), min))
+        return parseInt("".concat(parseInt((6 - secondsToMin)), min));
       }
     }
   } catch (error) {
-    return 2830
+    return 2830;
   }
 }
 

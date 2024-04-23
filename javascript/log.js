@@ -1,9 +1,5 @@
 //Declaring/Initializing variables
-let chestName;
 let isSuccess = [];
-let url;
-let startingTime;
-let endingTime;
 let elapsed;
 const tbd = "TBD";
 const colorCodeMap = {
@@ -48,11 +44,11 @@ let chestCounter = [
 //Event listener for when the page loads
 document.addEventListener('DOMContentLoaded', async function () {
 
-    initializeSwitch("captIdSwitch")
-    initializeSwitch("raidIdSwitch")
-    initializeSwitch("pendingSwitch")
-    initializeSwitch("logSwitch")
-    initializeSwitch("dungeonPVPSwitch")
+    initializeSwitch("captIdSwitch");
+    initializeSwitch("raidIdSwitch");
+    initializeSwitch("pendingSwitch");
+    initializeSwitch("logSwitch");
+    initializeSwitch("dungeonPVPSwitch");
     const scrollToTopBtn = document.getElementById("scrollBtn");
 
     // Show or hide the button based on scroll position
@@ -65,23 +61,23 @@ document.addEventListener('DOMContentLoaded', async function () {
     };
 
     document.getElementById('captIdSwitch').addEventListener('change', function () {
-        location.reload()
+        location.reload();
     });
 
     document.getElementById('raidIdSwitch').addEventListener('change', function () {
-        location.reload()
+        location.reload();
     });
 
     document.getElementById('pendingSwitch').addEventListener('change', function () {
-        location.reload()
+        location.reload();
     });
 
     document.getElementById('logSwitch').addEventListener('change', function () {
-        location.reload()
+        location.reload();
     });
 
     document.getElementById('dungeonPVPSwitch').addEventListener('change', function () {
-        location.reload()
+        location.reload();
     });
 
     // Scroll back to the top when the button is clicked
@@ -132,20 +128,16 @@ document.addEventListener('DOMContentLoaded', async function () {
 
 async function loadLogData() {
     const logSwitch = await retrieveFromStorage("logSwitch");
-    const captIdSwitch = await retrieveFromStorage("captIdSwitch")
-    const raidIdSwitch = await retrieveFromStorage("raidIdSwitch")
-    const pendingSwitch = await retrieveFromStorage("pendingSwitch")
-    const dungeonPVPSwitch = await retrieveFromStorage("dungeonPVPSwitch")
+    const captIdSwitch = await retrieveFromStorage("captIdSwitch");
+    const raidIdSwitch = await retrieveFromStorage("raidIdSwitch");
+    const pendingSwitch = await retrieveFromStorage("pendingSwitch");
+    const dungeonPVPSwitch = await retrieveFromStorage("dungeonPVPSwitch");
 
     //If table already exists, remove it so a new one can be injected
     const isTable = document.getElementById("logTable");
-    if (isTable) {
-        isTable.remove();
-    }
+    if (isTable) isTable.remove();
     
-    while (logRunning == true) {
-      await delay(10);
-    }
+    while (logRunning == true) await delay(10);
     logRunning = true;
     let arrayData = await chrome.storage.local.get(['logData']);
     arrayData = arrayData.logData;
@@ -168,19 +160,13 @@ async function loadLogData() {
     //Create table header row
     const headerRow = document.createElement('tr');
     if (captIdSwitch) {
-        headerRow.innerHTML = '<th>#</th><th>Slot</th><th>Captain Name</th><th>Captain ID</th><th>Mode</th><th>Color Code</th><th>Start time</th><th>End time</th><th>Duration</th><th>Result</th><th>Awarded Chest</th><th>Initial Chest</th>'
+        headerRow.innerHTML = '<th>#</th><th>Slot</th><th>Captain Name</th><th>Captain ID</th><th>Mode</th><th>Color Code</th><th>Start time</th><th>End time</th><th>Duration</th><th>Result</th><th>Awarded Chest</th><th>Initial Chest</th>';
     } else {
-        headerRow.innerHTML ='<th>#</th><th>Slot</th><th>Captain Name</th><th>Mode</th><th>Color Code</th><th>Start time</th><th>End time</th><th>Duration</th><th>Result</th><th>Awarded Chest</th><th>Initial Chest</th>'
+        headerRow.innerHTML ='<th>#</th><th>Slot</th><th>Captain Name</th><th>Mode</th><th>Color Code</th><th>Start time</th><th>End time</th><th>Duration</th><th>Result</th><th>Awarded Chest</th><th>Initial Chest</th>';
     }
-    if (raidIdSwitch) {
-        headerRow.innerHTML += '<th>Raid ID</th>';
-    }
-    if (dungeonPVPSwitch) {
-        headerRow.innerHTML += '<th>Dungeon Level</th><th>Opponent</th>';
-    }
-    if (logSwitch) {
-        headerRow.innerHTML += '<th>Rewards</th><th>Leaderboard Rank</th><th>Kills</th><th>Assists</th><th>Units Placed</th>';
-    }
+    if (raidIdSwitch) headerRow.innerHTML += '<th>Raid ID</th>';
+    if (dungeonPVPSwitch) headerRow.innerHTML += '<th>Dungeon Level</th><th>Opponent</th>';
+    if (logSwitch) headerRow.innerHTML += '<th>Rewards</th><th>Leaderboard Rank</th><th>Kills</th><th>Assists</th><th>Units Placed</th>';
 
     //Append header row to the table
     tableElement.appendChild(headerRow);
@@ -190,22 +176,7 @@ async function loadLogData() {
     for (let i = 0; i < sortedData.length; i++) {
         const entry = sortedData[i];
 
-        let res;
-        let chestName;
-        let url;
-        let outcome;
-        let initialChestName;
-        let initialUrl;
-        let leaderboardRank;
-        let kills;
-        let assists;
-        let units;
-        let unitsList;
-        let raidId;
-        let rewards;
-        let rewardsList;
-        let dungeonLevel;
-        let pvpOpponent;
+        let chestName, endingTime, url, outcome, initialChestName, initialUrl, leaderboardRank, kills, assists, units, unitsList, raidId, rewards, rewardsList, dungeonLevel, pvpOpponent;
 
         //Convert the string to a Date object and get hour and minutes.
         const startingTime = getTimeString(new Date(entry.currentTime));
@@ -217,25 +188,19 @@ async function loadLogData() {
         //Make changes to some of the values to be display to make them user-friendly
         if (entry.elapsedTime === undefined) {
             elapsed = 'tbd';
-            if (!pendingSwitch) {
-                continue;
-            }
+            if (!pendingSwitch) continue;
         } else {
             elapsed = entry.elapsedTime;
         }
 
         if (entry.result === undefined) {
             outcome = 'tbd';
-            if (!pendingSwitch) {
-                continue;
-            }
+            if (!pendingSwitch) continue;
         } else {
             outcome = entry.result;
         }
 
-        if (entry.currentTime === entry.elapsedTime) {
-            elapsed = "Unknown";
-        }
+        if (entry.currentTime === entry.elapsedTime) elapsed = "Unknown";
 
         if (entry.leaderboardRank === undefined) {
             leaderboardRank = "Unknown";
@@ -256,29 +221,29 @@ async function loadLogData() {
         }
 
         if (entry.raidId === undefined) {
-            raidId = "Unknown"
+            raidId = "Unknown";
         } else {
-            raidId = entry.raidId
+            raidId = entry.raidId;
         }
 
         if (entry.logMode == "Dungeons") {
             if (entry.dungeonLevel === undefined) {
-                dungeonLevel = "Unknown"
+                dungeonLevel = "Unknown";
             } else {
-                dungeonLevel = entry.dungeonLevel
+                dungeonLevel = entry.dungeonLevel;
             }
         } else {
-            dungeonLevel = ""
+            dungeonLevel = "";
         }
 
         if (entry.logMode == "Clash" || entry.logMode == "Duel") {
             if (entry.pvpOpponent === undefined) {
-                pvpOpponent = "Unknown"
+                pvpOpponent = "Unknown";
             } else {
-                pvpOpponent = entry.pvpOpponent
+                pvpOpponent = entry.pvpOpponent;
             }
         } else {
-            pvpOpponent = ""
+            pvpOpponent = "";
         }
         
         if (entry.units2 === undefined) {
@@ -290,16 +255,10 @@ async function loadLogData() {
             for (let i = 0; i < unitsList.length; i++) {
                 const unit = unitsList[i].split(" ");
                 if (unit[1] !== undefined) {
-                    tempUnits = '<div class="crop"><img src="' + unit[0] + '" title="Skin: ' + unit[1]
-                    if (unit[2] !== 'none') {
-                        tempUnits += '&#013;Type: ' + unit[2];
-                    }
-                    if (unit[4] !== 'none') {
-                        tempUnits += '&#013;Spec: ' + unit[4];
-                    }
-                    if (unit[3] !== 'none') {
-                        tempUnits += '&#013;Soul: ' + unit[3];
-                    }
+                    tempUnits = '<div class="crop"><img src="' + unit[0] + '" title="Skin: ' + unit[1];
+                    if (unit[2] !== 'none') tempUnits += '&#013;Type: ' + unit[2];
+                    if (unit[4] !== 'none') tempUnits += '&#013;Spec: ' + unit[4];
+                    if (unit[3] !== 'none') tempUnits += '&#013;Soul: ' + unit[3];
                     units = tempUnits + '"></div>' + units;
                 }
             }
@@ -325,7 +284,7 @@ async function loadLogData() {
         //Getting human-readable chest name and picture
         try {
             let entryStartDateTime = new Date(entry.currentTime);
-            let entryEndDateTime = new Date(entryStartDateTime.getTime() + (entry.elapsedTime*60000))
+            let entryEndDateTime = new Date(entryStartDateTime.getTime() + (entry.elapsedTime*60000));
             for (const battleChest of battleChests) {
               if (entry.chest == undefined){
                   chestName = tbd;
@@ -340,13 +299,11 @@ async function loadLogData() {
                     try {
                       let chestCount = parseInt(entry.chestCount);
                       for (const loyaltyChest of chestCounter) {
-                          if ((loyaltyChest.key != "chestboss" && entry.raidChest.includes(loyaltyChest.key)) || (loyaltyChest.key === "chestboss" && entry.raidChest === "chestboss")) {
-                              if (entryEndDateTime >= currentEventStartTime) {
-                                  if (chestCount > loyaltyChest.count) {
-                                      loyaltyChest.count = entry.chestCount;
-                                  }
+                          if (entry.raidChest) {
+                              if ((loyaltyChest.key != "chestboss" && entry.raidChest.includes(loyaltyChest.key)) || (loyaltyChest.key === "chestboss" && entry.raidChest === "chestboss")) {
+                                  if (entryEndDateTime >= currentEventStartTime && chestCount > loyaltyChest.count) loyaltyChest.count = entry.chestCount;
+                                  break;
                               }
-                              break;
                           }
                       }
                     } catch (error) {}
@@ -354,7 +311,7 @@ async function loadLogData() {
                     //Increment chest quantity
                     for (const loyaltyChest of chestCounter) {
                         if ((loyaltyChest.quantity == 0 || loyaltyChest.quantity < loyaltyChest.count) && ((loyaltyChest.key != "chestboss" && entry.chest.includes(loyaltyChest.key)) || (loyaltyChest.key === "chestboss" && entry.chest === "chestboss"))) {
-                                loyaltyChest.quantity += 1;
+                                loyaltyChest.quantity++;
                                 break;
                             }
                         }
@@ -371,8 +328,8 @@ async function loadLogData() {
                     }
                 }
             } catch(error) {
-                console.log(entry)
-                console.log(error)
+                console.log(entry);
+                console.log(error);
             }
 
             //Getting human-readable initial chest name and picture
@@ -394,20 +351,18 @@ async function loadLogData() {
 
         //Get ending time
         try {
-            endingTime = ""
+            endingTime = "";
             if (elapsed !== "Unknown") {
                 let tempTime = new Date(entry.currentTime);
                 tempTime.setMinutes(tempTime.getMinutes() + parseInt(elapsed));
                 endingTime = getTimeString(tempTime);
-                if (endingTime == "NaN:NaN") {
-                  endingTime = tbd;
-                }
+                if (endingTime == "NaN:NaN") endingTime = tbd;
             } else {
                 endingTime = "Unknown";
             }
         } catch (error) {
             console.log("log", error);
-            endingTime = "Unknown"
+            endingTime = "Unknown";
         }
         // Create a table row
         const row = document.createElement('tr');
@@ -420,18 +375,18 @@ async function loadLogData() {
                         ${initialChestName}
                         <img src="${initialUrl}" alt="Initial Chest Image" style="height: 30px; width: auto">
                     </div>
-                </td>`
+                </td>`;
         } else {
             initialchestHTML = `<td style="text-align: center; vertical-align: middle;">
                     <div style="display: flex; flex-direction: column; align-items: center;">
                     </div>
-                </td>`
+                </td>`;
         }
         let logCaptId;
         if (captIdSwitch) {
-            logCaptId = `<td>${entry.captainId}</td>`
+            logCaptId = `<td>${entry.captainId}</td>`;
         } else {
-            logCaptId = ``
+            logCaptId = ``;
         }
         let logRewards;
         if (logSwitch) {
@@ -439,22 +394,22 @@ async function loadLogData() {
                 <td>${leaderboardRank}</td>
                 <td>${kills}</td>
                 <td>${assists}</td>
-                <td>${units}</td>`
+                <td>${units}</td>`;
         } else {
-            logRewards = ``
+            logRewards = ``;
         }
         let logRaidId;
         if (raidIdSwitch) {
-            logRaidId = `<td>${raidId}</td>`
+            logRaidId = `<td>${raidId}</td>`;
         } else {
-            logRaidId = ``
+            logRaidId = ``;
         }
         let logDungeonPVP;
         if (dungeonPVPSwitch) {
             logDungeonPVP = `<td>${dungeonLevel}</td>
-                <td>${pvpOpponent}</td>`
+                <td>${pvpOpponent}</td>`;
         } else {
-            logDungeonPVP = ``
+            logDungeonPVP = ``;
         }
         row.innerHTML = `<td>${counter}</td>
             <td>${entry.logId}</td>
@@ -519,33 +474,17 @@ async function getCurrentEventStartTime() {
             let eventDetails = events[event];
             startTime = Date.parse(eventDetails.StartTime);
             endTime = Date.parse(eventDetails.EndTime);
-            if (startTime <= currentDateTime && endTime > currentDateTime) {
-                return startTime;
-            }
-        }
-    } catch (error) { }
-}
-
-async function getChestMaximumCanEarn(key) {
-    try {
-        let chests = await retrieveFromStorage("chests");
-        for (const chest in chests) {
-            let chestDetails = chests[chest];
-            if (chestDetails.Uid === key) {
-                return chestDetails.MaximumCanEarn;
-            }
+            if (startTime <= currentDateTime && endTime > currentDateTime) return startTime;
         }
     } catch (error) { }
 }
 
 //Get entry from the stored array and remove the entry with the matching index.
 async function removeEntry(raidId) {
-    while (logRunning == true) {
-      await delay(10);
-    }
+    while (logRunning == true) await delay(10);
     logRunning = true;
     await chrome.storage.local.get(["logData"], async function (result) {
-        let loggedData = result["logData"] || [];
+        let loggedData = result.logData || [];
 
         let foundEntry;
         let i;
@@ -574,12 +513,6 @@ async function removeEntry(raidId) {
     logRunning = false;
 }
 
-async function updateChestMaximumValues() {
-    for (const item of chestCounter) {
-        item.max = await getChestMaximumCanEarn(item.key);
-    }
-}
-
 function loadChestCounter() {
     const counterContainer = document.querySelector('.counter-container');
     counterContainer.innerHTML = '';
@@ -594,7 +527,7 @@ function loadChestCounter() {
         tr.innerHTML = `<td><img src="${item.url}" title="${item.name}"  style="height: 30px; width: auto"></td><td>${item.quantity}</td><td>${item.count}</td><td>${item.max - item.count}</td><td>${item.max}</td>`;
         table.appendChild(tr);
         item.quantity = 0;
-    };
+    }
     counterContainer.appendChild(table);
     const br = document.createElement('br');
     counterContainer.appendChild(br);
@@ -687,15 +620,13 @@ async function convertJsonToCsv(jsonData) {
         if (!element.hasOwnProperty('initialchest')) {
             const elapsedTimeIndex = Object.keys(element).indexOf('elapsedTime');
             const logCapNameIndex = Object.keys(element).indexOf('logCapName');
-            const initialchestValue = null
+            const initialchestValue = null;
 
             if (elapsedTimeIndex !== -1 && logCapNameIndex !== -1) {
                 const updatedElement = {};
                 Object.keys(element).forEach((key, index) => {
                     updatedElement[key] = element[key];
-                    if (index === elapsedTimeIndex + 1) {
-                        updatedElement['initialchest'] = initialchestValue;
-                    }
+                    if (index === elapsedTimeIndex + 1) updatedElement.initialchest = initialchestValue;
                 });
                 logData[logData.indexOf(element)] = updatedElement;
             }

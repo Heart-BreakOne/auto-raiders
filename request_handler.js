@@ -15,22 +15,16 @@ async function logChestsAndUnitsInterval() {
   let paused_checkbox = intervalKeys.paused_checkbox;
   let offlineSwitch = intervalKeys.offlineSwitch;
 
-  if (paused_checkbox) {
-    return
-  }
+  if (paused_checkbox) return;
   try {
     let activeRaids = activeRaidsArray;
-    if (requestRunning || activeRaids == undefined || activeRaids == null || (activeRaids.length == 1 && activeRaids[0].twitchDisplayName == "")) {
-      return;
-    }
+    if (requestRunning || activeRaids == undefined || activeRaids == null || (activeRaids.length == 1 && activeRaids[0].twitchDisplayName == "")) return;
     requestRunning = true;
     await checkBattleMessages(activeRaids);
     await manageGameModes(activeRaids);
     await addNewLogEntry(activeRaids);
     //Checks if the user wants to replace idle captains and invoke the function to check and replace them.
-    if (offlineSwitch) {
-      await updateRunningCaptains(activeRaids);
-    }
+    if (offlineSwitch) await updateRunningCaptains(activeRaids);
     requestRunning = false;
   } catch (error) {
     console.error('Error in logChestsAndUnitsInterval:', error);
@@ -41,12 +35,10 @@ async function logChestsAndUnitsInterval() {
 async function getCaptainLoyalty(captainName) {
   try {
     let response = activeRaidsArray;
-    if (response == undefined) {
-      return;
-    }
+    if (response == undefined) return;
 
     const activeRaids = response;
-    let loyaltyResults = new Object();
+    let loyaltyResults = {};
     for (let i = 0; i < activeRaids.length; i++) {
       const position = activeRaids[i];
       if (position.twitchDisplayName === captainName) {
@@ -71,8 +63,8 @@ async function getCaptainLoyalty(captainName) {
 
 async function getRaidChest(nodeId) {
   try {
-    let chests = await retrieveFromStorage("loyaltyChests")
-    chests = chests.MapNodes
+    let chests = await retrieveFromStorage("loyaltyChests");
+    chests = chests.MapNodes;
 
     const chestType = chests[nodeId]?.ChestType;
     return chestType;
@@ -84,9 +76,7 @@ async function getRaidChest(nodeId) {
 }
 
 async function getLeaderboardUnitsData(getRaid) {
-  if (await retrieveFromStorage("paused_checkbox")) {
-    return
-  }
+  if (await retrieveFromStorage("paused_checkbox")) return;
 
   const dataArray = ['userId', 'units', 'skins', 'imageUrls'];
   const dataKeys = await retrieveMultipleFromStorage(dataArray);
@@ -118,18 +108,14 @@ async function getLeaderboardUnitsData(getRaid) {
           }
           if (placement.skin === null || placement.skin === "") {
             Object.keys(unitAssetNames).forEach(function (key) {
-              const uid = unitAssetNames[key].Uid
-              if (uid === CharacterType) {
-                skin = unitAssetNames[key].AssetName;
-              }
-            })
+              const uid = unitAssetNames[key].Uid;
+              if (uid === CharacterType) skin = unitAssetNames[key].AssetName;
+            });
           } else {
             skin = placement.skin;
             Object.keys(skinNames).forEach(function (key) {
-              if (key === placement.skin) {
-                skin = skinNames[key].BaseAssetName;
-              }
-            })
+              if (key === placement.skin) skin = skinNames[key].BaseAssetName;
+            });
           }
           if (placement.SoulType === null || placement.SoulType === "") {
             SoulType = "none";
@@ -146,14 +132,12 @@ async function getLeaderboardUnitsData(getRaid) {
               skinURL = "https://d2k2g0zg1te1mr.cloudfront.net/" + imageURLs[key];
             }
           });
-          unitIconList = skinURL + " " + skin.replace("allies", "").replace("skinFull", "") + " " + CharacterType + " " + SoulType + " " + specializationUid + "," + unitIconList
+          unitIconList = skinURL + " " + skin.replace("allies", "").replace("skinFull", "") + " " + CharacterType + " " + SoulType + " " + specializationUid + "," + unitIconList;
         }
       }
     }
 
-    if (unitIconList !== "") {
-      await setLogUnitsData(cptName, raidId, unitIconList);
-    }
+    if (unitIconList !== "") await setLogUnitsData(cptName, raidId, unitIconList);
     return "";
   } catch (error) {
     console.error('Error in getLeaderboardData:', "|", error.name, "|", new Date().toLocaleTimeString(), error);
@@ -173,10 +157,10 @@ async function getRaidStats(currentRaid) {
     }
     const raidData = currentRaid.data;
     const stats = raidData.stats;
-    let raidStats = new Object();
-    let rewards = new Object();
 
     const userId = await retrieveFromStorage("userId")
+    let raidStats = {};
+    let rewards = {};
 
     let eventUid = await retrieveFromStorage("getEventProgressionLite");
     eventUid = eventUid.data.eventUid;
@@ -266,7 +250,7 @@ async function getRaidStats(currentRaid) {
     }
     try {
       if (raidData.potionsAwarded != "0") {
-        rewards[i] = "https://d2k2g0zg1te1mr.cloudfront.net/env/prod1/mobile-lite/static/media/iconPotion.2c8f0f08.png"
+        rewards[i] = "https://d2k2g0zg1te1mr.cloudfront.net/env/prod1/mobile-lite/static/media/iconPotion.2c8f0f08.png";
         rewards[i] = rewards[i] + " epicpotionx" + raidData.potionsAwarded;
         i++;
       }
@@ -396,9 +380,7 @@ async function getRaidStats(currentRaid) {
     for (let j = 0; j < Object.keys(rewards).length; j++) {
       raidStats[2] = rewards[j].toString() + "," + raidStats[2].toString();
     }
-    if (raidStats[2] == "") {
-      raidStats[2] = "None"
-    }
+    if (raidStats[2] == "") raidStats[2] = "None";
     raidStats[3] = raidData.kills;
     raidStats[4] = raidData.assists;
     //raidStats[5] = raidData.chestAwarded; //this value is set earlier in this function
@@ -437,28 +419,11 @@ async function getRaidStats(currentRaid) {
   }
 }
 
-async function getEventProgressionLite(data) {
-  try {
-    const eventInfo = data;
-    eventData = [];
-    eventData.push({
-      "eventUid": eventInfo.data.eventUid,
-      "hasBattlePass": eventInfo.data.hasBattlePass,
-      "basicRewardsCollected": eventInfo.data.basicRewardsCollected,
-      "battlePassRewardsCollected": eventInfo.data.battlePassRewardsCollected,
-      "currentTier": eventInfo.data.currentTier
-    });
-  } catch (error) {
-    console.error('Error in getEventProgressionLite:', new Date().toLocaleTimeString(), error);
-    return "";
-  }
 }
 
 //Initialize arrays with null values, get authentication cookies and make requests for the data of interest.
 async function checkBattleMessages(activeRaids) {
-  if (isRunning) {
-    return;
-  }
+  if (isRunning) return;
   isRunning = true;
 
   //Logic to check battle for messages here
@@ -469,14 +434,14 @@ async function checkBattleMessages(activeRaids) {
       const position = activeRaids[i];
       const cptName = position.twitchDisplayName;
       const message = position.message;
-      battleMessageData.push({ cptName, message })
+      battleMessageData.push({ cptName, message });
     }
     //Save battleMessageData on storage
     await chrome.storage.local.set({ battleMessageData: battleMessageData });
     isRunning = false;
   } catch (error) {
     console.error('Error while getting battle messages', new Date().toLocaleTimeString(), error);
-    isRunning = false
+    isRunning = false;
   }
   isRunning = false;
 }
@@ -508,9 +473,7 @@ async function joinCaptainToAvailableSlot(captainName) {
         'Cookie': cookieString,
       },
     });
-    if (!response.ok) {
-      throw new Error('Network response was not ok');
-    }
+    if (!response.ok) throw new Error('Network response was not ok');
     return;
   } catch (error) {
     console.error('Error joining captain:', new Date().toLocaleTimeString(), error.message);
@@ -536,7 +499,7 @@ async function getUnitId(unitType, unitLevel) {
   unit_loop: for (let i = 0; i < unitArray.data.length; i++) {
     if (unitArray.data[i].unitType == unitType && unitArray.data[i].level == unitLevel) {
       unitId = unitArray.data[i].unitId;
-      return unitId
+      return unitId;
     }
   }
 }
@@ -559,6 +522,7 @@ async function getUserDungeonInfoForRaid(data, headers) {
     dungeonRaidInfo[6] = dungeonRaid?.captainBoons ?? "";
     dungeonRaidInfo[7] = dungeonRaid?.enemyBoons ?? "";
     dungeonRaidInfo[8] = dungeonRaid?.completedLevels ?? "";
+    dungeonRaidInfo[8] = raidId;
     await chrome.storage.local.set({ "dungeonRaidInfo": dungeonRaidInfo });
   }
 }
@@ -569,10 +533,8 @@ async function checkEventCurrencyActive() {
     let currentDateTime = new Date();
     let currentDateTimePT = new Date(currentDateTime.toLocaleString("en-US", { timeZone: "America/Los_Angeles" }));
     isEventCurrencyActive = false;
-    for (event in eventData) {
-      if (eventData[event].StartTime <= currentDateTimePT && eventData[event].EndTime > currentDateTimePT && eventData[event].EventCurrency != "") {
-        isEventCurrencyActive = true;
-      }
+    for (let event in eventData) {
+      if (eventData[event].StartTime <= currentDateTimePT && eventData[event].EndTime > currentDateTimePT && eventData[event].EventCurrency != "") isEventCurrencyActive = true;
     }
     return isEventCurrencyActive;
   }
@@ -624,17 +586,13 @@ async function handleMessage(message) {
     let eventTiers = await retrieveFromStorage("eventTiers");
     let eventUid = data.data.eventUid;
     //If eventTiers is undefined, reload to update it
-    if (eventTiers == undefined) {
-      await locationReload();
-    }
+    if (eventTiers == undefined) await locationReload();
     //If the event tiers eventUid doesn't match the eventUid in getEventProgressionLite, reload to update it
-    let counter = 0
+    let counter = 0;
     for (const nodeKey in eventTiers) {
       counter++;
       const node = eventTiers[nodeKey];
-      if (node.EventUid != eventUid) {
-        await locationReload();
-      }
+      if (node.EventUid != eventUid) await locationReload();
       if (counter >= 1) break;
     }
   }
@@ -725,7 +683,7 @@ async function handleMessage(message) {
             chestId: chestId,
             rewards: rewards,
             eventUid: eventUid
-        })
+        });
     }
     await saveToStorage("userChests", userChestData);
     await saveToStorage("userChestsLog", userChestLogData);
@@ -778,13 +736,13 @@ async function getGameData(url, data) {
     "RegularType",
     "Type",
     "Uid"
-  ]
+  ];
   let currency = data.sheets.Currency;
-  currency = removeKeys(currency, currency_keys_rm)
+  currency = removeKeys(currency, currency_keys_rm);
 
-  const items_keys_rm = ["DisplayName", "IsInRandomPool", "Rarity", "Uid"]
+  const items_keys_rm = ["DisplayName", "IsInRandomPool", "Rarity", "Uid"];
   let items = data.sheets.Items;
-  items = removeKeys(items, items_keys_rm)
+  items = removeKeys(items, items_keys_rm);
 
   const units_keys_rm = ["AssetScaleOverride",
     "AttackRate",
@@ -834,11 +792,11 @@ async function getGameData(url, data) {
     "UnitTargetingType",
     "UnitType",
     "UpgradeCurrencyType",
-    "WeakAgainstTagsList"]
+    "WeakAgainstTagsList"];
   const units = data.sheets.Units;
   const unitsArray = Object.values(units);
   let filteredUnits = unitsArray.filter(unit => unit.PlacementType === "viewer");
-  filteredUnits = removeKeys(filteredUnits, units_keys_rm)
+  filteredUnits = removeKeys(filteredUnits, units_keys_rm);
 
   const skins_keys_rm = ["BaseUnitType",
     "CaptainUnitType",
@@ -859,46 +817,42 @@ async function getGameData(url, data) {
     "StreamerId",
     "StreamerName",
     "Type",
-    "Uid"]
+    "Uid"];
   let skins = data.sheets.Skins;
-  skins = removeKeys(skins, skins_keys_rm)
+  skins = removeKeys(skins, skins_keys_rm);
 
   const map_keys_rm = ["NodeDifficulty", "NodeType", "MapTags", "OnLoseDialog", "OnStartDialog", "OnWinDialog"]
-  let mapNodes = data.sheets.MapNodes
-  mapNodes = removeKeys(mapNodes, map_keys_rm)
+  let mapNodes = data.sheets.MapNodes;
+  mapNodes = removeKeys(mapNodes, map_keys_rm);
 
   const transformedJson = {
     url: url,
     MapNodes: mapNodes
   };
 
-  const events_keys_rm = ["BannerAsset", "Customizations", "Description", "MapNodeSpecialAsset", "PreviewLegendaryAsset1", "PreviewLegendaryAsset2", "PreviewLegendaryAsset3", "PreviewSkinAsset1", "PreviewSkinAsset2", "PreviewSkinAsset3", "PreviewSkinAsset4", "PreviewSkinAsset5", "PreviewSkinAsset6", "PreviewSkinAsset7", "PreviewSkinAsset7Epic", "TeaserTime", "WorldIndex"]
+  const events_keys_rm = ["BannerAsset", "Customizations", "Description", "MapNodeSpecialAsset", "PreviewLegendaryAsset1", "PreviewLegendaryAsset2", "PreviewLegendaryAsset3", "PreviewSkinAsset1", "PreviewSkinAsset2", "PreviewSkinAsset3", "PreviewSkinAsset4", "PreviewSkinAsset5", "PreviewSkinAsset6", "PreviewSkinAsset7", "PreviewSkinAsset7Epic", "TeaserTime", "WorldIndex"];
   let events = data.sheets.Events;
-  events = removeKeys(events, events_keys_rm)
+  events = removeKeys(events, events_keys_rm);
 
-  const chests_keys_rm = ["BonusSlots", "BuyButtonMessageOverride", "CaptainSlots", "CharityChestEventUid", "CharityChestReward", "ClosedIcon", "GrandPrizeIcon", "IsBoosted", "IsCharity", "OpenCountMessageOverride", "OpenIcon", "RewardDescription", "RewardDescription2", "RewardOpenCountDescriptionOverride", "ShowOpenCount", "TrackOpenCount"]
+  const chests_keys_rm = ["BonusSlots", "BuyButtonMessageOverride", "CaptainSlots", "CharityChestEventUid", "CharityChestReward", "ClosedIcon", "GrandPrizeIcon", "IsBoosted", "IsCharity", "OpenCountMessageOverride", "OpenIcon", "RewardDescription", "RewardDescription2", "RewardOpenCountDescriptionOverride", "ShowOpenCount", "TrackOpenCount"];
   let chests = data.sheets.Chests;
-  chests = removeKeys(chests, chests_keys_rm)
+  chests = removeKeys(chests, chests_keys_rm);
 
-  const eventTiers_keys_rm = ["Badge", "BasicRewardImageOverride", "BattlePassRewardImageOverride", "Requirement"]
+  const eventTiers_keys_rm = ["Badge", "BasicRewardImageOverride", "BattlePassRewardImageOverride", "Requirement"];
   let eventTiers = data.sheets.EventTiers;
-  eventTiers = removeKeys(eventTiers, eventTiers_keys_rm)
+  eventTiers = removeKeys(eventTiers, eventTiers_keys_rm);
 
   let eventUid = await retrieveFromStorage("getEventProgressionLite");
-  if (eventUid) {
-    eventUid = eventUid.data.eventUid;
-  }
+  if (eventUid) eventUid = eventUid.data.eventUid;
   
   for (const nodeKey in eventTiers) {
     const node = eventTiers[nodeKey];
-    if (node.EventUid != eventUid) {
-      delete eventTiers[nodeKey];
-    }
+    if (node.EventUid != eventUid) delete eventTiers[nodeKey];
   }
 
-  const quests_keys_rm = ["AssetPathOverride", "AssetScaleOverride", "AutoCompleteCost", "CompletionCooldown", "CurrencyIdRequirement", "CurrencyMaxRequirement", "CurrencyMinRequirement", "QuestIds", "UnitAsset", "UnitLevelRequirement", "UnitTypeRequirement"]
+  const quests_keys_rm = ["AssetPathOverride", "AssetScaleOverride", "AutoCompleteCost", "CompletionCooldown", "CurrencyIdRequirement", "CurrencyMaxRequirement", "CurrencyMinRequirement", "QuestIds", "UnitAsset", "UnitLevelRequirement", "UnitTypeRequirement"];
   let quests = data.sheets.Quests;
-  quests = removeKeys(quests, quests_keys_rm)
+  quests = removeKeys(quests, quests_keys_rm);
 
   await chrome.storage.local.set({ "loyaltyChests": transformedJson, "currency": currency, "items": items, "units": filteredUnits, "skins": skins, "events": events, "chests": chests, "eventTiers": eventTiers, "quests": quests });
 
@@ -912,5 +866,5 @@ function removeKeys(items, keysToRemove) {
       delete node[keyToRemove];
     }
   }
-  return items
+  return items;
 }

@@ -1,5 +1,3 @@
-const questDelay = (ms) => new Promise((res) => setTimeout(res, ms));
-
 //Unit icons from the unit drawer (the icon on the top left corner of the unit square)
 let arrayOfUnitsQuest = [
     { key: "amazon", rarity: 3, icon: "5GHK8AAAAASUVORK5CYII=", mustPlace: false, points: 0, easyKill: false, bestKill: false, killEpic: false, killType: "armored", easyAssist: false, bestAssist: false, assistType: null },
@@ -39,29 +37,25 @@ let arrayOfUnitsQuest = [
 
 async function getUnfinishedQuests() {
     const allQuestData = await retrieveFromStorage("quests");
-    const questsData = await retrieveFromStorage("userQuests");
+    let questsData = await retrieveFromStorage("userQuests");
     questsData = questsData.data;
     const questsDescriptionsArray = [];
     for (const questData in questsData) {
         if (questsData[questData].currentQuestId != null) {
             let currentQuestId = questsData[questData].currentQuestId;
-            if ((allQuestData[currentQuestId].Mode == "All" || allQuestData[currentQuestId].Mode == "Campaign")) {
-                questsDescriptionsArray.push(allQuestData[currentQuestId].Description);
-            }
+            if ((allQuestData[currentQuestId].Mode == "All" || allQuestData[currentQuestId].Mode == "Campaign")) questsDescriptionsArray.push(allQuestData[currentQuestId].Description);
         }
     }
     if (questsDescriptionsArray.length == 0) {
-        return undefined
+        return undefined;
     } else {
-        return questsDescriptionsArray
+        return questsDescriptionsArray;
     }
 }
 
 
 async function completeQuests(unitDrawer, unfinishedQuests) {
-    if (unfinishedQuests == null || unfinishedQuests == undefined) {
-        return unitDrawer
-    }
+    if (unfinishedQuests == null || unfinishedQuests == undefined) return unitDrawer;
 
     const validQuests = ["kill", "assist", "place", "get", "earn", "earning", "Take down", "destroy"];
 
@@ -103,23 +97,17 @@ async function completeQuests(unitDrawer, unfinishedQuests) {
             }
             if (lowerCaseQuest.includes("kill") && lowerCaseQuest.includes("epic") && unit.killEpic) {
                 unit.mustPlace = true;
-                unit.points = 20
+                unit.points = 20;
             }
 
             // Kill quests
             if (unit.killType != null) {
                 const killTypes = unit.killType.split(',');
 
-                if (lowerCaseQuest.includes("kill") && killTypes.some(type => lowerCaseQuest.includes(type.trim()))) {
-                    unit.points += 2;
-                }
+                if (lowerCaseQuest.includes("kill") && killTypes.some(type => lowerCaseQuest.includes(type.trim()))) unit.points += 2;
             }
-            if (lowerCaseQuest.includes("kill") && unit.easyKill && unit.points != 0) {
-                unit.points += 1;
-            }
-            if (lowerCaseQuest.includes("kill") && unit.bestKill && unit.points != 0) {
-                unit.points += 1;
-            }
+            if (lowerCaseQuest.includes("kill") && unit.easyKill && unit.points != 0) unit.points++;
+            if (lowerCaseQuest.includes("kill") && unit.bestKill && unit.points != 0) unit.points++;
 
             // Assist quests
             if (unit.assistType != null) {
@@ -127,21 +115,13 @@ async function completeQuests(unitDrawer, unfinishedQuests) {
                 const assistTypes = unit.assistType.split(',');
 
                 // Check if any of the assistTypes are present in lowerCaseQuest
-                if (lowerCaseQuest.includes("assist") && assistTypes.some(type => lowerCaseQuest.includes(type.trim()))) {
-                    unit.points += 2;
-                }
+                if (lowerCaseQuest.includes("assist") && assistTypes.some(type => lowerCaseQuest.includes(type.trim()))) unit.points += 2;
             }
-            if (lowerCaseQuest.includes("assist") && unit.easyAssist && unit.points != 0) {
-                unit.points += 1;
-            }
-            if (lowerCaseQuest.includes("assist") && unit.bestAssist && unit.points != 0) {
-                unit.points += 1;
-            }
+            if (lowerCaseQuest.includes("assist") && unit.easyAssist && unit.points != 0) unit.points++;
+            if (lowerCaseQuest.includes("assist") && unit.bestAssist && unit.points != 0) unit.points++;
 
             // Extra point for common units.
-            if (unit.points !== 0 && unit.rarity === 0) {
-                unit.points += 1;
-            }
+            if (unit.points !== 0 && unit.rarity === 0) unit.points++;
 
         });
     });
@@ -158,14 +138,11 @@ async function completeQuests(unitDrawer, unfinishedQuests) {
     // Sort units based on mustPlace = true
     arrayOfUnitsQuest.sort((a, b) => (b.mustPlace ? 1 : 0) - (a.mustPlace ? 1 : 0));
 
-    if (arrayOfUnitsQuest.length == 0 || arrayOfUnitsQuest == null || arrayOfUnitsQuest == undefined) {
-        return unitDrawer
-    }
-
+    if (arrayOfUnitsQuest.length == 0 || arrayOfUnitsQuest == null || arrayOfUnitsQuest == undefined) return unitDrawer;
 
     // Filter the unit drawer
-    const bkpD = unitDrawer
-    let usableUnits = []
+    const bkpD = unitDrawer;
+    let usableUnits = [];
 
     for (var i = 0; i < unitDrawer[0].children.length; i++) {
         let child = unitDrawer[0].children[i];
@@ -174,7 +151,7 @@ async function completeQuests(unitDrawer, unfinishedQuests) {
         let unitDisabled = child.querySelector('.unitItemDisabledOff');
 
         if (coolDownCheck || defeatedCheck || !unitDisabled) {
-            i -= 1;
+            i--;
             child.remove();
             continue;
         } else {
@@ -183,9 +160,7 @@ async function completeQuests(unitDrawer, unfinishedQuests) {
                 let icon = arrayOfUnitsQuest[y].icon;
                 let unitClassImg = child.querySelector('.unitClass img');
                 let uSrc = unitClassImg.src.toUpperCase();
-                if (unitClassImg && uSrc.includes(icon)) {
-                    usableUnits.push(child);
-                }
+                if (unitClassImg && uSrc.includes(icon)) usableUnits.push(child);
             }
         }
     }
@@ -203,18 +178,16 @@ async function completeQuests(unitDrawer, unfinishedQuests) {
     });
 
     if (usableUnits.length == 0) {
-        return bkpD
+        return bkpD;
     } else {
-        while (unitDrawer[0].children.length > 0) {
-            unitDrawer[0].children[0].remove();
-        }
+        while (unitDrawer[0].children.length > 0) unitDrawer[0].children[0].remove();
         usableUnits.forEach((item) => {
             unitDrawer[0].appendChild(item);
         });
     }
 
     if (unitDrawer[0].children.length == 0 || unitDrawer[0].children == null || unitDrawer[0].children == undefined) {
-        return bkpD
+        return bkpD;
     } else {
         // Activate common, uncommon, rare and legendary units based on the needs.
         await setSwitchState("priorityListSwitch0", false);
@@ -224,10 +197,10 @@ async function completeQuests(unitDrawer, unfinishedQuests) {
         await setSwitchState("priorityListSwitch4", false);
         for (var i = 0; i < unitDrawer[0].children.length; i++) {
             const child = unitDrawer[0].children[i];
-            let rCom = child.querySelector(".unitRarityCommon")
-            let rUnc = child.querySelector(".unitRarityUncommon")
-            let rRar = child.querySelector(".unitRarityRare")
-            let rLen = child.querySelector(".unitRarityLegendary")
+            let rCom = child.querySelector(".unitRarityCommon");
+            let rUnc = child.querySelector(".unitRarityUncommon");
+            let rRar = child.querySelector(".unitRarityRare");
+            let rLen = child.querySelector(".unitRarityLegendary");
 
             if (rCom) {
                 await setSwitchState("commonSwitch", true);
@@ -241,7 +214,7 @@ async function completeQuests(unitDrawer, unfinishedQuests) {
                 await setSwitchState("legendarySwitch", false);
             }
         }
-        return unitDrawer
+        return unitDrawer;
     }
 }
 

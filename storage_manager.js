@@ -36,7 +36,7 @@ async function retrieveMultipleFromStorage(keys) {
       }
     });
   });
-};
+}
 
 //Receives a string key and retrieves numbers from the chrome storage.
 async function retrieveNumberFromStorage(key) {

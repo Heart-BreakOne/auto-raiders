@@ -148,7 +148,7 @@ document.addEventListener("click", function (event) {
         if (event.target.classList.contains("extSettingsButton")) {
             //Using the unique key identifiers all data is removed from storage
             const extensionId = chrome.runtime.id;
-            const url = "chrome-extension://" + extensionId + "/settings.html"
+            const url = "chrome-extension://" + extensionId + "/settings.html";
             window.open(url, '_blank').focus();
         }
 
@@ -166,7 +166,6 @@ document.addEventListener("click", function (event) {
                     slot.querySelector(".offlineButton").innerText = "ENABLED";
                     slot.querySelector(".offlineButton").style.backgroundColor = "#5fa695";
                 });
-                isContentRunning2 = false;
                 start();
             });
         }
@@ -176,10 +175,10 @@ document.addEventListener("click", function (event) {
             dataArray = [];
             //Resets button properties on the user interface.
             let captainPauseSlots = document.querySelectorAll(".capSlot");
-            await setIdleState("offlineButton_1", 0)
-            await setIdleState("offlineButton_2", 0)
-            await setIdleState("offlineButton_3", 0)
-            await setIdleState("offlineButton_4", 0)
+            await setIdleState("offlineButton_1", 0);
+            await setIdleState("offlineButton_2", 0);
+            await setIdleState("offlineButton_3", 0);
+            await setIdleState("offlineButton_4", 0);
             captainPauseSlots.forEach(async function (slot) {
                 slot.querySelector(".offlineButton").innerText = "DISABLED";
                 slot.querySelector(".offlineButton").style.backgroundColor = "red";
@@ -192,10 +191,10 @@ document.addEventListener("click", function (event) {
             dataArray = [];
             //Resets button properties on the user interface.
             let captainPauseSlots = document.querySelectorAll(".capSlot");
-            await setIdleState("offlineButton_1", 2)
-            await setIdleState("offlineButton_2", 2)
-            await setIdleState("offlineButton_3", 2)
-            await setIdleState("offlineButton_4", 2)
+            await setIdleState("offlineButton_1", 2);
+            await setIdleState("offlineButton_2", 2);
+            await setIdleState("offlineButton_3", 2);
+            await setIdleState("offlineButton_4", 2);
             captainPauseSlots.forEach(async function (slot) {
                 slot.querySelector(".offlineButton").innerText = "LEAVE AFTER";
                 slot.querySelector(".offlineButton").style.backgroundColor = "green";
@@ -204,68 +203,6 @@ document.addEventListener("click", function (event) {
         }
     })();
 });
-
-/* This function is invoked when user clicks on a pause button.
-It updates the states of whether or not a unit can be placed on the slot
-It receives the captain name and the new slot state to save in storage */
-function saveStateToStorage(name, booleanValue) {
-    //Check if an item with the same name already exists
-    let existingItem = dataArray.find((item) => item.name === name);
-
-    //Item exists so the value is updated
-    if (existingItem) {
-        //Update the booleanValue of the existing item
-        existingItem.booleanValue = booleanValue;
-    }
-    //Item does not exist so the item is added
-    else {
-        //Add a new object to the array
-        dataArray.push({ name, booleanValue });
-
-        //Check if the array length exceeds 4 as there are 4 slots
-        if (dataArray.length > 4) {
-            // Remove the oldest item (first item in the array)
-            dataArray.shift();
-        }
-    }
-
-    //Save updated array to local storage, but only if it has 3 or fewer items
-    //Loads a banner signaling completion
-    if (dataArray.length <= 4) {
-        chrome.storage.local.set({ "dataArray": dataArray }, function () {
-            if (chrome.runtime.lastError) {
-                loadBanner("Failed to update settings", "red");
-            } else {
-                loadBanner("Settings updated sucessfully", "#5fa695");
-            }
-        });
-    }
-}
-
-
-// This function retrieves the captain name and returns the pause button state from storage
-function retrieveStateFromStorage(captainName) {
-    return new Promise((resolve, reject) => {
-        chrome.storage.local.get("dataArray", function (result) {
-            if (chrome.runtime.lastError) {
-                reject(chrome.runtime.lastError);
-            } else {
-                if (result.dataArray) {
-                    dataArray = result.dataArray;
-                    const matchingItem = dataArray.find((item) => item.name === captainName);
-                    if (matchingItem) {
-                        resolve(matchingItem.booleanValue);
-                    } else {
-                        resolve(false);
-                    }
-                } else {
-                    resolve(false);
-                }
-            }
-        });
-    });
-}
-
 
 /* This function is invoked when user clicks on a idle enabled button.
 It updates the state of whether or not a captain replacement should be selected for individual slots

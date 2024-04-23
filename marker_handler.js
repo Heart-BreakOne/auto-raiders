@@ -4,9 +4,9 @@ function makeMarkers() {
 
     const placementZones = Array.from(document.querySelectorAll(".placementAlly"));
     const mrkrs = Array.from(document.querySelectorAll(".planIcon"));
-    setUpMarkers(mrkrs)
+    setUpMarkers(mrkrs);
 
-    const dimension = 96
+    const dimension = 96;
 
     for (let i = 0; i < placementZones.length; i++) {
         const tile = placementZones[i];
@@ -18,11 +18,9 @@ function makeMarkers() {
                 const proposedMarkerTop = parseFloat(tile.offsetTop + x * dimension);
                 const proposedMarkerLeft = parseFloat(tile.offsetLeft + y * dimension);
 
-                if (checkOverlapWithUnits(proposedMarkerTop, proposedMarkerLeft, dimension)) {
-                    continue;
-                }
+                if (checkOverlapWithUnits(proposedMarkerTop, proposedMarkerLeft, dimension)) continue;
 
-                let id_string = checkOverlapWithMarkers(mrkrs, proposedMarkerTop, proposedMarkerLeft, dimension)
+                let id_string = checkOverlapWithMarkers(mrkrs, proposedMarkerTop, proposedMarkerLeft, dimension);
 
                 if (!id_string) {
                     const imaginaryMarker = document.createElement("div");
@@ -40,30 +38,23 @@ function makeMarkers() {
                     //imaginaryMarker.style.backgroundSize = "0";
                     //imaginaryMarker.style.border = "0.1px solid black";
                     const battlefieldElement = document.querySelector(".battlefield");
-                    if (battlefieldElement) {
-                        battlefieldElement.appendChild(imaginaryMarker);
-                    }
+                    if (battlefieldElement) battlefieldElement.appendChild(imaginaryMarker);
                 }
-
             }
         }
     }
 }
 
-
 function getCaptainUnit() {
     //Get ally units.
-    const allUnits = Array.from(document.querySelectorAll(".allyUnit"))
+    const allUnits = Array.from(document.querySelectorAll(".allyUnit"));
     const captainUnit = document.querySelector(".captainButtonActive.captainButtonImg");
-    if (captainUnit == null) {
-      return;
-    }
+    if (captainUnit == null) return;
     const captainName = captainUnit.alt;
     let icon = "";
 
     //Open the leaderboard
     document.querySelector(".leaderboardCont").click();
-
 
     const allPlacers = document.querySelectorAll(".battlefieldLeaderboardRowCont");
     for (let i = 0; i < allPlacers.length; i++) {
@@ -81,15 +72,11 @@ function getCaptainUnit() {
     }
 
     //Get element  that has innerHTML Leaderboard
-    let firstPlacement
+    let firstPlacement;
     for (let i = 0; i < allUnits.length; i++) {
         const captain = allUnits[i];
-        if (captain == undefined || captain == null) {
-            continue
-        }
-        if (i == 0) {
-            firstPlacement = captain
-        }
+        if (captain == undefined || captain == null) continue;
+        if (i == 0) firstPlacement = captain;
         let captainIcon = captain.querySelector("img").src;
 
         const lastSlashIndex1 = captainIcon.lastIndexOf("/");
@@ -110,18 +97,15 @@ function getCaptainUnit() {
                 const captainSizeForComparison = captain.querySelector(".battleFieldUnitClickArea").offsetWidth;
 
                 // 1. Is the captain. 2. ??. 3. Rare event where someone places before the captain with the same skin as the captain
-                if ((lastUnitSize * 2 === captainSizeForComparison) || (captainSizeForComparison / 2 == lastUnitSize) || (captainSizeForComparison === lastUnitSize)) {
-                    return captain
-                }
+                if ((lastUnitSize * 2 === captainSizeForComparison) || (captainSizeForComparison / 2 == lastUnitSize) || (captainSizeForComparison === lastUnitSize)) return captain;
             }
         }
     }
-    return firstPlacement
+    return firstPlacement;
 }
 
-
 function checkOverlapWithUnits(top, left, dimension) {
-    const allUnits = Array.from(document.querySelectorAll(".battleFieldUnitClickArea"))
+    const allUnits = Array.from(document.querySelectorAll(".battleFieldUnitClickArea"));
     for (let i = 0; i < allUnits.length; i++) {
         const unit = allUnits[i];
         const unitParent = unit.parentElement;
@@ -134,9 +118,7 @@ function checkOverlapWithUnits(top, left, dimension) {
             left + dimension > unitLeft &&
             top < unitTop + unit.offsetHeight &&
             left < unitLeft + unit.offsetWidth
-        ) {
-            return true;
-        }
+        ) return true;
     }
 
     return false;
@@ -148,7 +130,7 @@ function setUpMarkers(mrkrs) {
     { key: "ASSASSIN", units: "BALLOON#BUSTER#FLYING#PHANTOM#ROGUE#SHINOBI#SPY" },
     { key: "MELEE", units: "AMAZON#BARBARIAN#BERSERKER#GLADIATOR#LANCER#WARBEAST#WARRIOR" },
     { key: "RANGED", units: "ARCHER#ARTILLERY#BOMBER#MAGE#MUSKETEER" },
-    { key: "SUPPORT", units: "FAIRY#FLAG#HEALER#NECROMANCER#MONK#SAINT#TEMPLAR" }]
+    { key: "SUPPORT", units: "FAIRY#FLAG#HEALER#NECROMANCER#MONK#SAINT#TEMPLAR" }];
 
     const arrBtMrkr = [
         { key: "NO", type: "NO", icon: "VYAAAAASUVORK5CYII=" },
@@ -206,15 +188,12 @@ function setUpMarkers(mrkrs) {
                         break;
                     }
                 }
-                if (!mrkr.id) {
-                    mrkr.id = key;
-                }
+                if (!mrkr.id) mrkr.id = key;
                 break;
             }
         }
     }
 }
-
 
 function checkOverlapWithMarkers(mrkrs, top, left, dimension) {
     for (let i = 0; i < mrkrs.length; i++) {
@@ -226,9 +205,7 @@ function checkOverlapWithMarkers(mrkrs, top, left, dimension) {
             left + dimension > mrkrLeft &&
             top < mrkrTop + dimension &&
             left < mrkrLeft + dimension
-        ) {
-            return mrkr.id
-        }
+        ) return mrkr.id;
     }
     return false;
 }
@@ -237,9 +214,7 @@ function getMapMatrix(arrayOfMarkers) {
     arrayOfMarkers = arrayOfMarkers.filter(marker => marker.id !== "NO");
     
     const captainUnit = getCaptainUnit();
-    if (!captainUnit || captainUnit == null || captainUnit == undefined) {
-        return arrayOfMarkers
-    }
+    if (!captainUnit || captainUnit == null || captainUnit == undefined) return arrayOfMarkers;
 
     const elementSize = captainUnit.offsetWidth;
     const divisionSize = (elementSize / 8) * 3;
@@ -288,6 +263,6 @@ function bumpVibeMarkers(arrayOfMarkers) {
             return nonCustomMarkers.concat(customMarkers);
         }
     } catch (error) {
-        return
+        return;
     }
 }

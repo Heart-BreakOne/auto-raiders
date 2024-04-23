@@ -2,12 +2,10 @@
 
 //Declaring/initializing variables
 const idleDelay = ms => new Promise(res => setTimeout(res, ms));
-const statusArray = ["Waiting for Captain to find battle!ENABLED", , "Waiting for Captain to start battle!ENABLED", "Waiting for Captain to collect reward!ENABLED"];
 const diamondLoyaltyLevel = 4;
 const goldLoyaltyLevel = 3;
 const silverLoyaltyLevel = 2;
 const bronzeLoyaltyLevel = 1;
-let captainButton;
 let isContentRunningIdle;
 let hasBattlePass;
 
@@ -49,7 +47,7 @@ async function checkIdleCaptains() {
             let battleStatus;
             //If hasViewedResults and postBattleComplete are both "1", that means "Waiting for Captain to find battle!"
             if (slot.hasViewedResults !== "1" && slot.postBattleComplete !== "1") {
-                battleStatus = true
+                battleStatus = true;
             } else {
                 battleStatus = false;
             }
@@ -79,9 +77,7 @@ async function checkIdleCaptains() {
             if (!slot) return;
             const selectButton = slot.querySelector(".actionButton.actionButtonPrimary.capSlotButton.capSlotButtonAction");
             if (selectButton && selectButton.innerText == "SELECT") {
-                if (isContentRunningIdle == true) {
-                    return;
-                }
+                if (isContentRunningIdle == true) return;
                 isContentRunningIdle = true;
                 //Clicks select button to open the captains list
                 selectButton.click();
@@ -93,21 +89,17 @@ async function checkIdleCaptains() {
         } else if (currentSlots[i].battleStatus == false) {
             //If the captain is possibly on an idle state
             //Invokes function to set the battle status with the captainName as a parameter.
-            await setBattleStatus(captainName)
+            await setBattleStatus(captainName);
             //Gets whether or not the captain is idling for more than 15 minutes using the captainName as a parameter
-            const isIdle = await getBattleStatus(captainName)
+            const isIdle = await getBattleStatus(captainName);
             //Captain is idle, switch and select a new one
             if (isIdle) {
-                if (isContentRunningIdle == true) {
-                  return;
-                }
+                if (isContentRunningIdle == true) return;
                 isContentRunningIdle = true;
                 await abandonBattle("Abandoned", "abandoned", captainName, raidId, captId);
                 //Clicks the select button to open captain selection list
                 const selectButton = slot.querySelector(".actionButton.actionButtonPrimary.capSlotButton.capSlotButtonAction");
-                if (selectButton) {
-                    selectButton.click();
-                }
+                if (selectButton) selectButton.click();
                 //Invokes function to get a captain replacement.
                 await switchIdleCaptain(i);
                 isContentRunningIdle = false;
@@ -167,9 +159,7 @@ async function setBattleStatus(captainName) {
             // If the captain does not exist, the data is added
             idleData.push({ captainName, currentTime });
             //Keeps the array to a maximum size of 15 items.
-            if (idleData.length > 15) {
-                idleData.shift();
-            }
+            if (idleData.length > 15) idleData.shift();
             // Save updated data back to local storage
             chrome.storage.local.set({ idleData: idleData });
         }
@@ -194,7 +184,7 @@ async function getBattleStatus(captainName) {
                 const lastUpdateTime = new Date(existingCaptain.currentTime).getTime();
                 const elapsedTime = currentTime - lastUpdateTime;
                 //If the elapsed idle time is greater than the user defined idle time, it returns true
-                const uITi = await getUserIdleTime()
+                const uITi = await getUserIdleTime();
                 if (elapsedTime >= uITi) {
                     resolve(true);
                 } else {
@@ -217,12 +207,12 @@ async function switchIdleCaptain() {
 
     if (idlers) {
         const presentTime = Date.now();
-        const uIT = await getUserIdleTime()
+        const uIT = await getUserIdleTime();
         idlersList = idlers
             .filter(entry => presentTime - entry.presentTime < uIT)
             .map(entry => entry.captainName.toUpperCase());
     } else {
-        idlersList = []
+        idlersList = [];
     }
 
     //Clicks on the ALL captains tab to obtain the full list of online captains
@@ -233,7 +223,7 @@ async function switchIdleCaptain() {
     await idleDelay(3000);
     //Gets the full list of captains
 
-    let fullCaptainList = await retrieveFromStorage("captainSearchData")
+    let fullCaptainList = await retrieveFromStorage("captainSearchData");
     fullCaptainList = fullCaptainList.filter(captain => !idlersList.includes(captain.twitchDisplayName.toUpperCase()));
 
     let blackList = await filterCaptainList('blacklist', fullCaptainList);
@@ -261,7 +251,7 @@ async function switchIdleCaptain() {
     //Invokes function to get list with bronze loyalty captains
     let bronzeLoyaltyList = createLoyaltyList(acceptableList, bronzeLoyaltyLevel);
     //Gets list of favorited captains that are running campaign
-    let favoriteList = []
+    let favoriteList = [];
     try {
         let favoriteCaptainIds = await retrieveFromStorage("favoriteCaptainIds");
         let favoriteCaptainIdsArray = favoriteCaptainIds.split(",");
@@ -269,7 +259,7 @@ async function switchIdleCaptain() {
             entry => (favoriteCaptainIdsArray.includes(entry.userId) && !entry.isSelected && entry.type == 1)
         );
     } catch(error) {
-        favoriteList = []
+        favoriteList = [];
     }
     //If diamond loyalty captains exist, click on a random one
     if (idleMasterSwitch && masterList.length != 0) {
@@ -299,16 +289,14 @@ async function switchIdleCaptain() {
     }
     else {
         //Checks if the user wants to switch to non special captains, if not the list is closed
-        const skipSwitch = await retrieveFromStorage("skipSwitch")
+        const skipSwitch = await retrieveFromStorage("skipSwitch");
         if (skipSwitch) {
             //Closes the list
             closeAll();
             return;
         }
         //Get an acceptable captain
-        if (acceptableList.length != 0) {
-            await joinCaptainToAvailableSlot(acceptableList[0].twitchDisplayName);
-        }
+        if (acceptableList.length != 0) await joinCaptainToAvailableSlot(acceptableList[0].twitchDisplayName);
         //No special captains (no loyalty, not favorite, no whitelist, no acceptable captains) exist
         else {
             for (let i = 0; i < acceptableList.length; i++) {
@@ -411,40 +399,33 @@ async function abandonBattle(status, slot, status1) {
     const c = close.offsetParent;
     const closeOffset = c.offsetParent;
     const idleCapName = closeOffset.querySelector(".capSlotName").innerText;
-    if (close) {
-        close.click();
-    }
+    if (close) close.click();
     await delay(1000);
     //Store battle result as abandoned on storage log
     await setLogResults(status, idleCapName, status1, "N/A", "N/A", "N/A", "N/A", "N/A", raidId, "N/A", "N/A");
     //Checks if modal that appears on certain conditions exists and clicks to close it.
     const modal = document.querySelector(".modalScrim.modalOn");
-    let placeAnyway = modal.querySelector(".actionButton.actionButtonSecondary").innerText
+    let placeAnyway = modal.querySelector(".actionButton.actionButtonSecondary").innerText;
     // If placeAnyways is undefined assign an empty value otherwise the placeAnyway != "PLACE ANYWAY" will crash the script.
     // The check can't be done there because actionButtonSecondary doesn't always exist, this a failsafe for that scenario.
-    if (!placeAnyway) {
-        placeAnyway = ""
-    }
+    if (!placeAnyway) placeAnyway = "";
     if (placeAnyway != "PLACE ANYWAY" && modal) {
         await delay(2000);
         close = modal.querySelector(".actionButton.actionButtonPrimary");
-        if (close) {
-            close.click();
-        }
-
+        if (close) close.click();
     }
     await idleDelay(2000);
 }
 
 async function getUserIdleTime(){
     try {
-        let userIdleTime = await retrieveNumberFromStorage("userIdleTimeInput")
+        let userIdleTime = await retrieveNumberFromStorage("userIdleTimeInput");
         if (userIdleTime == -100) {
-            return 900000
+            return 900000;
         } else {
-            return userIdleTime * 60000
+            return userIdleTime * 60000;
         }
     } catch (error) {
-        return 900000
+        return 900000;
     }
 }

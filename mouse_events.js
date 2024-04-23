@@ -1,26 +1,3 @@
-//Scroll into view the center of the currentMark
-async function moveScreenCenter(marker) {
-
-  //Set marker dimensions to zero so the unit can fit in its place
-  try {
-    if (!marker) {
-      return false
-    }
-
-    marker.style.width = '0';
-    marker.style.height = '0';
-    marker.style.backgroundSize = '0';
-
-    //Move screen so the current marker gets centered
-    await delay(1000);
-    marker.scrollIntoView({ block: 'center', inline: 'center' });
-    await delay(1000);
-    return true
-  } catch (error) {
-    return false
-  }
-}
-
 //If the unit is in a valid marker that is in use, by taping the unit container it forces a button recheck on mouseup/touchend
 function tapUnit() {
   //Attemps to tap the selected unit to force a valid placement check
@@ -28,7 +5,7 @@ function tapUnit() {
     const placerUnitCont = document.querySelector('.placerUnitCont');
     const event = new Event('mouseup', { bubbles: true, cancelable: true });
     placerUnitCont.dispatchEvent(event);
-    return true
+    return true;
   } catch (error) {
     return false;
   }
@@ -68,7 +45,7 @@ function clickHoldAndScroll(element, deltaY, duration) {
       }
     }, interval);
   } catch (error) {
-    console.log(error)
+    console.log(error);
   }
 
 }

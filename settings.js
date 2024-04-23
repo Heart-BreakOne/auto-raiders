@@ -1,7 +1,3 @@
-
-let unitsArrayList = undefined;
-let arrayOfFetchedUnits = [];
-let idleCheckboxes = ['idleSwitch0_Campaign','idleSwitch1_Campaign','idleSwitch2_Campaign','idleSwitch3_Campaign','idleSwitch4_Campaign','idleSwitch1_Dungeon','idleSwitch2_Dungeon','idleSwitch3_Dungeon','idleSwitch4_Dungeon','idleSwitch0_Clash','idleSwitch1_Clash','idleSwitch2_Clash','idleSwitch3_Clash','idleSwitch4_Clash','idleSwitch1_Duel','idleSwitch2_Duel','idleSwitch3_Duel','idleSwitch4_Duel'];
 //This script handles the user interaction with the toggle switches and radio buttons on the popup of the extension.
 
 //Event listener to initialize the switches as well as update their states
@@ -85,7 +81,7 @@ document.addEventListener("DOMContentLoaded", function () {
     initializeReloader("userWaitTimeInputCampaign");
     initializeReloader("userWaitTimeInputDungeons");
     initializeReloader("userWaitTimeInputPVP");
-    initializeReloader("placementOddsInput")
+    initializeReloader("placementOddsInput");
     initializeReloader("veInput");
     initializeReloader("eInput");
     initializeReloader("mInput");
@@ -105,11 +101,11 @@ document.addEventListener("DOMContentLoaded", function () {
     initializeReloader("sBossInput");
     
     document.getElementById("importSettingsToFileBtn").addEventListener("change", async function () {
-        importSettingsFromFile()
+        importSettingsFromFile();
     });
 
     document.getElementById("exportSettingsToFileBtn").addEventListener("click", async function () {
-        exportSettingsToFile()
+        exportSettingsToFile();
     });
 });
 
@@ -141,8 +137,8 @@ function initializeSwitch(switchId) {
 //Event listener to initialize the radio buttons as well as update their states
 document.addEventListener("DOMContentLoaded", async function () {
     let darkTheme;
-    let switchResult = await chrome.storage.local.get(['darkSwitch'])
-    let darkSwitch = switchResult["darkSwitch"];
+    let switchResult = await chrome.storage.local.get(['darkSwitch']);
+    let darkSwitch = switchResult.darkSwitch;
     if (darkSwitch == false) {
         darkTheme = "light";
     } else {
@@ -218,9 +214,7 @@ document.addEventListener("DOMContentLoaded", async function () {
         let savedOption = result.selectedOption;
         if (savedOption) {
             let radioToCheck = document.querySelector('input[name="potion"][value="' + savedOption + '"]');
-            if (radioToCheck) {
-                radioToCheck.checked = true;
-            }
+            if (radioToCheck) radioToCheck.checked = true;
         }
     });
 
@@ -247,16 +241,12 @@ document.addEventListener("DOMContentLoaded", async function () {
         let savedOption = result.loyalty;
         if (savedOption) {
             let radioToCheck = document.querySelector('input[name="loyalty"][value="' + savedOption + '"]');
-            if (radioToCheck) {
-                radioToCheck.checked = true;
-            }
+            if (radioToCheck) radioToCheck.checked = true;
         }
     });
     
     document.getElementById("dungeonBossPotionSwitch").addEventListener('change', function(event) {
-      if (this.checked) {
-        alert("Use at your own risk. This increases chances of the captain banning you");
-      }
+      if (this.checked) alert("Use at your own risk. This increases chances of the captain banning you");
     });
     
     // Get every check box by using querySelectorAll
@@ -307,9 +297,7 @@ const greenColor = "#5fa695";
 function loadBanner(message, color) {
     //If the user rapid clicks, it removes the button if it exists so a new one can be injected
     let customBanner = document.querySelector(".custom_banner");
-    if (customBanner) {
-        customBanner.remove();
-    }
+    if (customBanner) customBanner.remove();
 
     //Banner styles so a retangle can be displayed on the center of the screen
     const bannerStyles = `
@@ -347,9 +335,7 @@ async function initializeReloader(key) {
     });
 
     const reloaderInput = result[key];
-    if (reloaderInput !== undefined) {
-        document.getElementById(key).value = reloaderInput;
-    }
+    if (reloaderInput !== undefined) document.getElementById(key).value = reloaderInput;
 }
 
 function importSettingsFromFile() {
@@ -374,7 +360,7 @@ function importSettingsFromFile() {
     };
 
     reader.readAsText(fileInput);
-    location.reload()
+    location.reload();
 }
 
 
@@ -484,7 +470,7 @@ function exportSettingsToFile() {
         "skipDuelsSlotSwitch",
         "clashSlotSwitch",
         "skipClashSlotSwitch"
-    ]
+    ];
 
     chrome.storage.local.get(keysToExport, function (data) {
         const exportedData = {};

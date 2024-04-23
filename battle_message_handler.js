@@ -22,7 +22,7 @@ const arrayOfBattleMessages = [
     { key: "message_05", value: "wants more epic units" },
     { key: "message_06", value: "doesn't want any more epics" },
     { key: "message_07", value: "wants you to check their stream" }
-]
+];
 async function displayMessage() {
     try {
         const result = await new Promise((resolve) => {
@@ -31,7 +31,7 @@ async function displayMessage() {
                 if (chrome.runtime.lastError) {
                     resolve(null);
                 } else {
-                    resolve(result['battleMessageData']);
+                    resolve(result.battleMessageData);
                 }
             });
         });
@@ -47,10 +47,10 @@ async function displayMessage() {
                 //Filter so only the message of interest is displayed.
                 if (message === "message_02") {
                     messageState = "";
-                    messagesToDisplay = `${messagesToDisplay}${captName} is on the LAST BATTLE.  `
+                    messagesToDisplay = `${messagesToDisplay}${captName} is on the LAST BATTLE.  `;
                 } else if (message === "message_01") {
                     messageState = "";
-                    messagesToDisplay = `${messagesToDisplay}${captName} has a GIVEAWAY.   `
+                    messagesToDisplay = `${messagesToDisplay}${captName} has a GIVEAWAY.   `;
                 }
                 //These bits show every message.
                 //const messageState = arrayOfBattleMessages.find(entry => entry.key === message)?.value;
