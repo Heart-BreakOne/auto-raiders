@@ -72,7 +72,7 @@ async function manageCaptain(captainType, keyword, activeRaids) {
                 }
             }
         });
-        captainNamesFromStorage = captainNamesFromStorage.replace(",,",",");
+        captainNamesFromStorage = captainNamesFromStorage.replaceAll(",,",",");
         let allCaptainNamesArray = allCaptainNames.split(",");
         let captainNameForModeArray = captainNameForMode.split(",");
         let captainNamesFromStorageArray = captainNamesFromStorage.split(",");
@@ -91,7 +91,7 @@ async function manageCaptain(captainType, keyword, activeRaids) {
                 if (!captainNamesFromStorageArray.includes(captain)) captainNamesFromStorage += "," + captain + ",";
             }
         });
-        captainNamesFromStorage = captainNamesFromStorage.replace(",,",",").replace(",,",",");
+        captainNamesFromStorage = captainNamesFromStorage.replaceAll(",,",",");
         //Saves the game mode and the captain's name on storage so they are flagged as running that mode.
         await saveToStorage(captainType, captainNamesFromStorage);
     }

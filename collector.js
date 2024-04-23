@@ -351,6 +351,7 @@ async function buySpecificChest(chestName, basePrice) {
     if (storeOptions.length > 0) {
         storeOptions.forEach((storeOption) => {
             let itemName = storeOption.querySelector(".storeCardNameNotif");
+            if (!itemName) goHome();
             if (itemName.innerText == chestName) {
                 const buyButton = storeOption.querySelector(".actionButton.actionButtonBones.storeCardButton.storeCardButtonBuy");
                 if (buyButton && buyButton.innerText.includes(basePrice)) {

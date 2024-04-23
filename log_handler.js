@@ -80,9 +80,7 @@ async function setLogCaptain(logId, logCapName, logMode, currentTime, colorCode,
     // default rgb(42, 96, 132) 
     //Check if color needs to be updated on storage.
     let updateColor = false;
-    if (colorCode === "rgb(185, 242, 255)" || colorCode === "rgb(255, 204, 203)" || colorCode === "rgb(203, 195, 227)") {
-        updateColor = true;
-    }
+    if (colorCode === "rgb(185, 242, 255)" || colorCode === "rgb(255, 204, 203)" || colorCode === "rgb(203, 195, 227)") updateColor = true;
     while (logRunning == true) {
       await delay(10);
     }
@@ -220,9 +218,7 @@ async function setLogResults(conclusion, logCapName, chest, leaderboardRank, kil
     } else {
         resolution = unknown;
     }
-    while (logRunning == true) {
-      await delay(10);
-    }
+    while (logRunning == true) await delay(10);
     logRunning = true;
     return new Promise((resolve, reject) => {
         // Retrieve existing data from local storage
@@ -234,36 +230,16 @@ async function setLogResults(conclusion, logCapName, chest, leaderboardRank, kil
                 let entry = loggedData[i];
                 if (entry.logCapName === logCapName && entry.raidId === raidId &&
                     (entry.currentTime !== null && entry.currentTime !== undefined)) {
-                    if (entry.elapsedTime === undefined) {
-                        entry.elapsedTime = Math.floor((now - new Date(entry.currentTime)) / (1000 * 60)).toString();
-                    }
-                    if (entry.result == undefined && resolution !== "" && resolution !== undefined) {
-                        entry.result = resolution;
-                    }
-                    if (entry.chest == undefined && chest !== "" && chest !== undefined) {
-                        entry.chest = chest;
-                    }
-                    if (entry.leaderboardRank == undefined && leaderboardRank !== "" && leaderboardRank !== undefined) {
-                        entry.leaderboardRank = leaderboardRank;
-                    }
-                    if (entry.kills == undefined && kills !== "" && kills !== undefined) {
-                        entry.kills = kills;
-                    }
-                    if (entry.assists == undefined && assists !== "" && assists !== undefined) {
-                        entry.assists = assists;
-                    }
-                    if (entry.units == undefined && units !== "" && units !== undefined) {
-                        entry.units = units;
-                    }
-                    if (entry.rewards == undefined && rewards !== "" && rewards !== undefined) {
-                        entry.rewards = rewards;
-                    }
-                    if (entry.raidChest == undefined && raidChest !== "" && raidChest !== undefined) {
-                        entry.raidChest = raidChest;
-                    }
-                    if (entry.chestCount == undefined && chestCount !== "" && chestCount !== undefined) {
-                        entry.chestCount = chestCount;
-                    }
+                    if (entry.elapsedTime === undefined) entry.elapsedTime = Math.floor((now - new Date(entry.currentTime)) / (1000 * 60)).toString();
+                    if (entry.result == undefined && resolution !== "" && resolution !== undefined) entry.result = resolution;
+                    if (entry.chest == undefined && chest !== "" && chest !== undefined) entry.chest = chest;
+                    if (entry.leaderboardRank == undefined && leaderboardRank !== "" && leaderboardRank !== undefined) entry.leaderboardRank = leaderboardRank;
+                    if (entry.kills == undefined && kills !== "" && kills !== undefined) entry.kills = kills;
+                    if (entry.assists == undefined && assists !== "" && assists !== undefined) entry.assists = assists;
+                    if (entry.units == undefined && units !== "" && units !== undefined) entry.units = units;
+                    if (entry.rewards == undefined && rewards !== "" && rewards !== undefined) entry.rewards = rewards;
+                    if (entry.raidChest == undefined && raidChest !== "" && raidChest !== undefined) entry.raidChest = raidChest;
+                    if (entry.chestCount == undefined && chestCount !== "" && chestCount !== undefined) entry.chestCount = chestCount;
                     break;
                 }
             }

@@ -774,6 +774,7 @@ async function getValidUnits(captainNameFromDOM, raidId, slotOption, notAcceptab
   try {
     if (unitDrawer[0] == null) return;
   } catch (error) {
+    return;
   }
   for (let i = 0; i < unitDrawer[0].children.length; i++) {
     let unit = unitDrawer[0].children[i];
