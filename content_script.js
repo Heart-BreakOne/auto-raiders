@@ -966,6 +966,11 @@ async function getValidUnits(captainNameFromDOM, raidId, slotOption, notAcceptab
     if (dungeonLevel % 3 === 0) isBossLevel = true;
   }
   let counter = 0;
+  try {
+    if (unitDrawer[0] == null) return;
+  } catch (error) {
+    return;
+  }
   outer_loop: for (const unit of unitDrawer[0].children) {
     const unitId = unit.id;
     for (const marker of arrayOfMarkers) {
