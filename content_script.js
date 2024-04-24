@@ -94,36 +94,8 @@ async function start() {
     battleMessages = await displayMessage();
     timeContainer.innerHTML = `Refresh: ${elapsedMinutes} mins ago. <span style="color: white; font-weight: bold">${battleMessages}</span>`;
   }
-
-  const chestContainer = document.querySelector(".chestContainer");
-
-  if (chestContainer && (elapsedMinutes !== null || elapsedMinutes !== undefined)) {
-    let chestString = "";
-    for (let i = 0; i < activeRaidsArray.length; i++) {
-      let activeRaid = activeRaidsArray[i];
-      if (activeRaid.chestType) {
-        if (activeRaid.chestType == "dungeonchest") {
-          let dungeonInfo = await retrieveFromStorage("dungeonRaidInfo");
-          try {
-            let dungeonLevel = parseInt(dungeonInfo[8]) + 1;
-            chestString += `| ${activeRaid.twitchDisplayName} - Lv${dungeonLevel} |`
-          } catch (error) {}
-        } else if (activeRaid.chestType == "bonechest") {
-          chestString += `| ${activeRaid.twitchDisplayName} - VS ${activeRaid.opponentTwitchDisplayName} |`
-        } else {
-          let chestType = activeRaid.chestType.replace(/chest|_maps\d+to\d+/g, "").replace("boosted", "L ");
-          let words = chestType.split(" ");
-          for (let j = 0; j < words.length; j++) {
-            words[j] = words[j][0].toUpperCase() + words[j].substr(1);
-            chestType = words.join(" ");
-          }
-          chestString += `| ${activeRaid.twitchDisplayName} - ${chestType} |`
-        }
-      }
-    }    
-    chestContainer.innerHTML = `${chestString.replaceAll("||","|")}`;
-    chestContainer.style.backgroundColor = gameBlue;
-  }
+  
+  updateChestContainer();
 
   if (reload == 0) {
     chrome.storage.local.get(['reloaderInput'], function (result) {
@@ -1399,3 +1371,34 @@ async function scrollToMarker(marker) {
   }
 }
 
+async function updateChestContainer() {
+  const chestContainer = document.querySelector(".chestContainer");
+
+  if (chestContainer) {
+    let chestString = "";
+    for (let i = 0; i < activeRaidsArray.length; i++) {
+      let activeRaid = activeRaidsArray[i];
+      if (activeRaid.chestType) {
+        if (activeRaid.chestType == "dungeonchest") {
+          let dungeonInfo = await retrieveFromStorage("dungeonRaidInfo");
+          try {
+            let dungeonLevel = parseInt(dungeonInfo[8]) + 1;
+            chestString += `| ${activeRaid.twitchDisplayName} - Lv${dungeonLevel} |`
+          } catch (error) {}
+        } else if (activeRaid.chestType == "bonechest") {
+          chestString += `| ${activeRaid.twitchDisplayName} - VS ${activeRaid.opponentTwitchDisplayName} |`
+        } else {
+          let chestType = activeRaid.chestType.replace(/chest|_maps\d+to\d+/g, "").replace("boosted", "L ").replace("bosssuper", "Super Boss");
+          let words = chestType.split(" ");
+          for (let j = 0; j < words.length; j++) {
+            words[j] = words[j][0].toUpperCase() + words[j].substr(1);
+            chestType = words.join(" ");
+          }
+          chestString += `| ${activeRaid.twitchDisplayName} - ${chestType} |`
+        }
+      }
+    }    
+    chestContainer.innerHTML = `${chestString.replaceAll("||","|")}`;
+    chestContainer.style.backgroundColor = gameBlue;
+  }
+}

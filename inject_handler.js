@@ -165,6 +165,12 @@ document.addEventListener("click", function (event) {
             window.open(url, '_blank').focus();
         }
 
+        //User clicked chest banner
+        if (event.target.classList.contains("chestContainer")) {
+            //Refresh the data
+            updateChestContainer();
+        }
+
         //User clicked the wipe button.
         if (event.target.classList.contains("wipeButton")) {
             //Using the unique key identifiers all data is removed from storage
