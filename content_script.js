@@ -110,7 +110,7 @@ async function start() {
             chestString += `| ${activeRaid.twitchDisplayName} - Lv${dungeonLevel} |`
           } catch (error) {}
         } else if (activeRaid.chestType == "bonechest") {
-          chestString += `| ${activeRaid.twitchDisplayName} - VS: ${activeRaid.opponentTwitchDisplayName} |`
+          chestString += `| ${activeRaid.twitchDisplayName} - VS ${activeRaid.opponentTwitchDisplayName} |`
         } else {
           let chestType = activeRaid.chestType.replace(/chest|_maps\d+to\d+/g, "").replace("boosted", "L ");
           let words = chestType.split(" ");
