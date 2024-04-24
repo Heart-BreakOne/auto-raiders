@@ -165,10 +165,24 @@ document.addEventListener("click", function (event) {
             window.open(url, '_blank').focus();
         }
 
+        //User clicked refresh timer
+        if (event.target.classList.contains("elapsedTimeContainer")) {
+            //Run the main start function
+            start();
+        }
+
         //User clicked chest banner
         if (event.target.classList.contains("chestContainer")) {
             //Refresh the data
             updateChestContainer();
+        }
+        
+        //User clicked one of the item images (gold, meat, keys, potions, bones)
+        if (event.target.classList.contains("quantityImage")) {
+            //Open the log
+            const extensionId = chrome.runtime.id;
+            const url = "chrome-extension://" + extensionId + "/html/log.html";
+            window.open(url, '_blank').focus();
         }
 
         //User clicked the wipe button.

@@ -68,7 +68,8 @@
       },
       {
          "resources": [
-            "settings.html"
+            "settings.html",
+            "/html/log.html"
          ],
          "matches": [
             "https://www.streamraiders.com/*"
