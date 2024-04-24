@@ -172,7 +172,7 @@ const observerCallback = async function (mutations) {
       const menuView = document.querySelector(".mainNavCont.mainNavContPortrait") || document.querySelector(".mainNavCont.mainNavContLandscape");
       if (menuView) {
         await battleDelay(5);
-        injectIntoDOM();
+        injectIntoDOM(await retrieveFromStorage("bannerSwitch"));
       }
 
       checkBattlePhase();

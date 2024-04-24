@@ -23,7 +23,7 @@ font-weight: bold;
 
 
 //When invoked this function injects buttons into the page
-function injectIntoDOM() {
+function injectIntoDOM(bannerSwitch) {
 
     //Initialized a node list with all the captains slots
     const offlineSlots = document.querySelectorAll(".capSlot");
@@ -112,15 +112,17 @@ function injectIntoDOM() {
         quantityItemsCont.appendChild(elapsedTimeContainer);
     }
 
-    // Checks if label container already exists
-    let chestContainer = document.querySelector(".chestContainer");
-    //If button doesn't exist one is created and injected.
-    if (!chestContainer) {
-        chestContainer = document.createElement("div");
-        chestContainer.className = "chestContainer";
-        chestContainer.style.cssText = elapsedTimeStyles;
-        let quantityItemsCont = document.querySelector(".quantityItemsCont");
-        quantityItemsCont.appendChild(chestContainer);
+    if (bannerSwitch) {
+        // Checks if label container already exists
+        let chestContainer = document.querySelector(".chestContainer");
+        //If button doesn't exist one is created and injected.
+        if (!chestContainer) {
+            chestContainer = document.createElement("div");
+            chestContainer.className = "chestContainer";
+            chestContainer.style.cssText = elapsedTimeStyles;
+            let quantityItemsCont = document.querySelector(".quantityItemsCont");
+            quantityItemsCont.appendChild(chestContainer);
+        }
     }
 }
 

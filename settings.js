@@ -10,6 +10,7 @@ document.addEventListener("DOMContentLoaded", function () {
     initializeSwitch("uncommonSwitch");
     initializeSwitch("rareSwitch");
     initializeSwitch("legendarySwitch");
+    initializeSwitch("bannerSwitch");
     initializeSwitch("dungeonSwitch");
     initializeSwitch("dungeonLevelSwitch");
     initializeSwitch("dungeonBossPotionSwitch");
@@ -414,6 +415,7 @@ function exportSettingsToFile() {
         "uncommonSwitch",
         "rareSwitch",
         "legendarySwitch",
+        "bannerSwitch",
         "campaignSwitch",
         "duelSwitch",
         "clashSwitch",
