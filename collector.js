@@ -3,7 +3,7 @@
 //Declare variables for initialization later
 const collectDelay = (ms) => new Promise((res) => setTimeout(res, ms));
 let navItems;
-
+ 
 //Function to buy scrolls
 async function buyScrolls() {
     //Checks if user wants to buy scrolls, returns if not
@@ -12,10 +12,20 @@ async function buyScrolls() {
     //Checks if the user wants to buy additional scrolls
     let extraState = await getSwitchState("extraSwitch");
     let storeItems = await retrieveFromStorage("currentStoreItems");
-    if (storeItems == undefined) {
-        return;
-    } else {
-        storeItems = storeItems.data;
+    let storeLastOpened;
+    if (storeItems == undefined) return;
+    storeLastOpened = new Date(storeItems.info.serverTime + " UTC").getTime();
+    storeItems = storeItems.data;
+
+    //If the store hasn't been opened in the last 5 minutes, open it to update the currentStoreItems data in storage
+    if (!storeLastOpened || new Date().getTime() - storeLastOpened > 5 * 60 * 1000) {
+        //Initializes node list with nav bar items.
+        navItems = document.querySelectorAll(".mainNavItemText");
+
+        //Opens the store via the navbar
+        navItems.forEach((navItem) => {
+            if (navItem.innerText === "Store") navItem.click();
+        });
     }
 
     //loop through and purchase scrolls, then purchase store refresh and loop/purchase scrolls again
@@ -344,6 +354,7 @@ async function buySpecificChest(chestName, basePrice) {
     });
 
     await collectDelay(2000);
+    
     //Initializes a node list with the store options
     let storeOptions = document.querySelectorAll(".storeCard.storeCardHighlighted");
 
@@ -351,7 +362,7 @@ async function buySpecificChest(chestName, basePrice) {
     if (storeOptions.length > 0) {
         storeOptions.forEach((storeOption) => {
             let itemName = storeOption.querySelector(".storeCardNameNotif");
-            if (!itemName) goHome();
+            if (!itemName || !itemName.innerText) goHome();
             if (itemName.innerText == chestName) {
                 const buyButton = storeOption.querySelector(".actionButton.actionButtonBones.storeCardButton.storeCardButtonBuy");
                 if (buyButton && buyButton.innerText.includes(basePrice)) {
