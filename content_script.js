@@ -83,9 +83,8 @@ const arrayOfUnits = [
 async function start() {
   if (await retrieveFromStorage("paused_checkbox") || collectRunning) return;
   //Reload tracker
-  if (firstReload === undefined) {
-    firstReload = new Date();
-  }
+  if (firstReload === undefined) firstReload = new Date();
+
   //Keep track of time and reload after 1hr15min to avoid the browser crashing due to low memory.
   const elapsedMinutes = Math.floor((new Date() - firstReload.getTime()) / (1000 * 60));
   const timeContainer = document.querySelector(".elapsedTimeContainer");
@@ -130,9 +129,7 @@ async function start() {
     chrome.storage.local.get(['reloaderInput'], function (result) {
       const reloaderInputValue = result.reloaderInput;
 
-      if (reloaderInputValue !== undefined) {
-        reload = reloaderInputValue;
-      }
+      if (reloaderInputValue !== undefined) reload = reloaderInputValue;
     });
   }
   if (activeRaidsArray.length == 0 || (requestRunning == false && ((reload != undefined && elapsedMinutes >= reload && reload > 0) || ((reload != undefined || reload != 0) && elapsedMinutes >= 60)))) {
@@ -214,9 +211,7 @@ async function start() {
   let replaceMaster = masterSwitchkeys.priorityMasterSwitch;
   if (forceMaster || replaceMaster) {
     let masterlistSwitchSuccessful;
-    if (forceMaster || replaceMaster) {
-      masterlistSwitchSuccessful = await switchToMasterList(forceMaster, replaceMaster);
-    }
+    if (forceMaster || replaceMaster) masterlistSwitchSuccessful = await switchToMasterList(forceMaster, replaceMaster);
     if (masterlistSwitchSuccessful) {
       navItems = document.querySelectorAll('.mainNavItemText');
       let storeButton;
@@ -225,12 +220,8 @@ async function start() {
         //If navItem exists, open main menu
         for (let i = navItems.length - 1; i >= 0; i--) {
           let navItem = navItems[i];
-          if (navItem.innerText === "Store") {
-            storeButton = navItem;
-          }
-          if (navItem.innerText === "Battle") {
-            battleButton = navItem;
-          }
+          if (navItem.innerText === "Store") storeButton = navItem;
+          if (navItem.innerText === "Battle") battleButton = navItem;
         }
         storeButton.click();
         battleButton.click();
@@ -241,9 +232,7 @@ async function start() {
 
   //Checks if the user wants to replace idle captains and invoke the function to check and replace them.
   const offline = await retrieveFromStorage("offlineSwitch");
-  if (offline) {
-    await checkIdleCaptains();
-  }
+  if (offline) await checkIdleCaptains();
 
   let captainNameFromDOM = "";
 
@@ -258,9 +247,7 @@ async function start() {
         captainNameFromDOM = captainSlot.querySelector('.capSlotName').innerText;
         //Retrieve the slot pause state
         const btn = captainSlot.querySelector(".capSlotStatus .offlineButton");
-        if (btn == null || btn == undefined) {
-          return;
-        }
+        if (btn == null || btn == undefined) return;
         const buttonId = btn.getAttribute('id');
         const slotState = await getIdleState(buttonId);
         button.click();
@@ -309,20 +296,15 @@ async function start() {
     //Iterate through every button
     placeButtonLoop: for (var button of placeUnitButtons) {
       //If the button has the inner text SELECT then continue to next button
-      if (button.innerText.includes("SELECT")) {
-        continue;
-      }
+      if (button.innerText.includes("SELECT")) continue;
       //If the button has the inner text PLACE UNIT it's a valid button
       if (button.innerText.includes("PLACE UNIT")) {
         //Get captain name from the slot
-
         var captainSlot = button.closest('.capSlot');
         captainNameFromDOM = captainSlot.querySelector('.capSlotName').innerText;
         //Retrieve the slot pause state
         const btn = captainSlot.querySelector(".capSlotStatus .offlineButton");
-        if (btn == null || btn == undefined) {
-          return;
-        }
+        if (btn == null || btn == undefined) return;
         const buttonId = btn.getAttribute('id');
         const slotOption = buttonId.replace("offlineButton_", "");
         const slotState = await getIdleState(buttonId);
@@ -638,9 +620,7 @@ async function openBattlefield(captainNameFromDOM, raidId, slotOption, notAccept
     let commaCount = 0;
 
     try {
-      while (logRunning == true) {
-        await delay(10);
-      }
+      while (logRunning == true) await delay(10);
       logRunning = true;
       let battleLog = await retrieveFromStorage("logData");
       logRunning = false;
@@ -1048,9 +1028,7 @@ async function cancelPlacement() {
   }
 
   const unitDrawer = document.querySelector(".actionButton.actionButtonPrimary.placeUnitButton");
-  if (unitDrawer) {
-    unitDrawer.click();
-  }
+  if (unitDrawer) unitDrawer.click();
 }
 
 async function attemptPlacement(unit, marker) {
@@ -1315,9 +1293,7 @@ async function doPotions(battleType, favoriteSwitch, isBossLevel, captainNameFro
 
       if (potionQuantity >= 45 || potionQuantity === 100) {
         const epicButton = document.querySelector(".actionButton.actionButtonPrimary.epicButton");
-        if (epicButton) {
-          epicButton.click();
-        }
+        if (epicButton) epicButton.click();
       }
     } catch (error) {
       goHome();
@@ -1327,9 +1303,7 @@ async function doPotions(battleType, favoriteSwitch, isBossLevel, captainNameFro
   if (battleType == "Dungeons" && isBossLevel) {
     try {
       const epicButton = document.querySelector(".actionButton.actionButtonPrimary.epicButton");
-      if (epicButton) {
-        epicButton.click();
-      }
+      if (epicButton) epicButton.click();
     } catch (error) {
       goHome();
     }
@@ -1381,27 +1355,21 @@ async function getUserWaitTime(battleType) {
       if (userWaitTime == -100 || userWaitTime >= (30 * 60)) {
         return 2830;
       } else {
-        if (userWaitTime == 0) {
-          return 30;
-        }
+        if (userWaitTime == 0) return 30;
         return parseInt("".concat(parseInt((30 - secondsToMin)), min));
       }
     } else if (battleType == "Dungeons") {
       if (userWaitTime == -100 || userWaitTime >= (5 * 60)) {
         return 500;
       } else {
-        if (userWaitTime == 0) {
-          return 500;
-        }
+        if (userWaitTime == 0) return 500;
         return parseInt("".concat(parseInt((5 - secondsToMin)), min));
       }
     } else if (battleType == "PVP") {
       if (userWaitTime == -100 || userWaitTime >= (6 * 60)) {
         return 600;
       } else {
-        if (userWaitTime == 0) {
-          return 600;
-        }
+        if (userWaitTime == 0) return 600;
         return parseInt("".concat(parseInt((6 - secondsToMin)), min));
       }
     }
@@ -1409,7 +1377,6 @@ async function getUserWaitTime(battleType) {
     return 2830;
   }
 }
-
 
 function isInView(element) {
   const rect = element.getBoundingClientRect();
