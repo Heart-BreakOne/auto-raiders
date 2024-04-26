@@ -4,6 +4,7 @@ let requestRunning = false;
 let activeRaidsArray = [];
 let isEventCurrencyActive;
 let allRewardUrls = {};
+let lastUserUnitsUpdated;
 
 function getRandNum(min, max) {
   return Math.floor(Math.random() * (max - min + 1) + min);
@@ -616,6 +617,108 @@ async function handleMessage(message) {
   else if (url == "https://www.streamraiders.com/api/game/?cn=getUserUnits") {
     console.log(url, data);
     await chrome.storage.local.set({ "unitArray": data });
+     
+    //If the user units haven't been checked/updated in the last 10 minutes, do it now
+    if (!lastUserUnitsUpdated || new Date().getTime() - lastUserUnitsUpdated > 10 * 60 * 1000) {
+      lastUserUnitsUpdated = new Date().getTime();
+      let userUnits = await retrieveFromStorage("unitList");
+
+      if (!userUnits) return;
+      let gameUnits = data.data;
+      //Find the matching user unit and update the level to match the game unit
+      for (let i in gameUnits) {
+        //If the game unit level is less than 30, compare it to the user unit level
+        if (gameUnits[i].level < 30) {
+          for (let j in userUnits) {
+            //If the unitType matches, the user unit level is less than 30, and the levels don't match, update the user unit level
+            for (let n = 0; n <= 7; n++) {
+              if (userUnits[j].slotOption == n && userUnits[j].unitType == gameUnits[i].unitType && userUnits[j].level < 30 && userUnits[j].level !== gameUnits[i].level) userUnits[j].level = gameUnits[i].level;
+            }
+          }
+        }
+      }
+      console.log(`User Unit Count: ${userUnits.length/8} | Game Unit Count: ${gameUnits.length}`)
+      //Find the user units that still have no matching game unit. Iterate in reverse order because units may need to be removed
+      for (let j = userUnits.length - 1; j >= 0; j--) {
+        //If the user unit level is less than 30, check the game units to ensure one matches, otherwise the user leveled it up to 30
+        if (userUnits[j].level < 30) {
+          let unitDone = false;
+          for (let i in gameUnits) {
+            //If the unitType matches and the game unit level is less than 30, then make the levels match (if they don't already) and set a variable to mark the unit as done
+            if (userUnits[j].unitType == gameUnits[i].unitType && gameUnits[i].level < 30) {
+              if (userUnits[j].level !== gameUnits[i].level) userUnits[j].level == gameUnits[i].level;
+              unitDone = true;
+            }
+          }
+          //If the unit was not marked as done, set the level to 30 
+          if (!unitDone) userUnits[j].level = '30';
+        }
+        //Count the number of level 30 units with the same unitType for both user units and game units to compare
+        if (userUnits[j].level == 30) {
+          let counterUserUnits = 0;
+          for (let k in userUnits) {
+            if (userUnits[k].unitType == userUnits[j].unitType && userUnits[k].level == 30 && userUnits[k].slotOption == userUnits[j].slotOption) counterUserUnits++
+          }
+          let counterGameUnits = 0;
+          for (let m in gameUnits) {
+            if (gameUnits[m].unitType == userUnits[j].unitType && gameUnits[m].level == 30) counterGameUnits++
+          }
+          //If there are more user units than game units, remove a user unit (the user sacrificed one to get a soul)
+          if (counterUserUnits > counterGameUnits) {
+            console.log(`Removing ${userUnits[j].level} ${userUnits[j].unitType} ${userUnits[j].slotOption}`);
+            userUnits.splice(j, 1);
+          //If there are fewer user units than game units, add a user unit (the user created a dupe)
+          //Set the priority to 0 since we don't know what priority the user wants this new unit set to. They can eventually set it manually.
+          } else if (counterUserUnits < counterGameUnits) {
+            console.log(`Adding ${userUnits[j].unitType}`);
+            let index = +gameUnits.length + 1;
+            userUnits.push({
+              "index": `${index}`,
+              "level": "30",
+              "priority": "0",
+              "slotOption": userUnits[j].slotOption,
+              "unitType": userUnits[j].unitType
+            });
+          }
+        }
+        //Count the number of < level 30 units with the same unitType for both user units and game units to compare
+        let counterUserUnits2 = 0;
+        for (let k in userUnits) {
+          if (userUnits[k].unitType == userUnits[j].unitType && userUnits[k].level < 30 && userUnits[k].slotOption == userUnits[j].slotOption) {
+            counterUserUnits2++;
+            k = userUnits.length;
+          }
+        }
+        let counterGameUnits2 = 0;
+        let gameUnitLevel;
+        for (let m in gameUnits) {
+          if (gameUnits[m].unitType == userUnits[j].unitType && gameUnits[m].level < 30) {
+            counterGameUnits2++;
+            gameUnitLevel = gameUnits[m].level;
+            m = gameUnits.length;
+          }
+        }
+        //If there are more user units than game units, remove a user unit (the user sacrificed one to get a soul)
+        if (counterUserUnits2 > counterGameUnits2) {
+          console.log(`Removing ${userUnits[j].level} ${userUnits[j].unitType} ${userUnits[j].slotOption}`);
+          userUnits.splice(j, 1);
+        //If there are fewer user units than game units, add a user unit (the user created a dupe)
+        //Set the priority to 0 since we don't know what priority the user wants this new unit set to. They can eventually set it manually.
+        } else if (counterUserUnits2 < counterGameUnits2) {
+          console.log(`Adding ${userUnits[j].unitType}`);
+          let index = +gameUnits.length + 1;
+          userUnits.push({
+            "index": `${index}`,
+            "level": `${gameUnitLevel}`,
+            "priority": "0",
+            "slotOption": userUnits[j].slotOption,
+            "unitType": userUnits[j].unitType
+          });
+        }          
+      }
+      console.log(`User Unit Count: ${userUnits.length/8}(${userUnits.length}) | Game Unit Count: ${gameUnits.length}`)
+      await chrome.storage.local.set({ "unitList": userUnits });
+    } 
   }
   else if (url == "https://www.streamraiders.com/api/game/?cn=getUserDungeonInfoForRaid") {
     console.log(url, data);
