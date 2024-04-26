@@ -107,7 +107,7 @@ async function getLeaderboardUnitsData(getRaid) {
     if (placements) {
       for (let i = 0; i < placements.length; i++) {
         const placement = placements[i];
-        if (placement.userId === userId) {
+        if (placement.userId === userId && placement.team === "Ally") {
           if (placement.CharacterType === null || placement.CharacterType === "") {
             CharacterType = "none";
           } else {
