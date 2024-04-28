@@ -15,11 +15,6 @@ document.addEventListener("DOMContentLoaded", function () {
         const url = `chrome-extension://${chrome.runtime.id}/html/whitelist.html`
         chrome.tabs.create({ url: url });
     });
-
-    document.getElementById("level_button").addEventListener('click', function () {
-        const url = `chrome-extension://${chrome.runtime.id}/html/levelup.html`
-        chrome.tabs.create({ url: url });
-    });
     
     document.getElementById("unit_button").addEventListener('click', function () {
         const url = `chrome-extension://${chrome.runtime.id}/html/units.html`

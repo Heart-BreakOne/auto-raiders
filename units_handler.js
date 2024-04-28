@@ -113,7 +113,7 @@ async function getUnits() {
               priority: item.priority,
               slotOption: 1,
               unitType: item.unitType
-          }
+          };
           unitsArrayList.push(unitsArrayListSlot1);
           let unitsArrayListSlot2 = {
               index: item.index,
@@ -121,7 +121,7 @@ async function getUnits() {
               priority: item.priority,
               slotOption: 2,
               unitType: item.unitType
-          }
+          };
           unitsArrayList.push(unitsArrayListSlot2);
           let unitsArrayListSlot3 = {
               index: item.index,
@@ -129,7 +129,7 @@ async function getUnits() {
               priority: item.priority,
               slotOption: 3,
               unitType: item.unitType
-          }
+          };
           unitsArrayList.push(unitsArrayListSlot3);
           let unitsArrayListSlot4 = {
               index: item.index,
@@ -137,7 +137,7 @@ async function getUnits() {
               priority: item.priority,
               slotOption: 4,
               unitType: item.unitType
-          }
+          };
           unitsArrayList.push(unitsArrayListSlot4);
           let unitsArrayListSlot5 = {
               index: item.index,
@@ -145,7 +145,7 @@ async function getUnits() {
               priority: item.priority,
               slotOption: 5,
               unitType: item.unitType
-          }
+          };
           unitsArrayList.push(unitsArrayListSlot5);
           let unitsArrayListSlot6 = {
               index: item.index,
@@ -153,7 +153,7 @@ async function getUnits() {
               priority: item.priority,
               slotOption: 6,
               unitType: item.unitType
-          }
+          };
           unitsArrayList.push(unitsArrayListSlot6);
           let unitsArrayListSlot7 = {
               index: item.index,
@@ -161,15 +161,11 @@ async function getUnits() {
               priority: item.priority,
               slotOption: 7,
               unitType: item.unitType
-          }
+          };
           unitsArrayList.push(unitsArrayListSlot7);
       }
-      let newUnitsArrayList = [];
-      for (let i = 0; i < unitsArrayList.length; i++) {
-        
-      }
       const storageObject = {};
-      storageObject['unitList'] = unitsArrayList;
+      storageObject.unitList = unitsArrayList;
 
       //Save the array to Chrome's local storage
       chrome.storage.local.set(storageObject, function () {
@@ -187,22 +183,16 @@ async function displayUnits(slotOption) {
         let array = [];
         if (result.unitList !== undefined) {
             for (let i = 0; i < result.unitList.length; i++) {
-                if (result.unitList[i].slotOption == slotOption) {
-                    array.push(result.unitList[i]);
-                }
-            };
-        };
-        // Handle the retrieved data
-        if (array === undefined) {
-            return;
-        }
-        if (array.length > 0) {
-            let table = document.querySelector("#tableOfUnits")
-            if (table) {
-                table.remove();
+                if (result.unitList[i].slotOption == slotOption) array.push(result.unitList[i]);
             }
+        }
+        // Handle the retrieved data
+        if (array === undefined) return;
+        if (array.length > 0) {
+            let table = document.querySelector("#tableOfUnits");
+            if (table) table.remove();
             table = document.createElement('table');
-            table.id = "tableOfUnits"
+            table.id = "tableOfUnits";
 
             const headerRow = table.insertRow(0);
             const headers = ['Index', 'Unit Name', 'Unit Level', 'Priority', 'Unit identifier'];
@@ -250,22 +240,18 @@ async function displayUnits(slotOption) {
 async function saveUnits() {
     await chrome.storage.local.get(['unitList'], (result) => {
       const slotOption = parseInt(document.querySelector('input[name="slot"]:checked').value);
-      let existingUnitsExcludingSlotOption
+      let existingUnitsExcludingSlotOption;
       let array = [];
       if (result.unitList !== undefined) {
           for (let i = 0; i < result.unitList.length; i++) {
-              if (result.unitList[i].slotOption !== slotOption) {
-                  array.push(result.unitList[i]);
-              }
-          };
-      };
+              if (result.unitList[i].slotOption !== slotOption) array.push(result.unitList[i]);
+          }
+      }
       // Handle the retrieved data
       // if (array === undefined) {
           // return;
       // }
-      if (array.length > 0) {
-          existingUnitsExcludingSlotOption = array;
-      }
+      if (array.length > 0) existingUnitsExcludingSlotOption = array;
     
       const table = document.getElementById('tableOfUnits');
 
@@ -289,7 +275,7 @@ async function saveUnits() {
                   slotOption
               };
               if (priority === '0') {
-                  zeroArray.push(rowData)
+                  zeroArray.push(rowData);
               } else {
                   dataArray.push(rowData);
               }
@@ -301,12 +287,10 @@ async function saveUnits() {
       dataArray.sort((a, b) => a.priority - b.priority);
       dataArray.push(...zeroArray);
       
-      if (existingUnitsExcludingSlotOption !== undefined) {
-          dataArray.push(...existingUnitsExcludingSlotOption);
-      }
+      if (existingUnitsExcludingSlotOption !== undefined) dataArray.push(...existingUnitsExcludingSlotOption);
     
       const storageObject = {};
-      storageObject['unitList'] = dataArray;
+      storageObject.unitList = dataArray;
 
       //Save the array to Chrome's local storage
       chrome.storage.local.set(storageObject, function () {
@@ -325,10 +309,8 @@ async function sortPriorityUnits(unitDrawer, slotOption, shuffleSwitch) {
         chrome.storage.local.get(['unitList'], (result) => {
             let array = [];
             for (let i = 0; i < result.unitList.length; i++) {
-                if (result.unitList[i].slotOption == slotOption) {
-                    array.push(result.unitList[i]);
-                }
-            };
+                if (result.unitList[i].slotOption == slotOption) array.push(result.unitList[i]);
+            }
 
             if (shuffleSwitch) {
                 array.sort(() => Math.random() - 0.5);
@@ -361,27 +343,23 @@ async function sortPriorityUnits(unitDrawer, slotOption, shuffleSwitch) {
                 for (let j = unitSize - 1; j >= 0; j--) {
                     const unit = unitArray[0].children[j];
                     const u = unit.querySelector(".unitItem:nth-child(1)");
-                    let levelFromDOM
+                    let levelFromDOM;
                     try {
                         levelFromDOM = u.querySelector(".unitNormalLevel").innerText;
                     } catch {
-                        levelFromDOM = 0
-                        level = 0
+                        levelFromDOM = 0;
+                        level = 0;
                     }
                     if (levelFromDOM == null || levelFromDOM == undefined) {
-                        levelFromDOM = 0
-                        level = 0
+                        levelFromDOM = 0;
+                        level = 0;
                     }
                     const unitTypeFromDOM = u.querySelector('.unitClass img').getAttribute('src').slice(-50).toUpperCase();
-                    if (unitTypeFromDOM.includes(unitType) && level === levelFromDOM) {
-                        tempArray.push(unitArray[0].children[j]);
-                    }
+                    if (unitTypeFromDOM.includes(unitType) && level === levelFromDOM) tempArray.push(unitArray[0].children[j]);
                 }
             }
 
-            while (unitArray[0].children.length > 0) {
-                unitArray[0].children[0].remove();
-            }
+            while (unitArray[0].children.length > 0) unitArray[0].children[0].remove();
 
             tempArray.forEach((item) => {
                 unitArray[0].appendChild(item);
@@ -389,25 +367,5 @@ async function sortPriorityUnits(unitDrawer, slotOption, shuffleSwitch) {
 
             resolve(unitArray);
         });
-    });
-}
-
-async function getUnitsExcludingSlotOption(slotOption) {
-    await chrome.storage.local.get(['unitList'], (result) => {
-        let array = [];
-        if (result.unitList !== undefined) {
-            for (let i = 0; i < result.unitList.length; i++) {
-                if (result.unitList[i].slotOption !== slotOption) {
-                    array.push(result.unitList[i]);
-                }
-            };
-        };
-        // Handle the retrieved data
-        if (array === undefined) {
-            return;
-        }
-        if (array.length > 0) {
-            return array;
-        }
     });
 }

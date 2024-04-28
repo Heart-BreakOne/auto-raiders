@@ -10,19 +10,14 @@ const staticUserAgent = 'Mozilla/5.0 (Linux; Android 13; Pixel 7 Pro) AppleWebKi
 // This function handles the logic to update session rules and reload the tab
 async function updateUserAgent(tab) {
   // Check if the tab has already been processed
-  if (processedTabs.has(tab.id)) {
-    return;
-  }
+  if (processedTabs.has(tab.id)) return;
 
   processedTabs.add(tab.id);
 
   // Remove any existing rules for the tab
-  await chrome.declarativeNetRequest.updateSessionRules({
-    removeRuleIds: [tab.id]
-  });
-
   // Add a new rule for the static user agent
   await chrome.declarativeNetRequest.updateSessionRules({
+    removeRuleIds: [tab.id],
     addRules: [{
       'id': tab.id,
       'action': {
@@ -52,9 +47,7 @@ async function updateUserAgent(tab) {
 // Run the logic when a tab is updated
 chrome.tabs.onUpdated.addListener((tabId, changeInfo, tab) => {
   if (changeInfo.status === 'complete') {
-    if (processedTabs.has(tabId)) {
-      return;
-    }
+    if (processedTabs.has(tabId)) return;
     processedTabs.add(tabId);
     updateUserAgent(tab);
   }
@@ -62,9 +55,7 @@ chrome.tabs.onUpdated.addListener((tabId, changeInfo, tab) => {
 
 // Run the logic when a new tab is created
 chrome.tabs.onCreated.addListener(tab => {
-  if (tab.url && tab.url.startsWith("https://streamraiders.com/")) {
-    updateUserAgent(tab);
-  }
+  if (tab.url && tab.url.startsWith("https://streamraiders.com/")) updateUserAgent(tab);
 });
 
 
@@ -76,7 +67,6 @@ chrome.tabs.onRemoved.addListener(tabId => {
   // Remove the tab from the processedTabs set
   processedTabs.delete(tabId);
 });
-
 
 // Map to keep track of connected ports
 const connectedPorts = new Map();
@@ -91,10 +81,8 @@ chrome.runtime.onConnect.addListener((port) => {
 
     //Force a reload if the game doesn't load with mobile mode
     if (msg.action === "reloadCleanCache") {
-      const tab = await getTab()
-      if (tab) {
-        updateUserAgent(tab);
-      }
+      const tab = await getTab();
+      if (tab) updateUserAgent(tab);
     }
   });
 });

@@ -3,21 +3,29 @@
 //Declare variables for initialization later
 const collectDelay = (ms) => new Promise((res) => setTimeout(res, ms));
 let navItems;
-
+ 
 //Function to buy scrolls
 async function buyScrolls() {
     //Checks if user wants to buy scrolls, returns if not
     let scrollState = await getSwitchState("scrollSwitch");
-    if (!scrollState) {
-        return;
-    }
+    if (!scrollState) return;
     //Checks if the user wants to buy additional scrolls
     let extraState = await getSwitchState("extraSwitch");
     let storeItems = await retrieveFromStorage("currentStoreItems");
-    if (storeItems == undefined) {
-        return;
-    } else {
-      storeItems = storeItems.data;
+    let storeLastOpened;
+    if (storeItems == undefined) return;
+    storeLastOpened = new Date(storeItems.info.serverTime + " UTC").getTime();
+    storeItems = storeItems.data;
+
+    //If the store hasn't been opened in the last 5 minutes, open it to update the currentStoreItems data in storage
+    if (!storeLastOpened || new Date().getTime() - storeLastOpened > 5 * 60 * 1000) {
+        //Initializes node list with nav bar items.
+        navItems = document.querySelectorAll(".mainNavItemText");
+
+        //Opens the store via the navbar
+        navItems.forEach((navItem) => {
+            if (navItem.innerText === "Store") navItem.click();
+        });
     }
 
     //loop through and purchase scrolls, then purchase store refresh and loop/purchase scrolls again
@@ -34,9 +42,7 @@ async function buyScrolls() {
 
                     //Opens the store via the navbar
                     navItems.forEach((navItem) => {
-                        if (navItem.innerText === "Store") {
-                            navItem.click();
-                        }
+                        if (navItem.innerText === "Store") navItem.click();
                     });
 
                     await collectDelay(4000);
@@ -50,6 +56,7 @@ async function buyScrolls() {
                         });
                         await returnToMainScreen();
                     }
+                    i = storeItems.length;
                 }
             }
         }
@@ -64,7 +71,8 @@ async function buyScrolls() {
                     if (buttonText.includes("REFRESH NOW") && buttonText.includes("100")) {
                         buyMoreButton = document.querySelector(".actionButton.actionButtonGolden.storeScrollsButton");
                         buyMoreButton.click();
-                        buyMoreButton.submit();
+                        clickHoldAndScroll(buyMoreButton, 0, 0);
+                        await collectDelay(1000);
                     }
                 }
                 await returnToMainScreen();
@@ -80,15 +88,11 @@ async function buyScrolls() {
 async function collectFreeDaily() {
     //Checks if the user wants the freebies to be collected, returns if not.
     let dailySwitch = await getSwitchState("dailySwitch");
-    if (!dailySwitch) {
-        return;
-    }
+    if (!dailySwitch) return;
     //Initializes node list with nav bar items and open the store.
     navItems = document.querySelectorAll(".mainNavItemText");
     navItems.forEach((navItem) => {
-        if (navItem.innerText === "Store") {
-            navItem.click();
-        }
+        if (navItem.innerText === "Store") navItem.click();
     });
     await collectDelay(4000);
     //Initiliazes the freebie button and if it exists and is the claim button, clicks it and goes back to the main menu.
@@ -104,9 +108,7 @@ async function collectFreeDaily() {
 async function collectEventChests() {
     //Checks if the user wants the event chests to be collected, returns if not.
     let eventChestSwitch = await getSwitchState("eventChestSwitch");
-    if (!eventChestSwitch) {
-        return;
-    }
+    if (!eventChestSwitch) return;
     //Get event currency strings so the string can be trimmed and converted to int for validation
     let eventCurrency = null;
     let eventCurrencyImg = null;
@@ -121,14 +123,14 @@ async function collectEventChests() {
             continue;
         } else {
             eventCurrency = currentCurrency;
-            evImg = currentCurrency.querySelector(".quantityImage")
-            eventCurrencyImg = evImg.src
-            eventCurrencyAlt = evImg.alt
+            evImg = currentCurrency.querySelector(".quantityImage");
+            eventCurrencyImg = evImg.src;
+            eventCurrencyAlt = evImg.alt;
             break;
         }
     }
     if (eventCurrency == null || eventCurrency == undefined || eventCurrencyImg == null || eventCurrencyImg == undefined || eventCurrencyAlt == null || eventCurrencyAlt == undefined) {
-        await returnToMainScreen()
+        await returnToMainScreen();
     }
 
     let eventCurrencyQuantity;
@@ -138,7 +140,7 @@ async function collectEventChests() {
         eventCurrencyQuantity = eventCurrency.querySelector(".quantityText").textContent;
         number = parseInt(eventCurrencyQuantity.substring(0, 4));
     } catch (error) {
-        await returnToMainScreen()
+        await returnToMainScreen();
     }
 
     // Get minimum value set by the user or default to 1500.
@@ -157,8 +159,8 @@ async function collectEventChests() {
 
         const storeButtons = document.querySelectorAll(".actionButton.actionButtonBones.storeCardButton.storeCardButtonBuy");
         for (var i = 0; i < storeButtons.length; i++) {
-            stButton = storeButtons[i]
-            stButtonImg = stButton.querySelector("img")
+            stButton = storeButtons[i];
+            stButtonImg = stButton.querySelector("img");
             if (stButtonImg != null && stButtonImg.src == eventCurrencyImg) {
                 for (var y = 0; y < 5; y++) {
                     stButton.click();
@@ -175,14 +177,10 @@ async function collectEventChests() {
 
 //Function to collect quests
 async function collectQuests() {
-    if (await retrieveFromStorage("paused_checkbox")) {
-        return
-    }
+    if (await retrieveFromStorage("paused_checkbox")) return;
     //Checks if user wants to collect quests, returns if not.
     let questState = await getSwitchState("questSwitch");
-    if (!questState) {
-        return;
-    }
+    if (!questState) return;
 
     //Initializes node list with nav bar items.
     navItems = document.querySelectorAll(".mainNavItemText");
@@ -194,24 +192,27 @@ async function collectQuests() {
             return;
         }
     });
-    await collectDelay(2000);
+    await collectDelay(1000);
 
     //Initializes a node list with collect quest buttons
     const questItems = document.querySelectorAll(".questItemCont");
-
+    
+    let questsCollected = 0;
     //Get the quest buttons from the quest items and checks if they aren't disabled. Clicks them.
     questItems.forEach(async (questItem) => {
         const collectQuestButton = questItem.querySelector(".actionButton.actionButtonPrimary.questItemCollect");
         const isDisabled = questItem.querySelector(".questItemDisabled");
         try {
             if (collectQuestButton && !isDisabled) {
+              questsCollected++;
               collectQuestButton.click();
               collectQuestButton.submit();
-              await collectDelay(1000);
+              clickHoldAndScroll(collectQuestButton, 0, 0);
             }
         } catch (error) {}
     });
     //Returns to main menu.
+    if (questsCollected > 0) await collectDelay(1000);
     await returnToMainScreen();
 }
 
@@ -219,9 +220,7 @@ async function collectQuests() {
 async function collectBattlePass() {
     //Checks if user wants to collect the battlepass, returns if not.
     let questState = await getSwitchState("battlepassSwitch");
-    if (!questState) {
-        return;
-    }
+    if (!questState) return;
     await returnToMainScreen();
     //Get the header buttons to click on the rewards
     const headerButtons = document.querySelectorAll(".actionButton.actionButtonGift");
@@ -233,7 +232,7 @@ async function collectBattlePass() {
             //Initializes a node list with collect buttons
             const collectButtons = document.querySelectorAll(".actionButton.actionButtonCollect.rewardActionButton");
             //Clicks any buttons that may exist
-            for (button of collectButtons) {
+            for (let button of collectButtons) {
                 button.click();
                 await collectDelay(1000);
                 //After clicking the collect button a confirmation popup loads.
@@ -256,10 +255,8 @@ async function collectBattlePass() {
 async function returnToMainScreen() {
     navItems = document.querySelectorAll(".mainNavItemText");
     navItems.forEach(navItem => {
-        if (navItem.innerText === "Battle") {
-            navItem.click();
-        }
-    })
+        if (navItem.innerText === "Battle") navItem.click();
+    });
 }
 
 function getMinimumCurrency() {
@@ -277,10 +274,8 @@ function getMinimumCurrency() {
 
 async function buyChests() {
 
-    let currentUserCurrencies = await retrieveFromStorage("availableCurrencies")
-    if (!currentUserCurrencies || !currentUserCurrencies.data || currentUserCurrencies.data == undefined) {
-        return
-    }
+    let currentUserCurrencies = await retrieveFromStorage("availableCurrencies");
+    if (!currentUserCurrencies || !currentUserCurrencies.data || currentUserCurrencies.data == undefined) return;
 
     let bones = currentUserCurrencies.data.bones;
     let keys = currentUserCurrencies.data.keys;
@@ -290,22 +285,16 @@ async function buyChests() {
     async function buyChestsWithCurrency(currencyType, minCurrency, chestData) {
 
         let userChestData = await retrieveFromStorage("userChests");
-        let userChestLogData = await retrieveFromStorage("userChestsLog") || [];
-        let eventUid = await retrieveFromStorage("getEventProgressionLite");
-        eventUid = eventUid.data.eventUid;
-        if (eventUid == undefined) return;
 
-        if (!userChestData) {
-            return;
-        }
+        if (!userChestData) return;
 
         if (minCurrency > 0 && currencyType > minCurrency) {
             let chestsData = await retrieveFromStorage(chestData);
 
             for (let i = 0; i < chestsData.length; i++) {
                 let chest = chestsData[i];
-                const LiveEndTime = new Date(chest["LiveEndTime"] + ' UTC');
-                const LiveStartTime = new Date(chest["LiveStartTime"] + ' UTC');
+                const LiveEndTime = new Date(chest.LiveEndTime + ' UTC');
+                const LiveStartTime = new Date(chest.LiveStartTime + ' UTC');
                 const currentTime = new Date();
 
                 if (LiveEndTime.getTime() < currentTime.getTime() || LiveStartTime.getTime() > currentTime.getTime()) {
@@ -321,67 +310,33 @@ async function buyChests() {
             }
 
             for (let i = 0; i < chestsData.length; i++) {
-                await collectDelay(1500)
                 let chest = chestsData[i];
-                let uid = chest["Uid"];
-                let basePrice = chest["BasePrice"];
+                let uid = chest.Uid;
+                let chestName = chest.DisplayName;
+                let basePrice = chest.BasePrice;
 
-                if ((currencyType - basePrice) < minCurrency) {
-                    continue;
-                }
+                if ((currencyType - basePrice) < minCurrency) continue;
 
-                let purchaseLimit = chest["PurchaseLimit"];
+                let purchaseLimit = chest.PurchaseLimit;
 
                 if (purchaseLimit !== -1) {
                     let userChest = userChestData[uid];
-
-                    if (!userChest || userChest.amountBought >= purchaseLimit) {
-                        continue;
-                    }
+                    if (!userChest || userChest.amountBought >= purchaseLimit) continue;
                 }
 
-                if (!userChestData.hasOwnProperty(uid)) {
-                    continue;
-                }
+                if (!userChestData.hasOwnProperty(uid)) continue;
 
                 currencyType -= basePrice;
 
-                const dataArray = ['clientVersion', 'dataVersion'];
-                const dataKeys = await retrieveMultipleFromStorage(dataArray);
-                const clientVersion = dataKeys.clientVersion;
-                const gameDataVersion = dataKeys.dataVersion;
-                let url = `https://www.streamraiders.com/api/game/?cn=purchaseChestItem&itemId=${uid}&clientVersion=${clientVersion}&clientPlatform=WebLite&gameDataVersion=${gameDataVersion}&command=purchaseChestItem&isCaptain=0`;
-                let response = await makeRequest(url, 0);
-                if (response == undefined) {
-                    return;
-                }
-                let purchaseResponse = response;
-
-                if (purchaseResponse.status == "success") {
-                    if (userChestData.hasOwnProperty(uid)) {
-                        userChestData[uid].amountBought++;
-                    } else {
-                        console.log(`Chest with uid ${uid} not found in userChestData.`);
-                    }
-                    userChestLogData.push({
-                        dateTime: new Date().toString(),
-                        chestId: purchaseResponse.data.chestId,
-                        rewards: purchaseResponse.data.rewards,
-                        eventUid: eventUid
-                    })
-                } else {
-                    console.log(`Failed to purchase chest with uid ${uid}.`);
-                }
+                await buySpecificChest(chestName, basePrice);
             }
-            await saveToStorage("userChests", userChestData);
-            await saveToStorage("userChestsLog", userChestLogData);
         }
     }
 
-    let buyAllSkins = await retrieveFromStorage("buyAllSkins")
+    let buyAllSkins = await retrieveFromStorage("buyAllSkins");
     if (buyAllSkins) {
-        await buyChestsWithSkins(keys, await retrieveFromStorage("buyThisKeyChest"), await retrieveNumberFromStorage("minKeyCurrency"), "dungeonChestsData")
-        await buyChestsWithSkins(bones, await retrieveFromStorage("buyThisBoneChest"), await retrieveNumberFromStorage("minBoneCurrency"), "boneChestsData")
+        await buyChestsWithSkins(keys, await retrieveFromStorage("buyThisKeyChest"), await retrieveNumberFromStorage("minKeyCurrency"), "dungeonChestsData");
+        await buyChestsWithSkins(bones, await retrieveFromStorage("buyThisBoneChest"), await retrieveNumberFromStorage("minBoneCurrency"), "boneChestsData");
     } else {
         await buyChestsWithCurrency(keys, await retrieveNumberFromStorage("minKeyCurrency"), "dungeonChestsData");
         await buyChestsWithCurrency(bones, await retrieveNumberFromStorage("minBoneCurrency"), "boneChestsData");
@@ -389,16 +344,52 @@ async function buyChests() {
 
 }
 
+async function buySpecificChest(chestName, basePrice) {
+    //Initializes node list with nav bar items.
+    let navItems = document.querySelectorAll(".mainNavItemText");
+
+    //Opens the store via the navbar
+    navItems.forEach((navItem) => {
+        if (navItem.innerText === "Store") navItem.click();
+    });
+
+    await collectDelay(2000);
+    
+    //Initializes a node list with the store options
+    let storeOptions = document.querySelectorAll(".storeCard.storeCardHighlighted");
+
+    //If they buy buttons exists, click all of them and go back to the main menu.
+    if (storeOptions.length > 0) {
+        storeOptions.forEach((storeOption) => {
+            let itemName = storeOption.querySelector(".storeCardNameNotif");
+            if (!itemName || !itemName.innerText) goHome();
+            if (itemName.innerText == chestName) {
+                const buyButton = storeOption.querySelector(".actionButton.actionButtonBones.storeCardButton.storeCardButtonBuy");
+                if (buyButton && buyButton.innerText.includes(basePrice)) {
+                    buyButton.click();
+                    clickHoldAndScroll(buyButton, 0, 0);
+                    //After clicking the collect button a confirmation popup loads.
+                    const confirmButtons = document.querySelectorAll(".actionButton.actionButtonPrimary");
+                    confirmButtons.forEach((confirm) => {
+                        //Clicks on correct confirm button.
+                        if (confirm.innerText.includes("OK")) confirm.click();
+                    });
+                }
+            }
+        });
+        await collectDelay(1000);
+        await returnToMainScreen();
+    }
+}
+
 async function cleanChestLogData() {
     let userChestLogData = await retrieveFromStorage("userChestsLog") || [];
     let newUserChestLogData;
     //If there's more than 5000 entries, delete oldest.
-    if (userChestLogData.length > 5000) {
-        newUserChestLogData = userChestLogData.slice(userChestLogData.length - 5000, userChestLogData.length + 1);
-    }
+    if (userChestLogData.length > 5000) newUserChestLogData = userChestLogData.slice(userChestLogData.length - 5000, userChestLogData.length + 1);
     await saveToStorage("userChestsLog", newUserChestLogData);
 }
 
 async function buyChestsWithSkins(currencyType, chestFallBack, minCurrency, chestData) {
-    console.log("We are here")
+    console.log("We are here");
 }

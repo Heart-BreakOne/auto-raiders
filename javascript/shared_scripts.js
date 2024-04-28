@@ -1,14 +1,14 @@
 document.addEventListener("DOMContentLoaded", async function () {
     let darkTheme;
-    let switchResult = await chrome.storage.local.get(['darkSwitch'])
-    let darkSwitch = switchResult["darkSwitch"];
+    let switchResult = await chrome.storage.local.get(['darkSwitch']);
+    let darkSwitch = switchResult.darkSwitch;
     if (darkSwitch == false) {
         darkTheme = "light";
     } else {
         darkTheme = "dark";
     }
     document.querySelector("html").setAttribute("data-theme", darkTheme);
-})
+});
 
 function initializeSwitch(switchId) {
     const switchElement = document.getElementById(switchId);
@@ -28,5 +28,5 @@ function initializeSwitch(switchId) {
 
 //Get every unit the user has
 async function fetchUnits() {
-  return await retrieveFromStorage("unitArray")
+  return await retrieveFromStorage("unitArray");
 }

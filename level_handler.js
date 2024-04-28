@@ -30,9 +30,7 @@ async function getUnitAmountData() {
                 default:
                     unitQty = n;
             }
-            if (unitQty >= 1 && unitQty <= 6) {
-                n = unitQty;
-            }
+            if (unitQty >= 1 && unitQty <= 6) n = unitQty;
         } else if (await retrieveFromStorage("chestSwitch")) {
             let chestType = document.querySelector(".mapInfoRewardsName").innerText;
             let unitQty;
@@ -67,9 +65,7 @@ async function getUnitAmountData() {
                 default:
                     unitQty = n;
             }
-            if (unitQty >= 1 && unitQty <= 6) {
-                n = unitQty;
-            }
+            if (unitQty >= 1 && unitQty <= 6) n = unitQty;
         }
         return n;
     } catch (error) {

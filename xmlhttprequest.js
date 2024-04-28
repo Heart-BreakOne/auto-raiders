@@ -23,8 +23,6 @@
     XHR.send = function(postData) {
 
         this.addEventListener('load', function() {
-            var endTime = (new Date()).toISOString();
-
             var myUrl = this._url ? this._url.toLowerCase() : this._url;
             if(myUrl) {
 
@@ -39,12 +37,12 @@
                     }
                 }
 
-                var responseHeaders = this.getAllResponseHeaders();
+                // var responseHeaders = this.getAllResponseHeaders();
 
                 if ( this.responseType == "" || this.responseType == "text") {
                     try {
                         let response = JSON.parse(this.responseText);
-                        window.postMessage([this._url, response, this._requestHeaders])
+                        window.postMessage([this._url, response, this._requestHeaders]);
                     } catch(err) {
                         if (!err.name.includes("SyntaxError")) {
                             console.log("Error in responseType try catch");

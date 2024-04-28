@@ -57,12 +57,8 @@ document.addEventListener('DOMContentLoaded', function () {
 
         for (var i = 0; i < keys.length; i++) {
             keysString += '<span name="keyItem">' + keys[i] + '</span>';
-            if (i < keys.length - 1) {
-                keysString += ', ';
-            }
-            if ((i + 1) % maxKeysPerLine === 0 && i < keys.length - 1) {
-                keysString += '<br>';
-            }
+            if (i < keys.length - 1) keysString += ', ';
+            if ((i + 1) % maxKeysPerLine === 0 && i < keys.length - 1) keysString += '<br>';
         }
 
         document.getElementById('keys_container').innerHTML = keysString;
