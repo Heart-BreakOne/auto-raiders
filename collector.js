@@ -363,18 +363,22 @@ async function buySpecificChest(chestName, basePrice) {
         storeOptions.forEach((storeOption) => {
             let itemName = storeOption.querySelector(".storeCardNameNotif");
             if (!itemName || !itemName.innerText) goHome();
-            if (itemName.innerText == chestName) {
-                const buyButton = storeOption.querySelector(".actionButton.actionButtonBones.storeCardButton.storeCardButtonBuy");
-                if (buyButton && buyButton.innerText.includes(basePrice)) {
-                    buyButton.click();
-                    clickHoldAndScroll(buyButton, 0, 0);
-                    //After clicking the collect button a confirmation popup loads.
-                    const confirmButtons = document.querySelectorAll(".actionButton.actionButtonPrimary");
-                    confirmButtons.forEach((confirm) => {
-                        //Clicks on correct confirm button.
-                        if (confirm.innerText.includes("OK")) confirm.click();
-                    });
+            try {
+                if (itemName.innerText == chestName) {
+                    const buyButton = storeOption.querySelector(".actionButton.actionButtonBones.storeCardButton.storeCardButtonBuy");
+                    if (buyButton && buyButton.innerText.includes(basePrice)) {
+                        buyButton.click();
+                        clickHoldAndScroll(buyButton, 0, 0);
+                        //After clicking the collect button a confirmation popup loads.
+                        const confirmButtons = document.querySelectorAll(".actionButton.actionButtonPrimary");
+                        confirmButtons.forEach((confirm) => {
+                            //Clicks on correct confirm button.
+                            if (confirm.innerText.includes("OK")) confirm.click();
+                        });
+                    }
                 }
+            } catch (error) {
+                goHome();
             }
         });
         await collectDelay(1000);

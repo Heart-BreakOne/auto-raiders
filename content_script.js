@@ -230,7 +230,7 @@ async function start() {
             do {
               captainSlot = button.closest('.capSlot');
               await delay(500);
-            } while (!captainSlot.querySelector('.capSlotName'));
+            } while (captainSlot.querySelector('.capSlotName') == null);
             if (captainSlot.querySelector('.capSlotName').innerText == captainNameFromDOM) {
               let close; 
               do {
