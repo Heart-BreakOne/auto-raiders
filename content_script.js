@@ -87,6 +87,7 @@ async function start() {
 
   //Keep track of time and reload after 1hr15min to avoid the browser crashing due to low memory.
   const elapsedMinutes = Math.floor((new Date() - firstReload.getTime()) / (1000 * 60));
+  const elapsedSeconds = (new Date() - firstReload.getTime()) / 1000;
   const timeContainer = document.querySelector(".elapsedTimeContainer");
   let battleMessages = "";
 
@@ -104,7 +105,7 @@ async function start() {
       if (reloaderInputValue !== undefined) reload = reloaderInputValue;
     });
   }
-  if (activeRaidsArray.length == 0 || (requestRunning == false && ((reload != undefined && elapsedMinutes >= reload && reload > 0) || ((reload != undefined || reload != 0) && elapsedMinutes >= 60)))) {
+  if ((activeRaidsArray.length == 0 && elapsedSeconds > 20) || (requestRunning == false && ((reload != undefined && elapsedMinutes >= reload && reload > 0) || ((reload != undefined || reload != 0) && elapsedMinutes >= 60)))) {
     await locationReload();
     return;
   }
