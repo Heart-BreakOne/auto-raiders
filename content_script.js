@@ -210,7 +210,7 @@ async function start() {
   let captainNameFromDOM = "";
 
   //Initialized a node list with placeable buttons
-  const rewardButtonLabels = ["SEE RESULTS", "OPEN CHEST", "COLLECT KEYS", "COLLECT BONES"];
+  const rewardButtonLabels = ["SEE RESULTS", "OPEN CHEST", "COLLECT RUBIES", "COLLECT KEYS", "COLLECT BONES"];
   let allButtons = document.querySelectorAll(".actionButton.capSlotButton.capSlotButtonAction");
   if (allButtons.length != 0) {
     for (var button of allButtons) {
