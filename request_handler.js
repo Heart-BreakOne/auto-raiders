@@ -239,6 +239,16 @@ async function getRaidStats(currentRaid) {
       console.log(error);
     }
     try {
+      if (raidData.rubiesAwarded > 0) {
+        rewards[i] = "/icons/rubies.png";
+        rewards[i] = rewards[i] + " rubiesx" + raidData.rubiesAwarded;
+        raidStats[5] = "rubies";
+        i++;
+      }
+    } catch (error) {
+      console.log(error);
+    }
+    try {
       if (raidData.eventCurrencyAwarded > 0) {
         rewards[i] = "";
 

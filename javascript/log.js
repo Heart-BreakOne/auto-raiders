@@ -15,6 +15,7 @@ const battleChests = [
     { key: "bonechest", name: "PvP", outcome: "Victory", url: "/icons/iconBones.png" },
     { key: "keys", name: "Dungeons", outcome: "Victory", url: "/icons/keys.png" },
     { key: "dungeonchest", name: "Dungeons", outcome: "Victory", url: "/icons/keys.png" },
+    { key: "rubies", name: "Rubies", outcome: "Victory", url: "/icons/rubies.png" },
     { key: "chestsalvage", name: "Defeat", outcome: "Defeat", url: "/icons/iconChestSalvage.png" },
     { key: "chestbronze", name: "Bronze", outcome: "Victory", url: "/icons/iconChestBronze.png" },
     { key: "chestsilver", name: "Silver", outcome: "Victory", url: "/icons/iconChestSilver.png" },
