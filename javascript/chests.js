@@ -55,16 +55,9 @@ async function savePreferences() {
 
 async function fetchAndSaveChestData() {
     try {
-        const gdUrl = await retrieveFromStorage("gameDataPath");
-
-        // Get chests from the game data
-        const response = await fetch(gdUrl);
-        if (!response.ok) throw new Error(`Failed to fetch game data (${response.status} ${response.statusText})`);
-        const gameData = await response.json();
-        if (!gameData || !gameData.sheets || !gameData.sheets.Store) return;
-
-        const chestsArray = Object.values(gameData.sheets.Store);
-
+        let chestsArray = await retrieveFromStorage("store");
+        chestsArray = Object.values(chestsArray);
+        
         const filterChests = (section) => {
             const filteredChests = [];
             for (let j = 0; j < chestsArray.length; j++) {
@@ -96,8 +89,8 @@ async function fetchAndSaveChestData() {
 
         let freshRubyArray = filterChests("Rubies");
 
-        let chests = gameData.sheets.Chests;
-        let rewards = gameData.sheets.ChestRewardSlots;
+        let chests = await retrieveFromStorage("chests");
+        let rewards = await retrieveFromStorage("chestRewardSlots");
 
         freshRubyArray = appendDisplayName(freshRubyArray, chests);
         freshRubyArray = appendSkins(freshRubyArray, chests, rewards);
