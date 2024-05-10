@@ -29,12 +29,8 @@
         <h1> DO NOT SPAM CLICK THE FETCH BUTTON, IT NEEDS TO PROCESS A LARGE GAME DATA FILE</h1>
 
         <button id="fetch_btn" class="green_button">FETCH</button>
-        <div style="font-size: large; margin-bottom: 10px;">Minimum operational KEYS amount (set to 0 to disable it):
-            <input id="min_key_currency" type="number" value="0" min="0">
-        </div>
-        <div style="font-size: large; margin-bottom: 10px;">Minimum operational BONES amount (set to 0 to disable it):
-            <input id="min_bone_currency" type="number" value="0" min="0">
-
+        <div style="font-size: large; margin-bottom: 10px;">Minimum operational RUBIES amount (set to 0 to disable it):
+            <input id="min_ruby_currency" type="number" value="0" min="0">
         </div>
         <label for="chestPurchaseOrder"
             title="By default the most expensive chest is acquired first, this overrides it."><input type="checkbox"
@@ -47,15 +43,11 @@
         <span>In order for skin priority to work, "Can Buy" must be checked in the table below, otherwise the chest
             won't be bought even if all skins haven't been obtained yet.</span><br>
         <span>Same goes for the fallback chests, if "Can Buy" is not checked, they will be ignored.</span><br><br>
-        <label for="buy_one__bone_skin" title="This chest will be acquired if all skins have been obtained">Bone chest
-            fallback under skin
-            priority: </label>
-        <select id="buy_one_bone_skin" title="This chest will be acquired if all skins have been obtained"></select><br>
 
-        <label for="buy_one_key_skin" title="This chest will be acquired if all skins have been obtained">Key chest
+        <label for="buy_one_ruby_skin" title="This chest will be acquired if all skins have been obtained">Ruby chest
             fallback under skin
             priority: </label>
-        <select id="buy_one_key_skin"
+        <select id="buy_one_ruby_skin"
             title="This chest will be acquired if all skins have been obtained"></select><br><br>
         <button id="save_btn" class="green_button">SAVE</button>
         <div><a href="./chest_log.html" target="_blank">Chest Reward Log</a></div>

@@ -277,8 +277,7 @@ async function buyChests() {
     let currentUserCurrencies = await retrieveFromStorage("availableCurrencies");
     if (!currentUserCurrencies || !currentUserCurrencies.data || currentUserCurrencies.data == undefined) return;
 
-    let bones = currentUserCurrencies.data.bones;
-    let keys = currentUserCurrencies.data.keys;
+    let rubies = currentUserCurrencies.data.rubies;
 
     let buyCheapestFirst = await retrieveFromStorage("chestPurchaseOrder");
 
@@ -335,11 +334,9 @@ async function buyChests() {
 
     let buyAllSkins = await retrieveFromStorage("buyAllSkins");
     if (buyAllSkins) {
-        await buyChestsWithSkins(keys, await retrieveFromStorage("buyThisKeyChest"), await retrieveNumberFromStorage("minKeyCurrency"), "dungeonChestsData");
-        await buyChestsWithSkins(bones, await retrieveFromStorage("buyThisBoneChest"), await retrieveNumberFromStorage("minBoneCurrency"), "boneChestsData");
+        await buyChestsWithSkins(rubies, await retrieveFromStorage("buyThisRubyChest"), await retrieveNumberFromStorage("minRubyCurrency"), "rubyChestsData");
     } else {
-        await buyChestsWithCurrency(keys, await retrieveNumberFromStorage("minKeyCurrency"), "dungeonChestsData");
-        await buyChestsWithCurrency(bones, await retrieveNumberFromStorage("minBoneCurrency"), "boneChestsData");
+        await buyChestsWithCurrency(rubies, await retrieveNumberFromStorage("minRubyCurrency"), "rubyChestsData");
     }
 
 }
