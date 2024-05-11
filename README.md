@@ -1,17 +1,6 @@
 # AutoRaiders
 ## Click emulator for SR - Google Chrome extension.
 
-Disclaimer: It takes a few days for Google to approve a new extension version so sideloading from this repo will always guarantee the latest version.<br>
-Download for Chrome: [![Static Badge](https://img.shields.io/badge/Chrome%20Store-CS?logo=googlechrome&logoColor=%23d62d20&color=%230057e7)](https://chrome.google.com/webstore/detail/srhelper/flgahoglenmjoegheodkhahipokcilal)<br>
-SRHelper is featured as it follows the best Chrome Web Store practices:
-<p align="left">
-  <a href="https://chrome.google.com/webstore/detail/srhelper/flgahoglenmjoegheodkhahipokcilal">
-    <img src="https://i.imgur.com/xuiilB9.png" alt="popup.html" height="50.00%" width="33.0%" hspace="30"/>
-  </a>
-</p>
-
-Join the server: [![Static Badge](https://img.shields.io/badge/Discord-Discord?style=for-the-badge&logo=discord&color=%23C5CAE9)](https://discord.gg/Egu7v8V8Dz)
-
 ### Special thanks to contributor:
 Heather1209
 ###
@@ -54,3 +43,5 @@ After installation, just open the game website and stay at the main menu.
 5.0.0 - Reworked the placement system.<br>
 
 ## For feedback hit me on discord and contributors are welcome, specially to improve the quality of the code since javascript is not my forte.
+
+v4 id e19bc0b
