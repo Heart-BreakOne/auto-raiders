@@ -239,6 +239,16 @@ async function getRaidStats(currentRaid) {
       console.log(error);
     }
     try {
+      if (raidData.rubiesAwarded > 0) {
+        rewards[i] = "/icons/rubies.png";
+        rewards[i] = rewards[i] + " rubiesx" + raidData.rubiesAwarded;
+        raidStats[5] = "rubies";
+        i++;
+      }
+    } catch (error) {
+      console.log(error);
+    }
+    try {
       if (raidData.eventCurrencyAwarded > 0) {
         rewards[i] = "";
 
@@ -932,6 +942,44 @@ async function getGameData(url, data) {
   let skins = data.sheets.Skins;
   skins = removeKeys(skins, skins_keys_rm);
 
+  const store_keys_rm = ["CaptainBasePrice",
+    "CaptainQuantity",
+    "CaptainSalePrice",
+    "DefaultItemUid",
+    "SaleEndTime",
+    "SalePrice",
+    "SaleStartTime",
+    "SlotNumber"];
+  let store = data.sheets.Store;
+  store = removeKeys(store, store_keys_rm);
+
+  let userChests = await retrieveFromStorage("userChests");
+  if (userChests) {
+    for (let i = 0; i < userChests.length; i++) {
+      for (let j = 0; j < store.length; j++) {
+        if (userChests[i].hasOwnProperty(store[j].Uid) && userChests[i].canBuy) {
+          const liveEndTime = new Date(store[j].LiveEndTime);
+          const currentDate = new Date();
+          const currentUTCTime = Date.UTC(
+              currentDate.getUTCFullYear(),
+              currentDate.getUTCMonth(),
+              currentDate.getUTCDate(),
+              currentDate.getUTCHours(),
+              currentDate.getUTCMinutes(),
+              currentDate.getUTCSeconds()
+          );
+
+          if (currentUTCTime > liveEndTime.getTime()) userChests[i].canBuy = false;
+          
+          j = store.length;
+        }
+      }
+    }
+    await chrome.storage.local.set({ 'userChests': userChests });
+  }
+  
+  let chestRewardSlots = data.sheets.ChestRewardSlots;
+
   const map_keys_rm = ["NodeDifficulty", "NodeType", "MapTags", "OnLoseDialog", "OnStartDialog", "OnWinDialog"]
   let mapNodes = data.sheets.MapNodes;
   mapNodes = removeKeys(mapNodes, map_keys_rm);
@@ -965,7 +1013,7 @@ async function getGameData(url, data) {
   let quests = data.sheets.Quests;
   quests = removeKeys(quests, quests_keys_rm);
 
-  await chrome.storage.local.set({ "loyaltyChests": transformedJson, "currency": currency, "items": items, "units": filteredUnits, "skins": skins, "events": events, "chests": chests, "eventTiers": eventTiers, "quests": quests });
+  await chrome.storage.local.set({ "loyaltyChests": transformedJson, "currency": currency, "items": items, "units": filteredUnits, "skins": skins, "store": store, "chestRewardSlots": chestRewardSlots, "events": events, "chests": chests, "eventTiers": eventTiers, "quests": quests });
 
   console.log("Game data successfully fetched and saved to chrome storage.");
 }

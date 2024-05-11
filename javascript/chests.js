@@ -2,15 +2,13 @@ document.addEventListener("DOMContentLoaded", async function () {
 
     await loadChestData();
 
-    await loadDropDownMenu("dungeonChestsData", "buy_one_key_skin");
-    await loadDropDownMenu("boneChestsData", "buy_one_bone_skin");
+    await loadDropDownMenu("rubyChestsData", "buy_one_ruby_skin");
 
     await initializeSwitch("chestPurchaseOrder");
     await initializeSwitch("buyAllSkins");
     await initializeSwitch("skinChestFocus");
 
-    await loadSelects("buyThisBoneChest", "buy_one_bone_skin");
-    await loadSelects("buyThisKeyChest", "buy_one_key_skin");
+    await loadSelects("buyThisRubyChest", "buy_one_ruby_skin");
 
     document.getElementById('fetch_btn').addEventListener('click', function () {
         fetchAndSaveChestData();
@@ -48,33 +46,18 @@ document.addEventListener("DOMContentLoaded", async function () {
 });
 
 async function savePreferences() {
-    let bc = document.getElementById('min_bone_currency').value;
-    await chrome.storage.local.set({ 'minBoneCurrency': bc });
+    let rc = document.getElementById('min_ruby_currency').value;
+    await chrome.storage.local.set({ 'minRubyCurrency': rc });
 
-    let kc = document.getElementById('min_key_currency').value;
-    await chrome.storage.local.set({ 'minKeyCurrency': kc });
-
-
-    let b_sel = document.getElementById('buy_one_bone_skin').value;
-    await chrome.storage.local.set({ 'buyThisBoneChest': b_sel });
-
-    let k_sel = document.getElementById('buy_one_key_skin').value;
-    await chrome.storage.local.set({ 'buyThisKeyChest': k_sel });
-
+    let r_sel = document.getElementById('buy_one_ruby_skin').value;
+    await chrome.storage.local.set({ 'buyThisRubyChest': r_sel });
 }
 
 async function fetchAndSaveChestData() {
     try {
-        const gdUrl = await retrieveFromStorage("gameDataPath");
-
-        // Get chests from the game data
-        const response = await fetch(gdUrl);
-        if (!response.ok) throw new Error(`Failed to fetch game data (${response.status} ${response.statusText})`);
-        const gameData = await response.json();
-        if (!gameData || !gameData.sheets || !gameData.sheets.Store) return;
-
-        const chestsArray = Object.values(gameData.sheets.Store);
-
+        let chestsArray = await retrieveFromStorage("store");
+        chestsArray = Object.values(chestsArray);
+        
         const filterChests = (section) => {
             const filteredChests = [];
             for (let j = 0; j < chestsArray.length; j++) {
@@ -104,19 +87,15 @@ async function fetchAndSaveChestData() {
             return filteredChests;
         };
 
-        let freshDungeonArray = filterChests("Dungeon");
-        let freshBoneArray = filterChests("Bones");
+        let freshRubyArray = filterChests("Rubies");
 
-        let chests = gameData.sheets.Chests;
-        let rewards = gameData.sheets.ChestRewardSlots;
+        let chests = await retrieveFromStorage("chests");
+        let rewards = await retrieveFromStorage("chestRewardSlots");
 
-        freshDungeonArray = appendDisplayName(freshDungeonArray, chests);
-        freshDungeonArray = appendSkins(freshDungeonArray, chests, rewards);
-        freshBoneArray = appendDisplayName(freshBoneArray, chests);
-        freshBoneArray = appendSkins(freshBoneArray, chests, rewards);
+        freshRubyArray = appendDisplayName(freshRubyArray, chests);
+        freshRubyArray = appendSkins(freshRubyArray, chests, rewards);
 
-        await chrome.storage.local.set({ 'dungeonChestsData': freshDungeonArray });
-        await chrome.storage.local.set({ 'boneChestsData': freshBoneArray });
+        await chrome.storage.local.set({ 'rubyChestsData': freshRubyArray });
 
         location.reload();
 
@@ -147,14 +126,12 @@ async function updateCurrency(key, id) {
 }
 
 async function loadChestData() {
-    await updateCurrency("minBoneCurrency", "min_bone_currency");
-    await updateCurrency("minKeyCurrency", "min_key_currency");
+    await updateCurrency("minRubyCurrency", "min_ruby_currency");
 
-    let dcd = await retrieveFromStorage("dungeonChestsData");
-    let bcd = await retrieveFromStorage("boneChestsData");
-    if (!dcd || !bcd) return;
+    let rcd = await retrieveFromStorage("rubyChestsData");
+    if (!rcd) return;
     let userChests = await retrieveFromStorage("userChests");
-    let mdc = dcd.concat(bcd);
+    let mdc = rcd;
     let chestContainer = document.getElementById("chest_container");
     let table = document.createElement("table");
 

@@ -87,6 +87,7 @@ async function start() {
 
   //Keep track of time and reload after 1hr15min to avoid the browser crashing due to low memory.
   const elapsedMinutes = Math.floor((new Date() - firstReload.getTime()) / (1000 * 60));
+  const elapsedSeconds = (new Date() - firstReload.getTime()) / 1000;
   const timeContainer = document.querySelector(".elapsedTimeContainer");
   let battleMessages = "";
 
@@ -104,7 +105,7 @@ async function start() {
       if (reloaderInputValue !== undefined) reload = reloaderInputValue;
     });
   }
-  if (activeRaidsArray.length == 0 || (requestRunning == false && ((reload != undefined && elapsedMinutes >= reload && reload > 0) || ((reload != undefined || reload != 0) && elapsedMinutes >= 60)))) {
+  if ((activeRaidsArray.length == 0 && elapsedSeconds > 20) || (requestRunning == false && ((reload != undefined && elapsedMinutes >= reload && reload > 0) || ((reload != undefined || reload != 0) && elapsedMinutes >= 60)))) {
     await locationReload();
     return;
   }
@@ -209,7 +210,7 @@ async function start() {
   let captainNameFromDOM = "";
 
   //Initialized a node list with placeable buttons
-  const rewardButtonLabels = ["SEE RESULTS", "OPEN CHEST", "COLLECT KEYS", "COLLECT BONES"];
+  const rewardButtonLabels = ["SEE RESULTS", "OPEN CHEST", "COLLECT RUBIES", "COLLECT KEYS", "COLLECT BONES"];
   let allButtons = document.querySelectorAll(".actionButton.capSlotButton.capSlotButtonAction");
   if (allButtons.length != 0) {
     for (var button of allButtons) {
@@ -230,7 +231,7 @@ async function start() {
             do {
               captainSlot = button.closest('.capSlot');
               await delay(500);
-            } while (!captainSlot.querySelector('.capSlotName'));
+            } while (captainSlot.querySelector('.capSlotName') == null);
             if (captainSlot.querySelector('.capSlotName').innerText == captainNameFromDOM) {
               let close; 
               do {

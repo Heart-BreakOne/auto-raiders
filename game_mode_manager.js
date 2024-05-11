@@ -42,8 +42,10 @@ async function manageCaptain(captainType, keyword, activeRaids) {
             if (keyword == captain.mode) counter++;
         });
     }
-    //If counter is one it means there is only one captain running the mode,
-    if (counter === 1 || (counter > 1 && (keyword == "Campaign" || (keyword == "Clash" && multiClashSwitch)))) {
+    //If counter is zero it means there are no captains running the mode and if modeChangeSwitch is enabled, the name should be cleared
+    if (counter === 0 && modeChangeSwitch) await saveToStorage(captainType, "");
+    //If counter is one it means there is only one captain running the mode
+    else if (counter === 1 || (counter > 1 && (keyword == "Campaign" || (keyword == "Clash" && multiClashSwitch)))) {
         captains.forEach((captain) => {
             if (captain.captainNameFromAPI != null) {
                 //Store all active captains for later comparison
@@ -69,6 +71,14 @@ async function manageCaptain(captainType, keyword, activeRaids) {
                     )
                 ) {
                     captainNameForMode += "," + captain.captainNameFromAPI + ",";
+                }
+                //If the mode doesn't match but the captain is in the mode's storage and modeChangeSwitch is enabled, remove the name
+                if (
+                    keyword !== captain.mode && 
+                    captainNamesFromStorage.includes(captain.captainNameFromAPI) &&
+                    modeChangeSwitch
+                ) {
+                    captainNamesFromStorage = captainNamesFromStorage.replace(captain.captainNameFromAPI,"");
                 }
             }
         });
