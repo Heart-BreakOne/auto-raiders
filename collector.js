@@ -323,7 +323,7 @@ async function buyChests() {
                     if (!userChest || userChest.amountBought >= purchaseLimit) continue;
                 }
 
-                if (!userChestData.hasOwnProperty(uid)) continue;
+                if (!userChestData.hasOwnProperty(uid) || !userChestData[uid].canBuy) continue;
 
                 currencyType -= basePrice;
 
@@ -355,7 +355,7 @@ async function buySpecificChest(chestName, basePrice) {
     //Initializes a node list with the store options
     let storeOptions = document.querySelectorAll(".storeCard.storeCardHighlighted");
 
-    //If they buy buttons exists, click all of them and go back to the main menu.
+    //If the buy button exists for the desired chest, click it and go back to the main menu.
     if (storeOptions.length > 0) {
         storeOptions.forEach((storeOption) => {
             let itemName = storeOption.querySelector(".storeCardNameNotif");
