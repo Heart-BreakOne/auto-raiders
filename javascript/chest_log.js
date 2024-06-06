@@ -54,6 +54,10 @@ async function loadUserChestsLog() {
     //Get the data container div
     const dataContainer = document.getElementById('dataContainer');
     dataContainer.style.textAlign = "justify";
+    const title = document.createElement('div');
+    title.innerHTML = '<h2>Reward Details</h2>';
+    title.style.textAlign = "center";
+    dataContainer.appendChild(title);
 
     //Create a table 
     const tableElement = document.createElement('table');
@@ -133,7 +137,7 @@ async function loadUserChestsLog() {
                 eventUid: eventUid
             });
             
-            if (reward.includes("scroll")) {
+            if (reward.includes("scroll") || reward.includes("skin")) {
                 rewardString += `<div class="crop"><img src="${url}" title="${reward}"></div>`;
             } else {
                 rewardString += `<img src="${url}" title="${reward}" style="height: 30px; width: auto">`;
