@@ -18,6 +18,7 @@ document.addEventListener("DOMContentLoaded", function () {
     initializeSwitch("clashSwitch");
     initializeSwitch("multiClashSwitch");
     initializeSwitch("nextClashSwitch");
+    initializeSwitch("clashQuestlineSwitch");
     initializeSwitch("pvpSpecSwitch");
     initializeSwitch("soulSwitch0");
     initializeSwitch("soulSwitch1");
@@ -421,6 +422,7 @@ function exportSettingsToFile() {
         "clashSwitch",
         "multiClashSwitch",
         "nextClashSwitch",
+        "clashQuestlineSwitch",
         "pvpSpecSwitch",
         "soulSwitch0",
         "soulSwitch1",
