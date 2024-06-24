@@ -96,6 +96,23 @@ async function start() {
     timeContainer.innerHTML = `Refresh: ${elapsedMinutes} mins ago. <span style="color: white; font-weight: bold">${battleMessages}</span>`;
   }
   
+  if (timeContainer && await retrieveFromStorage("clashQuestlineSwitch")) {
+    let questCount = 0;
+    let userQuests = await retrieveFromStorage("userQuests");
+    for (let i = 0; i < userQuests.data.length; i++) {
+      let questSlotId = userQuests.data[i].questSlotId;
+      let userQuestData = userQuests.data[i];
+      if (questSlotId.includes("questslot_versus_arena_viewer_event")) {
+        if (userQuestData.completedQuestGroupIds) {
+          let completedQuests = userQuestData.completedQuestGroupIds.split(",");
+          questCount = completedQuests.length;
+        }
+        i = userQuests.length;
+      }
+    }
+    timeContainer.innerHTML += ` [${questCount}]`;
+  }
+
   updateChestContainer();
 
   if (reload == 0) {
