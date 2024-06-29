@@ -4,23 +4,23 @@
 
 //When invoked this function receives the switch id and returns the switch value from storage.
 function getSwitchState(switchId) {
-    return new Promise((resolve, reject) => {
-        chrome.storage.local.get([switchId], function (result) {
-            const res = result[switchId] || false;
-            resolve(res);
-        });
-    });
+	return new Promise((resolve, reject) => {
+		chrome.storage.local.get([switchId], function (result) {
+			const res = result[switchId] || false;
+			resolve(res);
+		});
+	});
 }
 
 //When invoked this function returns the radio button value from storage
 function getRadioButton(key) {
-    return new Promise((resolve, reject) => {
-        chrome.storage.local.get(key, result => {
-            if (chrome.runtime.lastError) {
-                reject(chrome.runtime.lastError);
-            } else {
-                resolve(result[key]);
-            }
-        });
-    });
+	return new Promise((resolve, reject) => {
+		chrome.storage.local.get(key, result => {
+			if (chrome.runtime.lastError) {
+				reject(chrome.runtime.lastError);
+			} else {
+				resolve(result[key]);
+			}
+		});
+	});
 }

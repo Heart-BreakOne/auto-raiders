@@ -1,69 +1,69 @@
 .counter-container {
-    font-size: large;
-    margin-bottom: 10px;
+	font-size: large;
+	margin-bottom: 10px;
 
 }
 
 .green_button {
-    color: white;
-    cursor: pointer;
-    margin-bottom: 10px;
-    border: solid black;
-    background-color: #5fa695;
+	color: white;
+	cursor: pointer;
+	margin-bottom: 10px;
+	border: solid black;
+	background-color: #5fa695;
 }
 
 [data-theme="light"] {
-    color-scheme: light;
+	color-scheme: light;
 
-    a:link {
-        color: Blue;
-        background-color: transparent;
-        text-decoration: none;
-    }
+	a:link {
+		color: Blue;
+		background-color: transparent;
+		text-decoration: none;
+	}
 
-    a:visited {
-        color: Blue;
-        background-color: transparent;
-        text-decoration: none;
-    }
+	a:visited {
+		color: Blue;
+		background-color: transparent;
+		text-decoration: none;
+	}
 
-    a:hover {
-        color: Blue;
-        background-color: transparent;
-        text-decoration: underline;
-    }
+	a:hover {
+		color: Blue;
+		background-color: transparent;
+		text-decoration: underline;
+	}
 
-    a:active {
-        color: Blue;
-        background-color: transparent;
-        text-decoration: underline;
-    }
+	a:active {
+		color: Blue;
+		background-color: transparent;
+		text-decoration: underline;
+	}
 }
 
 [data-theme="dark"] {
-    color-scheme: dark;
+	color-scheme: dark;
 
-    a:link {
-        color: LightSkyBlue;
-        background-color: transparent;
-        text-decoration: none;
-    }
+	a:link {
+		color: LightSkyBlue;
+		background-color: transparent;
+		text-decoration: none;
+	}
 
-    a:visited {
-        color: LightSkyBlue;
-        background-color: transparent;
-        text-decoration: none;
-    }
+	a:visited {
+		color: LightSkyBlue;
+		background-color: transparent;
+		text-decoration: none;
+	}
 
-    a:hover {
-        color: LightSkyBlue;
-        background-color: transparent;
-        text-decoration: underline;
-    }
+	a:hover {
+		color: LightSkyBlue;
+		background-color: transparent;
+		text-decoration: underline;
+	}
 
-    a:active {
-        color: LightSkyBlue;
-        background-color: transparent;
-        text-decoration: underline;
-    }
+	a:active {
+		color: LightSkyBlue;
+		background-color: transparent;
+		text-decoration: underline;
+	}
 }

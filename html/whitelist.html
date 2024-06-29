@@ -2,80 +2,80 @@
 <html lang="en">
 
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Priority lists</title>
-    <script src="/javascript/shared_scripts.js"></script>
-    <script src="/javascript/whitelist.js"></script>
-    <script src="/popup.js"></script>
-    <link rel="stylesheet" type="text/css" href="/styles/styles.css">
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Priority lists</title>
+	<script src="/javascript/shared_scripts.js"></script>
+	<script src="/javascript/whitelist.js"></script>
+	<script src="/popup.js"></script>
+	<link rel="stylesheet" type="text/css" href="/styles/styles.css">
 </head>
 
 <body>
-    <div class="button_container">
-        <button id="settings_button" class="green_button">Open settings</button>
-        <button id="whitelist_button" class="green_button">Filter lists</button>
-        <button id="log_button" class="green_button">Log</button>
-        <button id="unit_button" class="green_button">Units</button>
-        <button id="store_button" class="green_button">Chests</button>
-        <button id="instructions_button" class="green_button">Instructions</button>
-        <button id="key_check_button" class="green_button">Key check</button>
-    </div>
-    <div class="bulleted-list">
-        <h1>Set you priority captains lists</h1>
-        <ul>
-            <li>When switching an idle captain the order of priority is: Masterlist (if enabled to do so) > Diamond >
-                Gold > Silver > Bronze > Allowlist >
-                Favorites > Any captain</li>
-            <li>Blocklisted captains will be ignored, unless they are the only ones in the Any Captains list.</li>
-            <li>Write the name of the Captains with a space in between</li>
-            <li>The order you write the captains is the order of their priority</li>
-            <li>When you blocklist a captain, make sure they are not in the in-game favorites list</li>
-            <li>Uppercasing and lowercasing don't matter, but the captain name MUST be typed correctly (e.g CaptainZ1,
-                captainz1, CAPTAINZ1 are all valid because their only difference is the casing)</li>
-            <li><b>Masterlist has two states and bypass priority, read instructions</b></li>
-        </ul>
-        <div>
-            <label>Masterlist:</label><br>
-            <textarea id="masterlist" name="masterlist"
-                placeholder="captain1 captain2 captain3 captain4"></textarea><br>
-            <br>
-            <label>Allowlist:</label><br>
-            <textarea id="whitelist" name="whitelist" placeholder="captain1 captain2 captain3 captain4"></textarea><br>
-            <br>
-            <label>Blocklist:</label><br>
-            <textarea id="blacklist" name="blacklist" placeholder="captain1 captain2 captain3 captain4"></textarea><br>
-            <br>
-            <label>Potion allowlist (ENABLE ON THE SETTINGS):</label><br>
-            <textarea id="potionlist" name="potionlist"
-                placeholder="captain1 captain2 captain3 captain4"></textarea><br>
+	<div class="button_container">
+		<button id="settings_button" class="green_button">Open settings</button>
+		<button id="whitelist_button" class="green_button">Filter lists</button>
+		<button id="log_button" class="green_button">Log</button>
+		<button id="unit_button" class="green_button">Units</button>
+		<button id="store_button" class="green_button">Chests</button>
+		<button id="instructions_button" class="green_button">Instructions</button>
+		<button id="key_check_button" class="green_button">Key check</button>
+	</div>
+	<div class="bulleted-list">
+		<h1>Set you priority captains lists</h1>
+		<ul>
+			<li>When switching an idle captain the order of priority is: Masterlist (if enabled to do so) > Diamond >
+				Gold > Silver > Bronze > Allowlist >
+				Favorites > Any captain</li>
+			<li>Blocklisted captains will be ignored, unless they are the only ones in the Any Captains list.</li>
+			<li>Write the name of the Captains with a space in between</li>
+			<li>The order you write the captains is the order of their priority</li>
+			<li>When you blocklist a captain, make sure they are not in the in-game favorites list</li>
+			<li>Uppercasing and lowercasing don't matter, but the captain name MUST be typed correctly (e.g CaptainZ1,
+				captainz1, CAPTAINZ1 are all valid because their only difference is the casing)</li>
+			<li><b>Masterlist has two states and bypass priority, read instructions</b></li>
+		</ul>
+		<div>
+			<label>Masterlist:</label><br>
+			<textarea id="masterlist" name="masterlist"
+				placeholder="captain1 captain2 captain3 captain4"></textarea><br>
+			<br>
+			<label>Allowlist:</label><br>
+			<textarea id="whitelist" name="whitelist" placeholder="captain1 captain2 captain3 captain4"></textarea><br>
+			<br>
+			<label>Blocklist:</label><br>
+			<textarea id="blacklist" name="blacklist" placeholder="captain1 captain2 captain3 captain4"></textarea><br>
+			<br>
+			<label>Potion allowlist (ENABLE ON THE SETTINGS):</label><br>
+			<textarea id="potionlist" name="potionlist"
+				placeholder="captain1 captain2 captain3 captain4"></textarea><br>
 
-            <h3>Dungeons</h3>
-            <div>The playstyle and rigidness of some captains change when they are doing Dungeons<br>
-                When slot 0 gets set to Dungeons, these lists will govern it.<br>
-                Priority logic remains the same: Dungeon list > Diamond > Gold > Silver > Bronze > Favorites > Any<br>
-                Ignore list captains will be completely ignored even if there are no other captains available.</div><br>
-            <label>Dungeonlist:</label><br>
-            <textarea id="dungeonlist" name="dungeonlist"
-                placeholder="captain1 captain2 captain3 captain4"></textarea><br>
-            <br>
-            <label>Dungeon blocklist:</label><br>
-            <textarea id="dungeonblocklist" name="dungeonblocklist"
-                placeholder="captain1 captain2 captain3 captain4"></textarea><br>
-            <br>
-        </div>
-    </div>
-    <div class="center-container">
-        <button id="updateList_button" class="green_button">Update lists</button>
-        <h1>Import and export your settings here</h1>
-        <h2>Export and import your settings, captains lists and log here<br>WARNING: IMPORTING OVERWRITES THE CURRENT
-            DATA</h2>
-        <button id="exportButton" class="green_button">Export your lists to file</button>
-        <div class="file-input-container">
-            <label for="settings-file-input" class="green_button">Import your lists from file</label>
-            <input type="file" id="settings-file-input">
-        </div>
-    </div>
+			<h3>Dungeons</h3>
+			<div>The playstyle and rigidness of some captains change when they are doing Dungeons<br>
+				When slot 0 gets set to Dungeons, these lists will govern it.<br>
+				Priority logic remains the same: Dungeon list > Diamond > Gold > Silver > Bronze > Favorites > Any<br>
+				Ignore list captains will be completely ignored even if there are no other captains available.</div><br>
+			<label>Dungeonlist:</label><br>
+			<textarea id="dungeonlist" name="dungeonlist"
+				placeholder="captain1 captain2 captain3 captain4"></textarea><br>
+			<br>
+			<label>Dungeon blocklist:</label><br>
+			<textarea id="dungeonblocklist" name="dungeonblocklist"
+				placeholder="captain1 captain2 captain3 captain4"></textarea><br>
+			<br>
+		</div>
+	</div>
+	<div class="center-container">
+		<button id="updateList_button" class="green_button">Update lists</button>
+		<h1>Import and export your settings here</h1>
+		<h2>Export and import your settings, captains lists and log here<br>WARNING: IMPORTING OVERWRITES THE CURRENT
+			DATA</h2>
+		<button id="exportButton" class="green_button">Export your lists to file</button>
+		<div class="file-input-container">
+			<label for="settings-file-input" class="green_button">Import your lists from file</label>
+			<input type="file" id="settings-file-input">
+		</div>
+	</div>
 </body>
 
 </html>

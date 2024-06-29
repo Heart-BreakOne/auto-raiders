@@ -1,263 +1,267 @@
 /* Add permanent scrollbar to prevent shifting of content */
 html {
-  overflow-y: scroll;
+	overflow-y: scroll;
 }
 
 [data-theme="light"] {
-    color-scheme: light;
+	color-scheme: light;
 
-    a:link {
-        color: Blue;
-        background-color: transparent;
-        text-decoration: none;
-    }
+	a:link {
+		color: Blue;
+		background-color: transparent;
+		text-decoration: none;
+	}
 
-    a:visited {
-        color: Blue;
-        background-color: transparent;
-        text-decoration: none;
-    }
+	a:visited {
+		color: Blue;
+		background-color: transparent;
+		text-decoration: none;
+	}
 
-    a:hover {
-        color: Blue;
-        background-color: transparent;
-        text-decoration: underline;
-    }
+	a:hover {
+		color: Blue;
+		background-color: transparent;
+		text-decoration: underline;
+	}
 
-    a:active {
-        color: Blue;
-        background-color: transparent;
-        text-decoration: underline;
-    }
+	a:active {
+		color: Blue;
+		background-color: transparent;
+		text-decoration: underline;
+	}
 }
 
 [data-theme="dark"] {
-    color-scheme: dark;
+	color-scheme: dark;
 
-    a:link {
-        color: LightSkyBlue;
-        background-color: transparent;
-        text-decoration: none;
-    }
+	a:link {
+		color: LightSkyBlue;
+		background-color: transparent;
+		text-decoration: none;
+	}
 
-    a:visited {
-        color: LightSkyBlue;
-        background-color: transparent;
-        text-decoration: none;
-    }
+	a:visited {
+		color: LightSkyBlue;
+		background-color: transparent;
+		text-decoration: none;
+	}
 
-    a:hover {
-        color: LightSkyBlue;
-        background-color: transparent;
-        text-decoration: underline;
-    }
+	a:hover {
+		color: LightSkyBlue;
+		background-color: transparent;
+		text-decoration: underline;
+	}
 
-    a:active {
-        color: LightSkyBlue;
-        background-color: transparent;
-        text-decoration: underline;
-    }
+	a:active {
+		color: LightSkyBlue;
+		background-color: transparent;
+		text-decoration: underline;
+	}
 }
 
 /* Spacing for heading 1, heading 2, and buttons */
 h1,
 h2,
 button {
-    margin-bottom: 20px;
+	margin-bottom: 20px;
 }
 
 /* Padding for heading 2 */
 h2 {
-    padding-left: 20%;
-    padding-right: 20%;
+	padding-left: 20%;
+	padding-right: 20%;
 }
 
 /* Sizing for heading 3 */
 h3 {
-    font-size: x-large;
+	font-size: x-large;
 }
 
 /* Styling for tables */
 table {
-    border-collapse: collapse;
-    width: 90%;
-    margin: 0 auto;
-    padding: 0 10px;
+	border-collapse: collapse;
+	width: 90%;
+	margin: 0 auto;
+	padding: 0 10px;
 }
 
 th,
 td {
-    border: 1px solid #ddd;
-    padding: 8px;
+	border: 1px solid #ddd;
+	padding: 8px;
 }
 
 /* Center alignment for th, buttons, and container */
 th,
 .button_container,
 .center-container {
-    text-align: center;
+	text-align: center;
 }
 
 /* Styling for highlighting table rows on hover */
 tr:hover {
-    background-color: grey;
+	background-color: grey;
 }
 
 /* Styling for delete button and green button */
-#deleteLogButton, .green_button {
-    color: white;
-    font-weight: bold;
-    margin-left: 25px;
-    margin-right: 25px;
-    cursor: pointer;
-    border: solid black;
+#deleteLogButton,
+.green_button {
+	color: white;
+	font-weight: bold;
+	margin-left: 25px;
+	margin-right: 25px;
+	cursor: pointer;
+	border: solid black;
 }
 
-#deleteLogButton, #importLogButton {
-    padding: 5px 20px;
-    font-weight: bold;
-    color: white;
-    background-color: red;
+#deleteLogButton,
+#importLogButton {
+	padding: 5px 20px;
+	font-weight: bold;
+	color: white;
+	background-color: red;
 }
 
 .green_button {
-    padding: 16px 20px;
-    background-color: #5fa695;
+	padding: 16px 20px;
+	background-color: #5fa695;
 }
 
 /* Styling for instructions button */
 /* #instructions_button, #log_button { */
-    /* margin-right: 10px; */
+/* margin-right: 10px; */
 /* } */
 
 /* Styling for bulleted list */
 .bulleted-list {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    text-align: left;
-    font-size: large;
-    max-width: auto;
-    margin: 0 auto;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	text-align: left;
+	font-size: large;
+	max-width: auto;
+	margin: 0 auto;
 }
 
 .counter-container {
-    font-size: large;
-    margin-bottom: 10px;
+	font-size: large;
+	margin-bottom: 10px;
 }
 
 ul {
-    padding-left: 20px;
+	padding-left: 20px;
 }
 
 li {
-    margin-bottom: 10px;
+	margin-bottom: 10px;
 }
 
 /* Styling for textarea */
 textarea {
-    margin: 0 auto;
-    max-width: 1000px;
-    width: 100vw;
-    height: 200px;
-    padding: 10px;
-    box-sizing: border-box;
+	margin: 0 auto;
+	max-width: 1000px;
+	width: 100vw;
+	height: 200px;
+	padding: 10px;
+	box-sizing: border-box;
 }
 
 /* Styling for file input container and hiding file input */
 .file-input-container {
-    padding: 16px 20px 25px;
-    display: inline-block;
+	padding: 16px 20px 25px;
+	display: inline-block;
 }
 
-#settings-file-input, #log-file-input, #loadPreSetBtn  {
-    display: none;
+#settings-file-input,
+#log-file-input,
+#loadPreSetBtn {
+	display: none;
 }
 
 #scrollBtn {
-    display: none;
-    position: fixed;
-    bottom: 20px;
-    right: 20px;
-    background-color: red;
-    color: white;
-    border: none;
-    border-radius: 5px;
-    padding: 10px 20px;
-    cursor: pointer;
+	display: none;
+	position: fixed;
+	bottom: 20px;
+	right: 20px;
+	background-color: red;
+	color: white;
+	border: none;
+	border-radius: 5px;
+	padding: 10px 20px;
+	cursor: pointer;
 }
 
 #scrollBtnUp {
-    display: none;
-    position: fixed;
-    bottom: 20px;
-    right: 70px;
-    background-color: red;
-    color: white;
-    border: none;
-    border-radius: 5px;
-    padding: 10px 20px;
-    cursor: pointer;
+	display: none;
+	position: fixed;
+	bottom: 20px;
+	right: 70px;
+	background-color: red;
+	color: white;
+	border: none;
+	border-radius: 5px;
+	padding: 10px 20px;
+	cursor: pointer;
 }
 
 #scrollBtnDown {
-    display: none;
-    position: fixed;
-    bottom: 20px;
-    right: 20px;
-    background-color: red;
-    color: white;
-    border: none;
-    border-radius: 5px;
-    padding: 10px 20px;
-    cursor: pointer;
+	display: none;
+	position: fixed;
+	bottom: 20px;
+	right: 20px;
+	background-color: red;
+	color: white;
+	border: none;
+	border-radius: 5px;
+	padding: 10px 20px;
+	cursor: pointer;
 }
 
 .popup {
-    display: none;
-    position: fixed;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    padding: 20px;
-    border: 1px solid #ccc;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    z-index: 1000;
-    max-height: 80%;
-    overflow-y: auto;
-    width: 60%;
+	display: none;
+	position: fixed;
+	top: 50%;
+	left: 50%;
+	transform: translate(-50%, -50%);
+	padding: 20px;
+	border: 1px solid #ccc;
+	box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+	z-index: 1000;
+	max-height: 80%;
+	overflow-y: auto;
+	width: 60%;
 }
 
 [data-theme="light"] {
-    .popup {
-        background-color: white;
-    }
+	.popup {
+		background-color: white;
+	}
 }
 
 [data-theme="dark"] {
-    .popup {
-        background-color: black;
-    }
+	.popup {
+		background-color: black;
+	}
 }
 
 .quick_set_input {
-    width: 40px;
+	width: 40px;
 }
 
 .quick_save_btn {
-    padding: 5px;
+	padding: 5px;
 }
 
 .crop {
-    width: 30px;
-    height: 30px;
-    background-position: center;
-    overflow: hidden;
+	width: 30px;
+	height: 30px;
+	background-position: center;
+	overflow: hidden;
 	display: inline-block;
 }
-	
+
 .crop img {
-    width: 70px;
-    height: 70px;
-    margin: -17px 0px 0px -20px;
+	width: 70px;
+	height: 70px;
+	margin: -17px 0px 0px -20px;
 }

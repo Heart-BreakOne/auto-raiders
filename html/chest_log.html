@@ -2,38 +2,41 @@
 <html lang="en">
 
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Chest Reward Log</title>
-    <script src="/javascript/shared_scripts.js"></script>
-    <script src="/javascript/chest_log.js"></script>
-    <script src="/storage_manager.js"></script>
-    <script src="/request_handler.js"></script>
-    <script src="/popup.js"></script>
-    <link rel="stylesheet" type="text/css" href="/styles/styles.css">
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Chest Reward Log</title>
+	<script src="/javascript/shared_scripts.js"></script>
+	<script src="/javascript/chest_log.js"></script>
+	<script src="/storage_manager.js"></script>
+	<script src="/request_handler.js"></script>
+	<script src="/popup.js"></script>
+	<link rel="stylesheet" type="text/css" href="/styles/styles.css">
 </head>
 
 <body>
-    <div class="button_container">
-        <button id="settings_button" class="green_button">Open settings</button>
-        <button id="whitelist_button" class="green_button">Filter lists</button>
-        <button id="log_button" class="green_button">Log</button>
-        <button id="unit_button" class="green_button">Units</button>
-        <button id="store_button" class="green_button">Chests</button>
-        <button id="instructions_button" class="green_button">Instructions</button>
-        <button id="key_check_button" class="green_button">Key check</button>
-    </div>
+	<div class="button_container">
+		<button id="settings_button" class="green_button">Open settings</button>
+		<button id="whitelist_button" class="green_button">Filter lists</button>
+		<button id="log_button" class="green_button">Log</button>
+		<button id="unit_button" class="green_button">Units</button>
+		<button id="store_button" class="green_button">Chests</button>
+		<button id="instructions_button" class="green_button">Instructions</button>
+		<button id="key_check_button" class="green_button">Key check</button>
+	</div>
 
-    <div class="center-container">
-        <h1>Chest Reward Log</h1>
-        <a href="#dataContainer">Jump to Details</a>
-        <h2>Reward Summary</h2>
-        <h4>% represents the rate at which you obtained that item in a specific slot for a given ChestId. For instance, if a single Amazon scroll in Slot 1 has a percentage of 20, it means that 20% of the chests with that specific ChestId contained a single Amazon scroll in Slot 1.</h4>
-        <h4>After you've accumulated a decent amount of log entries, this number will show the <i>approximate</i> chance of getting each loot item.</h4>
-        <div class="counter-container"><br><br>Please wait...</div>
-    </div>
-    <div id="dataContainer"></div><br><br>
-    <button id="scrollBtn" title="Go to top">↑</button>
+	<div class="center-container">
+		<h1>Chest Reward Log</h1>
+		<a href="#dataContainer">Jump to Details</a>
+		<h2>Reward Summary</h2>
+		<h4>% represents the rate at which you obtained that item in a specific slot for a given ChestId. For instance,
+			if a single Amazon scroll in Slot 1 has a percentage of 20, it means that 20% of the chests with that
+			specific ChestId contained a single Amazon scroll in Slot 1.</h4>
+		<h4>After you've accumulated a decent amount of log entries, this number will show the <i>approximate</i> chance
+			of getting each loot item.</h4>
+		<div class="counter-container"><br><br>Please wait...</div>
+	</div>
+	<div id="dataContainer"></div><br><br>
+	<button id="scrollBtn" title="Go to top">↑</button>
 
 </body>
 

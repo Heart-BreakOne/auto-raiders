@@ -17,176 +17,176 @@ let initialConfirmButton = null;
 let placementOver = false;
 //Triggers the checkBattle function every 15-20 seconds
 (function loopCheckBattle() {
-  setTimeout( () => {
-    checkBattle();
-    loopCheckBattle();  
-  }, getRandNum(20, 30)*1000);
+	setTimeout(() => {
+		checkBattle();
+		loopCheckBattle();
+	}, getRandNum(20, 30) * 1000);
 }());
 
 //Send a message to the background to reload the streamraiders tab.
 async function locationReload() {
-  await battleDelay(100);
-  while (requestRunning) await battleDelay(10);
-  let reloadPort = await chrome.runtime.connect({ name: "content-script" });
-  reloadPort.postMessage({ action: "reloadCleanCache", });
-  return;
+	await battleDelay(100);
+	while (requestRunning) await battleDelay(10);
+	let reloadPort = await chrome.runtime.connect({ name: "content-script" });
+	reloadPort.postMessage({ action: "reloadCleanCache", });
+	return;
 }
 //Handles some conditions in which the battle has started.
 async function checkBattle() {
-  if (await retrieveFromStorage("paused_checkbox")) return;
-  //Attemps to check if it's stuck on battlefield
-  checkBattlefield(".leaderboardCont", 50000);
-  //If the battlefield is opened at the same time as the timer reaches 00:00 it will freeze there, a reload fixes it.
-  checkAndReload(".battleLoading", 20000);
-  //If the first loading screen frseezes
-  checkAndReload(".loadingView", 10000);
-  //If the second loading screen freezes
-  checkAndReload(".splashCont", 10000);
+	if (await retrieveFromStorage("paused_checkbox")) return;
+	//Attemps to check if it's stuck on battlefield
+	checkBattlefield(".leaderboardCont", 50000);
+	//If the battlefield is opened at the same time as the timer reaches 00:00 it will freeze there, a reload fixes it.
+	checkAndReload(".battleLoading", 20000);
+	//If the first loading screen frseezes
+	checkAndReload(".loadingView", 10000);
+	//If the second loading screen freezes
+	checkAndReload(".splashCont", 10000);
 }
 
 //Check if battlefield is frozen or stuck, goes back to main menu if stuck, reloads page if frozen.
 async function checkBattlefield(selector, battleDelayTimer) {
 
-  if (checkingBattle) return;
-  checkingBattle = true;
+	if (checkingBattle) return;
+	checkingBattle = true;
 
-  async function waitForBattlefield() {
-    await battleDelay(battleDelayTimer);
-    return document.querySelector(selector);
-  }
+	async function waitForBattlefield() {
+		await battleDelay(battleDelayTimer);
+		return document.querySelector(selector);
+	}
 
-  async function handleBattlefield() {
-    await battleDelay(3000);
-    const menuView = document.querySelector(".battleView");
-    if (!menuView) {
-      await locationReload();
-      return;
-    }
-  }
+	async function handleBattlefield() {
+		await battleDelay(3000);
+		const menuView = document.querySelector(".battleView");
+		if (!menuView) {
+			await locationReload();
+			return;
+		}
+	}
 
-  try {
-    const battlefieldIdentifier = await waitForBattlefield();
+	try {
+		const battlefieldIdentifier = await waitForBattlefield();
 
-    if (battlefieldIdentifier && !domChanged) {
-      goHome();
-      await handleBattlefield();
-    } else {
-      await battleDelay(20000);
-      const updatedBattlefield = await waitForBattlefield();
+		if (battlefieldIdentifier && !domChanged) {
+			goHome();
+			await handleBattlefield();
+		} else {
+			await battleDelay(20000);
+			const updatedBattlefield = await waitForBattlefield();
 
-      if (updatedBattlefield) {
-        goHome();
-        await handleBattlefield();
-      }
-    }
-  } catch (error) { }
-  finally {
-    checkingBattle = false;
-  }
+			if (updatedBattlefield) {
+				goHome();
+				await handleBattlefield();
+			}
+		}
+	} catch (error) { }
+	finally {
+		checkingBattle = false;
+	}
 }
 
 
 //Receives a selector and a time in milisecondseconds. Check if the element with the selector exists, then checks again after the elapsed time has passed.
 //If the element still exists and the dom has not been changed it reloads the frozen page.
 async function checkAndReload(selector, battleDelayTimer) {
-  const element = document.querySelector(selector);
-  if (element && !domChanged) {
-    await battleDelay(battleDelayTimer);
-    const updatedElement = document.querySelector(selector);
-    if (updatedElement === element && !domChanged) await locationReload();
-  }
+	const element = document.querySelector(selector);
+	if (element && !domChanged) {
+		await battleDelay(battleDelayTimer);
+		const updatedElement = document.querySelector(selector);
+		if (updatedElement === element && !domChanged) await locationReload();
+	}
 }
 
 //Game froze on a dark blue blank screen, reload.
 async function reloadRoot() {
-  const rootElement = document.getElementById('root');
-  if (rootElement && rootElement.childElementCount === 0) {
-    await locationReload();
-    return;
-  }
+	const rootElement = document.getElementById('root');
+	if (rootElement && rootElement.childElementCount === 0) {
+		await locationReload();
+		return;
+	}
 }
 
 //When invoked, this function clicks on all close buttons to close any popup that may exist
 function closeAll() {
-  const closeButton = document.querySelectorAll(".far.fa-times");
-  if (closeButton.length > 0) {
-    closeButton.forEach(button => {
-      button.click();
-    });
-  }
+	const closeButton = document.querySelectorAll(".far.fa-times");
+	if (closeButton.length > 0) {
+		closeButton.forEach(button => {
+			button.click();
+		});
+	}
 }
 
 const observerCallback = async function (mutations) {
 
-  if (await retrieveFromStorage("paused_checkbox")) return;
+	if (await retrieveFromStorage("paused_checkbox")) return;
 
-  let contentPort = chrome.runtime.connect({ name: "content-script" });
+	let contentPort = chrome.runtime.connect({ name: "content-script" });
 
-  //If desktop mode loads, reload with mobile mode
-  if (document.querySelector("#\\#canvas")) {
-    contentPort.postMessage({ action: "reloadCleanCache", });
-    return;
-  }
+	//If desktop mode loads, reload with mobile mode
+	if (document.querySelector("#\\#canvas")) {
+		contentPort.postMessage({ action: "reloadCleanCache", });
+		return;
+	}
 
-  domChanged = true;
-  await reloadRoot();
+	domChanged = true;
+	await reloadRoot();
 
-  const salesTag = document.querySelector(".saleTagCont");
-  if (salesTag) salesTag.style.display = "none";
+	const salesTag = document.querySelector(".saleTagCont");
+	if (salesTag) salesTag.style.display = "none";
 
-  //If there too many attempts to place a unit, go home.
-  if (!isBattlefield) {
-    isBattlefield = document.querySelector(".battlefield");
-  } else {
-    let placeButton = document.querySelector(".actionButton.actionButtonPrimary.placeUnitButton");
-    let confirmButton = document.querySelector(".actionButton.actionButtonDisabled.placerButton");
+	//If there too many attempts to place a unit, go home.
+	if (!isBattlefield) {
+		isBattlefield = document.querySelector(".battlefield");
+	} else {
+		let placeButton = document.querySelector(".actionButton.actionButtonPrimary.placeUnitButton");
+		let confirmButton = document.querySelector(".actionButton.actionButtonDisabled.placerButton");
 
-    if (placeButton && placeButton !== initialPlaceButton && !placeButton.classList.contains("new")) {
-      placeUnitCounter++;
-      initialPlaceButton = placeButton;
-      placeButton.classList.add("new");
-    } else if (confirmButton && confirmButton !== initialConfirmButton && !confirmButton.classList.contains("new")) {
-      confirmCounter++;
-      initialConfirmButton = confirmButton;
-      confirmButton.classList.add("new");
-    }
+		if (placeButton && placeButton !== initialPlaceButton && !placeButton.classList.contains("new")) {
+			placeUnitCounter++;
+			initialPlaceButton = placeButton;
+			placeButton.classList.add("new");
+		} else if (confirmButton && confirmButton !== initialConfirmButton && !confirmButton.classList.contains("new")) {
+			confirmCounter++;
+			initialConfirmButton = confirmButton;
+			confirmButton.classList.add("new");
+		}
 
-    if (placeUnitCounter >= 4 || confirmCounter >= 4) {
-      resetCountersAndButtons();
-      const close = document.querySelector(".actionButton.actionButtonNegative.placerButton");
-      if (close) close.click();
-      goHome();
-      return;
-    }
-  }
+		if (placeUnitCounter >= 4 || confirmCounter >= 4) {
+			resetCountersAndButtons();
+			const close = document.querySelector(".actionButton.actionButtonNegative.placerButton");
+			if (close) close.click();
+			goHome();
+			return;
+		}
+	}
 
-  mutations.forEach(async function (mutation) {
-    mutation.addedNodes.forEach(async function () {
-      const rewardsScrim = document.querySelector(".rewardsScrim");
-      const toast = document.querySelector(".toastsCont.toastsContMore");
-      hideElementsFromView(rewardsScrim);
-      hideElementsFromView(toast);
+	mutations.forEach(async function (mutation) {
+		mutation.addedNodes.forEach(async function () {
+			const rewardsScrim = document.querySelector(".rewardsScrim");
+			const toast = document.querySelector(".toastsCont.toastsContMore");
+			hideElementsFromView(rewardsScrim);
+			hideElementsFromView(toast);
 
-      hideQuestModal();
+			hideQuestModal();
 
-      const menuView = document.querySelector(".mainNavCont.mainNavContPortrait") || document.querySelector(".mainNavCont.mainNavContLandscape");
-      if (menuView) {
-        await battleDelay(5);
-        injectIntoDOM(await retrieveFromStorage("bannerSwitch"));
-      }
+			const menuView = document.querySelector(".mainNavCont.mainNavContPortrait") || document.querySelector(".mainNavCont.mainNavContLandscape");
+			if (menuView) {
+				await battleDelay(5);
+				injectIntoDOM(await retrieveFromStorage("bannerSwitch"));
+			}
 
-      checkBattlePhase();
+			checkBattlePhase();
 
-      await checkAndHandleBattleButton();
+			await checkAndHandleBattleButton();
 
-      clickGoBackButtons();
+			clickGoBackButtons();
 
-      hideRotateMessage();
+			hideRotateMessage();
 
-      setScroll();
-      setUnitContainer();
-    });
-  });
+			setScroll();
+			setUnitContainer();
+		});
+	});
 };
 
 const observerOptions = { childList: true, subtree: true };
@@ -195,67 +195,67 @@ const targetNode = document.documentElement;
 observer.observe(targetNode, observerOptions);
 
 function hideElementsFromView(element) {
-  if (element) {
-    element.style.width = '0';
-    element.style.height = '0';
-  }
+	if (element) {
+		element.style.width = '0';
+		element.style.height = '0';
+	}
 }
 
 function hideQuestModal() {
-  let questModal = document.querySelector(".modalScrim.modalOn");
-  if (questModal && questModal.innerText.includes("Placement is Over")) {
-    placementOver = true;
-    clickGoBackButtons();
-    goHome();
-  }
-  if (questModal && !questModal.innerText.includes("Leave battle") && !questModal.innerText.includes("PLACE ANYWAY")) {
-    try {
-      questModal.style.display = "none";
-    } catch (error) { }
-  }
+	let questModal = document.querySelector(".modalScrim.modalOn");
+	if (questModal && questModal.innerText.includes("Placement is Over")) {
+		placementOver = true;
+		clickGoBackButtons();
+		goHome();
+	}
+	if (questModal && !questModal.innerText.includes("Leave battle") && !questModal.innerText.includes("PLACE ANYWAY")) {
+		try {
+			questModal.style.display = "none";
+		} catch (error) { }
+	}
 }
 
 function checkBattlePhase() {
-  const battleLabel = document.querySelector(".battlePhaseTextCurrent");
-  if (battleLabel && battleLabel.innerText === "Battle Ready" && window.getComputedStyle(battleLabel).getPropertyValue("color") === "rgb(49, 255, 49)") {
-    goHome();
-    return;
-  }
+	const battleLabel = document.querySelector(".battlePhaseTextCurrent");
+	if (battleLabel && battleLabel.innerText === "Battle Ready" && window.getComputedStyle(battleLabel).getPropertyValue("color") === "rgb(49, 255, 49)") {
+		goHome();
+		return;
+	}
 }
 
 async function checkAndHandleBattleButton() {
-  let battleButton = document.querySelector(".placeUnitButtonItems");
-  if (battleButton && (battleButton.innerText.includes("UNIT READY TO PLACE IN") || battleButton.innerText.includes("BATTLE STARTING SOON"))) {
-    await battleDelay(15000);
-    battleButton = document.querySelector(".placeUnitButtonItems");
-    if (battleButton && (battleButton.innerText.includes("UNIT READY TO PLACE IN") || battleButton.innerText.includes("BATTLE STARTING SOON"))) {
-      goHome();
-      return;
-    }
-  }
+	let battleButton = document.querySelector(".placeUnitButtonItems");
+	if (battleButton && (battleButton.innerText.includes("UNIT READY TO PLACE IN") || battleButton.innerText.includes("BATTLE STARTING SOON"))) {
+		await battleDelay(15000);
+		battleButton = document.querySelector(".placeUnitButtonItems");
+		if (battleButton && (battleButton.innerText.includes("UNIT READY TO PLACE IN") || battleButton.innerText.includes("BATTLE STARTING SOON"))) {
+			goHome();
+			return;
+		}
+	}
 }
 
 function clickGoBackButtons() {
-  const buttons = document.querySelectorAll(".actionButton.actionButtonPrimary");
-  buttons.forEach((button) => {
-    let buttonText = button.querySelector("div");
-    if (buttonText !== null) buttonText = buttonText.textContent.trim();
-    if (buttonText === "GO BACK") button.click();
-  });
+	const buttons = document.querySelectorAll(".actionButton.actionButtonPrimary");
+	buttons.forEach((button) => {
+		let buttonText = button.querySelector("div");
+		if (buttonText !== null) buttonText = buttonText.textContent.trim();
+		if (buttonText === "GO BACK") button.click();
+	});
 }
 
 function hideRotateMessage() {
-  const mainContainer = document.querySelector(".rotateMessageCont");
-  if (mainContainer) mainContainer.style.display = "none";
+	const mainContainer = document.querySelector(".rotateMessageCont");
+	if (mainContainer) mainContainer.style.display = "none";
 }
 
 function resetCountersAndButtons() {
-  isBattlefield = null;
-  initialPlaceButton = null;
-  initialConfirmButton = null;
-  confirmButton = null;
-  placeButton = null;
-  placeUnitCounter = 0;
-  confirmCounter = 0;
+	isBattlefield = null;
+	initialPlaceButton = null;
+	initialConfirmButton = null;
+	confirmButton = null;
+	placeButton = null;
+	placeUnitCounter = 0;
+	confirmCounter = 0;
 }
 

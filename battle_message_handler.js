@@ -12,57 +12,57 @@ message_07 - Check out my stream! - Captain wants you to check their stream
 */
 
 const arrayOfBattleMessages = [
-    { key: null, value: "has nothing to say" },
-    { key: undefined, value: "has nothing to say" },
-    { key: "message_00", value: "has nothing to say" },
-    { key: "message_01", value: "wants you to join the giveaway" },
-    { key: "message_02", value: "is on LAST BATTLE" },
-    { key: "message_03", value: "said thanks for helping out" },
-    { key: "message_04", value: "told you to follow the markers" },
-    { key: "message_05", value: "wants more epic units" },
-    { key: "message_06", value: "doesn't want any more epics" },
-    { key: "message_07", value: "wants you to check their stream" }
+	{ key: null, value: "has nothing to say" },
+	{ key: undefined, value: "has nothing to say" },
+	{ key: "message_00", value: "has nothing to say" },
+	{ key: "message_01", value: "wants you to join the giveaway" },
+	{ key: "message_02", value: "is on LAST BATTLE" },
+	{ key: "message_03", value: "said thanks for helping out" },
+	{ key: "message_04", value: "told you to follow the markers" },
+	{ key: "message_05", value: "wants more epic units" },
+	{ key: "message_06", value: "doesn't want any more epics" },
+	{ key: "message_07", value: "wants you to check their stream" }
 ];
 async function displayMessage() {
-    try {
-        const result = await new Promise((resolve) => {
+	try {
+		const result = await new Promise((resolve) => {
 
-            chrome.storage.local.get({ ['battleMessageData']: [] }, function (result) {
-                if (chrome.runtime.lastError) {
-                    resolve(null);
-                } else {
-                    resolve(result.battleMessageData);
-                }
-            });
-        });
+			chrome.storage.local.get({ ['battleMessageData']: [] }, function (result) {
+				if (chrome.runtime.lastError) {
+					resolve(null);
+				} else {
+					resolve(result.battleMessageData);
+				}
+			});
+		});
 
-        if (result) {
-            //Do something with the result _shrug_
-            let messagesToDisplay = "";
-            let messageState = "";
-            for (let i = 0; i < result.length; i++) {
-                const position = result[i];
-                const captName = position.cptName;
-                const message = position.message;
-                //Filter so only the message of interest is displayed.
-                if (message === "message_02") {
-                    messageState = "";
-                    messagesToDisplay = `${messagesToDisplay}${captName} is on the LAST BATTLE.  `;
-                } else if (message === "message_01") {
-                    messageState = "";
-                    messagesToDisplay = `${messagesToDisplay}${captName} has a GIVEAWAY.   `;
-                }
-                //These bits show every message.
-                //const messageState = arrayOfBattleMessages.find(entry => entry.key === message)?.value;
-                //messagesToDisplay = `${messagesToDisplay}${captName} ${messageState}.   `
-            }
+		if (result) {
+			//Do something with the result _shrug_
+			let messagesToDisplay = "";
+			let messageState = "";
+			for (let i = 0; i < result.length; i++) {
+				const position = result[i];
+				const captName = position.cptName;
+				const message = position.message;
+				//Filter so only the message of interest is displayed.
+				if (message === "message_02") {
+					messageState = "";
+					messagesToDisplay = `${messagesToDisplay}${captName} is on the LAST BATTLE.  `;
+				} else if (message === "message_01") {
+					messageState = "";
+					messagesToDisplay = `${messagesToDisplay}${captName} has a GIVEAWAY.   `;
+				}
+				//These bits show every message.
+				//const messageState = arrayOfBattleMessages.find(entry => entry.key === message)?.value;
+				//messagesToDisplay = `${messagesToDisplay}${captName} ${messageState}.   `
+			}
 
-            //Return the captain name and their message.
-            return messagesToDisplay;
-        } else {
-            return "No messages to display or something went wrong";
-        }
-    } catch (error) {
-        return "Something went wrong.";
-    }
+			//Return the captain name and their message.
+			return messagesToDisplay;
+		} else {
+			return "No messages to display or something went wrong";
+		}
+	} catch (error) {
+		return "Something went wrong.";
+	}
 }
