@@ -357,11 +357,15 @@ async function getRaidStats(currentRaid) {
 
 async function getRewardUrl(reward, eventUid, items, currency, imageURLs, skins) {
 	let url = "";
-	if (reward.includes("goldbag")) {
+	if (reward.includes("goldbag") || reward.includes("gold_x")) {
 		url = "/icons/iconGold.png";
 	} else if (reward.includes("epicpotion")) {
 		url = "/icons/iconPotion.png";
-	} else if (reward.includes("cooldown")) {
+	} else if (reward.includes("mythicbox_finalreward")) {
+		url = "/icons/rubies.png";
+	} else if (reward.includes("mythicbox_jackpot")) {
+		url = "/icons/iconGold.png";
+	} else if (reward.includes("cooldown") || reward.includes("meat_x")) {
 		url = "/icons/iconMeat.png";
 	} else if (reward.includes("eventtoken")) {
 		if (allRewardUrls.hasOwnProperty(eventUid)) {
@@ -452,17 +456,17 @@ async function checkBattleMessages(activeRaids) {
 /*
 raidState values
 
-11       In Captain Planning Period
-4        In Placement Period
-7        Waiting for Captain to start Battle!
+11		In Captain Planning Period
+4		In Placement Period
+7		Waiting for Captain to start Battle!
 Cycle restarts.
 The period between 7 and 11 is the time the captain idled or took to hand out rewards
 The captain can spend a lot of time on state 1, not a useful marker in my opinion.
-1        Waiting on Captain to find Battle
+1		Waiting on Captain to find Battle
 And state 10 can take several minutes while the captain hands out the rewards or mere seconds if the captain doesn't care. If the crawler is not running on this timeframe, it misses.
-10        Waiting for Captain to collect reward! 
+10		Waiting for Captain to collect reward! 
 So effectively, the time between 11 and 7 is the battle time. The time between 7 and 11 is the downtime.
-5        Battle ready soon (can't place)
+5		Battle ready soon (can't place)
 
 */
 
@@ -793,6 +797,34 @@ async function handleMessage(message) {
 		await saveToStorage("userChests", userChestData);
 		await saveToStorage("userChestsLog", userChestLogData);
 	}
+	else if (url == "https://www.streamraiders.com/api/game/?cn=purchaseBoxItem") {
+		//Save box results to log
+		let userChestData = await retrieveFromStorage("userChests") || [];
+		let userChestLogData = await retrieveFromStorage("userChestsLog") || [];
+		let eventUid = await retrieveFromStorage("getEventProgressionLite");
+		eventUid = eventUid.data.eventUid;
+		if (eventUid == undefined) return;
+
+		let purchaseResponse = data;
+
+		if (purchaseResponse.status == "success") {
+			let chestId = purchaseResponse.data.chestId;
+			let rewards = purchaseResponse.data.rewards;
+			if (userChestData.hasOwnProperty(chestId)) {
+				userChestData[chestId].amountBought++;
+			} else {
+				console.log(`${chestId} not found in userChestData.`);
+			}
+			userChestLogData.push({
+				dateTime: new Date().toString(),
+				chestId: chestId,
+				rewards: rewards,
+				eventUid: eventUid
+			});
+		}
+		await saveToStorage("userChests", userChestData);
+		await saveToStorage("userChestsLog", userChestLogData);
+	}
 }
 
 async function getActiveRaidsLite(activeRaids) {
@@ -979,6 +1011,7 @@ async function getGameData(url, data) {
 	}
 
 	let chestRewardSlots = data.sheets.ChestRewardSlots;
+	let boxesRewardSlots = data.sheets.BoxesRewardSlots;
 
 	const map_keys_rm = ["NodeDifficulty", "NodeType", "MapTags", "OnLoseDialog", "OnStartDialog", "OnWinDialog"]
 	let mapNodes = data.sheets.MapNodes;
@@ -997,6 +1030,10 @@ async function getGameData(url, data) {
 	let chests = data.sheets.Chests;
 	chests = removeKeys(chests, chests_keys_rm);
 
+	const boxes_keys_rm = ["CaptainBasicSlots", "CaptainBoxSlot", "ClosedIcon", "OpenIcon"];
+	let boxes = data.sheets.Boxes;
+	boxes = removeKeys(boxes, boxes_keys_rm);
+
 	const eventTiers_keys_rm = ["Badge", "BasicRewardImageOverride", "BattlePassRewardImageOverride", "Requirement"];
 	let eventTiers = data.sheets.EventTiers;
 	eventTiers = removeKeys(eventTiers, eventTiers_keys_rm);
@@ -1013,7 +1050,7 @@ async function getGameData(url, data) {
 	let quests = data.sheets.Quests;
 	quests = removeKeys(quests, quests_keys_rm);
 
-	await chrome.storage.local.set({ "loyaltyChests": transformedJson, "currency": currency, "items": items, "units": filteredUnits, "skins": skins, "store": store, "chestRewardSlots": chestRewardSlots, "events": events, "chests": chests, "eventTiers": eventTiers, "quests": quests });
+	await chrome.storage.local.set({ "loyaltyChests": transformedJson, "currency": currency, "items": items, "units": filteredUnits, "skins": skins, "store": store, "chestRewardSlots": chestRewardSlots, "boxesRewardSlots": boxesRewardSlots, "events": events, "chests": chests, "boxes": boxes, "eventTiers": eventTiers, "quests": quests });
 
 	console.log("Game data successfully fetched and saved to chrome storage.");
 }

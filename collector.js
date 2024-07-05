@@ -357,7 +357,7 @@ async function buySpecificChest(chestName, basePrice) {
 
 	//If the buy button exists for the desired chest, click it and go back to the main menu.
 	if (storeOptions.length > 0) {
-		storeOptions.forEach((storeOption) => {
+		for (const storeOption of storeOptions) {
 			let itemName = storeOption.querySelector(".storeCardNameNotif");
 			if (!itemName || !itemName.innerText) goHome();
 			try {
@@ -373,11 +373,12 @@ async function buySpecificChest(chestName, basePrice) {
 							if (confirm.innerText.includes("OK")) confirm.click();
 						});
 					}
+					break;
 				}
 			} catch (error) {
 				goHome();
 			}
-		});
+		};
 		await collectDelay(1000);
 		await returnToMainScreen();
 	}
