@@ -108,13 +108,24 @@ async function loadUserChestsLog() {
 				let regex = /\|scroll.+/;
 				let match = regex.exec(reward);
 				rewardSort = "0" + match[0].replace("|scroll", "") + " scrolls";
+			} else if (reward.includes("mythicbox_finalreward")) {
+				rewardSort = "mythicbox_finalreward_rubies_x15";
+			} else if (reward.includes("mythicbox_jackpot")) {
+				rewardSort = "mythicbox_jackpot_gold_x5000";
 			} else {
 				rewardSort = reward;
 			}
 
 			let regex = /\d+/;
-			let match = regex.exec(reward);
-			let qty = match ? match[0] : 1;
+			let qty;
+			if (reward.includes("mythicbox_finalreward")) {
+				qty = "15";
+			} else if (reward.includes("mythicbox_jackpot")) {
+				qty = "5000";
+			} else {
+				let match = regex.exec(reward);
+				qty = match ? match[0] : 1;
+			}
 
 			let url;
 
