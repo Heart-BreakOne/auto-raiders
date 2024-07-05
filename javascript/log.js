@@ -304,7 +304,7 @@ async function loadLogData() {
 		//Getting human-readable chest name and picture
 		try {
 			let entryStartDateTime = new Date(entry.currentTime);
-			let entryEndDateTime = new Date(entryStartDateTime.getTime() + (entry.elapsedTime * 60000));
+			let entryEndDateTime = new Date(entryStartDateTime.getTime() + (entry.elapsedTime*60000)).getTime();
 			for (const battleChest of battleChests) {
 				if (entry.chest == undefined) {
 					chestName = tbd;
@@ -363,11 +363,11 @@ async function loadLogData() {
 			}
 		}
 
-		if (color !== "Normal" && outcome === "Unknown") {
-			outcome = "Possible color status";
-		} else {
-			color = "Normal";
-		}
+		// if (color !== "Normal" && outcome === "Unknown") {
+			// outcome = "Possible color status";
+		// } else {
+			// color = "Normal";
+		// }
 
 		//Get ending time
 		try {
@@ -391,16 +391,16 @@ async function loadLogData() {
 		let initialchestHTML;
 		if (entry.initialchest !== undefined) {
 			initialchestHTML = `<td style="text-align: center; vertical-align: middle;">
-                    <div style="display: flex; flex-direction: column; align-items: center;">
-                        ${initialChestName}
-                        <img src="${initialUrl}" alt="Initial Chest Image" style="height: 30px; width: auto">
-                    </div>
-                </td>`;
+									<div style="display: flex; flex-direction: column; align-items: center;">
+										${initialChestName}
+										<img src="${initialUrl}" alt="Initial Chest Image" style="height: 30px; width: auto">
+									</div>
+								</td>`;
 		} else {
 			initialchestHTML = `<td style="text-align: center; vertical-align: middle;">
-                    <div style="display: flex; flex-direction: column; align-items: center;">
-                    </div>
-                </td>`;
+									<div style="display: flex; flex-direction: column; align-items: center;">
+									</div>
+								</td>`;
 		}
 		let logCaptId;
 		if (captIdSwitch) {
@@ -411,10 +411,10 @@ async function loadLogData() {
 		let logRewards;
 		if (logSwitch) {
 			logRewards = `<td>${rewards}</td>
-                <td>${leaderboardRank}</td>
-                <td>${kills}</td>
-                <td>${assists}</td>
-                <td>${units}</td>`;
+							<td>${leaderboardRank}</td>
+							<td>${kills}</td>
+							<td>${assists}</td>
+							<td>${units}</td>`;
 		} else {
 			logRewards = ``;
 		}
@@ -427,31 +427,31 @@ async function loadLogData() {
 		let logDungeonPVP;
 		if (dungeonPVPSwitch) {
 			logDungeonPVP = `<td>${dungeonLevel}</td>
-                <td style="max-width:70px !important; word-wrap:break-word;">${pvpOpponent}</td>`;
+								<td style="max-width:70px !important; word-wrap:break-word;">${pvpOpponent}</td>`;
 		} else {
 			logDungeonPVP = ``;
 		}
 		row.innerHTML = `<td>${counter}</td>
-            <td>${entry.logId}</td>
-            <td title="${entry.captainId}">${entry.logCapName}</td>
-            ` + logCaptId + `
-            <td>${entry.logMode}</td>
-            <td style="border: 1px solid #ddd; padding: 8px; color: ${color};">${color}</td>
-            <td title="${startingDate}">${startingTime}</td>
-            <td>${endingTime}</td>
-            <td>${elapsed}</td>
-            <td>${outcome}</td>
-            <td style="text-align: center; vertical-align: middle;">
-                <div style="display: flex; flex-direction: column; align-items: center;">
-                    ${chestName}
-                    <img src="${url}" alt="Chest Image" style="height: 30px; width: auto">
-                </div>
-            </td>
-            ` + initialchestHTML + `
-            ` + logRaidId + `
-            ` + logDungeonPVP + `
-            ` + logRewards + `
-            <td style="text-align: center; vertical-align: middle;"><button id="btn_${i}">DEL</button></td>`;
+						<td>${entry.logId}</td>
+						<td title="${entry.captainId}">${entry.logCapName}</td>
+						` + logCaptId + `
+						<td>${entry.logMode}</td>
+						<td style="border: 1px solid #ddd; padding: 8px; color: ${color};">${color}</td>
+						<td title="${startingDate}">${startingTime}</td>
+						<td>${endingTime}</td>
+						<td>${elapsed}</td>
+						<td>${outcome}</td>
+						<td style="text-align: center; vertical-align: middle;">
+								<div style="display: flex; flex-direction: column; align-items: center;">
+										${chestName}
+										<img src="${url}" alt="Chest Image" style="height: 30px; width: auto">
+								</div>
+						</td>
+						` + initialchestHTML + `
+						` + logRaidId + `
+						` + logDungeonPVP + `
+						` + logRewards + `
+						<td style="text-align: center; vertical-align: middle;"><button id="btn_${i}">DEL</button></td>`;
 
 		// Append the row to the table
 		tableElement.appendChild(row);
@@ -465,7 +465,7 @@ async function loadLogData() {
 
 	//Get all buttons from the individual rows
 	const numberButtons = document.querySelectorAll('[id^="btn_"]');
-	//Listen for click events on each butotn
+	//Listen for click events on each button
 	numberButtons.forEach(function (button) {
 		button.addEventListener("click", function () {
 
@@ -489,13 +489,17 @@ async function loadLogData() {
 async function getCurrentEventStartTime() {
 	try {
 		let events = await retrieveFromStorage("events");
-		let currentDateTime = new Date();
+		let currentDateTime = new Date().getTime();
 		for (const event in events) {
 			let eventDetails = events[event];
 			startTime = Date.parse(eventDetails.StartTime);
 			endTime = Date.parse(eventDetails.EndTime);
 			if (startTime <= currentDateTime && endTime > currentDateTime) return startTime;
 		}
+		let returnDate = new Date();
+		returnDate.setDate(returnDate.getDate() - 1)
+		returnDate = returnDate.getTime();
+		return returnDate;
 	} catch (error) { }
 }
 
@@ -544,7 +548,7 @@ function loadChestCounter() {
 	// Loop through the data and create HTML elements
 	for (const item of chestCounter) {
 		const tr = document.createElement('tr');
-		tr.innerHTML = `<td><img src="${item.url}" title="${item.name}"  style="height: 30px; width: auto"></td><td>${item.quantity}</td><td>${item.count}</td><td>${item.max - item.count}</td><td>${item.max}</td>`;
+		tr.innerHTML = `<td><img src="${item.url}" title="${item.name}"	style="height: 30px; width: auto"></td><td>${item.quantity}</td><td>${item.count}</td><td>${item.max - item.count}</td><td>${item.max}</td>`;
 		table.appendChild(tr);
 		item.quantity = 0;
 	}
