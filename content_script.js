@@ -495,7 +495,7 @@ async function start() {
 							let ltoken = chestKeys.ltokenSwitch;
 							let lboss = chestKeys.lbossSwitch;
 							let lsuperboss = chestKeys.lsuperbossSwitch;
-							if ((!lgold && chestType == "chestboostedgold") || (!lskin && chestType.includes("chestboostedskin")) || (!lscroll && chestType == "chestboostedscroll") || (!ltoken && chestType == "chestboostedtoken") || (!lboss && chestType == "chestboss") || (!lsuperboss && chestType == "chestbosssuper")) {
+							if ((!lgold && chestType == "chestboostedgold") || (!lskin && chestType.includes("chestboostedskin")) || (!lskin && chestType.includes("chestboostedbeastlands")) || (!lscroll && chestType == "chestboostedscroll") || (!ltoken && chestType == "chestboostedtoken") || (!lboss && chestType == "chestboss") || (!lsuperboss && chestType == "chestbosssuper")) {
 								captainLoyalty = true;
 							} else if (chestType == "bonechest" || chestType == "dungeonchest" || chestType == "chestbronze" || chestType == "chestsilver" || chestType == "chestgold") {
 								captainLoyalty = false;
@@ -648,7 +648,7 @@ async function openBattlefield(captainNameFromDOM, raidId, slotOption, notAccept
 
 		await setLogInitialChest2(captainNameFromDOM, raidId, chest);
 
-		if (notAcceptableLoyalty && ((!lgold && chest == "Loyalty Gold Chest") || (!lskin && chest == "Loyalty Skin Chest") || (!lscroll && chest == "Loyalty Scroll Chest") || (!ltoken && chest == "Loyalty Token Chest") || (!lboss && chest == "Loyalty Boss Chest") || (!lsuperboss && chest == "Loyalty Super Boss Chest"))) {
+		if (notAcceptableLoyalty && ((!lgold && chest == "Loyalty Gold Chest") || (!lskin && chest == "Loyalty Skin Chest") || (!lskin && chest == "Loyalty Beastlands Chest") || (!lscroll && chest == "Loyalty Scroll Chest") || (!ltoken && chest == "Loyalty Token Chest") || (!lboss && chest == "Loyalty Boss Chest") || (!lsuperboss && chest == "Loyalty Super Boss Chest"))) {
 			//Flag the captain loyalty since the current map is to be skipped
 			await flagCaptain('captainLoyalty');
 			//Close the chest info popup and return to main menu
