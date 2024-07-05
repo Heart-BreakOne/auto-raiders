@@ -357,7 +357,7 @@ async function getRaidStats(currentRaid) {
 
 async function getRewardUrl(reward, eventUid, items, currency, imageURLs, skins) {
 	let url = "";
-	if (reward.includes("goldbag")) {
+	if (reward.includes("goldbag") || reward.includes("gold_x")) {
 		url = "/icons/iconGold.png";
 	} else if (reward.includes("epicpotion")) {
 		url = "/icons/iconPotion.png";
