@@ -25,6 +25,7 @@ const battleChests = [
 	{ key: "chestboostedskin_maps01to11", name: "Loyalty Skin", outcome: "Victory", url: "/icons/iconChestSkinBoosted.png" },
 	{ key: "chestboostedskin_maps23to33", name: "Loyalty Skin", outcome: "Victory", url: "/icons/iconChestSkinBoosted.png" },
 	{ key: "chestboostedskin_maps12to22", name: "Loyalty Skin", outcome: "Victory", url: "/icons/iconChestSkinBoosted.png" },
+	{ key: "chestboostedskinalternate", name: "Loyalty Skin", outcome: "Victory", url: "/icons/iconChestSkinBoosted.png" },
 	{ key: "chestboostedbeastlands", name: "Loyalty Beastlands", outcome: "Victory", url: "/icons/iconChestSkinBoosted.png" },
 	{ key: "chestboostedskinalternate", name: "Loyalty Skin", outcome: "Victory", url: "/icons/iconChestSkinBoosted.png" },
 	{ key: "chestboostedscroll", name: "Loyalty Scroll", outcome: "Victory", url: "/icons/iconChestScrollBoosted.png" },
@@ -321,7 +322,7 @@ async function loadLogData() {
 							let chestCount = parseInt(entry.chestCount);
 							for (const loyaltyChest of chestCounter) {
 								if (entry.raidChest) {
-									if ((loyaltyChest.key != "chestboss" && entry.raidChest.includes(loyaltyChest.key)) || (loyaltyChest.key === "chestboss" && entry.raidChest === "chestboss")) {
+									if ((loyaltyChest.key != "chestboss" && entry.raidChest.includes(loyaltyChest.key)) || (loyaltyChest.key === "chestboss" && entry.raidChest === "chestboss") || (loyaltyChest.key === "chestboostedskin" && (entry.raidChest === "chestboostedbeastlands" || entry.raidChest === "chestboostedskinalternate"))) {
 										if (entryEndDateTime >= currentEventStartTime && chestCount > loyaltyChest.count) loyaltyChest.count = entry.chestCount;
 										break;
 									}
@@ -331,7 +332,7 @@ async function loadLogData() {
 					}
 					//Increment chest quantity
 					for (const loyaltyChest of chestCounter) {
-						if ((loyaltyChest.quantity == 0 || loyaltyChest.quantity < loyaltyChest.count) && ((loyaltyChest.key != "chestboss" && entry.chest.includes(loyaltyChest.key)) || (loyaltyChest.key === "chestboss" && entry.chest === "chestboss"))) {
+						if ((loyaltyChest.quantity == 0 || loyaltyChest.quantity < loyaltyChest.count) && ((loyaltyChest.key != "chestboss" && entry.chest.includes(loyaltyChest.key)) || (loyaltyChest.key === "chestboss" && entry.chest === "chestboss") || (loyaltyChest.key === "chestboostedskin" && (entry.raidChest === "chestboostedbeastlands" || entry.raidChest === "chestboostedskinalternate")))) {
 							loyaltyChest.quantity++;
 							break;
 						}
@@ -342,7 +343,7 @@ async function loadLogData() {
 			if (entry.chest == "Unknown" && entry.units2 != undefined) {
 				// Increment chest quantity if units have been placed because even if the battle is abandoned, the chest still counts
 				for (const loyaltyChest of chestCounter) {
-					if (entryStartDateTime >= currentEventStartTime && (loyaltyChest.quantity == 0 || loyaltyChest.quantity < loyaltyChest.count) && ((loyaltyChest.key != "chestboss" && entry.initialchest.includes(loyaltyChest.key)) || (loyaltyChest.key === "chestboss" && entry.initialchest === "chestboss"))) {
+					if (entryStartDateTime >= currentEventStartTime && (loyaltyChest.quantity == 0 || loyaltyChest.quantity < loyaltyChest.count) && ((loyaltyChest.key != "chestboss" && entry.initialchest.includes(loyaltyChest.key)) || (loyaltyChest.key === "chestboss" && entry.initialchest === "chestboss") || (loyaltyChest.key === "chestboostedskin" && (entry.raidChest === "chestboostedbeastlands" || entry.raidChest === "chestboostedskinalternate")))) {
 						loyaltyChest.quantity += 1;
 						break;
 					}

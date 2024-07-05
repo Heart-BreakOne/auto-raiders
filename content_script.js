@@ -495,7 +495,7 @@ async function start() {
 							let ltoken = chestKeys.ltokenSwitch;
 							let lboss = chestKeys.lbossSwitch;
 							let lsuperboss = chestKeys.lsuperbossSwitch;
-							if ((!lgold && chestType == "chestboostedgold") || (!lskin && chestType.includes("chestboostedskin")) || (!lskin && chestType.includes("chestboostedbeastlands")) || (!lscroll && chestType == "chestboostedscroll") || (!ltoken && chestType == "chestboostedtoken") || (!lboss && chestType == "chestboss") || (!lsuperboss && chestType == "chestbosssuper")) {
+							if ((!lgold && chestType == "chestboostedgold") || (!lskin && chestType.includes("chestboostedskin")) || (!lskin && chestType.includes("chestboostedbeastlands")) || (!lskin && chestType.includes("chestboostedskinalternate")) || (!lscroll && chestType == "chestboostedscroll") || (!ltoken && chestType == "chestboostedtoken") || (!lboss && chestType == "chestboss") || (!lsuperboss && chestType == "chestbosssuper")) {
 								captainLoyalty = true;
 							} else if (chestType == "bonechest" || chestType == "dungeonchest" || chestType == "chestbronze" || chestType == "chestsilver" || chestType == "chestgold") {
 								captainLoyalty = false;
