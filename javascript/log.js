@@ -25,6 +25,7 @@ const battleChests = [
 	{ key: "chestboostedskin_maps01to11", name: "Loyalty Skin", outcome: "Victory", url: "/icons/iconChestSkinBoosted.png" },
 	{ key: "chestboostedskin_maps23to33", name: "Loyalty Skin", outcome: "Victory", url: "/icons/iconChestSkinBoosted.png" },
 	{ key: "chestboostedskin_maps12to22", name: "Loyalty Skin", outcome: "Victory", url: "/icons/iconChestSkinBoosted.png" },
+	{ key: "chestboostedbeastlands", name: "Loyalty Beastlands", outcome: "Victory", url: "/icons/iconChestSkinBoosted.png" },
 	{ key: "chestboostedskinalternate", name: "Loyalty Skin", outcome: "Victory", url: "/icons/iconChestSkinBoosted.png" },
 	{ key: "chestboostedscroll", name: "Loyalty Scroll", outcome: "Victory", url: "/icons/iconChestScrollBoosted.png" },
 	{ key: "chestboostedtoken", name: "Loyalty Token", outcome: "Victory", url: "/icons/iconChestTokenBoosted.png" },
