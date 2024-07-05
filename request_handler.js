@@ -361,7 +361,11 @@ async function getRewardUrl(reward, eventUid, items, currency, imageURLs, skins)
 		url = "/icons/iconGold.png";
 	} else if (reward.includes("epicpotion")) {
 		url = "/icons/iconPotion.png";
-	} else if (reward.includes("cooldown")) {
+	} else if (reward.includes("mythicbox_finalreward")) {
+		url = "/icons/rubies.png";
+	} else if (reward.includes("mythicbox_jackpot")) {
+		url = "/icons/iconGold.png";
+	} else if (reward.includes("cooldown") || reward.includes("meat_x")) {
 		url = "/icons/iconMeat.png";
 	} else if (reward.includes("eventtoken")) {
 		if (allRewardUrls.hasOwnProperty(eventUid)) {
