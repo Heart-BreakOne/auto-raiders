@@ -40,6 +40,7 @@ async function loadUserChestsLog() {
 		}
 	});
 	let chests = await retrieveFromStorage("chests");
+	let boxes = await retrieveFromStorage("boxes");
 
 	let allRewardData = [];
 	let allUrlData = [];
@@ -87,6 +88,13 @@ async function loadUserChestsLog() {
 			Object.keys(chests).forEach(function (key) {
 				if (key === chestId) {
 					chestName = chests[key].DisplayName;
+					allChests[key] = { DisplayName: chestName };
+					return;
+				}
+			});
+			Object.keys(boxes).forEach(function (key) {
+				if (key === chestId) {
+					chestName = boxes[key].DisplayName;
 					allChests[key] = { DisplayName: chestName };
 					return;
 				}

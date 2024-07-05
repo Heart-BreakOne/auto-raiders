@@ -90,10 +90,12 @@ async function fetchAndSaveChestData() {
 		let freshRubyArray = filterChests("Rubies");
 
 		let chests = await retrieveFromStorage("chests");
-		let rewards = await retrieveFromStorage("chestRewardSlots");
+		let boxes = await retrieveFromStorage("boxes");
+		freshRubyArray = appendDisplayName(freshRubyArray, boxes, chests);
 
-		freshRubyArray = appendDisplayName(freshRubyArray, chests);
-		freshRubyArray = appendSkins(freshRubyArray, chests, rewards);
+		let rewards = await retrieveFromStorage("chestRewardSlots");
+		let boxRewards = await retrieveFromStorage("boxesRewardSlots");
+		freshRubyArray = appendSkins(freshRubyArray, chests, boxes, rewards);
 
 		await chrome.storage.local.set({ 'rubyChestsData': freshRubyArray });
 
@@ -333,11 +335,17 @@ async function loadSelects(k1, k2) {
 	}
 }
 
-function appendSkins(chestArray, chestsData, rewards) {
+function appendSkins(chestArray, chestsData, boxesData, rewards) {
 	for (let chest of chestArray) {
 		let matchingSkin = chestsData[chest.Uid];
+		if (!matchingSkin) matchingSkin = boxesData[chest.Uid];
 		if (matchingSkin) {
-			let slots = matchingSkin.ViewerSlots.split(",");
+			let slots;
+			if (matchingSkin.ViewerSlots) {
+				slots = matchingSkin.ViewerSlots.split(",");
+			} else if (matchingSkin.ViewerBasicSlots) {
+				slots = matchingSkin.ViewerBasicSlots.split(",");
+			}
 			for (let slotUid of slots) {
 				let matchingReward = rewards[slotUid];
 				if (matchingReward) {
