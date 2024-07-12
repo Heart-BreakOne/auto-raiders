@@ -38,6 +38,7 @@ const battleChests = [
 let chestCounter = [
 	{ key: "chestboostedgold", name: "Loyalty Gold", quantity: 0, max: 65, count: 0, url: "/icons/iconChestGoldBoosted.png" },
 	{ key: "chestboostedskin", name: "Loyalty Skin", quantity: 0, max: 130, count: 0, url: "/icons/iconChestSkinBoosted.png" },
+	{ key: "chestboostedbeastlands", name: "Loyalty Beastlands", quantity: 0, max: 440, count: 0, url: "/icons/iconChestSkinBoosted.png" },
 	{ key: "chestboostedscroll", name: "Loyalty Scroll", quantity: 0, max: 65, count: 0, url: "/icons/iconChestScrollBoosted.png" },
 	{ key: "chestboostedtoken", name: "Loyalty Token", quantity: 0, max: 65, count: 0, url: "/icons/iconChestTokenBoosted.png" },
 	{ key: "chestbosssuper", name: "Loyalty SB", quantity: 0, max: 30, count: 0, url: "/icons/iconChestBossSuper.png" },
@@ -322,7 +323,7 @@ async function loadLogData() {
 							let chestCount = parseInt(entry.chestCount);
 							for (const loyaltyChest of chestCounter) {
 								if (entry.raidChest) {
-									if ((loyaltyChest.key != "chestboss" && entry.raidChest.includes(loyaltyChest.key)) || (loyaltyChest.key === "chestboss" && entry.raidChest === "chestboss") || (loyaltyChest.key === "chestboostedskin" && (entry.raidChest === "chestboostedbeastlands" || entry.raidChest === "chestboostedskinalternate"))) {
+									if ((loyaltyChest.key != "chestboss" && entry.raidChest.includes(loyaltyChest.key)) || (loyaltyChest.key === "chestboss" && entry.raidChest === "chestboss") || (loyaltyChest.key === "chestboostedskin" && entry.raidChest === "chestboostedskinalternate")) {
 										if (entryEndDateTime >= currentEventStartTime && chestCount > loyaltyChest.count) loyaltyChest.count = entry.chestCount;
 										break;
 									}
@@ -332,7 +333,7 @@ async function loadLogData() {
 					}
 					//Increment chest quantity
 					for (const loyaltyChest of chestCounter) {
-						if ((loyaltyChest.quantity == 0 || loyaltyChest.quantity < loyaltyChest.count) && ((loyaltyChest.key != "chestboss" && entry.chest.includes(loyaltyChest.key)) || (loyaltyChest.key === "chestboss" && entry.chest === "chestboss") || (loyaltyChest.key === "chestboostedskin" && (entry.raidChest === "chestboostedbeastlands" || entry.raidChest === "chestboostedskinalternate")))) {
+						if ((loyaltyChest.quantity == 0 || loyaltyChest.quantity < loyaltyChest.count) && ((loyaltyChest.key != "chestboss" && entry.chest.includes(loyaltyChest.key)) || (loyaltyChest.key === "chestboss" && entry.chest === "chestboss") || (loyaltyChest.key === "chestboostedskin" && entry.raidChest === "chestboostedskinalternate"))) {
 							loyaltyChest.quantity++;
 							break;
 						}
