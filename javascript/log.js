@@ -26,7 +26,7 @@ const battleChests = [
 	{ key: "chestboostedskin_maps23to33", name: "Loyalty Skin", outcome: "Victory", url: "/icons/iconChestSkinBoosted.png" },
 	{ key: "chestboostedskin_maps12to22", name: "Loyalty Skin", outcome: "Victory", url: "/icons/iconChestSkinBoosted.png" },
 	{ key: "chestboostedskinalternate", name: "Loyalty Skin", outcome: "Victory", url: "/icons/iconChestSkinBoosted.png" },
-	{ key: "chestboostedbeastlands", name: "Loyalty Beastlands", outcome: "Victory", url: "/icons/iconChestSkinBoosted.png" },
+	{ key: "chestboostedbeastlands", name: "Loyalty Beastlands", outcome: "Victory", url: "/icons/iconChestBeastlands.png" },
 	{ key: "chestboostedskinalternate", name: "Loyalty Skin", outcome: "Victory", url: "/icons/iconChestSkinBoosted.png" },
 	{ key: "chestboostedscroll", name: "Loyalty Scroll", outcome: "Victory", url: "/icons/iconChestScrollBoosted.png" },
 	{ key: "chestboostedtoken", name: "Loyalty Token", outcome: "Victory", url: "/icons/iconChestTokenBoosted.png" },
@@ -38,7 +38,7 @@ const battleChests = [
 let chestCounter = [
 	{ key: "chestboostedgold", name: "Loyalty Gold", quantity: 0, max: 65, count: 0, url: "/icons/iconChestGoldBoosted.png" },
 	{ key: "chestboostedskin", name: "Loyalty Skin", quantity: 0, max: 130, count: 0, url: "/icons/iconChestSkinBoosted.png" },
-	{ key: "chestboostedbeastlands", name: "Loyalty Beastlands", quantity: 0, max: 440, count: 0, url: "/icons/iconChestSkinBoosted.png" },
+	{ key: "chestboostedbeastlands", name: "Loyalty Beastlands", quantity: 0, max: 440, count: 0, url: "/icons/iconChestBeastlands.png" },
 	{ key: "chestboostedscroll", name: "Loyalty Scroll", quantity: 0, max: 65, count: 0, url: "/icons/iconChestScrollBoosted.png" },
 	{ key: "chestboostedtoken", name: "Loyalty Token", quantity: 0, max: 65, count: 0, url: "/icons/iconChestTokenBoosted.png" },
 	{ key: "chestbosssuper", name: "Loyalty SB", quantity: 0, max: 30, count: 0, url: "/icons/iconChestBossSuper.png" },
