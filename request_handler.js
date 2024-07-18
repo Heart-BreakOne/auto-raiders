@@ -359,6 +359,8 @@ async function getRewardUrl(reward, eventUid, items, currency, imageURLs, skins)
 	let url = "";
 	if (reward.includes("goldbag") || reward.includes("gold_x")) {
 		url = "/icons/iconGold.png";
+	} else if (reward.includes("skinticket")) {
+		url = "/icons/skinTicket.png";
 	} else if (reward.includes("epicpotion")) {
 		url = "/icons/iconPotion.png";
 	} else if (reward.includes("mythicbox_finalreward")) {
@@ -1030,6 +1032,10 @@ async function getGameData(url, data) {
 	let chests = data.sheets.Chests;
 	chests = removeKeys(chests, chests_keys_rm);
 
+	const chest_rewards_keys_rm = ["ItemUid"];
+	let chestRewards = data.sheets.ChestRewards;
+	chestRewards = removeKeys(chestRewards, chest_rewards_keys_rm);
+
 	const boxes_keys_rm = ["CaptainBasicSlots", "CaptainBoxSlot", "ClosedIcon", "OpenIcon"];
 	let boxes = data.sheets.Boxes;
 	boxes = removeKeys(boxes, boxes_keys_rm);
@@ -1050,7 +1056,7 @@ async function getGameData(url, data) {
 	let quests = data.sheets.Quests;
 	quests = removeKeys(quests, quests_keys_rm);
 
-	await chrome.storage.local.set({ "loyaltyChests": transformedJson, "currency": currency, "items": items, "units": filteredUnits, "skins": skins, "store": store, "chestRewardSlots": chestRewardSlots, "boxesRewardSlots": boxesRewardSlots, "events": events, "chests": chests, "boxes": boxes, "eventTiers": eventTiers, "quests": quests });
+	await chrome.storage.local.set({ "loyaltyChests": transformedJson, "currency": currency, "items": items, "units": filteredUnits, "skins": skins, "store": store, "chestRewardSlots": chestRewardSlots, "boxesRewardSlots": boxesRewardSlots, "events": events, "chests": chests, "chestRewards": chestRewards, "boxes": boxes, "eventTiers": eventTiers, "quests": quests });
 
 	console.log("Game data successfully fetched and saved to chrome storage.");
 }

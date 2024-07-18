@@ -122,6 +122,8 @@ async function loadUserChestsLog() {
 				qty = "15";
 			} else if (reward.includes("mythicbox_jackpot")) {
 				qty = "5000";
+			} else if (reward.includes("skinticket")) {
+				qty = "1";
 			} else {
 				let match = regex.exec(reward);
 				qty = match ? match[0] : 1;
@@ -156,7 +158,7 @@ async function loadUserChestsLog() {
 				eventUid: eventUid
 			});
 
-			if (reward.includes("scroll") || reward.includes("skin")) {
+			if (reward.includes("scroll") || (reward.includes("skin") && !reward.includes("ticket"))) {
 				rewardString += `<div class="crop"><img src="${url}" title="${reward}"></div>`;
 			} else {
 				rewardString += `<img src="${url}" title="${reward}" style="height: 30px; width: auto">`;
@@ -267,7 +269,7 @@ function loadChestRewardCounter() {
 		}
 		let percent = (item.count / chestCount) * 100;
 		percent = Math.round((percent + Number.EPSILON) * 100) / 100;
-		if (item.reward.includes("scroll") || item.reward.includes("skin")) {
+		if (item.reward.includes("scroll") || (item.reward.includes("skin") && !item.reward.includes("ticket"))) {
 			tr.innerHTML = `<td>${counter}</td><td title="${item.chestId}" style="white-space: nowrap;">${item.chestName}</td><td>${item.slotNo}</td><td><div class="crop"><img src="${item.url}" title="${item.rewardSort.replace("0", "")}"></div></td><td>x${item.qty}</td><td>${item.count}</td><td>${percent}</td>`;
 		} else {
 			tr.innerHTML = `<td>${counter}</td><td title="${item.chestId}" style="white-space: nowrap;">${item.chestName}</td><td>${item.slotNo}</td><td><img src="${item.url}" title="${item.rewardSort.replace("0", "")}" style="height: 30px; width: auto"></td><td>x${item.qty}</td><td>${item.count}</td><td>${percent}</td>`;
