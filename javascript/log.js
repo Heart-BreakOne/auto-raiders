@@ -131,7 +131,7 @@ document.addEventListener('DOMContentLoaded', async function () {
 });
 
 async function loadLogData() {
-	const dataArray = ['logSwitch', 'captIdSwitch', 'raidIdSwitch', 'pendingSwitch', 'dungeonPVPSwitch', 'items', 'currency', 'skins', 'imageUrls', 'getEventProgressionLite'];
+	const dataArray = ['logSwitch', 'captIdSwitch', 'raidIdSwitch', 'pendingSwitch', 'dungeonPVPSwitch', 'items', 'currency', 'chestRewards', 'skins', 'imageUrls', 'getEventProgressionLite'];
 	const dataKeys = await retrieveMultipleFromStorage(dataArray);
 	const logSwitch = dataKeys.logSwitch;
 	const captIdSwitch = dataKeys.captIdSwitch;
@@ -140,6 +140,7 @@ async function loadLogData() {
 	const dungeonPVPSwitch = dataKeys.dungeonPVPSwitch;
 	const items = dataKeys.items;
 	const currency = dataKeys.currency;
+	const chestRewards = dataKeys.chestRewards;
 	const skins = dataKeys.skins;
 	const imageURLs = dataKeys.imageUrls;
 	let filteredImageURLs = {};
@@ -294,6 +295,15 @@ async function loadLogData() {
 				if (reward[1] !== undefined && reward[0] !== "undefined") {
 					if (reward[1].includes("scroll")) {
 						rewards = '<div class="crop"><img src="' + reward[0] + '" title="' + reward[1] + '"></div>' + rewards;
+					} else if (reward[1].includes("_")) {
+						let rewardName = reward[1].substring(0, reward[1].indexOf("_"));
+						Object.keys(chestRewards).forEach(function (key) {
+							if (key == reward[1]) {
+								rewardName += "x" + chestRewards[key].Quantity;
+								return;
+							}
+						});
+						rewards = '<img src="' + reward[0] + '" title="' + rewardName + '" style="height: 30px; width: auto">' + rewards;
 					} else {
 						rewards = '<img src="' + reward[0] + '" title="' + reward[1] + '" style="height: 30px; width: auto">' + rewards;
 					}
