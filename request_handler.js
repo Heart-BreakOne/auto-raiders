@@ -33,6 +33,41 @@ async function logChestsAndUnitsInterval() {
 	}
 }
 
+async function leaveOfflineCaptains() {
+	if (!await retrieveFromStorage("leaveOfflineSwitch")) {
+		return
+	}
+	const offlineCaptains = document.querySelectorAll(".capSlotInactive")
+	if (offlineCaptains.length != 0) {
+		for (let i = 0; i < offlineCaptains.length; i++) {
+			const slot = offlineCaptains[i]
+			const cNm = slot.querySelector(".capSlotName")
+			if (cNm) {
+				const capName = cNm.innerText.toLowerCase()
+				let offList = []
+				await new Promise((resolve) => {
+					chrome.storage.local.get({ ['offlinelist']: [] }, function (result) {
+						if (chrome.runtime.lastError) {
+							offList = [];
+						} else {
+							offList = result['offlinelist'] || [];
+						}
+						resolve();
+					});
+				});
+				if (!offList.map(name => name.toLowerCase()).includes(capName)) {
+					for (let index = 0; index < activeRaidsArray.length; index++) {
+						const dtSlot = activeRaidsArray[index];
+						if (capName == dtSlot.twitchUserName.toLowerCase()) {
+							await abandonBattle("Abandoned", "abandoned", slot, dtSlot.raidId);
+						}
+					}
+				}
+			}
+		}
+	}
+}
+
 async function getCaptainLoyalty(captainName) {
 	try {
 		let response = activeRaidsArray;
@@ -587,6 +622,7 @@ async function handleMessage(message) {
 			return;
 		}
 		await getActiveRaidsLite(data);
+		await leaveOfflineCaptains();
 		await logChestsAndUnitsInterval();
 	}
 	else if (url == "https://www.streamraiders.com/api/game/?cn=getEventProgressionLite") {
@@ -856,11 +892,12 @@ async function getActiveRaidsLite(activeRaids) {
 			"chestType": chestType,
 			"opponentTwitchDisplayName": activeRaid.opponentTwitchDisplayName,
 			"type": activeRaid.type,
+			"isLive": activeRaid.isLive,
 			"isCodeLocked": activeRaid.isCodeLocked,
 			"pveWins": activeRaid.pveWins,
 			"message": activeRaid.message,
-            "hasViewedResults": activeRaid.hasViewedResults,
-            "postBattleComplete": activeRaid.postBattleComplete
+			"hasViewedResults": activeRaid.hasViewedResults,
+			"postBattleComplete": activeRaid.postBattleComplete
 		});
 	}
 	//Put an empty entry in activeRaidsArray if the user has no captains in any slot
@@ -874,11 +911,12 @@ async function getActiveRaidsLite(activeRaids) {
 			"nodeId": "",
 			"opponentTwitchDisplayName": "",
 			"type": "",
+			"isLive": "",
 			"isCodeLocked": "",
 			"pveWins": "",
 			"message": "",
-            "hasViewedResults": "",
-            "postBattleComplete": ""
+			"hasViewedResults": "",
+			"postBattleComplete": ""
 		});
 	}
 }

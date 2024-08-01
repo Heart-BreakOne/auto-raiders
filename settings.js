@@ -30,6 +30,7 @@ document.addEventListener("DOMContentLoaded", function () {
 	initializeSwitch("soulSwitch7");
 	initializeSwitch("modeChangeSwitch");
 	initializeSwitch("modeChangeLeaveSwitch");
+	initializeSwitch("leaveOfflineSwitch");
 	initializeSwitch("campaignSwitch");
 	initializeSwitch("battlepassSwitch");
 	initializeSwitch("shuffleSwitch0");
@@ -434,6 +435,7 @@ function exportSettingsToFile() {
 		"soulSwitch7",
 		"modeChangeSwitch",
 		"modeChangeLeaveSwitch",
+		"leaveOfflineSwitch",
 		"dungeonSwitch",
 		"dungeonLevelSwitch",
 		"dungeonBossPotionSwitch",

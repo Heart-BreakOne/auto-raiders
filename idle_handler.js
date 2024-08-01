@@ -68,6 +68,7 @@ async function checkIdleCaptains() {
 		//If the idleState indicates that the user wants to disable the slot, skip it
 		if (!currentSlots[i].idleState) continue;
 
+		//MAKE SURE NODE CAPTAIN MATCHES DATA CAPTAIN
 		let raidId = currentSlots[i].raidId;
 		let captId = currentSlots[i].captId;
 		const capSlots = document.querySelectorAll('.capSlot');

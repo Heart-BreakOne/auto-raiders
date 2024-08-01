@@ -1,6 +1,7 @@
 
 //Declaring/Initializing variables
 const keysToExport = [
+	"offlinelist",
 	"masterlist",
 	"whitelist",
 	"blacklist",
@@ -25,6 +26,7 @@ document.addEventListener('DOMContentLoaded', async function () {
 
 	//Listen for click events on the save list button
 	document.getElementById("updateList_button").addEventListener("click", async function () {
+		await setCaptainList('offlinelist')
 		await setCaptainList('masterlist');
 		await setCaptainList('whitelist');
 		await setCaptainList('blacklist');
@@ -35,6 +37,7 @@ document.addEventListener('DOMContentLoaded', async function () {
 		alert("Lists updated successfully!");
 	});
 
+	await loadAndInjectList('offlinelist');
 	await loadAndInjectList('masterlist');
 	await loadAndInjectList('whitelist');
 	await loadAndInjectList('blacklist');
