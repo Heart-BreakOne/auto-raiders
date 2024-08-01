@@ -70,10 +70,10 @@ async function checkIdleCaptains() {
 
 		let raidId = currentSlots[i].raidId;
 		let captId = currentSlots[i].captId;
+		const capSlots = document.querySelectorAll('.capSlot');
+		const slot = capSlots[i];
 		//If the captain name doesn't exist, it means that the slot is empty
 		if (captainName == null) {
-			const capSlots = document.querySelectorAll('.capSlot');
-			const slot = capSlots[i];
 			if (!slot) return;
 			const selectButton = slot.querySelector(".actionButton.actionButtonPrimary.capSlotButton.capSlotButtonAction");
 			if (selectButton && selectButton.innerText == "SELECT") {
@@ -96,7 +96,7 @@ async function checkIdleCaptains() {
 			if (isIdle) {
 				if (isContentRunningIdle == true) return;
 				isContentRunningIdle = true;
-				await abandonBattle("Abandoned", "abandoned", captainName, raidId, captId);
+				await abandonBattle("Abandoned", "abandoned", slot, raidId);
 				//Clicks the select button to open captain selection list
 				const selectButton = slot.querySelector(".actionButton.actionButtonPrimary.capSlotButton.capSlotButtonAction");
 				if (selectButton) selectButton.click();
@@ -393,7 +393,7 @@ async function scroll() {
 }
 
 //Abandon the battle and select a new captain
-async function abandonBattle(status, slot, status1) {
+async function abandonBattle(status, status1, slot, raidId) {
 	//Closes captain slot
 	let close = slot.querySelector(".fas.fa-square");
 	const c = close.offsetParent;
@@ -403,17 +403,8 @@ async function abandonBattle(status, slot, status1) {
 	await delay(1000);
 	//Store battle result as abandoned on storage log
 	await setLogResults(status, idleCapName, status1, "N/A", "N/A", "N/A", "N/A", "N/A", raidId, "N/A", "N/A");
-	//Checks if modal that appears on certain conditions exists and clicks to close it.
-	const modal = document.querySelector(".modalScrim.modalOn");
-	let placeAnyway = modal.querySelector(".actionButton.actionButtonSecondary").innerText;
-	// If placeAnyways is undefined assign an empty value otherwise the placeAnyway != "PLACE ANYWAY" will crash the script.
-	// The check can't be done there because actionButtonSecondary doesn't always exist, this a failsafe for that scenario.
-	if (!placeAnyway) placeAnyway = "";
-	if (placeAnyway != "PLACE ANYWAY" && modal) {
-		await delay(2000);
-		close = modal.querySelector(".actionButton.actionButtonPrimary");
-		if (close) close.click();
-	}
+	// Special modes have a leave battle confirmation popup. This handles those
+	await confirmLeaveBattlePopup();
 	await idleDelay(2000);
 }
 

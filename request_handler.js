@@ -858,7 +858,9 @@ async function getActiveRaidsLite(activeRaids) {
 			"type": activeRaid.type,
 			"isCodeLocked": activeRaid.isCodeLocked,
 			"pveWins": activeRaid.pveWins,
-			"message": activeRaid.message
+			"message": activeRaid.message,
+            "hasViewedResults": activeRaid.hasViewedResults,
+            "postBattleComplete": activeRaid.postBattleComplete
 		});
 	}
 	//Put an empty entry in activeRaidsArray if the user has no captains in any slot
@@ -874,7 +876,9 @@ async function getActiveRaidsLite(activeRaids) {
 			"type": "",
 			"isCodeLocked": "",
 			"pveWins": "",
-			"message": ""
+			"message": "",
+            "hasViewedResults": "",
+            "postBattleComplete": ""
 		});
 	}
 }

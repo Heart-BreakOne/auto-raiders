@@ -361,7 +361,7 @@ async function start() {
 						let captLoyalty = await getCaptainLoyalty(captainNameFromDOM);
 						let raidId = captLoyalty[0];
 						let captainId = captLoyalty[2];
-						await abandonBattle("Abandoned-Mode Change", "abandoned", captainNameFromDOM, raidId, captainId);
+						await abandonBattle("Abandoned-Mode Change", "abandoned", captainSlot, raidId);
 					}
 					continue;
 				}
