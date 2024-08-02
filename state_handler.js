@@ -99,6 +99,11 @@ async function checkAndReload(selector, battleDelayTimer) {
 
 //Game froze on a dark blue blank screen, reload.
 async function reloadRoot() {
+	const ctv_logo = document.querySelector(".splashImage.splashImageIn")
+	if (ctv_logo) {
+		return;
+	}
+	
 	//check if splashImage splashImageIn exists
 	const rootElement = document.getElementById('root');
 	if (rootElement && rootElement.childElementCount === 0) {
@@ -130,9 +135,6 @@ const observerCallback = async function (mutations) {
 		return;
 	}
 
-	const ctv_logo = document.querySelector(".splashImage.splashImageIn")
-	if (ctv_logo) return;
-	
 	domChanged = true;
 	await reloadRoot();
 
