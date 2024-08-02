@@ -225,6 +225,7 @@ async function switchIdleCaptain() {
 	//Gets the full list of captains
 
 	let fullCaptainList = await retrieveFromStorage("captainSearchData");
+	if (!fullCaptainList) return;
 	fullCaptainList = fullCaptainList.filter(captain => !idlersList.includes(captain.twitchDisplayName.toUpperCase()));
 
 	let blackList = await filterCaptainList('blacklist', fullCaptainList);
@@ -398,8 +399,11 @@ async function abandonBattle(status, status1, slot, raidId) {
 	//Closes captain slot
 	let close = slot.querySelector(".fas.fa-square");
 	const c = close.offsetParent;
+	if (!c) return;
 	const closeOffset = c.offsetParent;
+	if (!closeOffset) return;
 	const idleCapName = closeOffset.querySelector(".capSlotName").innerText;
+
 	if (close) close.click();
 	await delay(1000);
 	//Store battle result as abandoned on storage log
