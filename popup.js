@@ -21,6 +21,11 @@ document.addEventListener("DOMContentLoaded", function () {
 		chrome.tabs.create({ url: url });
 	});
 
+	document.getElementById("level_button").addEventListener('click', function () {
+		const url = `chrome-extension://${chrome.runtime.id}/html/levelup.html`
+		chrome.tabs.create({ url: url });
+	});
+
 	document.getElementById("store_button").addEventListener('click', function () {
 		const url = `chrome-extension://${chrome.runtime.id}/html/chests.html`
 		chrome.tabs.create({ url: url });

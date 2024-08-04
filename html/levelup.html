@@ -1,0 +1,558 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<link rel="stylesheet" type="text/css" href="/styles/styles.css">
+	<script src="/popup.js"></script>
+	<script src="/javascript/levelup.js"></script>
+	<title>Level Up</title>
+
+</head>
+
+<body style="margin-bottom: 20px;">
+	<div class="button_container">
+		<button id="settings_button" class="green_button">Open settings</button>
+		<button id="whitelist_button" class="green_button">Filter lists</button>
+		<button id="log_button" class="green_button">Log</button>
+		<button id="unit_button" class="green_button">Units</button>
+		<button id="level_button" class="green_button">Level-up</button>
+		<button id="store_button" class="green_button">Chests</button>
+		<button id="instructions_button" class="green_button">Instructions</button>
+		<button id="key_check_button" class="green_button">Key check</button>
+	</div>
+
+	<div class="button_container">
+		<h1>DOESN'T WORK YET, UPDATING WORKING TREE</h1>
+		<button id="save_btn" class="green_button">SAVE</button>
+		<button id="reset_btn" class="green_button" style="background-color: red; padding: 5px 20px;">RESET</button>
+		<div class="file-input-container">
+			<label for="log-file-input" class="green_button">Import your units data from file (.json)</label>
+			<input type="file" id="log-file-input">
+		</div>
+		<button id="export_btn" class="green_button">EXPORT</button>
+		<div style="font-size: large; margin-bottom: 10px;">Minimum operational coin amount (set to 0 to disable it):
+			<input id="min_level_currency" type="number" value="0"></div>
+	</div>
+
+	<h2>Quick sets</h2>
+	<table id="macro_table">
+		<thead>
+			<tr>
+				<th>Type</th>
+				<th>Can unlock</th>
+				<th>Level up</th>
+				<th>Can Spec</th>
+				<th>Priority</th>
+			</tr>
+		</thead>
+		<tbody>
+			<tr id="all">
+				<td>All</td>
+				<td><input type="checkbox"></td>
+				<td><input type="checkbox"></td>
+				<td><input type="checkbox"></td>
+				<td><input type="number" value="0"></td>
+			</tr>
+			<tr id="common">
+				<td>Common</td>
+				<td><input type="checkbox"></td>
+				<td><input type="checkbox"></td>
+				<td><input type="checkbox"></td>
+				<td><input type="number" value="0"></td>
+			</tr>
+			<tr id="uncommon">
+				<td>Uncommon</td>
+				<td><input type="checkbox"></td>
+				<td><input type="checkbox"></td>
+				<td><input type="checkbox"></td>
+				<td><input type="number" value="0"></td>
+			</tr>
+			<tr id="rare">
+				<td>Rare</td>
+				<td><input type="checkbox"></td>
+				<td><input type="checkbox"></td>
+				<td><input type="checkbox"></td>
+				<td><input type="number" value="0"></td>
+			</tr>
+			<tr id="legendary">
+				<td>Legendary</td>
+				<td><input type="checkbox"></td>
+				<td><input type="checkbox"></td>
+				<td><input type="checkbox"></td>
+				<td><input type="number" value="0"></td>
+			</tr>
+		</tbody>
+	</table>
+	<div class="button_container">
+		<button id="load_sets_btn" class="green_button">Load quick sets</button>
+	</div>
+	<br><br>
+	<table id="units_table">
+		<thead>
+			<tr>
+				<th>Unit</th>
+				<th>Can Unlock</th>
+				<th>Level up</th>
+				<th>Can Spec</th>
+				<th>What spec</th>
+				<th>Priority</th>
+			</tr>
+		</thead>
+		<tbody>
+			<tr id="amazon">
+				<td>Amazon</td>
+				<td><input type="checkbox"></td>
+				<td><input type="checkbox"></td>
+				<td><input type="checkbox"></td>
+				<td>
+					<select>
+						<option value="huntressamazon">Huntress</option>
+						<option value="oracleamazon">Oracle</option>
+						<option value="princessamazon">Princess</option>
+					</select>
+				</td>
+				<td><input type="number" value="0"></td>
+			</tr>
+			<tr id="archer">
+				<td>Archer</td>
+				<td><input type="checkbox"></td>
+				<td><input type="checkbox"></td>
+				<td><input type="checkbox"></td>
+				<td>
+					<select>
+						<option value="deadeyearcher">Deadeye</option>
+						<option value="longshotarcher">Longshot</option>
+						<option value="pinningarcher">Pinning</option>
+					</select>
+				</td>
+				<td><input type="number" value="0"></td>
+			</tr>
+			<tr id="artillery">
+				<td>Artillery</td>
+				<td><input type="checkbox"></td>
+				<td><input type="checkbox"></td>
+				<td><input type="checkbox"></td>
+				<td>
+					<select>
+						<option value="rapidartillery">Rapid</option>
+						<option value="shrapnelartillery">Shrapnel</option>
+						<option value="sludgeartillery">Sludge</option>
+					</select>
+				</td>
+				<td><input type="number" value="0"></td>
+			</tr>
+			<tr id="balloonbuster">
+				<td>Balloon Buster</td>
+				<td><input type="checkbox"></td>
+				<td><input type="checkbox"></td>
+				<td><input type="checkbox"></td>
+				<td>
+					<select>
+						<option value="ironcladalliesballoonbuster">Ironclad</option>
+						<option value="slayingalliesballoonbuster">Slaying</option>
+						<option value="volatilealliesballoonbuster">Volatile</option>
+					</select>
+				</td>
+				<td><input type="number" value="0"></td>
+			</tr>
+			<tr id="barbarian">
+				<td>Barbarian</td>
+				<td><input type="checkbox"></td>
+				<td><input type="checkbox"></td>
+				<td><input type="checkbox"></td>
+				<td>
+					<select>
+						<option value="brawlerbarbarian">Brawler</option>
+						<option value="heroicbarbarian">Heroic</option>
+						<option value="wildbarbarian">Wild</option>
+					</select>
+				</td>
+				<td><input type="number" value="0"></td>
+			</tr>
+			<tr id="berserker">
+				<td>Berserker</td>
+				<td><input type="checkbox"></td>
+				<td><input type="checkbox"></td>
+				<td><input type="checkbox"></td>
+				<td>
+					<select>
+						<option value="championberserker">Champion</option>
+						<option value="rampagingberserker">Rampaging</option>
+						<option value="wrpathberserker">Warpath</option>
+					</select>
+				</td>
+				<td><input type="number" value="0"></td>
+			</tr>
+			<tr id="blob">
+				<td>Blob</td>
+				<td><input type="checkbox"></td>
+				<td><input type="checkbox"></td>
+				<td><input type="checkbox"></td>
+				<td>
+					<select>
+						<option value="biohazardblob">Biohazard</option>
+						<option value="goopyblob">Goopy</option>
+						<option value="symbioticblob">Symbiotic</option>
+					</select>
+				</td>
+				<td><input type="number" value="0"></td>
+			</tr>
+			<tr id="bomber">
+				<td>Bomber</td>
+				<td><input type="checkbox"></td>
+				<td><input type="checkbox"></td>
+				<td><input type="checkbox"></td>
+				<td>
+					<select>
+						<option value="farsightbomber">Farsight</option>
+						<option value="flakbomber">Flak</option>
+						<option value="volatilebomber">Volatile</option>
+					</select>
+				</td>
+				<td><input type="number" value="0"></td>
+			</tr>
+			<tr id="buster">
+				<td>Buster</td>
+				<td><input type="checkbox"></td>
+				<td><input type="checkbox"></td>
+				<td><input type="checkbox"></td>
+				<td>
+					<select>
+						<option value="focusedbuster">Focused</option>
+						<option value="rushingbuster">Rushing</option>
+						<option value="volatilebuster">Volatile</option>
+					</select>
+				</td>
+				<td><input type="number" value="0"></td>
+			</tr>
+			<tr id="centurion">
+				<td>Centurion</td>
+				<td><input type="checkbox"></td>
+				<td><input type="checkbox"></td>
+				<td><input type="checkbox"></td>
+				<td>
+					<select>
+						<option value="brutalcenturion">Brutal</option>
+						<option value="heavycenturion">Heavy</option>
+						<option value="mastercenturion">Master</option>
+					</select>
+				</td>
+				<td><input type="number" value="0"></td>
+			</tr>
+			<tr id="fairy">
+				<td>Fairy</td>
+				<td><input type="checkbox"></td>
+				<td><input type="checkbox"></td>
+				<td><input type="checkbox"></td>
+				<td>
+					<select>
+						<option value="beguilingfairy">Beguiling</option>
+						<option value="guardianfairy">Guardian</option>
+						<option value="saviorfairy">Savior</option>
+					</select>
+				</td>
+				<td><input type="number" value="0"></td>
+			</tr>
+			<tr id="flagbearer">
+				<td>Flag Bearer</td>
+				<td><input type="checkbox"></td>
+				<td><input type="checkbox"></td>
+				<td><input type="checkbox"></td>
+				<td>
+					<select>
+						<option value="cursedflagbearer">Cursed</option>
+						<option value="mightyflagbearer">Mighty</option>
+						<option value="threateningflagbearer">Threatening</option>
+					</select>
+				</td>
+				<td><input type="number" value="0"></td>
+			</tr>
+			<tr id="flyingarcher">
+				<td>Flying Rogue</td>
+				<td><input type="checkbox"></td>
+				<td><input type="checkbox"></td>
+				<td><input type="checkbox"></td>
+				<td>
+					<select>
+						<option value="armoredflyingarcher">Armored</option>
+						<option value="focusedflyingarcher">Focused</option>
+						<option value="swiftflyingarcher">Swift</option>
+					</select>
+				</td>
+				<td><input type="number" value="0"></td>
+			</tr>
+			<tr id="gladiator">
+				<td>Gladiator</td>
+				<td><input type="checkbox"></td>
+				<td><input type="checkbox"></td>
+				<td><input type="checkbox"></td>
+				<td>
+					<select>
+						<option value="bloodthirstgladiator">Bloodthirst</option>
+						<option value="stoicgladiator">Stoic</option>
+						<option value="temperedgladiator">Tempered</option>
+					</select>
+				</td>
+				<td><input type="number" value="0"></td>
+			</tr>
+			<tr id="healer">
+				<td>Healer</td>
+				<td><input type="checkbox"></td>
+				<td><input type="checkbox"></td>
+				<td><input type="checkbox"></td>
+				<td>
+					<select>
+						<option value="invigoratinghealer">Invigorating</option>
+						<option value="grandhealer">Grand</option>
+						<option value="vampirichealer">Vampiric</option>
+					</select>
+				</td>
+				<td><input type="number" value="0"></td>
+			</tr>
+			<tr id="lancer">
+				<td>Lancer</td>
+				<td><input type="checkbox"></td>
+				<td><input type="checkbox"></td>
+				<td><input type="checkbox"></td>
+				<td>
+					<select>
+						<option value="gaebolglancer">Gaebolg</option>
+						<option value="rangelancer">Range</option>
+						<option value="skylancer">Sky</option>
+					</select>
+				</td>
+				<td><input type="number" value="0"></td>
+			</tr>
+			<tr id="mage">
+				<td>Mage</td>
+				<td><input type="checkbox"></td>
+				<td><input type="checkbox"></td>
+				<td><input type="checkbox"></td>
+				<td>
+					<select>
+						<option value="embermage">Ember</option>
+						<option value="longshotmage">Longshot</option>
+						<option value="purifiermage">Purifier</option>
+					</select>
+				</td>
+				<td><input type="number" value="0"></td>
+			</tr>
+			<tr id="monk">
+				<td>Monk</td>
+				<td><input type="checkbox"></td>
+				<td><input type="checkbox"></td>
+				<td><input type="checkbox"></td>
+				<td>
+					<select>
+						<option value="highwarriormonk">High</option>
+						<option value="ragingwarrior">Martyr</option>
+						<option value="wrathfulwarriormonk">Wrathful</option>
+					</select>
+				</td>
+				<td><input type="number" value="0"></td>
+			</tr>
+			<tr id="musketeer">
+				<td>Musketeer</td>
+				<td><input type="checkbox"></td>
+				<td><input type="checkbox"></td>
+				<td><input type="checkbox"></td>
+				<td>
+					<select>
+						<option value="duelistmusketeer">Duelist</option>
+						<option value="snipingmusketeer">Spining</option>
+						<option value="volleymastermusketeer">Volleymaster</option>
+					</select>
+				</td>
+				<td><input type="number" value="0"></td>
+			</tr>
+			<tr id="necromancer">
+				<td>Necromancer</td>
+				<td><input type="checkbox"></td>
+				<td><input type="checkbox"></td>
+				<td><input type="checkbox"></td>
+				<td>
+					<select>
+						<option value="avariciousnecromancer">Avaricious</option>
+						<option value="enthrallednecromancer">Enthralled</option>
+						<option value="savantnecromancer">Savant</option>
+					</select>
+				</td>
+				<td><input type="number" value="0"></td>
+			</tr>
+			<tr id="orcslayer">
+				<td>Orc Slayer</td>
+				<td><input type="checkbox"></td>
+				<td><input type="checkbox"></td>
+				<td><input type="checkbox"></td>
+				<td>
+					<select>
+						<option value="spechampionorcslayerc1">Champion</option>
+						<option value="rampagingorcslayer">Rampaging</option>
+						<option value="veteranorcslayer">Veteran</option>
+					</select>
+				</td>
+				<td><input type="number" value="0"></td>
+			</tr>
+			<tr id="paladin">
+				<td>Paladin</td>
+				<td><input type="checkbox"></td>
+				<td><input type="checkbox"></td>
+				<td><input type="checkbox"></td>
+				<td>
+					<select>
+						<option value="championpaladin">Champion</option>
+						<option value="duelistpaladin">Duelist</option>
+						<option value="heavypaladin">Heavy</option>
+					</select>
+				</td>
+				<td><input type="number" value="0"></td>
+			</tr>
+			<tr id="phantom">
+				<td>Phantom</td>
+				<td><input type="checkbox"></td>
+				<td><input type="checkbox"></td>
+				<td><input type="checkbox"></td>
+				<td>
+					<select>
+						<option value="dementiaphantom">Dementia</option>
+						<option value="reaperphantom">Reaper</option>
+						<option value="revenantphantom">Revenant</option>
+					</select>
+				</td>
+				<td><input type="number" value="0"></td>
+			</tr>
+			<tr id="rogue">
+				<td>Rogue</td>
+				<td><input type="checkbox"></td>
+				<td><input type="checkbox"></td>
+				<td><input type="checkbox"></td>
+				<td>
+					<select>
+						<option value="assassinrogue">Assassin</option>
+						<option value="charmingrogue">Charming</option>
+						<option value="swiftfootrogue">Swift</option>
+					</select>
+				</td>
+				<td><input type="number" value="0"></td>
+			</tr>
+			<tr id="saint">
+				<td>Saint</td>
+				<td><input type="checkbox"></td>
+				<td><input type="checkbox"></td>
+				<td><input type="checkbox"></td>
+				<td>
+					<select>
+						<option value="focusedsaint">Focused</option>
+						<option value="glorioussaint">Glorious</option>
+						<option value="martyrsaint">Martyr</option>
+					</select>
+				</td>
+				<td><input type="number" value="0"></td>
+			</tr>
+			<tr id="shinobi">
+				<td>Shinobi</td>
+				<td><input type="checkbox"></td>
+				<td><input type="checkbox"></td>
+				<td><input type="checkbox"></td>
+				<td>
+					<select>
+						<option value="darkshinobi">Dark</option>
+						<option value="focusedshinobi">Focused</option>
+						<option value="trickstershinobi">Trickster</option>
+					</select>
+				</td>
+				<td><input type="number" value="0"></td>
+			</tr>
+			<tr id="spy">
+				<td>Spy</td>
+				<td><input type="checkbox"></td>
+				<td><input type="checkbox"></td>
+				<td><input type="checkbox"></td>
+				<td>
+					<select>
+						<option value="masterspy">Master</option>
+						<option value="poisonerspy">Poisoner</option>
+						<option value="saboteurspy">Saboteur</option>
+					</select>
+				</td>
+				<td><input type="number" value="0"></td>
+			</tr>
+			<tr id="tank">
+				<td>Tank</td>
+				<td><input type="checkbox"></td>
+				<td><input type="checkbox"></td>
+				<td><input type="checkbox"></td>
+				<td>
+					<select>
+						<option value="breachertank">Breacher</option>
+						<option value="heavytank">Heavy</option>
+						<option value="martyrtank">Martyr</option>
+					</select>
+				</td>
+				<td><input type="number" value="0"></td>
+			</tr>
+			<tr id="templar">
+				<td>Templar</td>
+				<td><input type="checkbox"></td>
+				<td><input type="checkbox"></td>
+				<td><input type="checkbox"></td>
+				<td>
+					<select>
+						<option value="darktemplar">Dark</option>
+						<option value="duelisttemplar">Duelist</option>
+						<option value="grandtemplar">Grand</option>
+					</select>
+				</td>
+				<td><input type="number" value="0"></td>
+			</tr>
+			<tr id="vampire">
+				<td>Vampire</td>
+				<td><input type="checkbox"></td>
+				<td><input type="checkbox"></td>
+				<td><input type="checkbox"></td>
+				<td>
+					<select>
+						<option value="bloodlustvampire">Bloodlust</option>
+						<option value="grandvampire">Grand</option>
+						<option value="vengefulvampire">Vengeful</option>
+					</select>
+				</td>
+				<td><input type="number" value="0"></td>
+			</tr>
+			<tr id="warbeast">
+				<td>Warbeast</td>
+				<td><input type="checkbox"></td>
+				<td><input type="checkbox"></td>
+				<td><input type="checkbox"></td>
+				<td>
+					<select>
+						<option value="championwarbeast">Champion</option>
+						<option value="rampagingwarbeast">Rampaging</option>
+						<option value="veteranwarbeast">Veteran</option>
+					</select>
+				</td>
+				<td><input type="number" value="0"></td>
+			</tr>
+			<tr id="warrior">
+				<td>Warrior</td>
+				<td><input type="checkbox"></td>
+				<td><input type="checkbox"></td>
+				<td><input type="checkbox"></td>
+				<td>
+					<select>
+						<option value="martyrwarriormonk">Raging</option>
+						<option value="rallywarrior">Rally</option>
+						<option value="vengefulwarrior">Vengeful</option>
+					</select>
+				</td>
+				<td><input type="number" value="0"></td>
+			</tr>
+		</tbody>
+
+	</table>
+
+</body>
+
+</html>
