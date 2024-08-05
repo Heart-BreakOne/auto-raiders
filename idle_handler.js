@@ -226,7 +226,9 @@ async function switchIdleCaptain() {
 
 	let fullCaptainList = await retrieveFromStorage("captainSearchData");
 	if (!fullCaptainList) return;
-	fullCaptainList = fullCaptainList.filter(captain => !idlersList.includes(captain.twitchDisplayName.toUpperCase()));
+	if (idlersList.length != 0) {
+		fullCaptainList = fullCaptainList.filter(captain => !idlersList.includes(captain.twitchDisplayName.toUpperCase()));
+	}
 
 	let blackList = await filterCaptainList('blacklist', fullCaptainList);
 	const acceptableList = fullCaptainList.filter(
@@ -374,7 +376,7 @@ async function filterCaptainList(type, captainList) {
 			//Gets whether or not the captain has been joined already.
 			const alreadyJoined = captain.isSelected ?? false;
 
-			if (captainName.toUpperCase() === listedCaptain.toUpperCase() &&
+			if (captainName != undefined && listedCaptain != undefined && captainName.toUpperCase() === listedCaptain.toUpperCase() &&
 				mode === "Campaign" && !alreadyJoined) {
 				filteredArray.push(captain);
 			}
