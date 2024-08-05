@@ -229,24 +229,31 @@ async function collectBattlePass() {
 		if (rewardButton.innerText.includes("REWARDS")) {
 			rewardButton.click();
 			await collectDelay(1000);
-			//Initializes a node list with collect buttons
-			const collectButtons = document.querySelectorAll(".actionButton.actionButtonCollect.rewardActionButton");
-			//Clicks any buttons that may exist
-			for (let button of collectButtons) {
-				button.click();
-				await collectDelay(1000);
-				//After clicking the collect button a confirmation popup loads.
-				const confirmButtons = document.querySelectorAll(".actionButton.actionButtonPrimary");
-				confirmButtons.forEach(async (confirm) => {
-					//Clicks on correct confirm button.
-					if (confirm.innerText.includes("CONFIRM AND COLLECT")) {
-						confirm.click();
-						confirm.submit();
+			const eventHeaderButtons = document.querySelectorAll(".subNavItem ");
+			eventHeaderButtons.forEach(async (rewardTab) => {
+				if (rewardTab.innerText.includes("Rewards")) {
+					rewardTab.click();
+					await collectDelay(1000);
+					//Initializes a node list with collect buttons
+					const collectButtons = document.querySelectorAll(".actionButton.actionButtonCollect.rewardActionButton");
+					//Clicks any buttons that may exist
+					for (let button of collectButtons) {
+						button.click();
 						await collectDelay(1000);
+						//After clicking the collect button a confirmation popup loads.
+						const confirmButtons = document.querySelectorAll(".actionButton.actionButtonPrimary");
+						confirmButtons.forEach(async (confirm) => {
+							//Clicks on correct confirm button.
+							if (confirm.innerText.includes("CONFIRM AND COLLECT")) {
+								confirm.click();
+								confirm.submit();
+								await collectDelay(1000);
+							}
+						});
 					}
-				});
-			}
-			closeAll();
+					closeAll();					
+				}
+			});
 		}
 	});
 }
