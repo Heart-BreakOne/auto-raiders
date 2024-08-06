@@ -25,7 +25,8 @@
 	<div class="center" style="width: fit-content;">
 		<a href="#General">General</a> | <a href="#Collecting">Collecting</a> | <a href="#Skins">Skins</a> | <a
 			href="#Campaign">Campaign</a> | <a href="#PVP">PVP</a> | <a href="#Dungeons">Dungeons</a> | <a
-			href="#Masterlist">Masterlist</a> | <a href="#Loyalty">Loyalty</a> | <a href="#UnitsperLevelChest">Units per
+			href="#Masterlist">Masterlist</a> | <a href="#Loyalty">Loyalty</a> | <a href="#Slot">Slot Locker</a> | <a
+			href="#UnitsperLevelChest">Units per
 			Level/Chest</a>
 	</div>
 	<div class="center" style="max-width:1000px">
@@ -311,9 +312,8 @@
 				</tr>
 				<tr>
 					<td><label for="leaveOfflineSwitch"
-							title="If captain is offline, leave captain immediately. Enable Switch idle
-							captain so that a new captain is added on the slot."><input type="checkbox"
-								id="leaveOfflineSwitch"> Leave Offline</label>
+							title="If captain is offline, leave captain immediately. Enable Switch idle captain so that a new captain is added on the slot."><input
+								type="checkbox" id="leaveOfflineSwitch"> Leave Offline</label>
 					</td>
 				</tr>
 				<tr>
@@ -624,6 +624,33 @@
 			</tbody>
 		</table>
 		<br>
+		<table width="100%" class="x">
+			<tbody>
+				<tr>
+					<td>
+						<div id="Slot" style="font-size:1.25em;font-style:italic">Slot Locker</div>
+					</td>
+				</tr>
+				<tr>
+					<td>Lock slots to these captains - Set to "no_locked_captain" to keep it unlocked</td>
+				</tr>
+				<tr>
+					<td>Slot 1: <input id="lock_cap_1" type="text" name="loyalty" value="no_locked_captain"></td>
+					<td>Slot 2: <input id="lock_cap_2" type="text" name="loyalty" value="no_locked_captain"></td>
+					<td><button id="lock_cap_btn"
+						style="width: fit-content; height: fit-content; text-align: center; background-color: #5fa695;">Save</button>
+				</td>
+				</tr>
+				<tr>
+					<td>Slot 3: <input id="lock_cap_3" type="text" name="loyalty" value="no_locked_captain"></td>
+					<td>Slot 4: <input id="lock_cap_4" type="text" name="loyalty" value="no_locked_captain"></td>
+					<td><button id="clear_cap_lock_btn"
+						style="width: fit-content; height: fit-content; text-align: center; background-color: red;">Clear</button>
+				</td>
+				</tr>
+
+			</tbody>
+		</table>
 		<table width="100%">
 			<tbody>
 				<tr>

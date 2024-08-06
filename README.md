@@ -3,9 +3,13 @@
 
 ### Special thanks to contributor:
 Heather1209
-###
-This extension runs on the client side simulating user inputs so there's no risk of having you're account banned due to botting
 
+### Donate
+The extension is free and adless; and will always be. I'm not associated with the makers of SR. So donations are 100% optional, but highly appreciated.
+
+Just PayPal your donation to lcoutinholuiz@gmail.com
+
+### Info
 
 The desktop version of the game uses canvas, the mobile version is built differently, this extension is built to work with the mobile version, to use it open the devtools tab and select mobile mode.<br>
 As an alternative to mobile mode via the devtools, there are browser extensions that force mobile mode.<br>
