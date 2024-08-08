@@ -80,7 +80,7 @@ async function fetchAndSaveChestData() {
 							currentDate.getUTCSeconds()
 						);
 
-						if (currentUTCTime <= liveEndTime.getTime()) filteredChests.push(chest);
+						if (isNaN(liveEndTime) || currentUTCTime <= liveEndTime.getTime()) filteredChests.push(chest);
 					}
 				}
 			}
