@@ -4,6 +4,19 @@
 ### Special thanks to contributor:
 Heather1209
 
+### Donation
+I'm not in any way associated with the SR developers, the extension is free and adless and will always be. If you wanna thank me I accept PayPal donations at lcoutinholuiz@gmail.com
+
+### Discord
+Join the discord for info on the latest updates, assistance with bugs and our loyalty chest crawler - very useful in the final days of event and on the ~24 hrs off event where the chest cap are reset.
+
+[Join here](https://discord.gg/59bhYfRePj) - Please wait, after you join your role will be updated manually to avoid bot raids.
+
+<p align="left">
+  <img src="https://i.imgur.com/EcpwdVZ.png" alt="popup.html" height="100%" width="70%" hspace="30"/>
+</p>
+
+
 This extension runs on the client side simulating user inputs so there's no risk of having you're account banned due to botting
 
 The desktop version of the game uses canvas, the mobile version is built differently, this extension is built to work with the mobile version, to use it open the devtools tab and select mobile mode.<br>
@@ -42,5 +55,3 @@ After installation, just open the game website and stay at the main menu.
 5.0.0 - Reworked the placement system.<br>
 
 ## For feedback hit me on discord and contributors are welcome, specially to improve the quality of the code since javascript is not my forte.
-
-v4 id e19bc0b
