@@ -275,6 +275,9 @@ async function getItemUrl(itemUid, itemType) {
 			return ["https://d2k2g0zg1te1mr.cloudfront.net/mobilelite/chests/iconChestGladiator.306cb4539906.png", "50px"];
 		}
 	}
+	else if (itemType === "box" && itemUid === "mythicbox") {
+		return ["/icons/mythicbox.png", "50px"];
+	}
 
 	return ["/icons/unknown.png", "50px"];
 }
