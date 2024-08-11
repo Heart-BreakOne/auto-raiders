@@ -37,8 +37,8 @@ const delay = ms => new Promise(res => setTimeout(res, ms));
 let unitDrawer;
 let hasPlacedSkin;
 let contentRunningLoopCount = 0;
-let isEnemyPresentNameArray = ['Puppet Master']; //Enemy name as seen in DOM alt text (case sensitive)
-let ifPresentAvoidUnitArray = ['RANGED']; //Unit name or type to avoid if enemy is present on the map. Pairs with the enemy name at the same index in the array (isEnemyPresentNameArray[0] - ifPresentAvoidUnitArray[0])
+let isEnemyPresentNameArray = ['Puppet Master', 'Goblin Midhowler', 'Mind Control Device', 'Mind Control Device']; //Enemy name as seen in DOM alt text (case sensitive)
+let ifPresentAvoidUnitArray = ['RANGED', 'RANGED', 'BUSTER', 'ROGUE']; //Unit name or type to avoid if enemy is present on the map. Pairs with the enemy name at the same index in the array (isEnemyPresentNameArray[0] - ifPresentAvoidUnitArray[0])
 let collectRunning = false;
 let collectLastTime = new Date();
 

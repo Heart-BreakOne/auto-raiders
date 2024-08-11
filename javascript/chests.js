@@ -178,6 +178,7 @@ async function loadChestData() {
 			parseInt(utcTimeString.substring(17, 19))
 		));
 		let localLiveStartTime = utcDate.toLocaleString();
+		if (isNaN(localLiveStartTime)) localLiveStartTime = "N/A";
 
 		utcTimeString = item.LiveEndTime;
 
@@ -191,7 +192,8 @@ async function loadChestData() {
 		));
 
 		let localLiveEndTime = utcDate.toLocaleString();
-
+		if (isNaN(localLiveEndTime)) localLiveEndTime = "N/A";
+		
 		let row = document.createElement("tr");
 
 		let rowData = [section, itemUid, itemUid, itemDisplayName, itemType, cost, localLiveStartTime, localLiveEndTime, amountBought];
