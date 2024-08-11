@@ -190,11 +190,11 @@ async function completeQuests(unitDrawer, unfinishedQuests) {
 		return bkpD;
 	} else {
 		// Activate common, uncommon, rare and legendary units based on the needs.
-		await setSwitchState("priorityListSwitch0", false);
-		await setSwitchState("priorityListSwitch1", false);
-		await setSwitchState("priorityListSwitch2", false);
-		await setSwitchState("priorityListSwitch3", false);
-		await setSwitchState("priorityListSwitch4", false);
+		// await setSwitchState("priorityListSwitch0", false);
+		// await setSwitchState("priorityListSwitch1", false);
+		// await setSwitchState("priorityListSwitch2", false);
+		// await setSwitchState("priorityListSwitch3", false);
+		// await setSwitchState("priorityListSwitch4", false);
 		for (var i = 0; i < unitDrawer[0].children.length; i++) {
 			const child = unitDrawer[0].children[i];
 			let rCom = child.querySelector(".unitRarityCommon");
