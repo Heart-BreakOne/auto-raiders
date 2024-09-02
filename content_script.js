@@ -568,6 +568,9 @@ async function performCollectionInterval() {
 	await buyChests();
 	if (await checkEventCurrencyActive()) {
 		await collectEventChests();
+		collectLastTime = new Date();
+		collectRunning = false;
+		isContentRunning = false;
 		await collectFreeDaily();
 	}
 	collectLastTime = new Date();

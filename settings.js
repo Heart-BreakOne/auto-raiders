@@ -46,7 +46,6 @@ document.addEventListener("DOMContentLoaded", function () {
 	initializeSwitch("skipSwitch");
 	initializeSwitch("completeQuests");
 	initializeSwitch("dailySwitch");
-	initializeSwitch("eventChestSwitch");
 	initializeSwitch("equipSwitch");
 	initializeSwitch("equipNoDiamondSwitch");
 	initializeSwitch("favoriteSwitch");
@@ -77,7 +76,6 @@ document.addEventListener("DOMContentLoaded", function () {
 	initializeSwitch("chestSwitch");
 	initializeSwitch("moreSkinsSwitch");
 	initializeReloader("reloaderInput");
-	initializeReloader("minimumCurrencyInput");
 	initializeReloader("maxUnitLvlDungInput");
 	initializeReloader("maxDungeonLvlInput");
 	initializeReloader("userIdleTimeInput");
@@ -180,7 +178,6 @@ document.addEventListener("DOMContentLoaded", async function () {
 	}
 
 	setInputButtonListener('reloaderButton', 'reloaderInput');
-	setInputButtonListener('minimumCurrencyButton', 'minimumCurrencyInput');
 	setInputButtonListener('minUnitLvlButton', 'maxUnitLvlDungInput');
 	setInputButtonListener('minDungeonLvlButton', 'maxDungeonLvlInput');
 	setInputButtonListener('idleTimeButton', 'userIdleTimeInput');
@@ -371,7 +368,6 @@ function exportSettingsToFile() {
 	const keysToExport = [
 		"darkSwitch",
 		"reloaderInput",
-		"minimumCurrencyInput",
 		"maxUnitLvlDungInput",
 		"maxDungeonLvlInput",
 		"userIdleTimeInput",
@@ -386,7 +382,6 @@ function exportSettingsToFile() {
 		"extraSwitch",
 		"questSwitch",
 		"dailySwitch",
-		"eventChestSwitch",
 		"battlepassSwitch",
 		"logSwitch",
 		"captIdSwitch",

@@ -49,6 +49,9 @@ async function savePreferences() {
 	let rc = document.getElementById('min_ruby_currency').value;
 	await chrome.storage.local.set({ 'minRubyCurrency': rc });
 
+	let ec = document.getElementById('min_event_currency').value;
+	await chrome.storage.local.set({ 'minEventCurrency': ec });
+
 	let r_sel = document.getElementById('buy_one_ruby_skin').value;
 	await chrome.storage.local.set({ 'buyThisRubyChest': r_sel });
 }
@@ -91,13 +94,25 @@ async function fetchAndSaveChestData() {
 
 		let chests = await retrieveFromStorage("chests");
 		let boxes = await retrieveFromStorage("boxes");
-		freshRubyArray = appendDisplayName(freshRubyArray, boxes, chests);
+		freshRubyArray = appendDisplayName(freshRubyArray, boxes);
 
 		let rewards = await retrieveFromStorage("chestRewardSlots");
-		let boxRewards = await retrieveFromStorage("boxesRewardSlots");
+		// let boxRewards = await retrieveFromStorage("boxesRewardSlots");
 		freshRubyArray = appendSkins(freshRubyArray, chests, boxes, rewards);
 
 		await chrome.storage.local.set({ 'rubyChestsData': freshRubyArray });
+
+		let freshEventArray = filterChests("Event");
+		
+		let chestsEvent = await retrieveFromStorage("chests");
+		let boxesEvent = await retrieveFromStorage("boxes");
+		freshEventArray = appendDisplayName(freshEventArray, chestsEvent);
+
+		let rewardsEvent = await retrieveFromStorage("chestRewardSlots");
+		// let boxRewardsEvent = await retrieveFromStorage("boxesRewardSlots");
+		freshEventArray = appendSkins(freshEventArray, chestsEvent, boxesEvent, rewardsEvent);
+
+		await chrome.storage.local.set({ 'eventChestsData': freshEventArray });
 
 		location.reload();
 
@@ -129,9 +144,12 @@ async function updateCurrency(key, id) {
 
 async function loadChestData() {
 	await updateCurrency("minRubyCurrency", "min_ruby_currency");
+	await updateCurrency("minEventCurrency", "min_event_currency");
 
 	let rcd = await retrieveFromStorage("rubyChestsData");
 	if (!rcd) return;
+	let ecd = await retrieveFromStorage("eventChestsData");
+	rcd = rcd.concat(ecd);
 	let userChests = await retrieveFromStorage("userChests");
 	let mdc = rcd;
 	let chestContainer = document.getElementById("chest_container");

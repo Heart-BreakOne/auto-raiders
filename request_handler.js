@@ -3,6 +3,7 @@ let isRunning = false;
 let requestRunning = false;
 let activeRaidsArray = [];
 let isEventCurrencyActive;
+let eventCurrencyName;
 let allRewardUrls = {};
 let lastUserUnitsUpdated;
 
@@ -578,7 +579,10 @@ async function checkEventCurrencyActive() {
 		let currentDateTimePT = new Date(currentDateTime.toLocaleString("en-US", { timeZone: "America/Los_Angeles" }));
 		isEventCurrencyActive = false;
 		for (let event in eventData) {
-			if (eventData[event].StartTime <= currentDateTimePT && eventData[event].EndTime > currentDateTimePT && eventData[event].EventCurrency != "") isEventCurrencyActive = true;
+			if (new Date(eventData[event].StartTime + ' UTC') <= currentDateTimePT && new Date(eventData[event].EndTime + ' UTC') > currentDateTimePT && eventData[event].EventCurrency != "") {
+				isEventCurrencyActive = true;
+				eventCurrencyName = eventData[event].EventCurrency;
+			}
 		}
 		return isEventCurrencyActive;
 	}

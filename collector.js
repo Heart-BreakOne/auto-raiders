@@ -105,7 +105,7 @@ async function collectFreeDaily() {
 }
 
 //Function to collect the event chests given during events
-async function collectEventChests() {
+async function collectEventChests(chestName) {
 	//Checks if the user wants the event chests to be collected, returns if not.
 	let eventChestSwitch = await getSwitchState("eventChestSwitch");
 	if (!eventChestSwitch) return;
@@ -118,7 +118,7 @@ async function collectEventChests() {
 	currencies = document.querySelectorAll(".quantityItem");
 	for (var i = 0; i < currencies.length; i++) {
 		var currentCurrency = currencies[i];
-		var imgElement = currentCurrency.querySelector("img[alt='Gold'], img[alt='Meat'], img[alt='Keys'], img[alt='Potion'], img[alt='Bones']");
+		var imgElement = currentCurrency.querySelector("img[alt='Gold'], img[alt='Meat'], img[alt='Skin Tickets'], img[alt='Potion'], img[alt='Rubies']");
 		if (imgElement) {
 			continue;
 		} else {
@@ -155,20 +155,22 @@ async function collectEventChests() {
 			}
 		});
 		await collectDelay(4000);
-		//Initiliazes the freebie button and if it exists and is the claim button, clicks it and goes back to the main menu.
-
+		
+		//Initializes the store button and if it exists, clicks it and goes back to the main menu.
 		const storeButtons = document.querySelectorAll(".actionButton.actionButtonBones.storeCardButton.storeCardButtonBuy");
 		for (var i = 0; i < storeButtons.length; i++) {
 			stButton = storeButtons[i];
-			stButtonImg = stButton.querySelector("img");
-			if (stButtonImg != null && stButtonImg.src == eventCurrencyImg) {
-				for (var y = 0; y < 5; y++) {
-					stButton.click();
-					await collectDelay(1000);
+			if (stButton.offsetParent.innerHTML.contains(chestName)) {
+				stButtonImg = stButton.querySelector("img");
+				if (stButtonImg != null && stButtonImg.src == eventCurrencyImg) {
+					// for (var y = 0; y < 5; y++) {
+						stButton.click();
+						await collectDelay(1000);
+					// }
+					//stButton.submit();
+					//returnToMainScreen();
+					//break;
 				}
-				//stButton.submit();
-				//returnToMainScreen();
-				//break;
 			}
 		}
 		await returnToMainScreen();
@@ -285,6 +287,10 @@ async function buyChests() {
 	if (!currentUserCurrencies || !currentUserCurrencies.data || currentUserCurrencies.data == undefined) return;
 
 	let rubies = currentUserCurrencies.data.rubies;
+	let eventCurrency;
+	if (eventCurrencyName) {
+		eventCurrency = currentUserCurrencies.data[eventCurrencyName];
+	}
 
 	let buyCheapestFirst = await retrieveFromStorage("chestPurchaseOrder");
 
@@ -344,6 +350,9 @@ async function buyChests() {
 		await buyChestsWithSkins(rubies, await retrieveFromStorage("buyThisRubyChest"), await retrieveNumberFromStorage("minRubyCurrency"), "rubyChestsData");
 	} else {
 		await buyChestsWithCurrency(rubies, await retrieveNumberFromStorage("minRubyCurrency"), "rubyChestsData");
+		if (eventCurrencyName) {
+			await buyChestsWithCurrency(eventCurrency, await retrieveNumberFromStorage("minEventCurrency"), "eventChestsData");
+		}
 	}
 
 }
