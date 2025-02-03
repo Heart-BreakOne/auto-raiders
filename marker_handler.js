@@ -130,7 +130,7 @@ function setUpMarkers(mrkrs) {
 	{ key: "ASSASSIN", units: "BALLOON#BUSTER#FLYING#PHANTOM#ROGUE#SHINOBI#SPY" },
 	{ key: "MELEE", units: "AMAZON#BARBARIAN#BERSERKER#GLADIATOR#LANCER#WARBEAST#WARRIOR" },
 	{ key: "RANGED", units: "ARCHER#ARTILLERY#BOMBER#MAGE#MUSKETEER" },
-	{ key: "SUPPORT", units: "FAIRY#FLAG#HEALER#NECROMANCER#MONK#SAINT#TEMPLAR#WARLOCK#" }];
+	{ key: "SUPPORT", units: "FAIRY#FLAG#HEALER#NECROMANCER#MONK#SAINT#TEMPLAR#WARLOCK" }];
 
 	const arrBtMrkr = [
 		{ key: "NO", type: "NO", icon: "VYAAAAASUVORK5CYII=" },
@@ -161,16 +161,16 @@ function setUpMarkers(mrkrs) {
 		{ key: "MUSKETEER", type: "RANGED", icon: "MAAAAASUVORK5CYII=" },
 		{ key: "NECROMANCER", type: "SUPPORT", icon: "QMAAAAAELFTKSUQMCC" },
 		{ key: "ORC", type: "ARMORED", icon: "OQAAAABJRU5ERKJGGG==" },
-		{ key: "PALADIN", type: "ARMORED", icon: "EAAAAAELFTKSUQMCC" },
+		{ key: "PALADIN", type: "ARMORED", icon: "XWOEAAAAAELFTKSUQMCC" },
 		{ key: "PHANTOM", type: "ASSASSIN", icon: "MLAAAAAELFTKSUQMCC" },
 		{ key: "ROGUE", type: "ASSASSIN", icon: "VIAAAAAELFTKSUQMCC" },
 		{ key: "SAINT", type: "SUPPORT", icon: "SAAAAAASUVORK5CYII=" },
-		{ key: "SHINOBI", type: "ASSASSIN", icon: "WAAAAABJRU5ERKJGGG==" },
+		{ key: "SHINOBI", type: "ASSASSIN", icon: "EWAAAAABJRU5ERKJGGG==" },
 		{ key: "SPY", type: "ASSASSIN", icon: "N6GAAAAASUVORK5CYII=" },
 		{ key: "TANK", type: "ARMORED", icon: "FAAAAAELFTKSUQMCC" },
 		{ key: "TEMPLAR", type: "SUPPORT", icon: "VGAAAABJRU5ERKJGGG==" },
 		{ key: "VAMPIRE", type: "ARMORED", icon: "BAAAAAELFTKSUQMCC" },
-		{ key: "WARLOCK", type: "SUPPORT", icon: "OFWKD" },
+		{ key: "WARLOCK", type: "SUPPORT", icon: "YEAAAAAELFTKSUQMCC" },
 		{ key: "WARBEAST", type: "MELEE", icon: "4WAAAABJRU5ERKJGGG==" },
 		{ key: "WARRIOR", type: "MELEE", icon: "YIAAAAASUVORK5CYII=" },
 	];
