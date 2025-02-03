@@ -31,6 +31,7 @@ const arrUnitNms = [
 	{ key: "tank", icon: "XEK7HQU", class: "common" },
 	{ key: "templar", icon: "CYNUL", class: "legendary" },
 	{ key: "vampire", icon: "BL5378", class: "uncommon" },
+	{ key: "warlock", icon: "OFWKD", class: "legendary" },
 	{ key: "warbeast", icon: "SRJSYO", class: "legendary" },
 	{ key: "warrior", icon: "YTUUAHQ", class: "common" },
 ];

@@ -73,9 +73,10 @@ const arrayOfUnits = [
 	{ key: "SHINOBI", type: "ASSASSIN", icon: "XSCZQ", name: "shinobi" },
 	{ key: "SPY", type: "ASSASSIN", icon: "FJBDFFQ", name: "spy" },
 	{ key: "TANK", type: "ARMORED", icon: "XEK7HQU", name: "tank" },
-	{ key: "TEMPLAR", type: "SUPPORT", icon: "CYNUL", name: "tamplar" },
+	{ key: "TEMPLAR", type: "SUPPORT", icon: "CYNUL", name: "templar" },
 	{ key: "VAMPIRE", type: "ARMORED", icon: "BL5378", name: "vampire" },
 	{ key: "WARBEAST", type: "MELEE", icon: "SRJSYO", name: "warbeast" },
+	{ key: "WARLOCK", type: "SUPPORT", icon: "OFWKD", name: "warlock" },
 	{ key: "WARRIOR", type: "MELEE", icon: "YTUUAHQ", name: "warrior" },
 ];
 

@@ -30,6 +30,7 @@ let arrayOfUnitsQuest = [
 	{ key: "tank", rarity: 0, icon: "XEK7HQU", mustPlace: false, points: 0, easyKill: false, bestKill: false, killEpic: false, killType: null, easyAssist: false, bestAssist: false, assistType: "armored,tanking" },
 	{ key: "templar", rarity: 3, icon: "CYNUL", mustPlace: false, points: 0, easyKill: false, bestKill: false, killEpic: false, killType: null, easyAssist: false, bestAssist: false, assistType: "generic,buffing" },
 	{ key: "vampire", rarity: 1, icon: "BL5378", mustPlace: false, points: 0, easyKill: false, bestKill: false, killEpic: false, killType: "flying", easyAssist: false, bestAssist: false, assistType: "armored,tanking" },
+	{ key: "warlock", rarity: 3, icon: "OFWKD", mustPlace: false, points: 0, easyKill: false, bestKill: false, killEpic: false, killType: "false", easyAssist: false, bestAssist: false, assistType: "generic" },
 	{ key: "warbeast", rarity: 3, icon: "SRJSYO", mustPlace: false, points: 0, easyKill: true, bestKill: false, killEpic: false, killType: "armored,support,assassin", easyAssist: false, bestAssist: false, assistType: "armored,tanking" },
 	{ key: "warrior", rarity: 0, icon: "YTUUAHQ", mustPlace: false, points: 0, easyKill: true, bestKill: false, killEpic: false, killType: "armored,support,assassin", easyAssist: false, bestAssist: false, assistType: null },
 ];
