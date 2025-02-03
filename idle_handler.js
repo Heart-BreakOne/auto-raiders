@@ -11,13 +11,18 @@ let hasBattlePass;
 
 //This function checks if a captain is idling or if the slot is empty and gets a replacement
 async function checkIdleCaptains() {
+
+	/*
+	Due to the end of the game, everyone gets a battlepass, so no need to check for it.
 	if (hasBattlePass == null) {
 		let eventUid = await retrieveFromStorage("getEventProgressionLite");
 		eventUid = eventUid.data.eventUid;
 		if (eventUid == undefined) return;
 	}
-	let maxSlots = 3;
 	if (hasBattlePass == 1) maxSlots = 4;
+	*/
+	
+	let maxSlots = 4;
 
 	//Initialized a node list with all the captain slots
 	const captainSlots = activeRaidsArray;

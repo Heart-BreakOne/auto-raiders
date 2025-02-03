@@ -99,10 +99,11 @@ async function checkAndReload(selector, battleDelayTimer) {
 
 //Game froze on a dark blue blank screen, reload.
 async function reloadRoot() {
-	const ctv_logo = document.querySelector(".splashImage.splashImageIn")
-	if (ctv_logo) {
-		return;
-	}
+	await battleDelay(5000);
+	// const ctv_logo = document.querySelector(".splashImage.splashImageIn")
+	// if (ctv_logo) {
+		// return;
+	// }
 	
 	//check if splashImage splashImageIn exists
 	const rootElement = document.getElementById('root');
@@ -169,9 +170,9 @@ const observerCallback = async function (mutations) {
 
 	mutations.forEach(async function (mutation) {
 		mutation.addedNodes.forEach(async function () {
-			const rewardsScrim = document.querySelector(".rewardsScrim");
+			// const rewardsScrim = document.querySelector(".rewardsScrim");
 			const toast = document.querySelector(".toastsCont.toastsContMore");
-			hideElementsFromView(rewardsScrim);
+			// hideElementsFromView(rewardsScrim);
 			hideElementsFromView(toast);
 
 			hideQuestModal();
@@ -182,9 +183,9 @@ const observerCallback = async function (mutations) {
 				injectIntoDOM(await retrieveFromStorage("bannerSwitch"));
 			}
 
-			checkBattlePhase();
+			// checkBattlePhase();
 
-			await checkAndHandleBattleButton();
+			// await checkAndHandleBattleButton();
 
 			clickGoBackButtons();
 

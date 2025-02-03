@@ -122,13 +122,15 @@ async function start() {
 			if (reloaderInputValue !== undefined) reload = reloaderInputValue;
 		});
 	}
+console.log("LOG-requestRunning-"+requestRunning);
 	if ((activeRaidsArray.length == 0 && elapsedSeconds > 20) || (requestRunning == false && ((reload != undefined && elapsedMinutes >= reload && reload > 0) || ((reload != undefined || reload != 0) && elapsedMinutes >= 60)))) {
 		await locationReload();
 		return;
 	}
 
 	//Initialized nav items, if they don't exist it means the extension is already executing.
-	if (isContentRunning && contentRunningLoopCount < 10) {
+console.log("LOG-"+isContentRunning+contentRunningLoopCount);
+	if (isContentRunning && contentRunningLoopCount < 5) {
 		contentRunningLoopCount++;
 		const menuElements = document.querySelectorAll(".slideMenuCont.slideLeft.slideLeftOpen");
 		const leaderboard = Array.from(menuElements).find(element => element.innerText.includes('Leaderboard'));
@@ -140,6 +142,7 @@ async function start() {
 	}
 	contentRunningLoopCount = 0;
 	isContentRunning = true;
+console.log("LOG-nav items");
 	let navItems = document.querySelectorAll('.mainNavItemText');
 	if (navItems.length === 0 || navItems === undefined) {
 		isContentRunning = false;
@@ -159,6 +162,7 @@ async function start() {
 		}
 	}
 
+console.log("LOG-unfinished quests");
 	unfinishedQuests = null;
 	if (await retrieveFromStorage("completeQuests")) {
 		try {
@@ -168,6 +172,7 @@ async function start() {
 		}
 	}
 
+console.log("LOG-cap slots");
 	const capSlots = document.querySelectorAll(".capSlot");
 	for (let i in capSlots) {
 		try {
@@ -194,6 +199,7 @@ async function start() {
 		}
 	}
 
+console.log("LOG-masterlist");
 	//Checks masterlist to switch
 	let masterSwitchkeysArray = ['liveMasterSwitch', 'priorityMasterSwitch'];
 	let masterSwitchkeys = await retrieveMultipleFromStorage(masterSwitchkeysArray);
@@ -226,6 +232,7 @@ async function start() {
 
 	let captainNameFromDOM = "";
 
+console.log("LOG-check for place unit buttons");
 	//Initialized a node list with placeable buttons
 	const rewardButtonLabels = ["SEE RESULTS", "OPEN CHEST", "COLLECT RUBIES", "COLLECT KEYS", "COLLECT BONES"];
 	let allButtons = document.querySelectorAll(".actionButton.capSlotButton.capSlotButtonAction");
@@ -241,14 +248,19 @@ async function start() {
 				const buttonId = btn.getAttribute('id');
 				const slotState = await getIdleState(buttonId);
 				button.click();
+console.log("LOG-LA-reward button clicked");
 				await delay(2000);
 				const rewardsScrim = document.querySelector(".rewardsScrim");
+console.log("LOG-LA-rewardsScrim");
+console.log(rewardsScrim);
 				if (rewardsScrim) hideElementsFromView(rewardsScrim);
+console.log("LOG-LA-slotState " + slotState);
 				if (slotState == 2) {
 					allButtons = document.querySelectorAll(".actionButton.capSlotButton.capSlotButtonAction");
 					for (var button of allButtons) {
 						await delay(500);
 						captainSlot = button.closest('.capSlot');
+console.log("LOG-LA-capSlotName " + captainSlot.querySelector('.capSlotName'));
 						if (!captainSlot.querySelector('.capSlotName')) continue;
 						if (captainSlot.querySelector('.capSlotName').innerText == captainNameFromDOM) {
 							let close;
@@ -256,21 +268,27 @@ async function start() {
 								close = captainSlot.querySelector(".capSlotClose");
 								await delay(500);
 							} while (!close);
+console.log("LOG-LA-close");
+console.log(close);
 							if (close) {
 								const afterSwitch = await retrieveFromStorage('afterSwitch');
+console.log("LOG-LA-afterSwitch " + afterSwitch);
 								if (afterSwitch) {
 									await setIdleState(buttonId, 1);
 								} else {
 									await setIdleState(buttonId, 0);
 								}
 								close.click();
+console.log("LOG-LA-close clicked");
 								await delay(1000);
 								await confirmLeaveBattlePopup();
+console.log("LOG-LA-confirmLeaveBattlePopup");
 							}
 							break;
 						}
 					}
 				}
+console.log("LOG-LA-done");
 				goHome();
 				isContentRunning = false;
 			}
@@ -280,6 +298,7 @@ async function start() {
 	let placeUnit = null;
 	//If there are no place unit buttons, invoke the collection function then return.
 	if (placeUnitButtons.length == 0 || (placeUnitButtons.length == 1 && placeUnitButtons[0].innerText === "SELECT")) {
+console.log("LOG-make false");
 		await performCollectionInterval();
 		isContentRunning = false;
 		return;
@@ -288,10 +307,12 @@ async function start() {
 	else if (placeUnitButtons.length != 0) {
 		//Iterate through every button
 		placeButtonLoop: for (var button of placeUnitButtons) {
+console.log("LOG-button loop");
 			//If the button has the inner text SELECT then continue to next button
 			if (button.innerText.includes("SELECT")) continue;
 			//If the button has the inner text PLACE UNIT it's a valid button
 			if (button.innerText.includes("PLACE UNIT")) {
+console.log("LOG-button has place unit");
 				//Get captain name from the slot
 				var captainSlot = button.closest('.capSlot');
 				captainNameFromDOM = captainSlot.querySelector('.capSlotName').innerText;
@@ -312,10 +333,12 @@ async function start() {
 					battleType = "Duel";
 				}
 
+console.log("LOG-"+battleType);
 				//If slot state is disabled, move to the next slot
 				if (slotState == 0) continue;
 
 				let captainFlag;
+console.log("LOG-check if capt flagged");
 				//Pass captain name and check if the captain is flagged
 				try {
 					if (!captainNameFromDOM) captainNameFromDOM = "";
@@ -325,6 +348,8 @@ async function start() {
 				} catch (error) {
 					captainFlag = false;
 				}
+console.log("LOG-"+ captainFlag);
+console.log("LOG-check special game modes");
 				let captKeysArray = ['dungeonCaptain', 'clashCaptain', 'duelCaptain', 'campaignCaptain', 'clashSwitch', 'dungeonSwitch', 'duelSwitch', 'campaignSwitch', 'modeChangeSwitch', 'modeChangeLeaveSwitch', 'multiClashSwitch'];
 				let captKeys = await retrieveMultipleFromStorage(captKeysArray);
 				let dungeonCaptainNameFromStorage = captKeys.dungeonCaptain?.toLowerCase() ?? "";
@@ -415,6 +440,7 @@ async function start() {
 					}
 				}
 
+console.log("LOG-placement odds");
 				// Calculate placements odds
 				const bSlot = button.closest('.capSlot');
 				const currentTime = new Date();
@@ -448,6 +474,7 @@ async function start() {
 							}
 						});
 					});
+console.log("placement odds-can't place");
 					if (!canPlace) continue;
 				} else if (placementOdds <= 0) continue;
 
@@ -458,10 +485,12 @@ async function start() {
 						const eT = new Date(currentTime.getTime() + minutes * 60000);
 						const eTString = eT.toISOString();
 						await chrome.storage.local.set({ [oddKey]: eTString });
+console.log("placement odds-can't place-time");
 						continue;
 					}
 				}
 
+console.log("LOG-check loyalty");
 				//Pass captain name and check if the captain has a loyalty flag.
 				const loyaltyRadio = await getRadioButton("loyalty");
 				let loyaltyRadioInt = 0;
@@ -470,6 +499,7 @@ async function start() {
 				} catch (error) {
 					loyaltyRadioInt = 0;
 				}
+console.log("LOG-check loyalty2");
 				let notAcceptableLoyalty, captainLoyalty, pveWins, captainLoyaltyLevel, raidId;
 				for (let i = 0; i < activeRaidsArray.length; i++) {
 					if (activeRaidsArray[i].twitchDisplayName == captainNameFromDOM) {
@@ -482,11 +512,13 @@ async function start() {
 				}
 				let lResults = await getCaptainLoyalty(captainNameFromDOM);
 				let chestType = lResults[1];
+console.log("LOG-check loyalty2.1");
 				if (battleType == "Campaign" && loyaltyRadioInt != 0 && loyaltyRadio != undefined) {
 					try {
 						captainLoyalty = await getCaptainFlag(captainNameFromDOM, 'captainLoyalty');
 						if (!captainLoyalty || captainLoyalty == undefined) {
 
+console.log("LOG-check loyalty2.5");
 							let chestKeysArray = ['lgoldSwitch', 'lskinSwitch', 'lscrollSwitch', 'ltokenSwitch', 'lbossSwitch', 'lsuperbossSwitch'];
 							let chestKeys = await retrieveMultipleFromStorage(chestKeysArray);
 							let lgold = chestKeys.lgoldSwitch;
@@ -503,6 +535,7 @@ async function start() {
 								captainLoyalty = false;
 							}
 
+console.log("LOG-check loyalty3");
 							if (captainLoyalty) {
 								if (loyaltyRadioInt == 0 || captainLoyaltyLevel >= loyaltyRadioInt) {
 									notAcceptableLoyalty = false;
@@ -526,6 +559,7 @@ async function start() {
 				}
 				//If captain has any flags, change color and move to the next slot
 
+console.log("LOG-check max unit");
 				if (await retrieveMaxUnit(captainNameFromDOM)) continue;
 				if (notAcceptableLoyalty || captainFlag) {
 					if (notAcceptableLoyalty) captainSlot.style.backgroundColor = blue;
@@ -536,25 +570,31 @@ async function start() {
 
 				placeUnit = button;
 
+console.log("LOG-click place unit");
 				//If place unit exists, click it and call the openBattlefield function
 				if (placeUnit) {
 					placeUnit.click();
+console.log("LOG-open battlefield");
 					await delay(1000);
 					await openBattlefield(captainNameFromDOM, raidId, slotOption, notAcceptableLoyalty, captainLoyaltyLevel, battleType);
 					break;
 				} else {
+console.log("LOG-make false");
 					isContentRunning = false;
 					return;
 				}
 				await performCollectionInterval();
 			} else {
+console.log("LOG-continue to next slot");
 				await performCollectionInterval();
 				continue;
 			}
 		}
 	}
+console.log("LOG-done with start");
 	closeAll();
 	await performCollectionInterval();
+console.log("LOG-make false");
 	isContentRunning = false;
 }
 
@@ -602,6 +642,7 @@ async function openBattlefield(captainNameFromDOM, raidId, slotOption, notAccept
 
 	//Current mode is campaign
 	if (battleType == "Campaign") {
+console.log("LOG-check chest");
 		//Opens battle info and checks chest type.
 		battleInfo = document.querySelector(".battleInfoMapTitle");
 		if (battleInfo == null) {
@@ -610,15 +651,19 @@ async function openBattlefield(captainNameFromDOM, raidId, slotOption, notAccept
 		}
 		battleInfo.click();
 
+console.log("LOG-get unit amount");
 		//Check how many units user wants
 		const unitQtt = await getUnitAmountData();
 		hasPlacedSkin = false;
 		let commaCount = 0;
 
+console.log("LOG-get unit amount2");
 		try {
 			while (logRunning == true) await delay(10);
 			logRunning = true;
+console.log("LOG-get unit amount3");
 			let battleLog = await retrieveFromStorage("logData");
+console.log("LOG-get unit amount4");
 			logRunning = false;
 			battleLog = battleLog.slice(-4);
 			for (let i = battleLog.length - 1; i >= 0; i--) {
@@ -632,6 +677,7 @@ async function openBattlefield(captainNameFromDOM, raidId, slotOption, notAccept
 			}
 		} catch (error) { }
 
+console.log("LOG-setMaxUnit "+commaCount+" "+unitQtt);
 		if (commaCount >= unitQtt) {
 			await setMaxUnit(captainNameFromDOM);
 			closeAll();
@@ -639,6 +685,7 @@ async function openBattlefield(captainNameFromDOM, raidId, slotOption, notAccept
 			return;
 		}
 
+console.log("LOG-chest double check");
 		await delay(1000);
 		let chest;
 		try {
@@ -649,8 +696,10 @@ async function openBattlefield(captainNameFromDOM, raidId, slotOption, notAccept
 			return;
 		}
 
+console.log("LOG-setLogInitialChest2");
 		await setLogInitialChest2(captainNameFromDOM, raidId, chest);
 
+console.log("LOG-" + chest);
 		if (notAcceptableLoyalty && ((!lgold && chest == "Loyalty Gold Chest") || (!lskin && chest == "Loyalty Skin Chest") || (!lskin && chest == "Loyalty Beastlands Chest") || (!lscroll && chest == "Loyalty Scroll Chest") || (!ltoken && chest == "Loyalty Token Chest") || (!lboss && chest == "Loyalty Boss Chest") || (!lsuperboss && chest == "Loyalty Super Boss Chest"))) {
 			//Flag the captain loyalty since the current map is to be skipped
 			await flagCaptain('captainLoyalty');
@@ -661,11 +710,13 @@ async function openBattlefield(captainNameFromDOM, raidId, slotOption, notAccept
 		} else {
 			//Current chest is not special, close chest info and zoom
 			closeAll();
+console.log("LOG-get valid units 1");
 			await getValidUnits(captainNameFromDOM, raidId, slotOption, notAcceptableLoyalty, captainLoyaltyLevel, battleType);
 		}
 	} else {
 		//User doesn't want to preserve diamond loyalty
 		closeAll();
+console.log("LOG-get valid units 2");
 		await getValidUnits(captainNameFromDOM, raidId, slotOption, notAcceptableLoyalty, captainLoyaltyLevel, battleType);
 	}
 }
@@ -677,6 +728,7 @@ async function getValidUnits(captainNameFromDOM, raidId, slotOption, notAcceptab
 	await reloadRoot();
 	await delay(1000);
 
+console.log("LOG-clock");
 	// If the timer is +28:30 or above (+4:00 for dungeons), go back to the main menu as the captain may still be placing markers.
 	const clockElement = document.querySelector('.battlePhaseTextClock .clock');
 	if (clockElement == null) {
@@ -693,18 +745,28 @@ async function getValidUnits(captainNameFromDOM, raidId, slotOption, notAcceptab
 		}
 	}
 
+console.log("LOG-zoom");
 	zoom();
 
 	// This sorts the markers and adds imaginary markers if there aren't any
-	makeMarkers();
+console.log("LOG-make markers");
+	if ((1 == 2 && battleType == "Dungeons") || captainNameFromDOM == "ImmerBock") {
+		setUpMarkers(Array.from(document.querySelectorAll(".planIcon")));
+	} else {
+		makeMarkers();
+	}
+console.log("LOG-arrayOfMarkers1");
 	let arrayOfMarkers = Array.of(document.querySelectorAll(".planIcon"));
+console.log("LOG-arrayOfMarkers2");
 	arrayOfMarkers = getMapMatrix(arrayOfMarkers);
+console.log("LOG-arrayOfMarkers3");
 	arrayOfMarkers = bumpVibeMarkers(arrayOfMarkers);
 	let isEnemyPresent = [];
 	for (let i = 0; i < isEnemyPresentNameArray.length; i++) {
 		isEnemyPresent[i] = document.querySelector('img[alt="' + isEnemyPresentNameArray[i] + '"]');
 	}
 
+console.log("LOG-unit drawer");
 	// Open unit drawer and set the filter to ALL units
 	const placeUnitBtn = document.querySelector(".actionButton.actionButtonPrimary.placeUnitButton");
 	if (placeUnitBtn) {
@@ -716,6 +778,7 @@ async function getValidUnits(captainNameFromDOM, raidId, slotOption, notAcceptab
 		return;
 	}
 
+console.log("LOG-equip skins");
 	let equipSwitch = false;
 	//Check if user wants to auto equip skins and equip them
 	if (battleType == "Campaign") equipSwitch = await retrieveFromStorage("equipSwitch");
@@ -751,6 +814,7 @@ async function getValidUnits(captainNameFromDOM, raidId, slotOption, notAcceptab
 		} catch (error) { }
 	}
 
+console.log("LOG-unit drawer again");
 	//Get all units from the drawer
 	let canCompleteQuests = await retrieveFromStorage("completeQuests");
 	unitDrawer = [...document.querySelectorAll(".unitSelectionCont")];
@@ -759,6 +823,7 @@ async function getValidUnits(captainNameFromDOM, raidId, slotOption, notAcceptab
 	// Remove cooldown units, unavailable units and rarity check units
 	if (!unitDrawer || !unitDrawer[0] || unitDrawer[0].children == null) return;
 
+console.log("LOG-unit name and type in unit");
 	//Add unit name and type to unit itself
 	for (const unit of unitDrawer[0].children) {
 		const unitClassImg = unit.querySelector('.unitClass img');
@@ -768,6 +833,7 @@ async function getValidUnits(captainNameFromDOM, raidId, slotOption, notAcceptab
 		if (unit1) unit.id = unit1.key + "#" + unitType;
 	}
 
+console.log("LOG-begin unit drawer processing");
 	let unitKeysArray = ['legendarySwitch', 'rareSwitch', 'uncommonSwitch', 'commonSwitch', 'pvpSpecSwitch'];
 	let unitKeys = await retrieveMultipleFromStorage(unitKeysArray);
 	let legendaryAllowed = unitKeys.legendarySwitch;
@@ -846,11 +912,13 @@ async function getValidUnits(captainNameFromDOM, raidId, slotOption, notAcceptab
 			}
 		}
 	}
+console.log("LOG-done with processing units");
 
 	unitsToRemove.forEach(unit => unit.remove());
 	unitsToRemove = undefined;
 	unitDrawer = [...document.querySelectorAll(".unitSelectionCont")];
 
+console.log("LOG-slot user priority list");
 	let slotNum;
 	if (battleType == "Dungeons" && await retrieveFromStorage("priorityListSwitch5")) {
 		slotNum = '5';
@@ -871,6 +939,7 @@ async function getValidUnits(captainNameFromDOM, raidId, slotOption, notAcceptab
 	let soulSwitchSlot = switchKeys['soulSwitch' + slotNum];
 	let soulSwitchSlotAll = switchKeys.soulSwitch0;
 
+console.log("LOG-priority and shuffle switches end");
 	let shuffleSwitch = false;
 	if (shuffleSwitchSlot || shuffleSwitchSlotAll) shuffleSwitch = true;
 	let soulSwitch = false;
@@ -889,6 +958,7 @@ async function getValidUnits(captainNameFromDOM, raidId, slotOption, notAcceptab
 		}
 	}
 
+console.log("LOG-unit qty");
 	//Initializes a node list with all units
 	let unitsQuantity;
 	//Attempts to get amount of units in the units drawers
@@ -918,6 +988,7 @@ async function getValidUnits(captainNameFromDOM, raidId, slotOption, notAcceptab
 		}
 	}
 
+console.log("LOG-shift units");
 	//Sort the array so units that match the captain skin are put on the front.
 	async function shiftUnits(captainNameFromDOM) {
 		for (let i = 1; i <= unitsQuantity; i++) {
@@ -933,11 +1004,13 @@ async function getValidUnits(captainNameFromDOM, raidId, slotOption, notAcceptab
 		}
 	}
 
+console.log("LOG-more skins switch1");
 	let skinKeysArray = ['moreSkinsSwitch', 'equipNoDiamondSwitch'];
 	let skinKeys = await retrieveMultipleFromStorage(skinKeysArray);
 	let moreSkinsSwitch = skinKeys.moreSkinsSwitch;
 	let equipNoDiamondSwitch = skinKeys.equipNoDiamondSwitch;
 
+console.log("LOG-more skins switch2");
 	//Put skinned units at the front if quest completer is not enabled.
 	if (hasPlacedSkin) {
 		moreSkinsSwitch = false;
@@ -945,6 +1018,7 @@ async function getValidUnits(captainNameFromDOM, raidId, slotOption, notAcceptab
 		moreSkinsSwitch = true;
 	}
 
+console.log("LOG-more skins switch logic");
 	if (!soulSwitch && moreSkinsSwitch && equipSwitch && !canCompleteQuests) {
 		if (!equipNoDiamondSwitch || (equipNoDiamondSwitch && captainLoyaltyLevel != 4)) {
 			try {
@@ -956,6 +1030,7 @@ async function getValidUnits(captainNameFromDOM, raidId, slotOption, notAcceptab
 		}
 	}
 
+console.log("LOG-unit drawer and can complete quest");
 	if (canCompleteQuests) {
 		try {
 			unitDrawer = await completeQuests(unitDrawer, unfinishedQuests);
@@ -970,6 +1045,7 @@ async function getValidUnits(captainNameFromDOM, raidId, slotOption, notAcceptab
 		return;
 	}
 
+console.log("LOG-set marker switch");
 	if (await retrieveFromStorage("setMarkerSwitch")) {
 		const arrayOfVibeMarkers = arrayOfMarkers.filter(marker => marker.id === "VIBE");
 		const notVibeMarkers = arrayOfMarkers.filter(marker => marker.id !== "VIBE");
@@ -988,6 +1064,7 @@ async function getValidUnits(captainNameFromDOM, raidId, slotOption, notAcceptab
 		dungeonBossPotionSwitch = await getSwitchState("dungeonBossPotionSwitch");
 		if (dungeonLevel % 3 === 0) isBossLevel = true;
 	}
+console.log("LOG-loop for placement");
 	let counter = 0;
 	try {
 		if (unitDrawer[0] == null) return;
@@ -1002,9 +1079,11 @@ async function getValidUnits(captainNameFromDOM, raidId, slotOption, notAcceptab
 			const markerId = marker.id;
 			let hasPlaced;
 			if (markerId === "VIBE" || markerId.includes(unitId.split("#")[0]) || markerId.includes(unitId.split("#")[1])) {
+console.log("LOG-potions");
 				if (potionState != 0 || dungeonBossPotionSwitch) await doPotions(battleType, favoriteSwitch, isBossLevel, captainNameFromDOM);
 				hasPlaced = await attemptPlacement(unit, marker);
 				if (hasPlaced == undefined || hasPlaced) {
+console.log("LOG-has placed, return home "+markerId+" "+unitId);
 					goHome();
 					closeAll();
 					return;
@@ -1015,12 +1094,15 @@ async function getValidUnits(captainNameFromDOM, raidId, slotOption, notAcceptab
 			}
 			counter++;
 		}
+console.log("LOG-out of markers, next unit");
 	}
+console.log("LOG-out of units, return home");
 	goHome();
 	closeAll();
 }
 
 async function cancelPlacement() {
+console.log("LOG-cancel placement");
 	const cancelBtn = document.querySelector(".actionButton.actionButtonNegative.placerButton");
 	if (cancelBtn) {
 		cancelBtn.click();
@@ -1032,24 +1114,26 @@ async function cancelPlacement() {
 }
 
 async function attemptPlacement(unit, marker) {
+console.log("LOG-attempt placement");
 	if (!await moveScreen(marker)) {
 		closeAll();
 		goHome();
 		return true;
 	}
-	await delay(2000);
+	await delay(500);
 	unit.querySelector(".unitItem").click();
-	await delay(1000);
+	await delay(500);
 	if (!tapUnit()) return true;
 	await delay(500);
 	await placeTheUnit();
-	await delay(1000);
-	await delay(1000);
+	await delay(500);
 	await reloadRoot();
+	await delay(500);
 	return checkPlacement();
 }
 
 function checkPlacement() {
+console.log("LOG-check placement");
 	const hasPlaced = document.querySelector(".actionButton.actionButtonDisabled.placeUnitButton");
 	const menu = document.querySelector(".captainSlots");
 
@@ -1062,9 +1146,11 @@ function checkPlacement() {
 
 //Places unit or asks for a new valid marker
 async function placeTheUnit() {
+console.log("LOG-place the unit");
 	try {
 		const clockText = document.querySelector('.battlePhaseTextClock .clock').innerText;
 
+console.log("LOG-check battle timer");
 		if (clockText === "00:00") {
 			const placerButton = document.querySelector(cancelButtonSelector);
 			const selectorBack = document.querySelector(".selectorBack");
@@ -1072,10 +1158,12 @@ async function placeTheUnit() {
 			if (placerButton && selectorBack) {
 				placerButton.click();
 				selectorBack.click();
+console.log("LOG-test");
 				return true;
 			}
 		}
 	} catch (error) {
+console.log("LOG-error with clocktext, go home");
 		goHome();
 		return true;
 	}
@@ -1085,23 +1173,27 @@ async function placeTheUnit() {
 	let confirmPlacement = placeModal?.querySelector(".actionButton.actionButtonPrimary.placerButton");
 
 
+console.log("LOG-confirm placement");
 	if (confirmPlacement) {
 		//Placement is blocked by invalid unit location.
 		const blockedMarker = document.querySelector(".placerRangeIsBlocked");
 		if (blockedMarker) {
 			const cancelButton = document.querySelector(cancelButtonSelector);
 			if (cancelButton) {
+console.log("LOG-blocked marker, click cancel");
 				cancelButton.click();
 				return false;
 			}
 			else {
+console.log("LOG-blocked marker, no cancel, go home");
 				goHome();
 				return true;
 			}
 		} else {
 			if (confirmPlacement) {
 				confirmPlacement.click();
-				await delay(2000);
+				await delay(1000);
+console.log("LOG-confirm placement");
 				//Rarely, it attempts to place incorrectly. If the Place Anyway pop up appears, click BACK
 				let allPlaceAnywayBackButtons = document.querySelectorAll('.actionButton.actionButtonPrimary');
 				let placeAnywayBackButton;
@@ -1109,12 +1201,14 @@ async function placeTheUnit() {
 					if (button.innerText === "BACK") placeAnywayBackButton = button;
 				});
 				if (placeAnywayBackButton) {
+console.log("LOG-place anyway popup, click back");
 					placeAnywayBackButton.click();
 					return true;
 				}
 			}
 		}
 	} else {
+console.log("LOG-no confirm placement button, go home");
 		goHome();
 		return true;
 	}
@@ -1123,6 +1217,7 @@ async function placeTheUnit() {
 	setTimeout(() => {
 		const placementSuccessful = document.querySelector(".actionButton.actionButtonDisabled.placeUnitButton");
 		if (placementSuccessful) {
+console.log("LOG-successful placement, go home");
 			goHome();
 			return true;
 		}
@@ -1132,8 +1227,10 @@ async function placeTheUnit() {
 		const disabledButton = document.querySelector(".actionButton.actionButtonDisabled.placerButton");
 		const negativeButton = document.querySelector(cancelButtonSelector);
 		if (disabledButton || negativeButton) {
+console.log("LOG-disabled/negative buttons");
 			disabledButton?.click();
 			negativeButton?.click();
+console.log("LOG-make false");
 			isContentRunning = false;
 			goHome();
 			return false;
@@ -1154,6 +1251,13 @@ const obsv = new MutationObserver(async function (mutations) {
 			}
 		}
 
+		// const placeAnywayBtns = document.querySelectorAll(".actionButton.actionButtonSecondary");
+        // placeAnywayBtns.forEach(btn => {
+            // if (btn.innerText.trim() === "PLACE ANYWAY") {
+                // btn.click();
+            // }
+        // });
+		
 		//Get captain slots or returns if they don't exist
 		const captainSlots = document.querySelectorAll(".capSlots");
 		if (captainSlots.length == 0) return;
@@ -1255,6 +1359,7 @@ obsv.observe(tgtNode, conf);
 
 //This function resets the running state and closes the battlefield back to home.
 function goHome() {
+console.log("LOG-goHome-make false");
 	isContentRunning = false;
 	placementOver = false;
 	const backHome = document.querySelector(".selectorBack");
